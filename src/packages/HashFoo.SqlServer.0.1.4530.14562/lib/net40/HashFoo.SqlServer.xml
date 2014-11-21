@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HashFoo.SqlServer</name>
+    </assembly>
+    <members>
+        <member name="T:HashFoo.SqlServer.DbTestingUtil">
+            <summary>
+            Database utilities for testing.
+            </summary>
+        </member>
+        <member name="M:HashFoo.SqlServer.DbTestingUtil.NukeMsSqlDatabase(System.String,System.String)">
+            <summary>
+            Will attempt to do a simple drop and recreate of a database
+            </summary>
+            <param name="dbName">The name of the database</param>
+            <param name="masterConnectionString">The connection string to the database server.  Defaults to (local) with integrated security.</param>
+        </member>
+        <member name="T:HashFoo.SqlServer.SqlTypeUtil">
+            <summary>
+            Sql Type utility and extension functions.
+            </summary>
+        </member>
+        <member name="M:HashFoo.SqlServer.SqlTypeUtil.ToSqlChars(System.String)">
+            <summary>
+            Converts a string to a <c>SqlChars</c> object.
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.SqlTypeUtil.ToSqlString(System.String)">
+            <summary>
+            Converts a string to a <c>SqlString</c>
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.SqlTypeUtil.ToSqlXml(System.String)">
+            <summary>
+            Converts a string to <see cref="T:System.Data.SqlTypes.SqlXml"/>.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

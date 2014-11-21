@@ -1,0 +1,331 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HashFoo.SqlServer.Spatial</name>
+    </assembly>
+    <members>
+        <member name="T:HashFoo.SqlServer.Spatial.Geography">
+            <summary>
+            Wrapper of a SqlGeography.
+            </summary>
+            <remarks>
+            Userful in that it will hide all the DB types and expose native .NET types.
+            </remarks>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.Geography.Wgs84Srid">
+            <summary>
+            The srid of WGS84
+            </summary>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.#ctor(Microsoft.SqlServer.Types.SqlGeography)">
+            <summary>
+            Create a new geography from a SqlGeography
+            </summary>
+            <param name="sqlGeography"></param>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.CreateSquarePolygon(System.Double,System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Creates a square polygon from two opposing corner points.
+            </summary>
+            <param name="xMin"></param>
+            <param name="yMin"></param>
+            <param name="xMax"></param>
+            <param name="yMax"></param>
+            <param name="srid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.FromPolygons(System.Collections.Generic.IEnumerable{HashFoo.SqlServer.Spatial.Geography},System.Int32)">
+            <summary>
+            Creates a MultiPolygon Geography from a set of polygons.
+            </summary>
+            <param name="polygons"></param>
+            <param name="srid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.FromGeometry(Microsoft.SqlServer.Types.SqlGeometry,System.Nullable{System.Int32})">
+            <summary>
+            Creates a geography from a geometry
+            </summary>
+            <param name="srid"></param>
+            <param name="geometry"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.FromPoint(System.Double,System.Double,System.Int32)">
+            <summary>
+            Creates a point type geography from a x/y (lon,lat) pair.
+            </summary>
+            <param name="longitude"></param>
+            <param name="latitude"></param>
+            <param name="srid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.FromSqlServer(System.Byte[])">
+            <summary>
+            Gets a Geography from a raw SqlServer UDT byte[] (the value you get if you read 
+            a SqlGeography column value directly from SqlServer).
+            </summary>
+            <param name="serializedData"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.FromSqlServer(System.IO.Stream)">
+            <summary>
+            Gets a Geography from a raw SqlServer UDT stream (the value you get if you read 
+            a SqlGeography column value directly from SqlServer).
+            </summary>
+            <param name="serializedData"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.FromWkt(System.String,System.Int32)">
+            <summary>
+            Create a geography from well known text (wkt).
+            </summary>
+            <param name="wkt"></param>
+            <param name="srid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.AsWkb">
+            <summary>
+            Gets the <see cref="T:HashFoo.SqlServer.Spatial.Geography"/> as well known binary (WKB)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.AsWkt">
+            <summary>
+            Gets the WKT representation of the Geography.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.AsWktWithZAndM">
+            <summary>
+            Gets the geography as WKT with Z and M data.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.EqualsSpatially(HashFoo.SqlServer.Spatial.Geography)">
+            <summary>
+            Checks if two Geographies are spatially equal.
+            </summary>
+            <param name="other"></param>
+            <exception cref="T:System.ArgumentNullException">The geography to check is null.</exception>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.IsInstanceOf(HashFoo.SqlServer.Spatial.GeometryType)">
+            <summary>
+            Check if this geography is a specific type.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.Geography.RingAt(System.Int32)">
+            <summary>
+            Gets a ring at a specific 1 based index.  Null if this geography doesn't support rings.
+            </summary>
+            <param name="index">The index of the ring, starting at 1</param>
+            <returns></returns>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.Area">
+            <summary>
+            Gets the area in the unit of measure of the <see cref="T:HashFoo.SqlServer.Spatial.Geography"/> spatial reference system.  Returns 0 if 
+            Area doesn't make sense for the Geometry (like a Point).
+            </summary>
+            <remarks>
+            For most reference systems, this will be returned in square meters, including WGS84 (4326).
+            </remarks>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.GeometryType">
+            <summary>
+            Gets the <see cref="P:HashFoo.SqlServer.Spatial.Geography.GeometryType"/> of the geography.
+            </summary>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.HasRings">
+            <summary>
+            <c>true</c> if the Geography has rings.
+            </summary>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.InternalGeography">
+            <summary>
+            The underlying SqlGeography.
+            </summary>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.NumberOfRings">
+            <summary>
+            Get the number of rings this geography has.
+            </summary>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.NumGeographies">
+            <summary>
+            Gets the number of geographies that make up this instance.
+            </summary>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.Srid">
+            <summary>
+            Get or set the SRID of the Geography.
+            </summary>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.AsSqlGeometry">
+            <summary>
+            Converts the internal <see cref="T:Microsoft.SqlServer.Types.SqlGeography"/> to a <see cref="T:Microsoft.SqlServer.Types.SqlGeometry"/>.
+            </summary>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.NumPoints">
+            <summary>
+            Gets the number of points in a geography.
+            </summary>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.Centroid">
+            <summary>
+            Gets the geographic (taking into account the SRID) centroid of the <c>Geography</c>.
+            </summary>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.Geographies">
+            <summary>
+            All the child geographies that make up the curruent instance.
+            </summary>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.Rings">
+            <summary>
+            All of the rings, if any, of the current instance.
+            </summary>
+        </member>
+        <member name="P:HashFoo.SqlServer.Spatial.Geography.Coordinates">
+            <summary>
+            Enumerates through all the points of Geography.
+            </summary>
+        </member>
+        <member name="T:HashFoo.SqlServer.Spatial.GeometryType">
+            <summary>
+            Enumerates all the know SqlServer geometry types (for both SqlGeometry and SqlGeography)
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.GeometryType.Geometry">
+            <summary>
+            A generic geometry type.
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.GeometryType.Point">
+            <summary>
+            A single point geometry type.
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.GeometryType.LineString">
+            <summary>
+            A line string geometry type (a series of connected points, not closed).
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.GeometryType.Polygon">
+            <summary>
+            A polygon geometry type.
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.GeometryType.Curve">
+            <summary>
+            A curve geometry type.  Not sure -- use google to get the definition.
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.GeometryType.Surface">
+            <summary>
+            A surface geometry type.  Not sure -- use google.
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.GeometryType.MultiPoint">
+            <summary>
+            A multipoint geometry type -- a collection of point geometries.
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.GeometryType.MultiLineString">
+            <summary>
+            A multi-linestring geometry type -- a collection of line strings.
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.GeometryType.MultiPolygon">
+            <summary>
+            A multi-polygon geometry type -- a collection of polygons.
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.GeometryType.MultiCurve">
+            <summary>
+            A multi-curve geometry type -- a collection of curves.
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.GeometryType.MultiSurface">
+            <summary>
+            A multi-surface geometry type -- a collection of surfaces.
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.GeometryType.GeometryCollection">
+            <summary>
+            A gereric geometry collection type.
+            </summary>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.GeometryType.#ctor(System.String)">
+            <summary>
+            Create a geometry type with the same symbol and display value.
+            </summary>
+            <param name="symbolValue"></param>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.GeometryType.#ctor(System.String,System.String)">
+            <summary>
+            Create a new <see cref="T:HashFoo.SqlServer.Spatial.GeometryType"/>
+            </summary>
+            <param name="symbolValue"></param>
+            <param name="displayName"></param>
+        </member>
+        <member name="T:HashFoo.SqlServer.Spatial.Point">
+            <summary>
+            Defines a simple, 2D point structure.
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.Point.X">
+            <summary>
+            The X (Longtitude) component of the point.
+            </summary>
+        </member>
+        <member name="F:HashFoo.SqlServer.Spatial.Point.Y">
+            <summary>
+            The Y (Latitude) componenet of the point.
+            </summary>
+        </member>
+        <member name="T:HashFoo.SqlServer.Spatial.SqlSpatialTypesUtil">
+            <summary>
+            Utilities for MsSql DB types
+            </summary>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.SqlSpatialTypesUtil.GetSqlGeography(System.Byte[])">
+            <summary>
+            Gets the MSSql geography type from a raw serialized byte[] (not WKB).
+            </summary>
+            <param name="data">The raw, serialized geography</param>
+            <returns>A MSSql Geography instance</returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.SqlSpatialTypesUtil.GetSqlGeometry(System.Byte[])">
+            <summary>
+            Gets the MSSql geometry type from a raw serialized byte[] (not WKB).
+            </summary>
+            <param name="data">The raw, serialized geometry</param>
+            <returns>A MSSql Geometry instance</returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.SqlSpatialTypesUtil.Serialize(Microsoft.SqlServer.Types.SqlGeography)">
+            <summary>
+            Serializes an mssql geography to its DB form (not WKB)
+            </summary>
+            <param name="sqlGeography">The geography to serialize</param>
+            <returns>The serizlized data</returns>
+        </member>
+        <member name="M:HashFoo.SqlServer.Spatial.SqlSpatialTypesUtil.Serialize(Microsoft.SqlServer.Types.SqlGeometry)">
+            <summary>
+            Serializes an mssql geometry to its DB form (not WKB)
+            </summary>
+            <param name="sqlGeometry">The geometry to serialize</param>
+            <returns>The serizlized data</returns>
+        </member>
+    </members>
+</doc>

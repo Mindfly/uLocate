@@ -1,0 +1,890 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HashFoo.Core-Portable</name>
+    </assembly>
+    <members>
+        <member name="T:HashFoo.Core.ConvertUtil">
+            <summary>
+            Type conversion utilities
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.ConvertUtil.StringToByteArray(System.String)">
+            <summary>
+            Converts a string of hex digits to a byte[].  String can be optionally prefixed with "0x"
+            </summary>
+            <param name="hex"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HashFoo.Core.DateTimeUtil">
+            <summary>
+            Date/Time utility functions.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.DateTimeUtil.AsUtcDateTimeOffset(System.DateTime)">
+            <summary>
+            Converts a <see cref="T:System.DateTime"/> to a UTC <see cref="T:System.DateTimeOffset"/>.
+            If the DateTime has Kind of Local, it is converted to UTC.  Else, it is assumed to be in UTC.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HashFoo.Core.Enumeration`1">
+            <summary>
+            Enumeration base class for an interger value based enumeration.
+            </summary>
+            <typeparam name="TEnum">The inherited enumeration type</typeparam>
+            <seealso cref="T:HashFoo.Core.EnumerationBase`2"/>
+        </member>
+        <member name="T:HashFoo.Core.EnumerationBase`2">
+            <summary>
+            Provides a full class version of an enumeration.  Allows for greatness like looking up an enumeration by value or display name.
+            </summary>
+            <typeparam name="TEnum">The type of enumeration (the inheriting class)</typeparam>
+            <typeparam name="TValue">The value type for the ID of the enumeration</typeparam>
+        </member>
+        <member name="M:HashFoo.Core.EnumerationBase`2.#ctor">
+            <summary>
+            Useful for serialization, I think.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.EnumerationBase`2.#ctor(`1,System.String)">
+            <summary>
+            Create a new enumeration
+            </summary>
+            <param name="value"></param>
+            <param name="displayName"></param>
+        </member>
+        <member name="M:HashFoo.Core.EnumerationBase`2.ToString">
+            <summary>
+            Returns the display name.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.EnumerationBase`2.GetAll">
+            <summary>
+            Get all the enumerations of <c>TEnum</c> type.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.EnumerationBase`2.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+            </returns>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>. </param>
+        </member>
+        <member name="M:HashFoo.Core.EnumerationBase`2.GetHashCode">
+            <summary>
+            Serves as a hash function for a particular type. 
+            </summary>
+            <returns>
+            A hash code for the current <see cref="T:System.Object"/>.
+            </returns>
+        </member>
+        <member name="M:HashFoo.Core.EnumerationBase`2.FromValue(`1)">
+            <summary>
+            Gets the <c>TEnum</c> from a specific value.  Throws <see cref="T:System.ArgumentOutOfRangeException"/> if not found.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.EnumerationBase`2.FromDisplayName(System.String)">
+            <summary>
+            Gets a TEnum from a display name.  Throws <see cref="T:System.ArgumentOutOfRangeException"/> if not found.
+            </summary>
+            <param name="displayName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.EnumerationBase`2.CompareTo(System.Object)">
+            <summary>
+            Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+            </summary>
+            <returns>
+            A 32-bit signed integer that indicates the relative order of the objects being compared. The return value has these meanings: Value Meaning Less than zero This instance is less than <paramref name="other"/>. Zero This instance is equal to <paramref name="other"/>. Greater than zero This instance is greater than <paramref name="other"/>. 
+            </returns>
+            <param name="other">An object to compare with this instance. </param><exception cref="T:System.ArgumentException"><paramref name="other"/> is not the same type as this instance. </exception>
+        </member>
+        <member name="M:HashFoo.Core.EnumerationBase`2.FromValueOrDefault(System.Int32)">
+            <summary>
+            Gets the <typeparamref name="TEnum"/> from a value.  Null if not found.
+            </summary>
+            <param name="enumerationValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.EnumerationBase`2.FromDisplayNameOrDefault(System.String)">
+            <summary>
+            Gets the <typeparamref name="TEnum"/> from a display name.  Null if not found.
+            </summary>
+            <param name="displayName"></param>
+            <returns></returns>
+        </member>
+        <member name="P:HashFoo.Core.EnumerationBase`2.Value">
+            <summary>
+            The value of the enumeration.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.EnumerationBase`2.DisplayName">
+            <summary>
+            The display name of the enumeration.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.Enumeration`1.#ctor(System.Int32,System.String)">
+            <summary>
+            Creates an enumeration instance with an int value.
+            </summary>
+            <param name="value"></param>
+            <param name="displayName"></param>
+        </member>
+        <member name="T:HashFoo.Core.IWebClient">
+            <summary>
+            Allows different web client infrastructures to be used.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.IWebClient.UploadStringAsync(System.Uri,System.String,System.Action{HashFoo.Core.IWebResultString},System.Action{HashFoo.Core.WebRequestError},System.Action,System.String)">
+            <summary>
+            Performs a web request that uploads data as a string.  Any server response is returned as a string.
+            </summary>
+            <param name="uri">The uri to call</param>
+            <param name="data">The data to upload</param>
+            <param name="successCallback">Callback for successful completion</param>
+            <param name="errorCallback">Callback if there is an error</param>
+            <param name="cancelCallback">Callback if the operation is canceled</param>
+            <param name="method">HTTP method override.</param>
+            <returns>The operation, useful to cancel if needed.</returns>
+        </member>
+        <member name="M:HashFoo.Core.IWebClient.UploadStreamAsync(System.Uri,System.IO.Stream,System.Action{HashFoo.Core.IWebResultString},System.Action{HashFoo.Core.WebRequestError},System.Action,System.Action{HashFoo.Core.ProgressEventArgs},System.String)">
+            <summary>
+            Performs a web request that uploads data from a stream.  Any server response is returned as a string.
+            </summary>
+            <param name="uri">The uri to call</param>
+            <param name="data">The data to upload</param>
+            <param name="successCallback">Callback for successful completion</param>
+            <param name="errorCallback">Callback if there is an error</param>
+            <param name="cancelCallback">Callback if the operation is canceled</param>
+            <param name="progressCallback">Callback for progress updates of the upload</param>
+            <param name="method">HTTP method override.</param>
+            <returns>The operation, useful to cancel if needed.</returns>
+        </member>
+        <member name="M:HashFoo.Core.IWebClient.UploadBytesAsync(System.Uri,System.Byte[],System.Action{HashFoo.Core.IWebResultString},System.Action{HashFoo.Core.WebRequestError},System.Action,System.Action{HashFoo.Core.ProgressEventArgs},System.String)">
+            <summary>
+            Performs a web request that uploads data from a byte array.  Any server response is returned as a string.
+            </summary>
+            <param name="uri">The uri to call</param>
+            <param name="data">The data to upload</param>
+            <param name="successCallback">Callback for successful completion</param>
+            <param name="errorCallback">Callback if there is an error</param>
+            <param name="cancelCallback">Callback if the operation is canceled</param>
+            <param name="progressCallback">Callback for progress updates of the upload</param>
+            <param name="method">HTTP method override.</param>
+            <returns>The operation, useful to cancel if needed.</returns>
+        </member>
+        <member name="M:HashFoo.Core.IWebClient.DownloadStringAsync(System.Uri,System.Action{HashFoo.Core.IWebResultString},System.Action{HashFoo.Core.WebRequestError},System.Action,System.Action{HashFoo.Core.ProgressEventArgs},System.String)">
+            <summary>
+            Perform a web request and return the result as a string.
+            </summary>
+            <param name="uri">The uri to call</param>
+            <param name="successCallback">Callback for successful completion</param>
+            <param name="errorCallback">Callback if there is an error</param>
+            <param name="cancelCallback">Callback if the operation is canceled</param>
+            <param name="progressCallback">Callback for progress updates</param>
+            <param name="method">HTTP method override.</param>
+            <returns>The operation, useful to cancel if needed.</returns>
+        </member>
+        <member name="M:HashFoo.Core.IWebClient.DownloadStreamAsync(System.Uri,System.Action{HashFoo.Core.IWebResultStream},System.Action{HashFoo.Core.WebRequestError},System.Action,System.Action{HashFoo.Core.ProgressEventArgs},System.String,System.Boolean)">
+            <summary>
+            Perform a web request and return the result as the raw response stream.
+            </summary>
+            <param name="uri">The uri to call</param>
+            <param name="successCallback">Callback for successful completion</param>
+            <param name="errorCallback">Callback if there is an error</param>
+            <param name="cancelCallback">Callback if the operation is canceled</param>
+            <param name="progressCallback">Callback for progress updates.</param>
+            <param name="method">HTTP method override.</param>
+            <param name="buffer">
+              If <c>true</c>, the network stream will be downloaded completely, then wrapped in a memory stream.
+              Else, the network stream will be returned.  Default to true.
+            </param>
+            <returns>The operation, useful to cancel if needed.</returns>
+            <remarks>
+            If the stream is not buffered, the <paramref name="progressCallback"/> will not be invoked.
+            Buffering should probably be turned off for very large files (>10MBs).
+            </remarks>
+        </member>
+        <member name="P:HashFoo.Core.IWebClient.DefaultHeaders">
+            <summary>
+            Headers to be applied to all requests.
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.IWebClientOperation">
+            <summary>
+            Token interface that allows async control over a <see cref="T:HashFoo.Core.IWebClient"/> operation.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.IWebClientOperation.Cancel">
+            <summary>
+            Cancels a web client operation.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.IWebClientOperation.IsDone">
+            <summary>
+            True if the operation is no longer active.  If true, it does not necessarily mean
+            the operation was completed successfully, just that its done.
+            </summary>
+        </member>
+        <member name="E:HashFoo.Core.IWebClientOperation.Completed">
+            <summary>
+            Raised when the operation is completed (could be error, cancel, or success).
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.MathUtil">
+            <summary>
+            Math helper functions
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.MathUtil.BoundToRange(System.Double,System.Double,System.Double)">
+            <summary>
+            Bounds a value to a specific range.
+            </summary>
+            <param name="val"></param>
+            <param name="minInclusive"></param>
+            <param name="maxInclusive"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.MathUtil.BoundToRange(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Bounds a value to a specific range.
+            </summary>
+            <param name="val"></param>
+            <param name="minInclusive"></param>
+            <param name="maxInclusive"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.MathUtil.StandardDeviation(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+            Computes the standard deviation from a series of values.
+            </summary>
+            <param name="values"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.MathUtil.StandardDeviation(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Computes the standard deviation from a series of values.
+            </summary>
+            <param name="values"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.MathUtil.StandardDeviation(System.Collections.Generic.IEnumerable{System.Single})">
+            <summary>
+            Computes the standard deviation from a series of values.
+            </summary>
+            <param name="values"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.MathUtil.ScaleRange(System.Double,HashFoo.Core.RangeF,HashFoo.Core.RangeF)">
+            <summary>
+            Takes a point one range and converts it to a scaled equivalent point in another range.
+            </summary>
+            <param name="fromPoint">The point to convert.</param>
+            <param name="fromRange">The range the <c>fromPoint</c> belongs to.</param>
+            <param name="toRange">The range to scale the <c>fromPoint</c> to.</param>
+            <returns>The scaled point in the <c>toRange</c>.</returns>
+        </member>
+        <member name="M:HashFoo.Core.MathUtil.ScaleRange(System.Int32,HashFoo.Core.Range,HashFoo.Core.Range)">
+            <summary>
+            Takes a point one range and converts it to a scaled equivalent point in another range.
+            </summary>
+            <param name="fromPoint">The point to convert.</param>
+            <param name="fromRange">The range the <c>fromPoint</c> belongs to.</param>
+            <param name="toRange">The range to scale the <c>fromPoint</c> to.</param>
+            <returns>The scaled point in the <c>toRange</c>.</returns>
+        </member>
+        <member name="M:HashFoo.Core.MathUtil.RoundToInt(System.Double)">
+            <summary>
+            Rounds a decimal type value to an int.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.MathUtil.RoundToInt(System.Decimal)">
+            <summary>
+            Rounds a decimal type value to an int.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.MathUtil.ConvertToIntPercent(System.Double)">
+            <summary>
+            Converts a decimal percentage (like 0.1) to an integer percentage (10).
+            </summary>
+            <param name="percent"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HashFoo.Core.ProgressEventArgs">
+            <summary>
+            Generic progress event arguments.  Includes progress, total, and current (unitless).
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.ProgressEventArgs.Percent">
+            <summary>
+            The current percent of the progress.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.ProgressEventArgs.Total">
+            <summary>
+            The total (unitless) amount of the operation.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.ProgressEventArgs.TotalIsKnown">
+            <summary>
+            True if the <see cref="P:HashFoo.Core.ProgressEventArgs.Total"/> is known, else false.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.ProgressEventArgs.Current">
+            <summary>
+            The current progress (of the <see cref="P:HashFoo.Core.ProgressEventArgs.Total"/>) of the operation.
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.RangeF">
+            <summary>
+            Defines a min/max range using doubles.
+            </summary>
+        </member>
+        <member name="F:HashFoo.Core.RangeF.Min">
+            <summary>
+            The inclusive min of the range.
+            </summary>
+        </member>
+        <member name="F:HashFoo.Core.RangeF.Max">
+            <summary>
+            The inclusive max of the range.
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.Range">
+            <summary>
+            Defines a range using Ints.
+            </summary>
+        </member>
+        <member name="F:HashFoo.Core.Range.Min">
+            <summary>
+            The inclusive min of the range.
+            </summary>
+        </member>
+        <member name="F:HashFoo.Core.Range.Max">
+            <summary>
+            The inclusive max of the range.
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.ReflectionUtil">
+            <summary>
+            Reflection helpers
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.ReflectionUtil.IsOfGenericBaseType(System.Type,System.Type)">
+            <summary>
+            Checks if a type inherits from a specific open generic type.  Both types should be a class.
+            </summary>
+            <remarks>
+            Each type should be a class type since we need to walk an inheritance hierachry.
+            For interfaces, we should probably create a new function of ImplementsGenericInterface.  DMF 20111130
+            </remarks>
+            <param name="typeToCheck"></param>
+            <param name="genericType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.ReflectionUtil.IsOfGenericBaseType``1(System.Type)">
+            <summary>
+            Checks if a type if or inherits from an open generic type.  All types must be classes (in order to walk the inheritance hierarchy).
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="genericType"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HashFoo.Core.WebRequestError">
+            <summary>
+            Result object for an web request in an error state.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestError.#ctor(System.Net.HttpStatusCode,System.String,System.Exception)">
+            <summary>
+            Create a new <see cref="T:HashFoo.Core.WebRequestError"/>
+            </summary>
+            <param name="statusCode"></param>
+            <param name="serverResponse"></param>
+            <param name="exception"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestError.#ctor(System.String,System.Exception)">
+            <summary>
+            Create a new <see cref="T:HashFoo.Core.WebRequestError"/>
+            </summary>
+            <param name="serverResponse"></param>
+            <param name="exception"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestError.#ctor(System.Exception)">
+            <summary>
+            Create a new <see cref="T:HashFoo.Core.WebRequestError"/>
+            </summary>
+            <param name="exception"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestError.#ctor(System.Net.HttpWebResponse,System.Exception)">
+            <summary>
+            Creates a new <see cref="T:HashFoo.Core.WebRequestError"/> from a bad <see cref="T:System.Net.HttpWebResponse"/> and optional exception.
+            </summary>
+            <param name="badResponse"></param>
+            <param name="exception"></param>
+        </member>
+        <member name="P:HashFoo.Core.WebRequestError.StatusCode">
+            <summary>
+            The status code returned.  Null if none (the error occured before a response was captured).
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.WebRequestError.ServerResponse">
+            <summary>
+            The response from the server.  Null if no response.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.WebRequestError.ErrorException">
+            <summary>
+            The underlying exception that caused the error.  Should not be null.
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.IWebResultStream">
+            <summary>
+            Defines the data provided by a web request that results in stream access.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.IWebResultStream.Data">
+            <summary>
+            The consumable data returned in the response.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.IWebResultStream.Details">
+            <summary>
+            The response meta data details.
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.WebResultStream">
+            <summary>
+            A web request result, returned as a stream.  The caller should dispose of this object when done.
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.WebResult`1">
+            <summary>
+            The result of a successful web request.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:HashFoo.Core.WebResult`1.#ctor(System.Net.HttpWebResponse)">
+            <summary>
+            Creates a new <see cref="T:HashFoo.Core.WebResult`1"/> based on a <see cref="T:System.Net.HttpWebResponse"/>.
+            </summary>
+            <param name="response"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebResult`1.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.WebResult`1.BeforeResponseDisposed">
+            <summary>
+            Do cleanup before the response object is cleaned up.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.WebResult`1.Data">
+            <summary>
+            The consumable data returned in the response.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.WebResult`1.Details">
+            <summary>
+            The response meta data details.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.WebResultStream.#ctor(System.Net.HttpWebResponse,System.Boolean,System.Action{HashFoo.Core.ProgressEventArgs},System.Int32)">
+            <summary>
+            Create the result stream by wrapping the response.
+            </summary>
+            <param name="response"></param>
+            <param name="buffer"></param>
+            <param name="progressCallback"></param>
+            <param name="streamBufferSize"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebResultStream.BufferStream(System.Net.HttpWebResponse,System.Action{HashFoo.Core.ProgressEventArgs})">
+            <summary>
+            Read the stream into a buffer (MemoryStream).  Synchronous -- so hopefully this is being invoked on a worker thread.
+            </summary>
+            <param name="response"></param>
+            <param name="progressCallback"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebResultStream.BeforeResponseDisposed">
+            <summary>
+            Clean up the response stream before the response is disposed.
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.IWebResultString">
+            <summary>
+            Defines the data provided from a web request that returns a string.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.IWebResultString.Data">
+            <summary>
+            The consumable data returned in the response.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.IWebResultString.Details">
+            <summary>
+            The response meta data details.
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.WebResultString">
+            <summary>
+            Wraps a web response as a string.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.WebResultString.#ctor(System.Net.HttpWebResponse,System.Action{HashFoo.Core.ProgressEventArgs})">
+            <summary>
+            Wraps a web response as a string.
+            </summary>
+            <param name="response"></param>
+            <param name="progressCallback"></param>
+        </member>
+        <member name="T:HashFoo.Core.WebResultDetails">
+            <summary>
+            Holds meta data about a web result (like status codes, content type, etc).
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.WebResultDetails.#ctor">
+            <summary>
+            Allows for the <c>WebResultDetail</c> to be created through property setters.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.WebResultDetails.#ctor(System.Net.HttpWebResponse)">
+            <summary>
+            Create the meta data from a response.
+            </summary>
+            <param name="response"></param>
+        </member>
+        <member name="P:HashFoo.Core.WebResultDetails.StatusCode">
+            <summary>
+            The status code of the response.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.WebResultDetails.ContentLength">
+            <summary>
+            The content length of the response.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.WebResultDetails.ContentType">
+            <summary>
+            The content type of the response.
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.XmlUtil">
+            <summary>
+            Provides xml helpers.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.XmlUtil.ToXml(System.Object)">
+            <summary>
+            Serializes an object to an xml string.
+            </summary>
+            <remarks>
+            Uses default .NET xml serialization infrastructure.
+            </remarks>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.XmlUtil.LoadFromXml``1(System.String)">
+            <summary>
+            Loads (deserializes) an xml string to an object of type T.  Returns null if it can't.
+            </summary>
+            <remarks>
+            Uses default .NET xml serialization infrastructure.
+            </remarks>
+            <typeparam name="T"></typeparam>
+            <param name="xml"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HashFoo.Core.StringUtil">
+            <summary>
+            String helpers
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.StringUtil.DoFormat(System.String,System.Object[])">
+            <summary>
+            Executes a string format operation on a string and returns the result.  Does not modify the passed in string.
+            </summary>
+            <param name="str"></param>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.StringUtil.FormatEx(System.String,System.Object[])">
+            <summary>
+            Executes a string format operation.  Probably better to use <see cref="M:HashFoo.Core.StringUtil.DoFormat(System.String,System.Object[])"/>.
+            </summary>
+            <param name="str"></param>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HashFoo.Core.SymbolEnumeration`1">
+            <summary>
+            Enumeration with a string (symbol) as the value.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.SymbolEnumeration`1.#ctor(System.String,System.String)">
+            <summary>
+            Creates a SymbolEnumeration with a specific value and display name.
+            </summary>
+            <param name="symbolValue"></param>
+            <param name="displayName"></param>
+        </member>
+        <member name="T:HashFoo.Core.WebRequestClient">
+            <summary>
+            <see cref="T:HashFoo.Core.IWebClient"/> based on a <see cref="T:System.Net.WebRequest"/> infrastructure.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.#ctor(System.String,System.Action{System.Action})">
+            <summary>
+            Create a new client with an optional base uri.
+            </summary>
+            <param name="baseUri">Optional base uri to prepend to any request Uri that is not absolute.</param>
+            <param name="callbackMarshaller">Optional delegate to marshal callbacks through.</param>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.DownloadStreamAsync(System.Uri,System.Action{HashFoo.Core.IWebResultStream},System.Action{HashFoo.Core.WebRequestError},System.Action,System.Action{HashFoo.Core.ProgressEventArgs},System.String,System.Boolean)">
+            <summary>
+            Perform a web request and return the result as the raw response stream.
+            </summary>
+            <param name="uri">The uri to call</param>
+            <param name="successCallback">Callback for successful completion</param>
+            <param name="errorCallback">Callback if there is an error</param>
+            <param name="cancelCallback">Callback if the operation is canceled</param>
+            <param name="progressCallback">Callback for progress updates.</param>
+            <param name="method">HTTP method override.</param>
+            <param name="buffer">
+              If <c>true</c>, the network stream will be downloaded completely, then wrapped in a memory stream.
+              Else, the network stream will be returned.  Default to true.
+            </param>
+            <returns>The operation, useful to cancel if needed.</returns>
+            <remarks>
+            If the stream is not buffered, the <paramref name="progressCallback"/> will not be invoked.
+            Buffering should probably be turned off for very large files (>10MBs).
+            </remarks>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.UploadStreamAsync(System.Uri,System.IO.Stream,System.Action{HashFoo.Core.IWebResultString},System.Action{HashFoo.Core.WebRequestError},System.Action,System.Action{HashFoo.Core.ProgressEventArgs},System.String)">
+            <summary>
+            Performs a web request that uploads data from a stream.  Any server response is returned as a string.
+            </summary>
+            <param name="uri">The uri to call</param>
+            <param name="data">The data to upload</param>
+            <param name="successCallback">Callback for successful completion</param>
+            <param name="errorCallback">Callback if there is an error</param>
+            <param name="cancelCallback">Callback if the operation is canceled</param>
+            <param name="progressCallback">Callback for progress updates of the upload</param>
+            <param name="method">HTTP method override.</param>
+            <returns>The operation, useful to cancel if needed.</returns>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.UploadBytesAsync(System.Uri,System.Byte[],System.Action{HashFoo.Core.IWebResultString},System.Action{HashFoo.Core.WebRequestError},System.Action,System.Action{HashFoo.Core.ProgressEventArgs},System.String)">
+            <summary>
+            Performs a web request that uploads data from a byte array.  Any server response is returned as a string.
+            </summary>
+            <param name="uri">The uri to call</param>
+            <param name="data">The data to upload</param>
+            <param name="successCallback">Callback for successful completion</param>
+            <param name="errorCallback">Callback if there is an error</param>
+            <param name="cancelCallback">Callback if the operation is canceled</param>
+            <param name="progressCallback">Callback for progress updates of the upload</param>
+            <param name="method">HTTP method override.</param>
+            <returns>The operation, useful to cancel if needed.</returns>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.DownloadStringAsync(System.Uri,System.Action{HashFoo.Core.IWebResultString},System.Action{HashFoo.Core.WebRequestError},System.Action,System.Action{HashFoo.Core.ProgressEventArgs},System.String)">
+            <summary>
+            Perform a web request and return the result as a string.
+            </summary>
+            <param name="uri">The uri to call</param>
+            <param name="successCallback">Callback for successful completion</param>
+            <param name="errorCallback">Callback if there is an error</param>
+            <param name="cancelCallback">Callback if the operation is canceled</param>
+            <param name="progressCallback"></param>
+            <param name="method">HTTP method override.</param>
+            <returns>The operation, useful to cancel if needed.</returns>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.UploadStringAsync(System.Uri,System.String,System.Action{HashFoo.Core.IWebResultString},System.Action{HashFoo.Core.WebRequestError},System.Action,System.String)">
+            <summary>
+            Performs a web request that uploads data as a string.  Any server response is returned as a string.
+            </summary>
+            <param name="uri">The uri to call</param>
+            <param name="data">The data to upload</param>
+            <param name="successCallback">Callback for successful completion</param>
+            <param name="errorCallback">Callback if there is an error</param>
+            <param name="cancelCallback">Callback if the operation is canceled</param>
+            <param name="method">HTTP method override.</param>
+            <returns>The operation, useful to cancel if needed.</returns>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.SafeHandleRequestStreamAsync(System.Net.HttpWebRequest,System.Action{System.Func{System.IO.Stream}},System.Action{HashFoo.Core.WebRequestError})">
+            <summary>
+            Gets the request stream to the server, wrapped in a safe execute block.
+            </summary>
+            <param name="request"></param>
+            <param name="handler"></param>
+            <param name="errorCallback"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.SafeHandleResponseAsync(System.Net.HttpWebRequest,System.Action{System.Func{System.Net.HttpWebResponse}},System.Action{HashFoo.Core.WebRequestError})">
+            <summary>
+            Executes a request within a wrapper that will catch errors and invoke an error callback.
+            </summary>
+            <param name="request"></param>
+            <param name="responseHandler"></param>
+            <param name="errorCallback"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.SafeProcessResponse(System.Func{System.Net.HttpWebResponse},System.Action{System.Net.HttpWebResponse},System.Action{HashFoo.Core.WebRequestError})">
+            <summary>
+            Processes a web request response in a wrapper that catches errors and invokes an error callback.
+            </summary>
+            <param name="responseProvider">The function that gets the response.</param>
+            <param name="responseHandler">The handler for the response.</param>
+            <param name="errorCallback">The callback if there is an error.</param>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.SafeUploadString(System.Func{System.IO.Stream},System.String,System.Action{HashFoo.Core.WebRequestError})">
+            <summary>
+            Uploads a string to the server.  If an error occurs, the errorCallback is invoked.
+            </summary>
+            <param name="streamProvider"></param>
+            <param name="data"></param>
+            <param name="errorCallback"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.SafeUploadStream(System.Func{System.IO.Stream},System.IO.Stream,System.Action{HashFoo.Core.WebRequestError},System.Action{HashFoo.Core.ProgressEventArgs})">
+            <summary>
+            Uploads a string to the server.  If an error occurs, the errorCallback is invoked.
+            </summary>
+            <param name="streamProvider"></param>
+            <param name="data"></param>
+            <param name="errorCallback"></param>
+            <param name="progressCallback">Optional progress callback for the upload</param>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.BuildOp(System.Net.HttpWebRequest,System.Action)">
+            <summary>
+            Handles building the operation object that is returned by request methods.
+            </summary>
+            <param name="request"></param>
+            <param name="cancelCallback"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.CreateMarshalledProgressCallback(System.Action{HashFoo.Core.ProgressEventArgs})">
+            <summary>
+            Creates a progress callback that is marshelled.
+            </summary>
+            <param name="progressCallback"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.CreateSafeOpCallback``1(HashFoo.Core.WebRequestClientOperation,System.Action{``0})">
+            <summary>
+            Wraps an  optional callback in an action that marks a <see cref="T:HashFoo.Core.WebRequestClientOperation"/> as completed.
+            </summary>
+            <typeparam name="TResult"></typeparam>
+            <param name="op"></param>
+            <param name="callback"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClient.CreateSafeOpErrorCallback(HashFoo.Core.WebRequestClientOperation,System.Action{HashFoo.Core.WebRequestError})">
+            <summary>
+            Wraps an  optional error callback in an action that marks a <see cref="T:HashFoo.Core.WebRequestClientOperation"/> as completed.
+            If no action is supplied, an exception will be thrown after the operation has been marked as complete.
+            </summary>
+            <param name="op"></param>
+            <param name="callback"></param>
+            <returns></returns>
+        </member>
+        <member name="P:HashFoo.Core.WebRequestClient.WriteBufferSize">
+            <summary>
+            The size, in bytes, of the buffer to use for writing to the web request streamm.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.WebRequestClient.ReadBufferSize">
+            <summary>
+            The size, in bytes, of the read buffer to use for reading a response stream.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.WebRequestClient.DefaultHeaders">
+            <summary>
+            The headers that will be part of every request.
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.WebRequestClientOperation">
+            <summary>
+            A web client operation token.
+            </summary>
+            <see cref="T:HashFoo.Core.IWebClientOperation"/>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClientOperation.#ctor(System.Net.HttpWebRequest,System.Action)">
+            <summary>
+            Create a new <see cref="T:HashFoo.Core.WebRequestClientOperation"/> for a web request.
+            </summary>
+            <param name="webRequest"></param>
+            <param name="cancelCallback"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClientOperation.MarkAsComplete(System.Action)">
+            <summary>
+            Marks an operation as complete and executes an optional callback if the operation has not been previously canceled.
+            </summary>
+            <param name="callback"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebRequestClientOperation.Cancel">
+            <summary>
+            Cancels a web client operation.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.WebRequestClientOperation.Request">
+            <summary>
+            The <see cref="T:System.Net.HttpWebRequest"/> the operation is linked to.
+            </summary>
+        </member>
+        <member name="P:HashFoo.Core.WebRequestClientOperation.IsDone">
+            <summary>
+            True if the operation is no longer active.  If true, it does not necessarily mean
+            the operation was completed successfully, just that its done.
+            </summary>
+        </member>
+        <member name="E:HashFoo.Core.WebRequestClientOperation.Completed">
+            <summary>
+            Raised when the operation is completed (could be error, cancel, or success).
+            </summary>
+        </member>
+        <member name="T:HashFoo.Core.WebUtil">
+            <summary>
+            Utility methods for web based functions.
+            </summary>
+        </member>
+        <member name="M:HashFoo.Core.WebUtil.SetHeaders(System.Net.HttpWebRequest,System.Net.WebHeaderCollection)">
+            <summary>
+            Certain headers must be set explicitly.  Do this automagically.
+            </summary>
+            <param name="request"></param>
+            <param name="headers"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebUtil.SafeWebExecute(System.Action,System.Action{HashFoo.Core.WebRequestError})">
+            <summary>
+            Executes web functions in a safe try/catch block and handles error callbacks.
+            </summary>
+            <param name="webAction">The action that uses the web infrastructure and may throw web based exceptions.</param>
+            <param name="errorCallback"></param>
+        </member>
+        <member name="M:HashFoo.Core.WebUtil.GetResponseAsString(System.Net.HttpWebResponse)">
+            <summary>
+            Converts an <see cref="T:System.Net.HttpWebResponse"/> stream to a string.
+            </summary>
+            <param name="response"></param>
+            <returns></returns>
+            <exception cref="T:System.Net.WebException">Any web based exception thrown while trying to read the response stream.</exception>
+        </member>
+        <member name="M:HashFoo.Core.WebUtil.CreateHttpBasicAuthHeader(System.String,System.String)">
+            <summary>
+            Creates a http basic authentication header value from a user name and password.
+            </summary>
+            <param name="userName"></param>
+            <param name="userPassword"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

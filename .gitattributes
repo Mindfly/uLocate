@@ -1,0 +1,6 @@
+*.ogv -delta
+*.mp4 -delta
+*.webm -delta
+*.ogv binary
+*.mp4 binary
+*.webm binary
