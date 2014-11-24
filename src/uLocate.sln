@@ -36,6 +36,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "UmbracoTestSite", "http://l
 		SlnRelativePath = "UmbracoTestSite\"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uLocate.Package", "uLocate.Package\uLocate.Package.csproj", "{FA84BDB1-2BE9-4218-A987-20509BDB2E03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{CC73B3B5-07AF-4ED2-90A9-5ECF216E41AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CC73B3B5-07AF-4ED2-90A9-5ECF216E41AA}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{CC73B3B5-07AF-4ED2-90A9-5ECF216E41AA}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{FA84BDB1-2BE9-4218-A987-20509BDB2E03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA84BDB1-2BE9-4218-A987-20509BDB2E03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA84BDB1-2BE9-4218-A987-20509BDB2E03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA84BDB1-2BE9-4218-A987-20509BDB2E03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

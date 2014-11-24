@@ -126,8 +126,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)bin\Debug\uLocate.UI.*" "$(SolutionDir)UmbracoTestSite\bin\" /Y
-xcopy "$(ProjectDir)App_plugins\uLocate\*.*" "$(SolutionDir)UmbracoTestSite\App_plugins\uLocate\" /S /Y</PostBuildEvent>
+    <PostBuildEvent>XCOPY "$(TargetDir)$(TargetName).*" "$(SolutionDir)UmbracoTestSite\bin\" /Y
+XCOPY "$(ProjectDir)App_Plugins" "$(SolutionDir)UmbracoTestSite\App_Plugins\" /Y /S</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

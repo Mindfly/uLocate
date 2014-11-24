@@ -173,7 +173,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutomapperMappings.cs" />
     <Compile Include="Caching\CacheKeys.cs" />
     <Compile Include="Caching\NullCacheProvider.cs" />
     <Compile Include="Configuration\ProviderCollection.cs" />
@@ -182,6 +181,7 @@
     <Compile Include="Configuration\SettingsCollection.cs" />
     <Compile Include="Configuration\uLocateSection.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Data\LocationType.cs" />
     <Compile Include="Helpers\CountryHelper.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Country.cs" />
@@ -195,8 +195,6 @@
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Coordinate.cs" />
     <Compile Include="Models\LocationTypeDefinition.cs" />
-    <Compile Include="Models\Rdbms\LocationDto.cs" />
-    <Compile Include="Models\Rdbms\LocationTypeDefinitionDto.cs" />
     <Compile Include="Persistance\Factories\LocationTypeDefinitionFactory.cs" />
     <Compile Include="Persistance\Factories\LocationFactory.cs" />
     <Compile Include="Persistance\Migrations\DatabaseSchemaCreation.cs" />
@@ -240,7 +238,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)bin\Debug\uLocate.*" "$(SolutionDir)UmbracoTestSite\bin\" /Y</PostBuildEvent>
+    <PostBuildEvent>XCOPY "$(TargetDir)$(TargetName).*" "$(SolutionDir)UmbracoTestSite\bin\" /Y
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
