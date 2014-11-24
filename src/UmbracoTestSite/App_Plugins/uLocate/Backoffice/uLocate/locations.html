@@ -1,0 +1,37 @@
+﻿<!-- TODO: The ng-controller goes on this starting div -->
+<div>
+    <umb-panel class="uLocate">
+        <umb-header>
+            <div class="span7">
+                <h1>Locations</h1>
+            </div>
+            <div class="span5">
+                <div class="btn-toolbar pull-right umb-btn-toolbar">
+                    <div class="btn-group">
+                        <!-- TODO: Clicking should add .open to the .btn-group parent div, which will display the dropdown -->
+                        <a class="btn">Actions <span class="caret"></span></a>
+                        <!-- TODO: In umbraco, this is generated using umb-options-menu, which you can see an example of in Umbraco.Web.UI.Client\build\belle\views\content\edit.html. The actions allowed for this menu item are determined in the uLocate TreeController -->
+                        <ul class="dropdown-menu umb-actions">
+                            <!-- ngRepeat: action in actions -->
+                            <li class="action ng-scope">
+                                <a><i class="icon icon-add"></i><span class="menu-label">Create</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </umb-header>
+        
+        <div class="umb-panel-body">
+            <div class="umb-pane">
+                
+                <div class="map-wrapper span12">
+                    <div class="map">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </umb-panel>
+</div>

@@ -1,4 +1,4 @@
-﻿namespace uLocate.UI.Trees
+﻿namespace uLocate.UI
 {
     using System;
     using System.Net.Http.Formatting;

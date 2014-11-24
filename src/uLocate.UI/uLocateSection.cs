@@ -1,4 +1,4 @@
-﻿namespace uLocate.UI.Sections
+﻿namespace uLocate.UI
 {
     using umbraco.businesslogic;
     using umbraco.interfaces;
