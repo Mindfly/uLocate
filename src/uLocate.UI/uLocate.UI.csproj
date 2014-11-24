@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\uLocate\install\" />
+    <Folder Include="PackageActions\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App_Plugins\uLocate\Config\uLocate.config" />

@@ -236,8 +236,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Editors\" />
-    <Folder Include="PackageActions\" />
     <Folder Include="WebApi\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
