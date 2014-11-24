@@ -90,7 +90,7 @@ namespace uLocate.Persistance.Repositories
         {
             var list = new List<string>
             {
-                "DELETE FROM ulocateLocation WHERE pk = @Key";
+                "DELETE FROM ulocateLocation WHERE pk = @Key"
             };
 
             return list;

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uLocate", "uLocate\uLocate.csproj", "{61985CB6-50E0-46AA-9E9C-57DBFD3DE66D}"
 EndProject
@@ -47,6 +47,7 @@ Global
 		{61985CB6-50E0-46AA-9E9C-57DBFD3DE66D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61985CB6-50E0-46AA-9E9C-57DBFD3DE66D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{505E187E-67BE-4C86-BBC5-EF941EBE4D91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{505E187E-67BE-4C86-BBC5-EF941EBE4D91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{505E187E-67BE-4C86-BBC5-EF941EBE4D91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{505E187E-67BE-4C86-BBC5-EF941EBE4D91}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DD0CC823-A767-4D53-B810-582BC349712C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -58,7 +59,6 @@ Global
 		{A3EF561D-C687-491E-B490-960B45A92F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3EF561D-C687-491E-B490-960B45A92F94}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CC73B3B5-07AF-4ED2-90A9-5ECF216E41AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC73B3B5-07AF-4ED2-90A9-5ECF216E41AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC73B3B5-07AF-4ED2-90A9-5ECF216E41AA}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{CC73B3B5-07AF-4ED2-90A9-5ECF216E41AA}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
