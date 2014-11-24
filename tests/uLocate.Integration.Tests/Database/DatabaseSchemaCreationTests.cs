@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using uLocate.Integration.Tests.TestHelpers;
-using uLocate.Persistance.Migrations;
+using uLocate.Data;
 using Umbraco.Core.Persistence;
 
 namespace uLocate.Integration.Tests.Database

@@ -1,9 +1,9 @@
-﻿namespace uLocate.Persistance.Migrations
+﻿namespace uLocate.Data
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Models.Rdbms;
+    using uLocate.Data;
     using Umbraco.Core;
     using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;

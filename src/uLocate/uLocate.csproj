@@ -173,6 +173,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutomapperMappings.cs" />
     <Compile Include="Caching\CacheKeys.cs" />
     <Compile Include="Caching\NullCacheProvider.cs" />
     <Compile Include="Configuration\ProviderCollection.cs" />
@@ -181,7 +182,9 @@
     <Compile Include="Configuration\SettingsCollection.cs" />
     <Compile Include="Configuration\uLocateSection.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Data\LocationDto.cs" />
     <Compile Include="Data\LocationType.cs" />
+    <Compile Include="Data\LocationTypeDefinitionDto.cs" />
     <Compile Include="Helpers\CountryHelper.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Country.cs" />
@@ -197,7 +200,7 @@
     <Compile Include="Models\LocationTypeDefinition.cs" />
     <Compile Include="Persistance\Factories\LocationTypeDefinitionFactory.cs" />
     <Compile Include="Persistance\Factories\LocationFactory.cs" />
-    <Compile Include="Persistance\Migrations\DatabaseSchemaCreation.cs" />
+    <Compile Include="Data\DatabaseSchemaCreation.cs" />
     <Compile Include="Persistance\Repositories\ILocationRespository.cs" />
     <Compile Include="Persistance\Repositories\ILocationTypeDefinitionRepository.cs" />
     <Compile Include="Persistance\Repositories\LocationRepository.cs" />

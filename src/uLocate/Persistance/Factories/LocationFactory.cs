@@ -5,7 +5,7 @@
 
     using uLocate.Helpers;
     using uLocate.Models;
-    using uLocate.Models.Rdbms;
+    using uLocate.Data;
 
     /// <summary>
     /// The location factory.

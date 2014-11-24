@@ -1,4 +1,4 @@
-﻿using uLocate.Models.Rdbms;
+﻿using uLocate.Data;
 
 namespace uLocate.Persistance.Repositories
 {
