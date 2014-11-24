@@ -34,7 +34,7 @@
         /// </summary>
         private static readonly Dictionary<int, Type> OrderedTables = new Dictionary<int, Type>
         {
-            { 0, typeof(LocationTypeDefinitionDto) },
+            { 0, typeof(LocationTypeDto) },
             { 1, typeof(LocationDto) }
         };
 

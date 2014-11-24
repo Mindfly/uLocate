@@ -1,19 +1,18 @@
 ﻿namespace uLocate.Data
 {
     using System;
-
     using Umbraco.Core.Persistence;
     using Umbraco.Core.Persistence.DatabaseAnnotations;
 
-    [TableName("ulocateLocation")]
-    [PrimaryKey("pk", autoIncrement = false)]
+    [TableName("uLocate_Location")]
+    [PrimaryKey("Key", autoIncrement = false)]
     [ExplicitColumns]
     internal class LocationDto
     {
         /// <summary>
         /// Gets or sets the key.
         /// </summary>
-        [Column("pk")]
+        [Column("Key")]
         [PrimaryKeyColumn(AutoIncrement = false)]
         [Constraint(Default = "newid()")]
         public Guid Key { get; set; }
@@ -21,57 +20,64 @@
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        [Column("name")]
+        [Column("Name")]
         [NullSetting(NullSetting = NullSettings.Null)]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the coordinate.
         /// </summary>
-        [Column("coordinate")]
+        [Column("Coordinate")]
         [NullSetting(NullSetting = NullSettings.Null)]
         public string Coordinate { get; set; }
 
         /// <summary>
         /// Gets or sets the geocode status.
         /// </summary>
-        [Column("geocodeStatus")]
+        [Column("GeocodeStatus")]
         [NullSetting(NullSetting = NullSettings.Null)]
         public string GeocodeStatus { get; set; }
 
         /// <summary>
         /// Gets or sets the viewport.
         /// </summary>
-        [Column("viewport")]
+        [Column("Viewport")]
         [NullSetting(NullSetting = NullSettings.Null)]
         public string Viewport { get; set; }
 
         /// <summary>
         /// Gets or sets the location type key.
         /// </summary>
-        [Column("locationTypeKey")]
-        [ForeignKey(typeof(LocationTypeDefinitionDto), Name = "FK_ulocateLocation_ulocateLocationTypeDefinition", Column = "pk")]
-        public Guid LocationTypeKey { get; set; }
+        [Column("LocationTypeId")]
+        [ForeignKey(typeof(LocationTypeDto), Name = "FK_uLocateLocation_uLocateLocationType", Column = "Id")]
+        public int LocationTypeId { get; set; }
 
-        /// <summary>
-        /// Gets or sets the field values (JSON)
-        /// </summary>
-        [Column("fieldValues")]
-        [NullSetting(NullSetting = NullSettings.Null)]
-        [SpecialDbType(SpecialDbTypes.NTEXT)]
-        public string FieldValues { get; set; }
+        ///// <summary>
+        ///// Gets or sets the location type key.
+        ///// </summary>
+        //[Column("LocationTypePropertyDataId")]
+        //[ForeignKey(typeof(LocationTypeDto), Name = "FK_uLocateLocation_uLocateLocationTypeData", Column = "Id")]
+        //public int LocationTypePropertyDataId { get; set; }
+
+        ///// <summary>
+        ///// Gets or sets the field values (JSON)
+        ///// </summary>
+        //[Column("fieldValues")]
+        //[NullSetting(NullSetting = NullSettings.Null)]
+        //[SpecialDbType(SpecialDbTypes.NTEXT)]
+        //public string FieldValues { get; set; }
 
         /// <summary>
         /// Gets or sets the create date.
         /// </summary>
-        [Column("createDate")]
+        [Column("CreateDate")]
         [Constraint(Default = "getdate()")]
         public DateTime CreateDate { get; set; }
 
         /// <summary>
         /// Gets or sets the update date.
         /// </summary>
-        [Column("updateDate")]
+        [Column("UpdateDate")]
         [Constraint(Default = "getdate()")]
         public DateTime UpdateDate { get; set; }
 
@@ -79,6 +85,6 @@
         /// Gets or sets the location type definition dto.
         /// </summary>
         [ResultColumn]
-        public LocationTypeDefinitionDto LocationTypeDefinitionDto { get; set; } 
+        public LocationTypeDto LocationTypeDto { get; set; } 
     }
 }

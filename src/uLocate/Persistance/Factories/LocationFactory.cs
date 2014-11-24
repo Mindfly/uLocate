@@ -49,9 +49,9 @@
             def.Fields.PostalCode().Value = address.PostalCode;
             def.Fields.CountryCode().Value = address.CountryCode;
 
-            var location = new Location(def.Fields)
+            var location = new Location()//def.Fields
                                {
-                                   LocationTypeKey = def.Key,
+                                   //LocationTypeId = def.Id,
                                    GeocodeStatus = response.Status
                                };
 
@@ -77,11 +77,11 @@
         /// </returns>
         public ILocation BuildLocation(LocationDto dto)
         {
-            return new Location(new CustomFieldsCollection(dto.FieldValues))
+            return new Location()//new CustomFieldsCollection(dto.FieldValues)
                 {
                     Key = dto.Key,
                     Name = dto.Name,
-                    LocationTypeKey = dto.LocationTypeKey,
+                    LocationTypeId = dto.LocationTypeId,
                     Coordinate = _geography.GetCoordinateFromStPointText(dto.Coordinate),
                     Viewport = _geography.GetViewportFromStLinestringText(dto.Viewport),
                     GeocodeStatus = (GeocodeStatus)Enum.Parse(typeof(GeocodeStatus), dto.GeocodeStatus),
@@ -105,11 +105,11 @@
                 {
                     Key = location.Key,
                     Name = location.Name,
-                    LocationTypeKey = location.LocationTypeKey,
+                    LocationTypeId = location.LocationTypeId,
                     Coordinate = _geography.GetStPointText(location.Coordinate),
                     Viewport = _geography.GetStLineString(location.Viewport),
                     GeocodeStatus = location.GeocodeStatus.ToString(),   
-                    FieldValues    = location.Fields.SerializeAsJson(),
+                    //FieldValues    = location.Fields.SerializeAsJson(),
                     UpdateDate = location.UpdateDate,
                     CreateDate = location.CreateDate
                 };

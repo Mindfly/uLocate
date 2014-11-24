@@ -15,7 +15,7 @@
         /// <summary>
         /// Gets or sets the location type key.
         /// </summary>
-        Guid LocationTypeKey { get; set; }
+        int LocationTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the geocode status.
