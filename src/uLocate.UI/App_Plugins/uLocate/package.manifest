@@ -1,7 +1,7 @@
 ﻿{
     "javascript":  [
         "~/App_Plugins/uLocate/Scripts/uLocate.namespaces.js",
-        "~/App_Plugins/uLocate/Dialogs/example.dialog.controller.js",
+        "~/App_Plugins/uLocate/Dialogs/edit.dialog.controller.js",
         "~/App_Plugins/uLocate/Scripts/Controllers/locations.controller.js"
     ],
     "css": [
