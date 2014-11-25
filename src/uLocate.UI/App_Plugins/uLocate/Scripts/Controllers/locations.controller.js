@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function($scope, dialogService, notificationsService) {
+    controllers.LocationsController = function($scope, assetsService, dialogService, uLocateMapService, notificationsService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -15,6 +15,11 @@
          */
         $scope.init = function() {
             console.info('Controller loaded.');
+            $scope.loadGoogleMapAsset();
+        };
+
+        $scope.loadGoogleMapAsset = function() {
+            assetsService.loadJs("//maps.googleapis.com/maps/api/js?&sensor=false");
         };
 
         /*-------------------------------------------------------------------
@@ -48,6 +53,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', 'dialogService', 'notificationsService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', 'assetsService', 'dialogService', 'uLocateMapService', 'notificationsService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

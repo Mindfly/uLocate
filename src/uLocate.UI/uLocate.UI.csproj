@@ -201,7 +201,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\uLocate\install\" />
-    <Folder Include="App_Plugins\uLocate\Scripts\Models\" />
     <Folder Include="PackageActions\" />
   </ItemGroup>
   <ItemGroup>
@@ -222,9 +221,12 @@
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\locationTypes.html" />
     <Content Include="App_Plugins\uLocate\Css\ulocate.css" />
     <Content Include="App_Plugins\uLocate\Css\ulocate.min.css" />
-    <Content Include="App_Plugins\uLocate\Dialogs\example.dialog.controller.js" />
+    <Content Include="App_Plugins\uLocate\Scripts\Controllers\example.dialog.controller.js" />
     <Content Include="App_Plugins\uLocate\Dialogs\example.dialog.html" />
+    <Content Include="App_Plugins\uLocate\Scripts\Models\location.models.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Controllers\locations.controller.js" />
+    <Content Include="App_Plugins\uLocate\Scripts\Models\map.models.js" />
+    <Content Include="App_Plugins\uLocate\Scripts\Services\map.service.js" />
     <Content Include="App_Plugins\uLocate\Scripts\uLocate.namespaces.js" />
   </ItemGroup>
   <ItemGroup>
