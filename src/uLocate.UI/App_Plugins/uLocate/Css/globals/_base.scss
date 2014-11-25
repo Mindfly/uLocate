@@ -10,4 +10,27 @@
             }
         }
     }
+    .btn-group {
+        display: table-cell;
+    }
+    .text-right {
+        text-align: right;
+    }
+    input[type="checkbox"] {
+        margin-top: -3px;
+    }
+}
+
+.input-append {
+    .btn {
+        padding-bottom: 3px;
+    }
+}
+
+.street-address, .extended-address, .country-name {
+    display: block;
+}
+
+.link-blue {
+    color: $blue;
 }
