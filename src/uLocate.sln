@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uLocate", "uLocate\uLocate.csproj", "{61985CB6-50E0-46AA-9E9C-57DBFD3DE66D}"
 EndProject
@@ -39,13 +39,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uLocate.Package", "uLocate.Package\uLocate.Package.csproj", "{FA84BDB1-2BE9-4218-A987-20509BDB2E03}"
 	ProjectSection(ProjectDependencies) = postProject
 		{61985CB6-50E0-46AA-9E9C-57DBFD3DE66D} = {61985CB6-50E0-46AA-9E9C-57DBFD3DE66D}
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{77CA8A70-8D2E-4A30-946E-9540D99B597F}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
 Global
