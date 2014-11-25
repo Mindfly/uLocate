@@ -26,14 +26,14 @@
          * Event Handler Methods
          *-------------------------------------------------------------------*/
 
-        $scope.openExampleDialog = function () {
+        $scope.openEditDialog = function () {
             console.info('clicked');
             var dialogData = {};
             dialogData.sampleItem = 'Example';
             dialogService.open({
-                template: '/App_Plugins/uLocate/Dialogs/example.dialog.html',
+                template: '/App_Plugins/uLocate/Dialogs/edit.dialog.html',
                 show: true,
-                callback: $scope.processExampleDialog,
+                callback: $scope.processEditDialog,
                 dialogData: dialogData
             });
         };
@@ -42,7 +42,7 @@
          * Helper Methods
          * ------------------------------------------------------------------*/
 
-        $scope.processExampleDialog = function(data) {
+        $scope.processEditDialog = function(data) {
             console.info(data);
         };
 
