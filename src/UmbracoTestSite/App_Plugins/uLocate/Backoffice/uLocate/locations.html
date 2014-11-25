@@ -13,8 +13,11 @@
                         <!-- TODO: In umbraco, this is generated using umb-options-menu, which you can see an example of in Umbraco.Web.UI.Client\build\belle\views\content\edit.html. The actions allowed for this menu item are determined in the uLocate TreeController -->
                         <ul class="dropdown-menu umb-actions">
                             <!-- ngRepeat: action in actions -->
-                            <li class="action ng-scope">
+                            <li class="action">
                                 <a><i class="icon icon-add"></i><span class="menu-label">Create</span></a> <!-- TODO: Opens the page to create a new location -->
+                            </li>
+                            <li class="action sep">
+                                <a><i class="icon icon-refresh"></i><span class="menu-label">Reload nodes</span></a> <!-- TODO: Reloads the locations and ideally kicks the cache in the teeth -->
                             </li>
                         </ul>
                     </div>
@@ -28,9 +31,10 @@
                 
                 <div class="map-wrapper span12">
                     <div class="map-bar top row-fluid">
-                        <div class="span7 row">
-                            <input type="text" placeholder="Search uLocate addresses" class="span12" /> <!-- TODO: Will filter out addresses in the list that match the criteria in the filter (similar to Merchello's filter functionality) -->
-                        </div>
+                        <form class="span7 form-search">
+                            <i class="icon-search"></i>
+                            <input type="text" placeholder="Search uLocate addresses" class="span12" /> <!-- TODO: Will filter out addresses in the list that match the criteria in the filter (similar to Merchello's filter functionality). Would love it if this automatically happened as you were typing -->
+                        </form>
                         <div class="span5">
                             <div class="btn-group pull-right">
                                 <a class="btn btn-primary" ng-click="openExampleDialog()">Create</a> <!-- TODO: Opens the page to create a new location -->
@@ -38,7 +42,7 @@
                         </div>
                     </div>
                     <div class="map">
-                        <!-- TODO: The google map goes here. -->
+                        <!-- TODO: The google map goes here. Ideally, if you use the search, the pins and the list would both narrow down to match the criteria -->
                     </div>
                     <div class="map-bar bottom row-fluid">
                         <div class="span6 form-inline">
@@ -56,6 +60,42 @@
                         </div>
                     </div>
                 </div>
+                
+                <table class="table table-hover sortable">
+                    <thead>
+                        <tr> <!-- TODO: Should be able to sort by name, address, phone, lat/long, and type -->
+                            <th><input type="checkbox" /></th> <!-- TODO: The only bulk action that should be available is delete. See Janae about the best way to do this? -->
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Phone</th>
+                            <th>Lat/Long</th>
+                            <th>Type</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="vcard"> <!-- TODO: When clicking on the row of an address, it zooms in on the pin -->
+                            <td><input type="checkbox"/></td>
+                            <td class="fn"><a href="#" class="link-blue">Mindfly</a></td> 
+                            <td class="adr">
+                                <span class="street-address">114 W Magnolia St</span>
+                                <span class="extended-address">Suite 300</span> <!-- TODO: Only displays if an extended address has been enterred; not a required field -->
+                                <span class="locality">Bellingham</span>, <span class="region">WA</span> <span class="postal-code">98229</span>
+                                <span class="country-name">United States</span>
+                            </td>
+                            <td class="tel">360-647-7470</td>
+                            <td class="geo">
+                                <span class="latitude">48.751527</span> / <span class="longitude">-122.478205</span>
+                            </td>
+                            <td>Business</td>
+                            <td class="btn-group text-right">
+                                <a class="btn btn-mini"><i class="icon-edit"></i></a>
+                                <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
             </div>
 
         </div>

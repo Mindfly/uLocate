@@ -11,10 +11,23 @@
   color: #f57020; }
   .uLocate table.sortable th.sorted.desc {
     font-style: italic; }
+.uLocate table .btn-group {
+  display: table-cell; }
+.uLocate table .text-right {
+  text-align: right; }
+.uLocate table input[type="checkbox"] {
+  margin-top: -3px; }
+.uLocate .input-append .btn {
+  padding-bottom: 3px; }
+.uLocate .street-address, .uLocate .extended-address, .uLocate .country-name {
+  display: block; }
+.uLocate .link-blue {
+  color: #049cdb; }
 .uLocate .map-wrapper {
   position: relative;
   overflow: hidden;
-  width: 100%; }
+  width: 100%;
+  margin-bottom: 2em; }
   .uLocate .map-wrapper:before {
     content: "";
     display: table;
