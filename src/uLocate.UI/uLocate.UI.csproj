@@ -222,8 +222,8 @@
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\locationTypes.html" />
     <Content Include="App_Plugins\uLocate\Css\ulocate.css" />
     <Content Include="App_Plugins\uLocate\Css\ulocate.min.css" />
-    <Content Include="App_Plugins\uLocate\Dialogs\example.dialog.controller.js" />
-    <Content Include="App_Plugins\uLocate\Dialogs\example.dialog.html" />
+    <Content Include="App_Plugins\uLocate\Dialogs\edit.dialog.controller.js" />
+    <Content Include="App_Plugins\uLocate\Dialogs\edit.dialog.html" />
     <Content Include="App_Plugins\uLocate\Scripts\Controllers\locations.controller.js" />
     <Content Include="App_Plugins\uLocate\Scripts\uLocate.namespaces.js" />
   </ItemGroup>
