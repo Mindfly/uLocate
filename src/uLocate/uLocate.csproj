@@ -186,8 +186,8 @@
     <Compile Include="Configuration\uLocateSection.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Data\LocationDto.cs" />
-    <Compile Include="Data\LocationType.cs" />
-    <Compile Include="Data\LocationTypeDefinitionDto.cs" />
+    <Compile Include="Data\LocationTypeDto.cs" />
+    <Compile Include="Data\LocationTypePropertyDto.cs" />
     <Compile Include="Helpers\CountryHelper.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Country.cs" />

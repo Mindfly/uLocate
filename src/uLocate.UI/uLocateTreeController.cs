@@ -2,6 +2,7 @@
 {
     using System;
     using System.Net.Http.Formatting;
+    using System.Web.Http;
 
     using umbraco;
     using umbraco.BusinessLogic.Actions;
@@ -39,7 +40,7 @@
             {
                 var tree = new TreeNodeCollection()
                     {
-                        CreateTreeNode("1", id, queryStrings, "Locations", "icon-map-loaction", "uLocate/uLocate/locations/view"),
+                        CreateTreeNode("1", id, queryStrings, "Locations", "icon-map-location", "uLocate/uLocate/locations/view"),
                         CreateTreeNode("2", id, queryStrings, "Location Types", "icon-pin-location", "uLocate/uLocate/locationTypes/view"),
                         CreateTreeNode("3", id, queryStrings, "Import Locations", "icon-page-up", "uLocate/uLocate/import/edit"),
                         CreateTreeNode("4", id, queryStrings, "Export Locations", "icon-page-down", "uLocate/uLocate/export/edit")

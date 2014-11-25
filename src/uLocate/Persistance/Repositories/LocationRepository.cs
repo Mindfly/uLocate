@@ -69,8 +69,8 @@ namespace uLocate.Persistance.Repositories
             var sql = new Sql();
             sql.Select(isCount ? "COUNT(*)" : "*")
                 .From<LocationDto>()
-                .InnerJoin<LocationTypeDefinitionDto>()
-                .On<LocationDto, LocationTypeDefinitionDto>(left => left.LocationTypeKey, right => right.Key);
+                .InnerJoin<LocationTypeDto>()
+                .On<LocationDto, LocationTypeDto>(left => left.LocationTypeId, right => right.Id);
 
             return sql;
         }
