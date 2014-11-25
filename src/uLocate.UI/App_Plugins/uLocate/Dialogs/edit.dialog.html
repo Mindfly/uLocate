@@ -1,5 +1,56 @@
-﻿<div class="umb-panel" ng-controller="uLocate.Controllers.EditDialogController">
+﻿<div class="umb-panel uLocate" ng-controller="uLocate.Controllers.EditDialogController">
     <div class="umb-modalcolumn-header">
-        <h4>Edit Location</h4>
+        <h1>Edit Location</h1>
+    </div>
+    <div class="umb-panel-body with-header with-footer">
+        <!-- TODO: All the default location type data loads in first -->
+        <div class="control-group row-fluid">
+            <label>Name</label>
+            <input type="text" class="span12" required />
+        </div>
+        <div class="control-group row-fluid">
+            <label>Address 1</label>
+            <input type="text" class="span12" required />
+        </div>
+        <div class="control-group row-fluid">
+            <label>Address 2</label>
+            <input type="text" class="span12" />
+        </div>
+        <div class="control-group row-fluid">
+            <label>City</label>
+            <input type="text" class="span12" required />
+        </div>
+        <div class="control-group row-fluid">
+            <label>State/Province</label>
+            <select class="span12" required>
+                <option>Select a State</option> <!-- TODO: Needs to populate with a list of states/provinces by country. Not sure where this data is coming from, but it would be great if we could load config files and associate them with a country -->
+            </select>
+        </div>
+        <div class="control-group row-fluid">
+            <label>Zip/Postal Code</label>
+            <input type="text" class="span12" required />
+        </div>
+        <div class="control-group row-fluid">
+            <label>Country</label>
+            <select class="span12" required>
+                <option>Select a Country</option> <!-- TODO: Should load a list of countries to select from -->
+            </select>
+        </div>
+        <div class="control-group row-fluid">
+            <label>Lat/Long</label>
+            <input type="text" class="span12" required />
+        </div>
+        <div class="control-group row-fluid">
+            <label>Phone Number</label>
+            <input type="text" class="span12" />
+        </div>
+        <!-- TODO: After the default location type data loads in, any created location type data associated with this location is loaded -->
+    </div>
+    
+    <div class="umb-panel-footer">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn btn-link" data-ng-click="close()">Cancel</button>
+            <button type="button" class="btn btn-primary" data-ng-click="submit(dialogData)">Save</button>
+        </div>
     </div>
 </div>

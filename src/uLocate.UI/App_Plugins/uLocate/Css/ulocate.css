@@ -23,6 +23,8 @@
   display: block; }
 .uLocate .link-blue {
   color: #049cdb; }
+.uLocate .umb-panel-body {
+  top: 121px; }
 .uLocate .map-wrapper {
   position: relative;
   overflow: hidden;

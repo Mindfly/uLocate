@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function($scope, dialogService, notificationsService) {
+    controllers.LocationsController = function($scope, assetsService, dialogService, uLocateMapService, notificationsService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -15,20 +15,25 @@
          */
         $scope.init = function() {
             console.info('Controller loaded.');
+            $scope.loadGoogleMapAsset();
+        };
+
+        $scope.loadGoogleMapAsset = function() {
+            assetsService.loadJs("//maps.googleapis.com/maps/api/js?&sensor=false");
         };
 
         /*-------------------------------------------------------------------
          * Event Handler Methods
          *-------------------------------------------------------------------*/
 
-        $scope.openExampleDialog = function () {
+        $scope.openEditDialog = function () {
             console.info('clicked');
             var dialogData = {};
             dialogData.sampleItem = 'Example';
             dialogService.open({
-                template: '/App_Plugins/uLocate/Dialogs/example.dialog.html',
+                template: '/App_Plugins/uLocate/Dialogs/edit.dialog.html',
                 show: true,
-                callback: $scope.processExampleDialog,
+                callback: $scope.processEditDialog,
                 dialogData: dialogData
             });
         };
@@ -37,8 +42,9 @@
          * Helper Methods
          * ------------------------------------------------------------------*/
 
-        $scope.processExampleDialog = function(data) {
+        $scope.processEditDialog = function(data) {
             console.info(data);
+            notificationsService.success("Location edited", "This location has been successfully updated. #h5yr!");
         };
 
         /*-------------------------------------------------------------------*/
@@ -48,6 +54,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', 'dialogService', 'notificationsService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', 'assetsService', 'dialogService', 'uLocateMapService', 'notificationsService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));
