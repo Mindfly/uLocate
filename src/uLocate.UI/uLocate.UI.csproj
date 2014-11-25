@@ -201,11 +201,18 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\uLocate\install\" />
+    <Folder Include="App_Plugins\uLocate\Scripts\Models\" />
     <Folder Include="PackageActions\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="App_Plugins\uLocate\Config\uLocate.config" />
+    <None Include="App_Plugins\uLocate\Css\globals\_base.scss" />
+    <None Include="App_Plugins\uLocate\Css\globals\_settings.scss" />
+    <None Include="App_Plugins\uLocate\Css\modules\_locations.scss" />
+    <None Include="App_Plugins\uLocate\Css\ulocate.css.map" />
+    <None Include="App_Plugins\uLocate\Css\ulocate.scss" />
+    <None Include="App_Plugins\uLocate\package.manifest" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -213,6 +220,10 @@
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\import.html" />
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\locations.html" />
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\locationTypes.html" />
+    <Content Include="App_Plugins\uLocate\Css\ulocate.css" />
+    <Content Include="App_Plugins\uLocate\Css\ulocate.min.css" />
+    <Content Include="App_Plugins\uLocate\Dialogs\example.dialog.controller.js" />
+    <Content Include="App_Plugins\uLocate\Dialogs\example.dialog.html" />
     <Content Include="App_Plugins\uLocate\Scripts\Controllers\locations.controller.js" />
     <Content Include="App_Plugins\uLocate\Scripts\uLocate.namespaces.js" />
   </ItemGroup>

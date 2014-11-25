@@ -21,9 +21,25 @@
          * Event Handler Methods
          *-------------------------------------------------------------------*/
 
+        $scope.openExampleDialog = function () {
+            console.info('clicked');
+            var dialogData = {};
+            dialogData.sampleItem = 'Example';
+            dialogService.open({
+                template: '/App_Plugins/uLocate/Dialogs/example.dialog.html',
+                show: true,
+                callback: $scope.processExampleDialog,
+                dialogData: dialogData
+            });
+        };
+
         /*-------------------------------------------------------------------
          * Helper Methods
          * ------------------------------------------------------------------*/
+
+        $scope.processExampleDialog = function(data) {
+            console.info(data);
+        };
 
         /*-------------------------------------------------------------------*/
 

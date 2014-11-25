@@ -23,6 +23,7 @@
         </umb-header>
         
         <div class="umb-panel-body">
+            
             <div class="umb-pane">
                 
                 <div class="map-wrapper span12">
@@ -32,7 +33,7 @@
                         </div>
                         <div class="span5">
                             <div class="btn-group pull-right">
-                                <a class="btn btn-primary">Create</a> <!-- TODO: Opens the page to create a new location -->
+                                <a class="btn btn-primary" ng-click="openExampleDialog()">Create</a> <!-- TODO: Opens the page to create a new location -->
                             </div>
                         </div>
                     </div>
@@ -53,9 +54,10 @@
                             <span>2 / 3</span> <!-- TODO: current / total pages. Updates based on the amount of items that show -->
                             <button class="btn btn-link"><i class="icon-right-double-arrow"></i></button> <!-- TODO: Only displays if not the last page -->
                         </div>
-                     </div>
+                    </div>
                 </div>
             </div>
+
         </div>
 
     </umb-panel>
