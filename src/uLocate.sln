@@ -37,6 +37,9 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "UmbracoTestSite", "http://l
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uLocate.Package", "uLocate.Package\uLocate.Package.csproj", "{FA84BDB1-2BE9-4218-A987-20509BDB2E03}"
+	ProjectSection(ProjectDependencies) = postProject
+		{61985CB6-50E0-46AA-9E9C-57DBFD3DE66D} = {61985CB6-50E0-46AA-9E9C-57DBFD3DE66D}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{77CA8A70-8D2E-4A30-946E-9540D99B597F}"
 	ProjectSection(SolutionItems) = preProject

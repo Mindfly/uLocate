@@ -10,26 +10,26 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Location"/> class.
         /// </summary>
-        public Location()
-            : this(new CustomFieldsCollection())
-        {
-        }
+        //public Location()
+        //    : this()//new CustomFieldsCollection()
+        //{
+        //}
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Location"/> class.
-        /// </summary>
-        /// <param name="customFields">
-        /// The custom fields.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// Throws an exception if customFields is null
-        /// </exception>
-        internal Location(CustomFieldsCollection customFields)
-        {
-            if (customFields == null) throw new ArgumentNullException("customFields");
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="Location"/> class.
+        ///// </summary>
+        ///// <param name="customFields">
+        ///// The custom fields.
+        ///// </param>
+        ///// <exception cref="ArgumentNullException">
+        ///// Throws an exception if customFields is null
+        ///// </exception>
+        //internal Location()//CustomFieldsCollection customFields
+        //{
+        //    //if (customFields == null) throw new ArgumentNullException("customFields");
 
-            Fields = customFields;
-        }
+        //    //Fields = customFields;
+        //}
 
         /// <summary>
         /// Gets or sets the name.
@@ -39,7 +39,7 @@
         /// <summary>
         /// Gets or sets the location type key.
         /// </summary>
-        public Guid LocationTypeKey { get; set; }
+        public int LocationTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the geocode status.

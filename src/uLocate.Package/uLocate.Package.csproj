@@ -44,6 +44,23 @@
   <ItemGroup>
     <Folder Include="PackageActions\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\uLocate.Plugins.Geocode.GoogleMaps\uLocate.Plugins.Geocode.GoogleMaps.csproj">
+      <Project>{dd0cc823-a767-4d53-b810-582bc349712c}</Project>
+      <Name>uLocate.Plugins.Geocode.GoogleMaps</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\uLocate.UI\uLocate.UI.csproj">
+      <Project>{505e187e-67be-4c86-bbc5-ef941ebe4d91}</Project>
+      <Name>uLocate.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\uLocate\uLocate.csproj">
+      <Project>{61985cb6-50e0-46aa-9e9c-57dbfd3de66d}</Project>
+      <Name>uLocate</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
