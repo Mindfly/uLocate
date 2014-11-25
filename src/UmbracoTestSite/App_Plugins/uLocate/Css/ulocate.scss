@@ -1,51 +1,11 @@
-﻿//Variables
-$black: #1d1d1d;
-$lightgrey: #f8f8f8;
-$grey: #d9d9d9;
-$orange: #f57020; //Umbraco's orange
-$green: #53a93f; //Umbraco's green button color
-$blue: #049cdb; //Umbraco's blue nav tab hover color
-$active: lighten($green, 50%);
+﻿// Settings
+@import "globals/settings";
 
-%box-sizing {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    -o-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
+// uLocate Stylesheets
 .uLocate {
-    table {
-        &.sortable {
-            th { 
-                cursor: pointer; 
-            }
-            th.sorted { 
-                color: $orange;
-                &.desc { 
-                    font-style: italic; 
-                }
-            }
-        }
-    }
-    .map-wrapper {
-        position: relative;
-        overflow: hidden;
-        width: 100%;
-        &:before {
-            content: "";
-            display: table;
-            margin-top: 40%;
-        }
-    }
-    .map {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: $lightgrey;
-        border: solid 1px $grey;
-    }
+    // globals
+    @import "globals/base";
+
+    //modules
+    @import "modules/locations";
 }

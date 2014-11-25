@@ -238,6 +238,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App_Plugins\uLocate\Config\uLocate.config" />
+    <None Include="App_Plugins\uLocate\Css\globals\_base.scss" />
+    <None Include="App_Plugins\uLocate\Css\globals\_settings.scss" />
+    <None Include="App_Plugins\uLocate\Css\modules\_locations.scss" />
+    <None Include="App_Plugins\uLocate\Css\ulocate.css.map">
+      <DependentUpon>ulocate.css</DependentUpon>
+    </None>
+    <None Include="App_Plugins\uLocate\Css\ulocate.scss" />
+    <None Include="App_Plugins\uLocate\package.manifest" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -245,6 +253,12 @@
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\import.html" />
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\locations.html" />
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\locationTypes.html" />
+    <Content Include="App_Plugins\uLocate\Css\ulocate.css">
+      <DependentUpon>ulocate.scss</DependentUpon>
+    </Content>
+    <Content Include="App_Plugins\uLocate\Css\ulocate.min.css">
+      <DependentUpon>ulocate.css</DependentUpon>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

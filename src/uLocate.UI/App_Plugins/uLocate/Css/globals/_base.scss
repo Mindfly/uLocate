@@ -1,0 +1,13 @@
+﻿table {
+    &.sortable {
+        th { 
+            cursor: pointer; 
+        }
+        th.sorted { 
+            color: $orange;
+            &.desc { 
+                font-style: italic; 
+            }
+        }
+    }
+}

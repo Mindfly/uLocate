@@ -14,7 +14,7 @@
                         <ul class="dropdown-menu umb-actions">
                             <!-- ngRepeat: action in actions -->
                             <li class="action ng-scope">
-                                <a><i class="icon icon-add"></i><span class="menu-label">Create</span></a>
+                                <a><i class="icon icon-add"></i><span class="menu-label">Create</span></a> <!-- TODO: Opens the page to create a new location -->
                             </li>
                         </ul>
                     </div>
@@ -26,9 +26,34 @@
             <div class="umb-pane">
                 
                 <div class="map-wrapper span12">
-                    <div class="map">
-
+                    <div class="map-bar top row-fluid">
+                        <div class="span7 row">
+                            <input type="text" placeholder="Search uLocate addresses" class="span12" /> <!-- TODO: Will filter out addresses in the list that match the criteria in the filter (similar to Merchello's filter functionality) -->
+                        </div>
+                        <div class="span5">
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-primary">Create</a> <!-- TODO: Opens the page to create a new location -->
+                            </div>
+                        </div>
                     </div>
+                    <div class="map">
+                        <!-- TODO: The google map goes here. -->
+                    </div>
+                    <div class="map-bar bottom row-fluid">
+                        <div class="span6 form-inline">
+                            <label class="control-label">Show:</label>
+                            <select class="input-small"> <!-- TODO: Sets the amount of items that display on a page -->
+                                <option selected="selected">25</option>
+                                <option>50</option>
+                                <option>100</option>
+                            </select>
+                        </div>
+                        <div class="span6 text-right">
+                            <button class="btn btn-link"><i class="icon-left-double-arrow"></i></button> <!-- TODO: Only displays if not the first page -->
+                            <span>2 / 3</span> <!-- TODO: current / total pages. Updates based on the amount of items that show -->
+                            <button class="btn btn-link"><i class="icon-right-double-arrow"></i></button> <!-- TODO: Only displays if not the last page -->
+                        </div>
+                     </div>
                 </div>
             </div>
         </div>

@@ -1,0 +1,43 @@
+﻿.map-wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    &:before {
+        content: "";
+        display: table;
+        margin-top: 40%;
+    }
+}
+
+.map-bar {
+    @extend %box-sizing;
+    position: absolute;
+    left: 1px;
+    padding: 20px;
+    width: calc(100%-2px);
+    background: rgba(white,.8);
+    z-index: 99;
+    &.top {
+        top: 1px;
+    }
+    &.bottom {
+        bottom: 1px;
+        padding: 10px 20px;
+    }
+    .form-inline select {
+        vertical-align: middle;
+    }
+    input, label, select {
+        margin: 0;
+    }
+}
+
+.map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: $lightgrey;
+    border: solid 1px $grey;
+}

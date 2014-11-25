@@ -12,10 +12,27 @@
     using Umbraco.Web.Mvc;
     using Umbraco.Web.Trees;
 
+    /// <summary>
+    /// The tree controller for uLocate to render the nodes and menu for the section.
+    /// </summary>
     [Tree("uLocate", "uLocate", "uLocate")]
     [PluginController("uLocate")]
     public class uLocateTreeController : TreeController
     {
+        /// <summary>
+        /// Gets the <see cref="TreeNodeCollection"/> for uLocate.
+        /// </summary>
+        /// <param name="id">
+        /// The id.
+        /// </param>
+        /// <param name="queryStrings">
+        /// The <see cref="FormatDataCollection"/> query strings.
+        /// </param>
+        /// <returns>
+        /// The <see cref="TreeNodeCollection"/> for uLocate.
+        /// </returns>
+        /// <exception cref="NotSupportedException">
+        /// </exception>
         protected override TreeNodeCollection GetTreeNodes(string id, FormDataCollection queryStrings)
         {
             if (id == Constants.System.Root.ToInvariantString())
@@ -34,6 +51,18 @@
             throw new NotSupportedException();
         }
 
+        /// <summary>
+        /// Gets the menu for the uLocate tree.
+        /// </summary>
+        /// <param name="id">
+        /// The id.
+        /// </param>
+        /// <param name="queryStrings">
+        /// The <see cref="FormatDataCollection"/> query strings.
+        /// </param>
+        /// <returns>
+        /// The <see cref="MenuItemCollection"/> for respective tree nodes.
+        /// </returns>
         protected override MenuItemCollection GetMenuForNode(string id, FormDataCollection queryStrings)
         {
             var menu = new MenuItemCollection();

@@ -9,6 +9,5 @@
     [Application("uLocate", "uLocate", "icon-globe-inverted-america", 15)]
     public class uLocateSection : IApplication
     {
-        
     }
 }

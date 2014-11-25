@@ -1,0 +1,17 @@
+﻿// Variables
+$black: #1d1d1d;
+$lightgrey: #f8f8f8;
+$grey: #d9d9d9;
+$orange: #f57020; //Umbraco's orange
+$green: #53a93f; //Umbraco's green button color
+$blue: #049cdb; //Umbraco's blue nav tab hover color
+$active: lighten($green, 50%);
+
+// Mixins & Extends
+%box-sizing {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+}
