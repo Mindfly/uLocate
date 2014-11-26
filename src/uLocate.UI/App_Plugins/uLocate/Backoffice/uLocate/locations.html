@@ -36,7 +36,7 @@
                         </form>
                         <div class="span5">
                             <div class="btn-group pull-right">
-                                <a class="btn btn-primary" ng-click="openExampleDialog()">Create</a> <!-- TODO: Opens the page to create a new location -->
+                                <a class="btn btn-primary">Create</a> <!-- TODO: Opens the page to create a new location -->
                             </div>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                             </td>
                             <td>Business</td> <!-- TODO: This would be set to "Default" if there are no location types -->
                             <td class="btn-group text-right">
-                                <a class="btn btn-mini"><i class="icon-edit"></i></a> <!-- TODO: Opens the edit dialog pane -->
+                                <a class="btn btn-mini" data-ng-click="openEditDialog()"><i class="icon-edit"></i></a> <!-- TODO: Opens the edit dialog pane -->
                                 <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a> <!-- TODO: Should have a delete confirmation; we should check how Umbraco does it - I think it's a generic alert -->
                             </td>
                         </tr>

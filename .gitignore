@@ -155,3 +155,4 @@ Solution/packages
 
 # Sass
 UmbracoCms/*/css/.sass-cache/*
+src/UmbracoTestSite/App_Plugins/uLocate/

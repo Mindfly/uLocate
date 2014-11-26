@@ -160,6 +160,7 @@
 
         $scope.processEditDialog = function(data) {
             console.info(data);
+            notificationsService.success("Location edited", "This location has been successfully updated. #h5yr!");
         };
 
         /*-------------------------------------------------------------------*/
