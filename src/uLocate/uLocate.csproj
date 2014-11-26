@@ -81,6 +81,8 @@
       <HintPath>..\packages\UmbracoCms.Core.7.1.8\lib\SQLCE4Umbraco.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
@@ -176,7 +178,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutomapperMappings.cs" />
     <Compile Include="Caching\CacheKeys.cs" />
     <Compile Include="Caching\NullCacheProvider.cs" />
     <Compile Include="Configuration\ProviderCollection.cs" />
@@ -185,22 +186,60 @@
     <Compile Include="Configuration\SettingsCollection.cs" />
     <Compile Include="Configuration\uLocateSection.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Data\LocationDto.cs" />
-    <Compile Include="Data\LocationTypeDto.cs" />
-    <Compile Include="Data\LocationTypePropertyDto.cs" />
+    <Compile Include="Data\Dtos\AllowedDataTypesDto.cs" />
+    <Compile Include="Data\Dtos\cmsDataTypeDto.cs" />
+    <Compile Include="Data\Data.Helper.cs" />
+    <Compile Include="Data\DatabaseDefaultDataInsert.cs" />
+    <Compile Include="Data\Dtos\LocationDto.cs" />
+    <Compile Include="Data\Dtos\LocationPropertyDataDto.cs" />
+    <Compile Include="Data\Dtos\LocationTypeDto.cs" />
+    <Compile Include="Data\Dtos\LocationTypePropertyDto.cs" />
     <Compile Include="Helpers\CountryHelper.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\CustomField.cs" />
     <Compile Include="Models\CustomFieldsCollection.cs" />
     <Compile Include="Models\CustomFieldsCollectionExtensions.cs" />
-    <Compile Include="Models\Interfaces\ICountry.cs" />
-    <Compile Include="Models\Interfaces\ICustomField.cs" />
-    <Compile Include="Models\Interfaces\ILocatedAddress.cs" />
-    <Compile Include="Models\Interfaces\ILocationTypeDefinition.cs" />
+    <Compile Include="Models\Interfaces\IAddress.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Interfaces\ICoordinate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Interfaces\ICountry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Interfaces\ICustomField.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Interfaces\IEntity.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Interfaces\IGeocode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Interfaces\IGeocodeProviderResponse.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Interfaces\ILocatedAddress.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Interfaces\ILocation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Interfaces\ILocationType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Interfaces\IRequestMethod.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Interfaces\IViewPort.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Coordinate.cs" />
-    <Compile Include="Models\LocationTypeDefinition.cs" />
+    <Compile Include="Models\LocationType.cs" />
+    <Compile Include="Models\LocationTypeProperty.cs" />
     <Compile Include="Persistance\Factories\LocationTypeDefinitionFactory.cs" />
     <Compile Include="Persistance\Factories\LocationFactory.cs" />
     <Compile Include="Data\DatabaseSchemaCreation.cs" />
@@ -213,35 +252,25 @@
     <Compile Include="Persistance\RepositoryFactory.cs" />
     <Compile Include="Properties\AssemblyVisibility.cs" />
     <Compile Include="Helpers\GeographyHelper.cs" />
-    <Compile Include="UmbracoApplicationEventHandler.cs" />
-    <Compile Include="UtilityExtensions.cs" />
+    <Compile Include="Helpers\UtilityExtensions.cs" />
     <Compile Include="Models\EntityBase.cs" />
     <Compile Include="Models\Geocode.cs" />
     <Compile Include="Models\GeocodeProviderResponse.cs" />
     <Compile Include="Models\GeocodeQuality.cs" />
     <Compile Include="Models\GeocodeStatus.cs" />
-    <Compile Include="Models\Interfaces\IAddress.cs" />
-    <Compile Include="Models\Interfaces\ICoordinate.cs" />
-    <Compile Include="Models\Interfaces\IEntity.cs" />
-    <Compile Include="Models\Interfaces\IGeocode.cs" />
-    <Compile Include="Models\Interfaces\IRequestMethod.cs" />
-    <Compile Include="Models\Interfaces\IGeocodeProviderResponse.cs" />
-    <Compile Include="Models\Interfaces\ILocation.cs" />
-    <Compile Include="Models\Interfaces\IViewPort.cs" />
     <Compile Include="Models\Viewport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\GeocodeProviderAttribute.cs" />
     <Compile Include="Providers\GeocodeProviderBase.cs" />
     <Compile Include="Providers\GeocodeProviderSettings.cs" />
     <Compile Include="Providers\IGeocodeProvider.cs" />
+    <Compile Include="WebApi\InitializationApiController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="WebApi\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>XCOPY "$(TargetDir)$(TargetName).*" "$(SolutionDir)UmbracoTestSite\bin\" /Y

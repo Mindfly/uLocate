@@ -7,6 +7,8 @@
     /// </summary>
     public interface ILocation : IEntity
     {
+
+
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
@@ -36,5 +38,8 @@
         /// Gets the collection of custom fields.
         /// </summary>
         CustomFieldsCollection Fields { get; }
+
+
+        
     }
 }

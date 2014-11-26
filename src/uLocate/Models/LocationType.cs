@@ -6,18 +6,18 @@
     /// <summary>
     /// The location type definition.
     /// </summary>
-    internal class LocationTypeDefinition : EntityBase, ILocationTypeDefinition
+    internal class LocationType : UpdateableEntity, ILocationType
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LocationTypeDefinition"/> class.
+        /// Initializes a new instance of the <see cref="LocationType"/> class.
         /// </summary>
-        public LocationTypeDefinition()
+        public LocationType()
             : this(new CustomFieldsCollection())
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LocationTypeDefinition"/> class.
+        /// Initializes a new instance of the <see cref="LocationType"/> class.
         /// </summary>
         /// <param name="fields">
         /// The fields.
@@ -25,12 +25,17 @@
         /// <exception cref="ArgumentNullException">
         /// The custom fields collection
         /// </exception>
-        internal LocationTypeDefinition(CustomFieldsCollection fields)
+        internal LocationType(CustomFieldsCollection fields)
         {
             if (fields == null) throw new ArgumentNullException("fields");
 
             Fields = fields;
         }
+
+        /// <summary>
+        /// Gets or sets the Id.
+        /// </summary>
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the name.

@@ -15,21 +15,21 @@
         /// <returns>
         /// The <see cref="ILocationTypeDefinition"/>.
         /// </returns>
-        public ILocationTypeDefinition GetEmptyDefaultLocationTypeDefinition()
+        public ILocationType GetEmptyDefaultLocationTypeDefinition()
         {
-            var def = new LocationTypeDefinition()
+            var def = new LocationType()
                        {
-                           Key = Constants.DefualtLocationTypeKey,
+                           Id = Constants.DefaultLocationTypeId,
                            Name = "Default",
                            Fields = new CustomFieldsCollection()
                        };
-
-            def.Fields.SetValue(new CustomField() { Label = "Address 1", Alias = Constants.CustomFieldAlias.Address1, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 1 });
-            def.Fields.SetValue(new CustomField() { Label = "Address 2", Alias = Constants.CustomFieldAlias.Address2, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 2 });
-            def.Fields.SetValue(new CustomField() { Label = "Locality", Alias = Constants.CustomFieldAlias.Locality, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 3 });
-            def.Fields.SetValue(new CustomField() { Label = "Region", Alias = Constants.CustomFieldAlias.Region, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 4 });
-            def.Fields.SetValue(new CustomField() { Label = "Country", Alias = Constants.CustomFieldAlias.CountryCode, PropertyEditorAlias = Constants.PropertyEditorAlias.DropDownList, SortOrder = 5 });
-            def.Fields.SetValue(new CustomField() { Label = "Region", Alias = Constants.CustomFieldAlias.PostalCode, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 6 });
+            //TODO this needs to be fixed...
+            def.Fields.SetValue(new CustomField() { Label = "Address 1", Alias = Constants.DefaultLocPropertyAlias.Address1, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 1 });
+            def.Fields.SetValue(new CustomField() { Label = "Address 2", Alias = Constants.DefaultLocPropertyAlias.Address2, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 2 });
+            def.Fields.SetValue(new CustomField() { Label = "Locality", Alias = Constants.DefaultLocPropertyAlias.Locality, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 3 });
+            def.Fields.SetValue(new CustomField() { Label = "Region", Alias = Constants.DefaultLocPropertyAlias.Region, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 4 });
+            def.Fields.SetValue(new CustomField() { Label = "Country", Alias = Constants.DefaultLocPropertyAlias.CountryCode, PropertyEditorAlias = Constants.PropertyEditorAlias.DropDownList, SortOrder = 5 });
+            def.Fields.SetValue(new CustomField() { Label = "Region", Alias = Constants.DefaultLocPropertyAlias.PostalCode, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 6 });
 
             return def;
         }

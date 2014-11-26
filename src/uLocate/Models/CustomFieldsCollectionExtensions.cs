@@ -16,7 +16,7 @@
         /// </returns>
         public static ICustomField Address1(this CustomFieldsCollection fields)
         {
-            return fields.GetSafe(Constants.CustomFieldAlias.Address1);
+            return fields.GetSafe(Constants.DefaultLocPropertyAlias.Address1);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@
         /// </returns>
         public static ICustomField Address2(this CustomFieldsCollection fields)
         {
-            return fields.GetSafe(Constants.CustomFieldAlias.Address2);
+            return fields.GetSafe(Constants.DefaultLocPropertyAlias.Address2);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@
         /// </returns>
         public static ICustomField Locality(this CustomFieldsCollection fields)
         {
-            return fields.GetSafe(Constants.CustomFieldAlias.Locality);
+            return fields.GetSafe(Constants.DefaultLocPropertyAlias.Locality);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@
         /// </returns>
         public static ICustomField Region(this CustomFieldsCollection fields)
         {
-            return fields.GetSafe(Constants.CustomFieldAlias.Region);
+            return fields.GetSafe(Constants.DefaultLocPropertyAlias.Region);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@
         /// </returns>
         public static ICustomField PostalCode(this CustomFieldsCollection fields)
         {
-            return fields.GetSafe(Constants.CustomFieldAlias.PostalCode);
+            return fields.GetSafe(Constants.DefaultLocPropertyAlias.PostalCode);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@
         /// </returns>
         public static ICustomField CountryCode(this CustomFieldsCollection fields)
         {
-            return fields.GetSafe(Constants.CustomFieldAlias.CountryCode);
+            return fields.GetSafe(Constants.DefaultLocPropertyAlias.CountryCode);
         }
 
         public static ICustomField GetSafe(this CustomFieldsCollection fields, string alias)
