@@ -1,5 +1,4 @@
-﻿<!-- TODO: The ng-controller goes on this starting div -->
-<div data-ng-controller="uLocate.Controllers.LocationsController">
+﻿<div data-ng-controller="uLocate.Controllers.LocationsController">
     <umb-panel class="uLocate">
         <umb-header>
             <div class="span7">
@@ -41,7 +40,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="map">
+                    <div class="map" id="location-map">
                         <!-- TODO: The google map goes here. Ideally, if you use the search, the pins and the list would both narrow down to match the criteria -->
                     </div>
                     <div class="map-bar bottom row-fluid">
@@ -76,7 +75,7 @@
                     <tbody>
                         <tr class="vcard"> <!-- TODO: When clicking on the row of an address, it zooms in on the pin -->
                             <td><input type="checkbox"/></td>
-                            <td class="fn"><a href="#" class="link-blue">Mindfly</a></td> 
+                            <td class="fn"><a href="#" class="link-blue">Mindfly</a></td> <!-- TODO: This should open the view pane and not the edit pane. The view pane shows extra any information such as any location-type specific data, which is not displayed on this list -->
                             <td class="adr">
                                 <span class="street-address">114 W Magnolia St</span>
                                 <span class="extended-address">Suite 300</span> <!-- TODO: Only displays if an extended address has been enterred; not a required field -->
@@ -87,10 +86,10 @@
                             <td class="geo">
                                 <span class="latitude">48.751527</span> / <span class="longitude">-122.478205</span>
                             </td>
-                            <td>Business</td>
+                            <td>Business</td> <!-- TODO: This would be set to "Default" if there are no location types -->
                             <td class="btn-group text-right">
-                                <a class="btn btn-mini"><i class="icon-edit"></i></a>
-                                <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a>
+                                <a class="btn btn-mini"><i class="icon-edit"></i></a> <!-- TODO: Opens the edit dialog pane -->
+                                <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a> <!-- TODO: Should have a delete confirmation; we should check how Umbraco does it - I think it's a generic alert -->
                             </td>
                         </tr>
                     </tbody>

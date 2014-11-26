@@ -3,15 +3,16 @@
     models.MapOptions = function(data) {
         var self = this;
         if (data === undefined) {
-            self.center = new google.MapService.latLng(0, 0);
+            self.center = new google.maps.LatLng(0, 0);
             self.zoom = 15;
         } else {
-            self.center = new google.MapService.latLng(data.center.latitude, data.center.longitude);
-            if(self.styles){
+            self.center = new google.maps.LatLng(data.center.latitude, data.center.longitude);
+            if (data.styles) {
                 self.styles = _.map(data.styles, function (style) {
                     return new uLocate.Models.MapStyle(style);
                 });
             }
+            console.info(self.styles);
             self.zoom = data.zoom;
         };
     };
