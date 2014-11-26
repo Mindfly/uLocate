@@ -75,7 +75,7 @@
                     <tbody>
                         <tr class="vcard"> <!-- TODO: When clicking on the row of an address, it zooms in on the pin -->
                             <td><input type="checkbox"/></td>
-                            <td class="fn"><a href="#" class="link-blue">Mindfly</a></td> <!-- TODO: This should open the view pane and not the edit pane. The view pane shows extra any information such as any location-type specific data, which is not displayed on this list -->
+                            <td class="fn"><a href class="link-blue" data-ng-click="openViewDialog()">Mindfly</a></td> <!-- TODO: This should open the view pane and not the edit pane. The view pane shows extra any information such as any location-type specific data, which is not displayed on this list -->
                             <td class="adr">
                                 <span class="street-address">114 W Magnolia St</span>
                                 <span class="extended-address">Suite 300</span> <!-- TODO: Only displays if an extended address has been enterred; not a required field -->

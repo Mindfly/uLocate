@@ -227,6 +227,8 @@
     <Content Include="App_Plugins\uLocate\Css\ulocate.min.css">
       <DependentUpon>ulocate.css</DependentUpon>
     </Content>
+    <Content Include="App_Plugins\uLocate\Dialogs\view.dialog.html" />
+    <Content Include="App_Plugins\uLocate\Scripts\Controllers\view.dialog.controller.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Controllers\edit.dialog.controller.js" />
     <Content Include="App_Plugins\uLocate\Dialogs\edit.dialog.html" />
     <Content Include="App_Plugins\uLocate\Scripts\Controllers\locations.controller.js" />

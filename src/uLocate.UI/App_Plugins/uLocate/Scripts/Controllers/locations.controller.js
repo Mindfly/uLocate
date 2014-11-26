@@ -38,6 +38,18 @@
             });
         };
 
+        $scope.openViewDialog = function () {
+            console.info('clicked');
+            var dialogData = {};
+            dialogData.sampleItem = 'Example';
+            dialogService.open({
+                template: '/App_Plugins/uLocate/Dialogs/view.dialog.html',
+                show: true,
+                callback: $scope.openEditDialog,
+                dialogData: dialogData
+            });
+        };
+
         /*-------------------------------------------------------------------
          * Helper Methods
          * ------------------------------------------------------------------*/
