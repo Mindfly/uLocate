@@ -18,6 +18,6 @@
         /// <summary>
         /// Gets or sets the viewport.
         /// </summary>
-        IViewport Viewport { get; set; }
+        Viewport Viewport { get; set; }
     }
 }

@@ -3,13 +3,37 @@
     using System;
     using System.Data.SqlClient;
 
+    using Umbraco.Core.Cache;
     using Umbraco.Core.Logging;
+    using Umbraco.Core.Persistence;
 
     /// <summary>
     /// Static uLocate Data Helpers
     /// </summary>
     public static class Helper
     {
+        /// <summary>
+        /// Gets the current umbraco database (shorthand for 'Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database')
+        /// </summary>
+        //public static UmbracoDatabase ThisDatabase 
+        //{
+        //    get
+        //    {
+        //        return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database;
+        //    }
+        //}
+
+        /// <summary>
+        /// Gets the current umbraco cache (shorthand forUmbraco.Core.ApplicationContext.Current.ApplicationCache.RuntimeCache)
+        /// </summary>
+        public static IRuntimeCacheProvider ThisCache 
+        {
+            get
+            {
+                return Umbraco.Core.ApplicationContext.Current.ApplicationCache.RuntimeCache;
+            }
+        }
+
         /// <summary>
         /// Static method to create the uLocate database tables and insert default data
         /// </summary>

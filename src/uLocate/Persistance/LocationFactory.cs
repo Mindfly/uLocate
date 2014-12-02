@@ -39,15 +39,16 @@
         /// </returns>
         public ILocation BuildLocation(IAddress address, IGeocodeProviderResponse response)
         {
-            var definitionFactory = new LocationTypeDefinitionFactory();
-            var def = definitionFactory.GetEmptyDefaultLocationTypeDefinition();
+            //TODO: HLF Fix this
+            //var definitionFactory = new LocationTypeDefinitionFactory();
+            //var def = definitionFactory.GetEmptyDefaultLocationTypeDefinition();
 
-            def.Fields.Address1().Value = address.Address1;
-            def.Fields.Address2().Value = address.Address2;
-            def.Fields.Locality().Value = address.Locality;
-            def.Fields.Region().Value = address.Region;
-            def.Fields.PostalCode().Value = address.PostalCode;
-            def.Fields.CountryCode().Value = address.CountryCode;
+            //def.Fields.Address1().Value = address.Address1;
+            //def.Fields.Address2().Value = address.Address2;
+            //def.Fields.Locality().Value = address.Locality;
+            //def.Fields.Region().Value = address.Region;
+            //def.Fields.PostalCode().Value = address.PostalCode;
+            //def.Fields.CountryCode().Value = address.CountryCode;
 
             var location = new Location()//def.Fields
                                {

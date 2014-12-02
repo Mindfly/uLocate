@@ -2,34 +2,30 @@
 {
     using System;
     using System.Collections.Generic;
+    using uLocate.Data;
+    using uLocate.Persistance;
 
     /// <summary>
     /// The location type definition.
     /// </summary>
-    internal class LocationType : UpdateableEntity, ILocationType
+    public class LocationType : EntityBase //, ILocationType
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationType"/> class.
         /// </summary>
         public LocationType()
-            : this(new CustomFieldsCollection())
+            : this(0)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationType"/> class.
         /// </summary>
-        /// <param name="fields">
-        /// The fields.
+        /// <param name="LocationTypeId">
+        /// The Location Type Id.
         /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// The custom fields collection
-        /// </exception>
-        internal LocationType(CustomFieldsCollection fields)
+        internal LocationType(int LocationTypeId)
         {
-            if (fields == null) throw new ArgumentNullException("fields");
-
-            Fields = fields;
         }
 
         /// <summary>
@@ -42,9 +38,39 @@
         /// </summary>
         public string Name { get; set; }
 
+        public IEnumerable<LocationTypeProperty> Properties { get; set; }
+
+
         /// <summary>
-        /// Gets or sets the fields.
+        /// Gets the id key.
         /// </summary>
-        public CustomFieldsCollection Fields { get; internal set; }
+        public override object IdKey
+        {
+            get
+            {
+                return this.Id;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the entity has a valid id
+        /// </summary>
+        public override bool HasIdentity
+        {
+            get
+            {
+                return !Id.Equals(0) & !Id.Equals(null);
+            }
+        }
+
+        /// <summary>
+        /// Gets the entity id type (int)
+        /// </summary>
+        public override string EntityIdType {
+            get
+            {
+                return "int";
+            }
+        }
     }
 }

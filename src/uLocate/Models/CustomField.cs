@@ -6,7 +6,7 @@
     /// <summary>
     /// Represents a custom field.
     /// </summary>
-    internal class CustomField : ICustomField
+    internal class CustomField //: ICustomField
     {
         /// <summary>
         /// The pre values.

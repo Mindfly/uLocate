@@ -8,11 +8,6 @@
     public interface IEntity
     {
         /// <summary>
-        /// Gets or sets the key.
-        /// </summary>
-        Guid Key { get; set; }
-
-        /// <summary>
         /// Gets or sets the update date.
         /// </summary>
         DateTime UpdateDate { get; set; }
@@ -26,6 +21,16 @@
         /// Gets a value indicating whether has identity.
         /// </summary>
         bool HasIdentity { get; }
+
+        /// <summary>
+        /// Gets the int Id or Guid Key
+        /// </summary>
+        object IdKey { get; }
+
+        ///// <summary>
+        ///// Gets the entity id type (int or guid)
+        ///// </summary>
+        string EntityIdType { get; }
 
         /// <summary>
         /// The updating entity.

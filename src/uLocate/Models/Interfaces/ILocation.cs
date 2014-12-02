@@ -7,7 +7,10 @@
     /// </summary>
     public interface ILocation : IEntity
     {
-
+        /// <summary>
+        /// Gets or sets the key.
+        /// </summary>
+        Guid Key { get; set; }
 
         /// <summary>
         /// Gets or sets the name.

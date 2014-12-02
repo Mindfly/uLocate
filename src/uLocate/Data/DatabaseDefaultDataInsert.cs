@@ -86,17 +86,19 @@
             //'Default' Properties
             foreach (var Prop in uLocate.Constants.DefaultLocationTypeProperties)
             {
+                var Data = new LocationTypePropertyDto
+                               {
+                                   LocationTypeId = Prop.LocationTypeId,
+                                   Alias = Prop.Alias,
+                                   Name = Prop.Name,
+                                   DataTypeId = Prop.DataTypeId,
+                                   SortOrder = Prop.SortOrder
+                               };
+                
                 _database.Insert(
                     TableName,
                     PrimaryKeyFieldName,
-                    new LocationTypePropertyDto
-                        {
-                            LocationTypeId = Prop.LocationTypeId,
-                            Alias = Prop.Alias,
-                            Name = Prop.Name,
-                            UmbracoDataTypeId = Prop.UmbracoDataTypeId,
-                            SortOrder = Prop.SortOrder
-                        });
+                    Data);
             }
         }
 

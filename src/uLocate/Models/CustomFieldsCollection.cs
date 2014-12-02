@@ -18,19 +18,19 @@ namespace uLocate.Models
         /// Initializes a new instance of the <see cref="CustomFieldsCollection"/> class.
         /// </summary>
         public CustomFieldsCollection()
-            : this("[]")
+            : this(0)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomFieldsCollection"/> class.
         /// </summary>
-        /// <param name="json">
-        /// The serialized JSON representation of the <see cref="CustomFieldsCollection"/>.
-        /// </param>
-        internal CustomFieldsCollection(string json)
+        internal CustomFieldsCollection(int LocationTypeId)
         {
-            this.Initialize(json);
+            //if (LocationTypeId != 0)
+            //{
+            //    this.Initialize(LocationTypeId);
+            //}
         }
 
         /// <summary>
@@ -86,16 +86,16 @@ namespace uLocate.Models
             return ContainsKey(alias) ? this[alias] : null;
         }
 
-        /// <summary>
-        /// Serializes this collection to a JSON string
-        /// </summary>
-        /// <returns>
-        /// The JSON <see cref="string"/> representation of this collection.
-        /// </returns>
-        internal string SerializeAsJson()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
+        ///// <summary>
+        ///// Serializes this collection to a JSON string
+        ///// </summary>
+        ///// <returns>
+        ///// The JSON <see cref="string"/> representation of this collection.
+        ///// </returns>
+        //internal string SerializeAsJson()
+        //{
+        //    return JsonConvert.SerializeObject(this);
+        //}
 
         /// <summary>
         /// The on collection changed.
@@ -111,16 +111,23 @@ namespace uLocate.Models
             }
         }
 
-        private void Initialize(string json)
+        private void InitializeCustomTypeFields(int LocationTypeId)
         {
-            if (string.IsNullOrEmpty(json)) json = "[]";
+            //var CustomLocationType = 
+            //foreach (var field in fieldData)
+            //{
+            //    this.SetValue(field);
+            //}
+        }
 
-            var fieldData = JsonConvert.DeserializeObject<IEnumerable<ICustomField>>(json).ToArray();
+         private void InitializeDefaultTypeFields()
+         {
+            // var CustomLocationType = new LocationType(Constants.DefaultLocationTypeId);
 
-            foreach (var field in fieldData)
-            {
-                this.SetValue(field);
-            }
+            //foreach (var field in fieldData)
+            //{
+            //    this.SetValue(field);
+            //}
         }
     }
 }

@@ -5,7 +5,7 @@
     /// <summary>
     /// Base class for uLocate entities.
     /// </summary>
-    public abstract class UpdateableEntity
+    public abstract class EntityBase : IEntity
     {
         /// <summary>
         /// Gets or sets the update date.
@@ -16,6 +16,12 @@
         /// Gets or sets the create date.
         /// </summary>
         public DateTime CreateDate { get; set; }
+
+        public abstract bool HasIdentity { get; }
+
+        public abstract object IdKey { get; }
+
+        public abstract string EntityIdType { get; }
 
         /// <summary>
         /// Utility method used to update the update date when the entity is about to be updated
@@ -34,5 +40,7 @@
 
             CreateDate = DateTime.Now;
         }
+
+
     }
 }
