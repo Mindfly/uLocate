@@ -39,7 +39,7 @@
   left: 1px;
   padding: 20px;
   width: calc(100%-2px);
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(248, 248, 248, 0.9);
   z-index: 99; }
   .uLocate .map-bar.top {
     top: 1px; }
@@ -49,6 +49,8 @@
   .uLocate .map-bar .form-inline select {
     vertical-align: middle; }
   .uLocate .map-bar input, .uLocate .map-bar label, .uLocate .map-bar select {
+    margin: 0; }
+  .uLocate .map-bar form {
     margin: 0; }
 .uLocate .map {
   position: absolute;

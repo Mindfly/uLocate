@@ -16,7 +16,7 @@
     left: 1px;
     padding: 20px;
     width: calc(100%-2px);
-    background: rgba(white,.8);
+    background: rgba($lightgrey,.9);
     z-index: 99;
     &.top {
         top: 1px;
@@ -29,6 +29,9 @@
         vertical-align: middle;
     }
     input, label, select {
+        margin: 0;
+    }
+    form {
         margin: 0;
     }
 }
