@@ -208,6 +208,7 @@
     <None Include="App_Plugins\uLocate\Config\uLocate.config" />
     <None Include="App_Plugins\uLocate\Css\globals\_base.scss" />
     <None Include="App_Plugins\uLocate\Css\globals\_settings.scss" />
+    <None Include="App_Plugins\uLocate\Css\modules\_dialogs.scss" />
     <None Include="App_Plugins\uLocate\Css\modules\_locations.scss" />
     <None Include="App_Plugins\uLocate\Css\ulocate.css.map">
       <DependentUpon>ulocate.css</DependentUpon>

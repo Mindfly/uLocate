@@ -65,5 +65,13 @@
   display: inline; }
 .uLocate #location-map img, .uLocate .map img {
   max-width: none; }
+.uLocate .umb-panel-body h4 {
+  margin-bottom: 0.25em; }
+.uLocate .umb-panel-body p {
+  margin-bottom: 1em; }
+.uLocate .custom-fields {
+  list-style-type: none;
+  margin: 0;
+  padding: 0; }
 
 /*# sourceMappingURL=ulocate.css.map */

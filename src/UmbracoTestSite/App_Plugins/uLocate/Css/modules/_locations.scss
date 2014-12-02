@@ -46,5 +46,12 @@
     border: solid 1px $grey;
 }
 
-#location-map label, .map label { width: auto; display:inline; }
-#location-map img, .map img { max-width: none; }
+#location-map, .map {
+    label {
+        width: auto; 
+        display:inline;
+    }
+    img {
+        max-width: none;
+    }
+}

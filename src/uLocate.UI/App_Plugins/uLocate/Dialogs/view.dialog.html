@@ -4,7 +4,30 @@
     </div>
     
     <div class="umb-panel-body with-header with-footer">
-        
+        <div class="vcard">
+            <h4>Address</h4>
+            <p class="adr">
+                <span class="street-address">114 W Magnolia St</span>
+                <span class="extended-address">Suite 300</span> <!-- TODO: This span should only display if there is an extended address -->
+                <span class="locality">Bellingham</span>, <span class="region">WA</span> <span class="postal-code">98225</span>
+                <span class="country-name">United States</span>
+            </p>
+            <h4>Longitude/Latitude</h4>
+            <p class="geo">
+                <span class="latitude">48.751527</span> / <span class="longitude">-122.478205</span>
+            </p>
+            <h4>Phone Number</h4>
+            <p class="tel">360-647-7470</p>
+            
+            <div> <!-- TODO: Added this wrapper div, since what displays here will only show if the location is not the Default type, so I figured you would need something to attach the ng-show to. -->
+                <h4>Business Specific Fields</h4> <!-- TODO: The word "business" would be replaced by whatever the location type name is -->
+                <ul class="custom-fields"> <!-- TODO: Should list each custom field for the location type and it's saved data for the location -->
+                    <li>Contact Name: Heather Alvis</li>
+                    <li>Phone Extension: 4#</li>
+                    <li>Accepts Marketing: Yes</li>
+                </ul>
+            </div>
+        </div>
     </div>
     
     <div class="umb-panel-footer">
@@ -13,5 +36,5 @@
             <button type="button" class="btn btn-primary" data-ng-click="submit(dialogData)">Edit Location</button>
         </div>
     </div>
-
+    
 </div>
