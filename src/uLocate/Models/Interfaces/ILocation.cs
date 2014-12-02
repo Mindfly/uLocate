@@ -8,6 +8,11 @@
     public interface ILocation : IEntity
     {
         /// <summary>
+        /// Gets or sets the key.
+        /// </summary>
+        Guid Key { get; set; }
+
+        /// <summary>
         /// Gets or sets the name.
         /// </summary>
         string Name { get; set; }
@@ -36,5 +41,8 @@
         /// Gets the collection of custom fields.
         /// </summary>
         CustomFieldsCollection Fields { get; }
+
+
+        
     }
 }

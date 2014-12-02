@@ -20,7 +20,26 @@ In order to use uLocate in your umbraco site, you will need to be using a full S
 The Visual Studio solution includes several projects:
 
 ### uLocate
-The Business Logic
+The Business Logic and Data access code
+
+Caching
+
+Configuration
+
+**Data** - Includes DTOs for the uLocate tables, database install/uninstall, and static Data Helper functions.
+
+Helpers
+
+**Models** - Interfaces and class models for all uLocate objects
+
+Persistence
+
+Providers
+
+**WebApi** - Api Controllers
+
+### uLocate.Package
+Umbraco Package components
 
 ### uLocate.Plugins.Geocode.GoogleMaps
 A GoogleMaps Provider Plugin

@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the best recommended "viewport" to display a result set in some map APIs.
     /// </summary>
-    public class Viewport : IViewport
+    public class Viewport //: IViewport
     {    
         /// <summary>
         /// Gets or sets the south west corner of the viewport
