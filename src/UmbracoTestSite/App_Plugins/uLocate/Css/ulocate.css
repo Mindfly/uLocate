@@ -60,10 +60,10 @@
   right: 0;
   background: #f8f8f8;
   border: solid 1px #d9d9d9; }
-.uLocate #location-map label {
+.uLocate #location-map label, .uLocate .map label {
   width: auto;
   display: inline; }
-.uLocate #location-map img {
+.uLocate #location-map img, .uLocate .map img {
   max-width: none; }
 
 /*# sourceMappingURL=ulocate.css.map */
