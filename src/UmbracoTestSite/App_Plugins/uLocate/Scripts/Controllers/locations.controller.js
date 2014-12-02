@@ -19,6 +19,13 @@
             $scope.loadGoogleMapAsset();
         };
 
+        /**
+         * @ngdoc method
+         * @name loadGoogleMapAsset
+         * @function
+         * 
+         * @description - Load the Google Maps API asset, then load the applicable map starting functionality.
+         */
         $scope.loadGoogleMapAsset = function() {
             assetsService.loadJs("//www.google.com/jsapi").then(function () {
                 google.load('maps', '3', {
@@ -34,7 +41,19 @@
                     latitude: 48,
                     longitude: -122
                 },
-                zoom: 12
+                zoom: 12,
+                mapTypeControlOptions: {
+                    position: google.maps.ControlPosition.LEFT_CENTER,
+                    style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+                },
+                panControlOptions: {
+                    position: google.maps.ControlPosition.LEFT_CENTER
+                },
+                streetViewControl: false,
+                zoomControlOptions: {
+                    style: google.maps.ZoomControlStyle.SMALL,
+                    position: google.maps.ControlPosition.LEFT_CENTER
+                }
             };
             $scope.map = uLocateMapService.loadMap('#location-map', options);
             $scope.map.setOptions({ styles: $scope.mapStyles });
