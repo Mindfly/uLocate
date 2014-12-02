@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a country.
     /// </summary>
-    public class Country : ICountry
+    public class Country //: ICountry
     {
         /// <summary>
         /// Gets the country code.

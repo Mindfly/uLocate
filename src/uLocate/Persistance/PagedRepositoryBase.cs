@@ -1,6 +1,6 @@
 ﻿using Umbraco.Core.Models.EntityBase;
 
-namespace uLocate.Persistance.Repositories
+namespace uLocate.Persistance
 {
     using Models;
     using Umbraco.Core.Cache;

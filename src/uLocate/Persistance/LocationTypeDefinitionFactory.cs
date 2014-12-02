@@ -1,4 +1,4 @@
-﻿namespace uLocate.Persistance.Factories
+﻿namespace uLocate.Persistance
 {
     using uLocate.Models;
 
@@ -23,7 +23,8 @@
                            Name = "Default",
                            Fields = new CustomFieldsCollection()
                        };
-            //TODO this needs to be fixed...
+
+            //TODO: HLF - this needs to be fixed...
             def.Fields.SetValue(new CustomField() { Label = "Address 1", Alias = Constants.DefaultLocPropertyAlias.Address1, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 1 });
             def.Fields.SetValue(new CustomField() { Label = "Address 2", Alias = Constants.DefaultLocPropertyAlias.Address2, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 2 });
             def.Fields.SetValue(new CustomField() { Label = "Locality", Alias = Constants.DefaultLocPropertyAlias.Locality, PropertyEditorAlias = Constants.PropertyEditorAlias.TextBox, SortOrder = 3 });

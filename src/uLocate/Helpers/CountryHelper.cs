@@ -18,7 +18,7 @@
         /// <returns>
         /// The <see cref="IEnumerable{ICountry}"/>.
         /// </returns>
-        public static IEnumerable<ICountry> GetAllCountries()
+        public static IEnumerable<Country> GetAllCountries()
         {
             return CultureInfo.GetCultures(CultureTypes.SpecificCultures)
                 .Select(culture => new RegionInfo(culture.Name))

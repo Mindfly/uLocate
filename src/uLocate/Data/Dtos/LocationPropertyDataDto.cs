@@ -59,6 +59,28 @@
         [SpecialDbType(SpecialDbTypes.NTEXT)]
         public string dataNtext { get; set; }
 
+        /// <summary>
+        /// Gets or sets the create date.
+        /// </summary>
+        [Column("CreateDate")]
+        [Constraint(Default = "getdate()")]
+        public DateTime CreateDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the update date.
+        /// </summary>
+        [Column("UpdateDate")]
+        [Constraint(Default = "getdate()")]
+        public DateTime UpdateDate { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocationPropertyDataDto"/> class and sets some default values.
+        /// </summary>
+        public LocationPropertyDataDto()
+        {
+            UpdateDate = DateTime.Now;
+            CreateDate = DateTime.Now;
+        }
     }
 }
 

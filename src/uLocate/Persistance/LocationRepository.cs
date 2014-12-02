@@ -1,6 +1,6 @@
 ﻿using uLocate.Data;
 
-namespace uLocate.Persistance.Repositories
+namespace uLocate.Persistance
 {
     using System;
     using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace uLocate.Persistance.Repositories
     /// <summary>
     /// Represents a location repository.
     /// </summary>
-    internal class LocationRepository : PagedRepositoryBase<ILocation>, ILocationRespository
+    internal class LocationRepository : PagedRepositoryBase<Location> //, ILocationRespository
     {
 
         /// <summary>
@@ -28,31 +28,51 @@ namespace uLocate.Persistance.Repositories
         {            
         }
 
-
-        protected override IEnumerable<ILocation> PerformGetAll(params Guid[] keys)
+        public override Page<Location> Page(long page, long itemsPerPage, Sql sql)
         {
             throw new NotImplementedException();
         }
 
-        protected override ILocation PerformGet(Guid key)
+        public void Insert(Location LocationEntity)
         {
             throw new NotImplementedException();
         }
 
-        protected override void PersistNewItem(ILocation item)
+        public void Delete(Location LocationEntity)
         {
             throw new NotImplementedException();
         }
 
-        protected override void PersistUpdatedItem(ILocation item)
+        public Location GetByKey(Guid Key)
         {
             throw new NotImplementedException();
         }
 
-        protected override void PersistDeletedItem(ILocation item)
+        protected override IEnumerable<Location> PerformGetAll(params object[] IdKeys)
         {
             throw new NotImplementedException();
         }
+
+        protected override Location PerformGet(object IdKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void PersistNewItem(Location item)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void PersistUpdatedItem(Location item)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void PersistDeletedItem(Location item)
+        {
+            throw new NotImplementedException();
+        }
+
 
 
         /// <summary>
@@ -96,9 +116,6 @@ namespace uLocate.Persistance.Repositories
             return list;
         }
 
-        public override Page<ILocation> Page(long page, long itemsPerPage, Sql sql)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }

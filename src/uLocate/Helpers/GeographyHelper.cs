@@ -51,7 +51,7 @@
         /// <returns>
         /// The <see cref="string"/>.
         /// </returns>
-        public string GetStLineString(IViewport viewport)
+        public string GetStLineString(Viewport viewport)
         {
             return string.Format("LINESTRING ({0}, {1})", this.SplitLatLong(viewport.SouthWest), this.SplitLatLong(viewport.NorthEast));
         }
@@ -65,7 +65,7 @@
         /// <returns>
         /// The <see cref="IViewport"/>.
         /// </returns>
-        public IViewport GetViewportFromStLinestringText(string text)
+        public Viewport GetViewportFromStLinestringText(string text)
         {
             var coordinates = this.GetCoordinatesFromStText(text).ToArray();
 

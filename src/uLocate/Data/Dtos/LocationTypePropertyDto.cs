@@ -38,7 +38,7 @@
         /// </summary>
         [Column("DataTypeId")]
         [ForeignKey(typeof(cmsDataTypeDto), Name = "FK_uLocateLocationTypeProperty_cmsDataType", Column = "nodeId")]
-        public int UmbracoDataTypeId { get; set; }
+        public int DataTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the related Location Type for the property
@@ -52,5 +52,28 @@
         /// </summary>
         [Column("sortOrder")]
         public int SortOrder { get; set; } 
+
+                /// <summary>
+        /// Gets or sets the create date.
+        /// </summary>
+        [Column("CreateDate")]
+        [Constraint(Default = "getdate()")]
+        public DateTime CreateDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the update date.
+        /// </summary>
+        [Column("UpdateDate")]
+        [Constraint(Default = "getdate()")]
+        public DateTime UpdateDate { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocationTypePropertyDto"/> class and sets some default values.
+        /// </summary>
+        public LocationTypePropertyDto()
+        {
+            UpdateDate = DateTime.Now;
+            CreateDate = DateTime.Now;
+        }
     }
 }

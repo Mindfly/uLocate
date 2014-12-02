@@ -28,6 +28,6 @@
         /// <summary>
         /// Gets or sets the viewport - used by some mapping providers
         /// </summary>
-        public IViewport Viewport { get; set; }
+        public Viewport Viewport { get; set; }
     }
 }

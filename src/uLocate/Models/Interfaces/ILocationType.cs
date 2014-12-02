@@ -1,9 +1,11 @@
 ﻿namespace uLocate.Models
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Defines a LocationType
     /// </summary>
-    public interface ILocationType //: IEntity
+    public interface ILocationType : IEntity
     {
         /// <summary>
         /// Gets or sets the Id.
@@ -16,8 +18,8 @@
         string Name { get; set; }
 
         /// <summary>
-        /// Gets the custom fields associated with the location type.
+        /// Gets the custom properties associated with the location type.
         /// </summary>
-        CustomFieldsCollection Fields { get; } 
+        IEnumerable<LocationTypeProperty> Properties { get; } 
     }
 }

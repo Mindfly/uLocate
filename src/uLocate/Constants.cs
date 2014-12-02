@@ -79,6 +79,17 @@
         };
 
 
+        public static class DataTypeId
+        {
+            public static int TextBox
+            {
+                get
+                {
+                    return -88;
+                }
+            }
+        }
+
         /// <summary>
         /// Property Editor Aliases (from Umbraco)
         /// </summary>
@@ -207,12 +218,12 @@
             {
                 List<LocationTypeProperty> DefaultProps = new List<LocationTypeProperty>();
 
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.Address1, Name = "Address 1", UmbracoDataTypeId = -88, SortOrder = 1 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.Address2, Name = "Address 2", UmbracoDataTypeId = -88, SortOrder = 2 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.Region, Name = "State/Province", UmbracoDataTypeId = -88, SortOrder = 3 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.PostalCode, Name = "Zip/Postal Code", UmbracoDataTypeId = -88, SortOrder = 4 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.CountryCode, Name = "Country", UmbracoDataTypeId = -88, SortOrder = 5 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = "PhoneNumber", Name = "Phone Number", UmbracoDataTypeId = -88, SortOrder = 6 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.Address1, Name = "Address 1", DataTypeId = -88, SortOrder = 1 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.Address2, Name = "Address 2", DataTypeId = -88, SortOrder = 2 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.Region, Name = "State/Province", DataTypeId = -88, SortOrder = 3 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.PostalCode, Name = "Zip/Postal Code", DataTypeId = -88, SortOrder = 4 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.CountryCode, Name = "Country", DataTypeId = -88, SortOrder = 5 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = "PhoneNumber", Name = "Phone Number", DataTypeId = -88, SortOrder = 6 });
 
                 return DefaultProps;
             }
