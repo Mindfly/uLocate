@@ -11,18 +11,28 @@ namespace uLocate.Persistance
 
     using Umbraco.Core;
     using Umbraco.Core.Cache;
+    using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;
 
+    /// <summary>
+    /// Repository for working with LocationTypeProperties
+    /// </summary>
     internal class LocationTypePropertyRepository : RepositoryBase<LocationTypeProperty> //, ILocationTypePropertyRepository
     {
-
         /// <summary>
-        /// The database.
+        /// The current collection of Location Types
         /// </summary>
-       // private readonly UmbracoDatabase _database;
-
         private List<LocationTypeProperty> CurrentCollection = new List<LocationTypeProperty>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocationTypePropertyRepository"/> class.
+        /// </summary>
+        /// <param name="database">
+        /// The database.
+        /// </param>
+        /// <param name="cache">
+        /// The cache.
+        /// </param>
         public LocationTypePropertyRepository(UmbracoDatabase database, IRuntimeCacheProvider cache)
             : base(database, cache)
         {
@@ -33,7 +43,19 @@ namespace uLocate.Persistance
 
         public void Insert(LocationTypeProperty Entity)
         {
-            PersistNewItem(Entity);
+            var NewItemId = PersistNewItem(Entity);
+        }
+
+        public void Insert(LocationTypeProperty Entity, out int NewItemId)
+        {
+            var NewItemInfo = PersistNewItem(Entity);
+            NewItemId = Convert.ToInt32(NewItemInfo);
+        }
+
+        public void Delete(int PropertyId)
+        {
+            LocationTypeProperty ThisProperty = this.GetById(PropertyId);
+            this.Delete(ThisProperty);
         }
 
         public void Delete(LocationTypeProperty Entity)
@@ -79,7 +101,7 @@ namespace uLocate.Persistance
         {
             CurrentCollection.Clear();
             var MySql = new Sql();
-            MySql.Select("*").From<LocationTypePropertyDto>().Where("LocationTypeId = @0", LocationTypeId);
+            MySql.Select("*").From<LocationTypeProperty>().Where("LocationTypeId = @0", LocationTypeId);
             CurrentCollection.AddRange(Repositories.ThisDb.Fetch<LocationTypeProperty>(MySql).ToList());
             FillChildren();
 
@@ -97,11 +119,11 @@ namespace uLocate.Persistance
             if (IdKeys.Any())
             {
                 var ParamsCsv = string.Join(",", IdKeys);
-                MySql.Select("*").From<LocationTypePropertyDto>().Where("Id IN @0", ParamsCsv);
+                MySql.Select("*").From<LocationTypeProperty>().Where("Id IN @0", ParamsCsv);
             }
             else
             {
-                MySql.Select("*").From<LocationTypePropertyDto>();
+                MySql.Select("*").From<LocationTypeProperty>();
             }
 
             return Repositories.ThisDb.Fetch<LocationTypeProperty>(MySql).ToList();
@@ -110,30 +132,38 @@ namespace uLocate.Persistance
         protected override LocationTypeProperty PerformGet(object IdKey)
         {
             var MySql = new Sql();
-            MySql.Select("*").From<LocationTypePropertyDto>().Where("Id = @0", IdKey);
+            MySql.Select("*").From<LocationTypeProperty>().Where("Id = @0", IdKey);
 
             return Repositories.ThisDb.Fetch<LocationTypeProperty>(MySql).FirstOrDefault();
         }
 
-        protected override void PersistNewItem(LocationTypeProperty item)
+        protected override object PersistNewItem(LocationTypeProperty item)
         {
-            throw new NotImplementedException();
+            string Msg = string.Format("LocationTypeProperty '{0}' has been saved.", item.Name);
+            var InsertedItem = Repositories.ThisDb.Insert(item);
+            LogHelper.Info(typeof(LocationTypePropertyRepository), Msg);
+
+            return InsertedItem;
         }
 
         protected override void PersistUpdatedItem(LocationTypeProperty item)
         {
-            throw new NotImplementedException();
+            string Msg = string.Format("LocationTypeProperty '{0}' has been updated.", item.Name);
+            Repositories.ThisDb.Update(item);
+            LogHelper.Info(typeof(LocationTypePropertyRepository), Msg);
         }
 
         protected override void PersistDeletedItem(LocationTypeProperty item)
         {
-            throw new NotImplementedException();
+            string Msg = string.Format("LocationTypeProperty '{0}' has been deleted.", item.Name);
+            Repositories.ThisDb.Delete<LocationTypeProperty>(item.Id);
+            LogHelper.Info(typeof(LocationTypePropertyRepository), Msg);
         }
 
         protected override Sql GetBaseQuery(bool isCount)
         {
             var MySql = new Sql();
-            MySql.Select("*").From<LocationTypePropertyDto>();
+            MySql.Select("*").From<LocationTypeProperty>();
             return MySql;
         }
 

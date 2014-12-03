@@ -186,14 +186,19 @@
     <Compile Include="Configuration\SettingsCollection.cs" />
     <Compile Include="Configuration\uLocateSection.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Data\Dtos\AllowedDataTypesDto.cs" />
-    <Compile Include="Data\Dtos\cmsDataTypeDto.cs" />
+    <Compile Include="Data\cmsDataTypeDto.cs" />
     <Compile Include="Data\Data.Helper.cs" />
     <Compile Include="Data\DatabaseDefaultDataInsert.cs" />
     <Compile Include="Data\Dtos\LocationDto.cs" />
-    <Compile Include="Data\Dtos\LocationPropertyDataDto.cs" />
-    <Compile Include="Data\Dtos\LocationTypeDto.cs" />
-    <Compile Include="Data\Dtos\LocationTypePropertyDto.cs" />
+    <Compile Include="Data\Dtos\LocationPropertyDataDto.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Data\Dtos\LocationTypeDto.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Data\Dtos\LocationTypePropertyDto.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Helpers\CountryHelper.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Country.cs" />
