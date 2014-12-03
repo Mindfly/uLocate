@@ -218,6 +218,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\uLocate\Backoffice\uLocate\editLocationType.html" />
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\export.html" />
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\import.html" />
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\locations.html" />
