@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function($scope, assetsService, dialogService, uLocateMapService, notificationsService) {
+    controllers.LocationsController = function ($scope, assetsService, dialogService, uLocateMapService, uLocateLocationApiService, notificationsService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -14,8 +14,6 @@
          * @description - Called when the $scope is initalized.
          */
         $scope.init = function() {
-            console.info('Controller loaded.');
-            $scope.setVariables();
             $scope.loadGoogleMapAsset();
         };
 
@@ -29,14 +27,36 @@
         $scope.loadGoogleMapAsset = function() {
             assetsService.loadJs("//www.google.com/jsapi").then(function () {
                 google.load('maps', '3', {
-                    callback: $scope.loadMap,
+                    callback: $scope.setVariables,
                     other_params: 'sensor=false'
                 });
             });
         };
 
+        /**
+         * @ngdoc method
+         * @name loadMap
+         * @function
+         * 
+         * @description - Loads the Google Map.
+         */
         $scope.loadMap = function () {
-            var options = {
+            var options = $scope.mapOptions;
+            $scope.map = uLocateMapService.loadMap('#location-map', options);
+            $scope.map.setOptions({ styles: $scope.mapStyles });
+            //uLocateMapService.addMarker($scope.map, [48, -122], { title: 'Somewhere', icon: $scope.customMarkerIcon });
+        };
+
+        /**
+         * @ngdoc method
+         * @name setVariables
+         * @function
+         * 
+         * @description - Sets the initial state for $scope variables.
+         */
+        $scope.setVariables = function() {
+            $scope.map = null;
+            $scope.mapOptions = {
                 center: {
                     latitude: 48,
                     longitude: -122
@@ -55,12 +75,14 @@
                     position: google.maps.ControlPosition.LEFT_CENTER
                 }
             };
-            $scope.map = uLocateMapService.loadMap('#location-map', options);
-            $scope.map.setOptions({ styles: $scope.mapStyles });
-        };
-
-        $scope.setVariables = function() {
-            $scope.map = null;
+            $scope.customMarkerIcon = new uLocate.Models.MarkerSymbolIcon({
+                path: 'M0-165c-27.618 0-50 21.966-50 49.054C-50-88.849 0 0 0 0s50-88.849 50-115.946C50-143.034 27.605-165 0-165z',
+                fillColor: '#ff7100',
+                fillOpacity: 1,
+                strokeColor: '#000000',
+                strokeWeight: 2,
+                scale: 1/4
+            });
             $scope.mapStyles = [
                 {
                     "featureType": "landscape",
@@ -155,6 +177,7 @@
                       
                 }
             ];
+            $scope.loadMap();
         };
 
         /*-------------------------------------------------------------------
@@ -201,6 +224,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', 'assetsService', 'dialogService', 'uLocateMapService', 'notificationsService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', 'assetsService', 'dialogService', 'uLocateMapService', 'uLocateLocationApiService', 'notificationsService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

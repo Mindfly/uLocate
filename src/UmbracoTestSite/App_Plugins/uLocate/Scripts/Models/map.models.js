@@ -66,6 +66,26 @@
         };
     };
 
+    models.MapMarker = function(data) {
+        var self = this;
+        if (data === undefined) {
+            self.position = new google.maps.LatLng(0, 0);
+        } else {
+            self.map = data.map;
+            if (data.icon) {
+                self.icon = data.icon;
+            }
+            if (data.position instanceof google.maps.LatLng) {
+                self.position = data.position;
+            } else {
+                self.position = new google.maps.LatLng(data.position[0], data.position[1]);
+            }
+            if (data.title) {
+                self.title = data.title;
+            }
+        }
+    };
+
     models.MapStyle = function (data) {
         var self = this;
         if (data === undefined) {
@@ -74,6 +94,25 @@
         } else {
             self.featureType = data.featureType;
             self.stylers = data.stylers;
+        }
+    };
+
+    models.MarkerSymbolIcon = function(data) {
+        var self = this;
+        if (data == undefined) {
+            self.path = '';
+            self.fillColor = '#000000';
+            self.fillOpacity = 1;
+            self.strokeColor = '';
+            self.strokeWeight = 0;
+            self.scale = 1 / 2;
+        } else {
+            self.path = data.path;
+            self.fillColor = data.fillColor;
+            self.fillOpacity = data.fillOpacity;
+            self.strokeColor = data.strokeColor;
+            self.strokeWeight = data.strokeWeight;
+            self.scale = data.scale;
         }
     };
 

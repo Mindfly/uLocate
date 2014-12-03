@@ -3,6 +3,65 @@
     uLocateServices.MapService = function ($http, $q) {
 
         var mapFactory = {};
+        mapFactory.markers = [];
+
+        /**
+         * @ngdoc method
+         * @name addMarker
+         * @function
+         * 
+         * @param {google.maps.Map} map - The map object to add the marker to.
+         * @param {[number, number]} coord - The [lat, lng] coordinates of the marker.
+         * @param {uLocate.Models.MapMarkerOptions} options - Optional details for the marker's style and popup.
+         * @param {function} callback - An optional callback function when the marker is clicked on.
+         * @returns {integer} - The index of the marker created in the mapFactory.markers array.
+         * @description - Add a marker to the map.
+         */
+        mapFactory.addMarker = function(map, coord, options, callback) {
+            var setup = {
+                map: map,
+                position: coord,
+            };
+            if (options) {
+                if (options.title) {
+                    setup.title = options.title;
+                }
+                if (options.icon) {
+                    setup.icon = options.icon;
+                }
+            }
+            var markerOptions = new uLocate.Models.MapMarker(setup);
+            var index = mapFactory.markers.length;
+            var marker = new google.maps.Marker(markerOptions);
+            mapFactory.markers.push(marker);
+            return index;
+        };
+
+        /**
+         * @ngdoc method
+         * @name deleteAllMarkers
+         * @function
+         * 
+         * @description - Deletes all markers.
+         */
+        mapFactory.deleteAllMarkers = function () {
+            for (var i = (mapFactory.markers.length - 1) ; i > -1; i--) {
+                mapFactory.deleteMarker(i);
+            }
+        };
+
+        /**
+         * @ngdoc method
+         * @name deleteMarker
+         * @function
+         * 
+         * @param {integer} index - The index of the desired marker to delete.
+         * @description - Deletes a marker.
+         */
+        mapFactory.deleteMarker = function (index) {
+            mapFactory.hideMarker(index);
+            mapFactory.markers.splice(index, 1);
+        };
 
         /**
          * @ngdoc method
@@ -31,6 +90,31 @@
 
         /**
          * @ngdoc method
+         * @name hideAllMarkers
+         * @function
+         * 
+         * @description - Hides all markers.
+         */
+        mapFactory.hideAllMarkers = function() {
+            for (var i = (mapFactory.markers.length - 1) ; i > -1; i--) {
+                mapFactory.hideMarker(i);
+            }
+        };
+
+        /**
+         * @ngdoc method
+         * @name hideMarker
+         * @function
+         * 
+         * @param {integer} index - The index of the desired marker to hide.
+         * @description - Hides a marker.
+         */
+        mapFactory.hideMarker = function (index) {
+            mapFactory.markers[index].setMap(null);
+        };
+
+        /**
+         * @ngdoc method
          * @name loadMap
          * @function
          * 
@@ -50,12 +134,38 @@
                     zoom: 15
                 };
             }
-            console.info(options);
             mapOptions = new uLocate.Models.MapOptions(options);
-            console.info(mapOptions);
             var element = document.querySelector(elem);
             var map = new google.maps.Map(element, mapOptions);
             return map;
+        };
+
+
+        /**
+         * @ngdoc method
+         * @name showAllMarkers
+         * @function
+         * 
+         * @param {google.maps.Map} - The map to show the markers on.
+         * @description - Shows all markers.
+         */
+        mapFactory.showAllMarkers = function (map) {
+            for (var i = (mapFactory.markers.length - 1) ; i > -1; i--) {
+                mapFactory.showMarker(i, map);
+            }
+        };
+
+        /**
+         * @ngdoc method
+         * @name showMarker
+         * @function
+         * 
+         * @param {integer} index - The index of the desired marker to show.
+         * @param {google.maps.Map} map - The map to show the marker on.
+         * @description - Shows a marker.
+         */
+        mapFactory.showMarker = function(index, map) {
+            mapFactory.markers[index].setMap(map);
         };
 
         return mapFactory;
