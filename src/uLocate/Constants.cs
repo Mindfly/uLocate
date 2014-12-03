@@ -57,8 +57,6 @@
 
         #endregion
 
-
-
         #region DataTypes & Property Editors
 
         /// <summary>
@@ -66,21 +64,26 @@
         /// </summary>
         public static readonly Dictionary<string, int> AllowedDataTypesDictionary = new Dictionary<string, int>
         {
-            //TODO: Update to verify correct IDs from cmsDataType Table
-
             // {"PropertyEditorAlias", DataTypeNodeId}
-            { PropertyEditorAlias.TextBox, -88 }, 
-            { PropertyEditorAlias.TextBoxMultiple, -89 }, 
-            { PropertyEditorAlias.TrueFalse, -49 }, 
-            { PropertyEditorAlias.MultipleMediaPicker, 1045 }, 
-            { PropertyEditorAlias.MemberPicker, 1036 }, 
-            { PropertyEditorAlias.ContentPicker, 1034 }, 
-            { PropertyEditorAlias.CheckBoxList, -43 }
+            { PropertyEditorAlias.TextBox, DataTypeId.TextBox }, 
+            { PropertyEditorAlias.TextBoxMultiple, DataTypeId.TextBoxMultiple }, 
+            { PropertyEditorAlias.TrueFalse, DataTypeId.TrueFalse }, 
+            { PropertyEditorAlias.MultipleMediaPicker, DataTypeId.MultipleMediaPicker }, 
+            { PropertyEditorAlias.MemberPicker, DataTypeId.MemberPicker }, 
+            { PropertyEditorAlias.ContentPicker, DataTypeId.ContentPicker }, 
+            { PropertyEditorAlias.CheckBoxList, DataTypeId.CheckBoxList }
         };
 
-
+        /// <summary>
+        /// Returns NodeIds for Umbraco DataTypes
+        /// </summary>
         public static class DataTypeId
         {
+            //TODO: Update to verify correct IDs from cmsDataType Table?
+
+            /// <summary>
+            /// Gets the text box datatype node id
+            /// </summary>
             public static int TextBox
             {
                 get
@@ -88,6 +91,73 @@
                     return -88;
                 }
             }
+
+            /// <summary>
+            /// Gets the text box multiple datatype node id
+            /// </summary>
+            public static int TextBoxMultiple
+            {
+                get
+                {
+                    return -89;
+                }
+            }
+
+            /// <summary>
+            /// Gets the true/false datatype node id
+            /// </summary>
+            public static int TrueFalse
+            {
+                get
+                {
+                    return -49;
+                }
+            }
+
+            /// <summary>
+            /// Gets the multiple media picker datatype node id
+            /// </summary>
+            public static int MultipleMediaPicker
+            {
+                get
+                {
+                    return 1045;
+                }
+            }
+
+            /// <summary>
+            /// Gets the member picker datatype node id
+            /// </summary>
+            public static int MemberPicker
+            {
+                get
+                {
+                    return 1036;
+                }
+            }
+
+            /// <summary>
+            /// Gets the content picker datatype node id
+            /// </summary>
+            public static int ContentPicker
+            {
+                get
+                {
+                    return 1034;
+                }
+            }
+
+            /// <summary>
+            /// Gets the check box list datatype node id
+            /// </summary>
+            public static int CheckBoxList
+            {
+                get
+                {
+                    return -43;
+                }
+            }
+
         }
 
         /// <summary>

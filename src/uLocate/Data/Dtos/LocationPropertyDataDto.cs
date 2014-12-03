@@ -1,6 +1,9 @@
 ﻿namespace uLocate.Data
 {
     using System;
+
+    using uLocate.Models;
+
     using Umbraco.Core.Persistence;
     using Umbraco.Core.Persistence.DatabaseAnnotations;
 
@@ -30,7 +33,7 @@
         /// Gets or sets the related LocationTypeProperty
         /// </summary>
         [Column("LocationTypePropertyId")]
-        [ForeignKey(typeof(LocationTypePropertyDto), Name = "FK_uLocateLocationPropertyData_uLocateLocationTypeProperty", Column = "Id")]
+        [ForeignKey(typeof(LocationTypeProperty), Name = "FK_uLocateLocationPropertyData_uLocateLocationTypeProperty", Column = "Id")]
         public int LocationTypePropertyId { get; set; }
 
         /// <summary>

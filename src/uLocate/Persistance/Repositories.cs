@@ -18,13 +18,17 @@ namespace uLocate.Persistance
         public static LocationTypePropertyRepository LocationTypePropertyRepo = new LocationTypePropertyRepository(ThisDb, ApplicationContext.Current.ApplicationCache.RuntimeCache);
 
 
-        public static LocationTypeProperty CreateLocationTypeProp(string Alias, string DisplayName, int DataTypeId)
-        {
-            var NewProp = new LocationTypeProperty();
-            NewProp.Alias = "BusinessWebsite";
-
-            return NewProp;
-        }
+        //public static LocationTypeProperty CreateLocationTypeProp( string Alias, string DisplayName, int DataTypeId, int SortOrder = 0)
+        //{//int LocTypeId,
+        //    var NewProp = new LocationTypeProperty();
+        //    //NewProp.LocationTypeId = LocTypeId;
+        //    NewProp.Alias = Alias;
+        //    NewProp.Name = DisplayName;
+        //    NewProp.DataTypeId = DataTypeId;
+        //    NewProp.SortOrder = SortOrder;
+            
+        //    return NewProp;
+        //}
         
     }
 }

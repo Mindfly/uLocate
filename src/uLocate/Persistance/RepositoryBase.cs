@@ -523,7 +523,10 @@
         /// <param name="item">
         /// The item.
         /// </param>
-        protected abstract void PersistNewItem(TEntity item);
+        /// <returns>
+        /// An <see cref="object"/> representing the new item's Id/Key
+        /// </returns>
+        protected abstract object PersistNewItem(TEntity item);
 
         /// <summary>
         /// The persist updated item.

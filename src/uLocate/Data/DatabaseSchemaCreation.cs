@@ -5,6 +5,8 @@
     using System.Linq;
     using System.Text.RegularExpressions;
 
+    using uLocate.Models;
+
     using Umbraco.Core;
     using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;
@@ -22,8 +24,9 @@
             { 0, typeof(LocationTypeDto) },
             { 1, typeof(LocationDto) },
             { 2, typeof(LocationTypePropertyDto) },
-            { 3, typeof(LocationPropertyDataDto) },
-            { 4, typeof(AllowedDataTypesDto) }
+            { 3, typeof(LocationPropertyDataDto) }
+
+            //{ 4, typeof(AllowedDataTypesDto) }
         };
 
         ///// <summary>
@@ -61,8 +64,18 @@
         {
             foreach (var item in OrderedTables.OrderBy(x => x.Key))
             {
-                _database.CreateTable(false, item.Value);
-                var message = string.Concat("uLocate.Data.DatabaseSchemaCreation.InitializeDatabaseSchema - Created Table '", item.Value, "'");
+                var TableType = item.Value;              
+                var TableAttrib = (TableNameAttribute) Attribute.GetCustomAttribute(TableType, typeof (TableNameAttribute));
+                string TableName = TableAttrib.Value;
+
+                if (!_database.TableExist(TableName))
+                {
+                    //Create DB table - and set overwrite to false
+                    _database.CreateTable(false, TableType);
+                }
+
+
+                var message = string.Concat("uLocate.Data.DatabaseSchemaCreation.InitializeDatabaseSchema - Created Table '", TableName, "'");
                 LogHelper.Info(typeof(DatabaseSchemaCreation), message);
             }
         }
