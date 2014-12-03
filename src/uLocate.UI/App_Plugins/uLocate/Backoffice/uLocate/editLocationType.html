@@ -1,0 +1,82 @@
+﻿<!-- TODO: The ng-controller goes on this starting div -->
+<div class="uLocate">
+    <umb-panel>
+        <umb-header>
+            <div class="span7">
+                <form>
+                    <div class="umb-headline-editor-wrapper">
+                        <input type="text" name="name" localize="placeholder" class="umb-headline" placeholder="Enter a name for your location type" value="Business" required=""> <!-- TODO: Displays the name if editing. -->
+                        <span class="help-inline" val-msg-for="name" val-toggle-msg="required" style="display: none;">Required</span>
+                    </div>
+                </form>
+            </div>
+            <div class="span5">
+                <div class="btn-toolbar pull-right umb-btn-toolbar">
+                    <div class="btn-group">
+                        <a class="btn btn-primary">Save</a> <!-- TODO: Add the save functionality -->
+                    </div>
+                </div>
+            </div>
+        </umb-header>
+        <div class="umb-panel-body">
+
+            <div class="umb-pane form-horizontal">
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>Alias</td>
+                            <td>Name</td>
+                            <td>Type</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" placeholder="Add a property alias" value="contactName" /></td> <!-- TODO: If we can enforce no spaces or special characters in this, that would be great. -->
+                            <td><input type="text" placeholder="Add a property name" value="Contact Name" /></td>
+                            <td>
+                                <select>
+                                    <option>Textbox</option> <!-- TODO: Umbraco.Textbox -->
+                                    <option>Textbox Multiple</option> <!-- TODO: Umbraco.TextboxMultiple -->
+                                    <option>True/False</option> <!-- TODO: Umbraco.TrueFalse -->
+                                    <option>Multiple Media Picker</option> <!-- TODO: Umbraco.MultipleMediaPicker -->
+                                    <option>Single Media Picker</option> <!-- TODO: Umbraco.MediaPicker -->
+                                    <option>Member Picker</option> <!-- TODO: Umbraco.MemberPicker -->
+                                    <option>Content Picker</option> <!-- TODO: Umbraco.ContentPickerAlias -->
+                                    <option>Checkbox List</option> <!-- TODO: Discuss between Kyle, HFloyd, and Janae -->
+                                </select>
+                            </td>
+                            <td class="btn-group text-right">
+                                <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a> <!-- TODO: Will have a pop-up delete confirmation letting users know that deleting this field will remove any data locations have -->
+                            </td>
+                        </tr>
+                        <tr> 
+                            <td><input type="text" placeholder="Add a property alias" /></td>
+                            <td><input type="text" placeholder="Add a property name" /></td>
+                            <td>
+                                <select>
+                                    <option>Choose...</option>
+                                    <option>Textbox</option> <!-- TODO: Umbraco.Textbox -->
+                                    <option>Textbox Multiple</option> <!-- TODO: Umbraco.TextboxMultiple -->
+                                    <option>True/False</option> <!-- TODO: Umbraco.TrueFalse -->
+                                    <option>Multiple Media Picker</option> <!-- TODO: Umbraco.MultipleMediaPicker -->
+                                    <option>Single Media Picker</option> <!-- TODO: Umbraco.MediaPicker -->
+                                    <option>Member Picker</option> <!-- TODO: Umbraco.MemberPicker -->
+                                    <option>Content Picker</option> <!-- TODO: Umbraco.ContentPickerAlias -->
+                                    <option>Checkbox List</option> <!-- TODO: Discuss between Kyle, HFloyd, and Janae -->
+                                </select>
+                            </td>
+                            <td class="btn-group text-right">
+                                <a class="btn btn-mini btn-primary"><i class="icon-add"></i></a> <!-- TODO: Clicking add will automatically generate a new row -->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+    </umb-panel>
+</div>
