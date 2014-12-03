@@ -230,14 +230,15 @@
     <Content Include="App_Plugins\uLocate\Css\ulocate.min.css">
       <DependentUpon>ulocate.css</DependentUpon>
     </Content>
-    <Content Include="App_Plugins\uLocate\Dialogs\view.dialog.html" />
-    <Content Include="App_Plugins\uLocate\Scripts\Controllers\view.dialog.controller.js" />
-    <Content Include="App_Plugins\uLocate\Scripts\Controllers\edit.dialog.controller.js" />
-    <Content Include="App_Plugins\uLocate\Dialogs\edit.dialog.html" />
+    <Content Include="App_Plugins\uLocate\Dialogs\view.location.dialog.html" />
+    <Content Include="App_Plugins\uLocate\Scripts\Controllers\view.location.dialog.controller.js" />
+    <Content Include="App_Plugins\uLocate\Scripts\Controllers\edit.location.dialog.controller.js" />
+    <Content Include="App_Plugins\uLocate\Dialogs\edit.location.dialog.html" />
     <Content Include="App_Plugins\uLocate\Scripts\Controllers\locations.controller.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Models\location.models.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Models\map.models.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Services\map.service.js" />
+    <Content Include="App_Plugins\uLocate\Scripts\uLocate.constants.js" />
     <Content Include="App_Plugins\uLocate\Scripts\uLocate.namespaces.js" />
   </ItemGroup>
   <ItemGroup>

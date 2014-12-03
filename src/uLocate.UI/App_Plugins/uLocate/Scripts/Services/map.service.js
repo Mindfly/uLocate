@@ -65,6 +65,31 @@
 
         /**
          * @ngdoc method
+         * @name fitBoundsToMarkers
+         * @function
+         * 
+         * @param {google.maps.Map} map - The map to bind to the markers.
+         * @param {array of google.maps.Marker} - Optional array of markers to bind to. If not included, uses mapFactory.markers.
+         * @description - Centers the map's view to fit all the markers provided.
+         */
+        mapFactory.fitBoundsToMarkers = function(map, markers) {
+            if (!markers) {
+                markers = mapFactory.markers;
+            }
+            var bounds = new google.maps.LatLngBounds();
+            _.each(markers, function(marker) {
+                if (marker.getVisible()) {
+                    bounds.extend(marker.getPosition());
+                }
+            });
+            map.fitBounds(bounds);
+            if (map.getZoom() > 15) {
+                map.setZoom(15);
+            }
+        };
+
+        /**
+         * @ngdoc method
          * @name geocode
          * @function
          * 

@@ -1,5 +1,6 @@
 ﻿(function(uLocate, undefined) {
 
+    uLocate.Constants = {};
     uLocate.Controllers = {};
     uLocate.Directives = {};
     uLocate.Models = {};

@@ -4,16 +4,25 @@
 
 		var locationApiFactory = {};
 
-		locationApiFactory.getLocations = function (page, perPage, sortBy, sortOrder) {
-		    var request = {
-		    	page: page,
-		    	perPage: perPage,
-		    	soryBy: sortBy,
-				sortOrder: sortOrder
-		    };
-			// TODO: Change out this line for the one below it when not using mocks.
+	    /**
+         * @ngdoc method
+         * @name getLocations
+         * @function
+         * 
+         * @param {uLocate.Models.GetLocationsApiRequest} options - The desired options for the request.
+         * @returns {google.maps.Map} - The Google Map that was created.
+         * @description - Load and initialize a Google map.
+         */
+		locationApiFactory.getLocations = function (options) {
+		    var request;
+		    if (!options) {
+		        request = new uLocate.Models.GetLocationsApiRequst();
+		    } else {
+		        request = new uLocate.Models.GetLocationsApiRequst(options);
+		    }
+		    // TODO: Change out this line for the one below it when not using mocks.
 		    /*return $http.post('', request).then(function (response) {*/
-		    return $http.get('/App_Plugins/Scripts/ApiMocks/get.locations.js').then(function(response) {
+		    return $http.get('/App_Plugins/uLocate/Scripts/ApiMocks/get.locations.js').then(function(response) {
 			    if (response.data) {
 			    	var data = locationApiFactory.downCaseProperties(response.data);
 			        return data;
@@ -23,6 +32,14 @@
 			});
 		};
 
+	    /**
+         * @ngdoc method
+         * @name downCaseProperties
+         * @function
+         * 
+         * @param {object} object - Any object.
+         * @description - Converts CamelCase properties to camelCase properties.
+         */
 	    locationApiFactory.downCaseProperties = function(object) {
 	    	var newObject = {};
 	    	for (var prop in object) {
@@ -30,7 +47,7 @@
 	    			var propertyName = prop;
 	    			var propertyValue = object[prop];
 	    			var newPropertyName = propertyName.charAt(0).toLowerCase() + propertyName.slice(1);
-	    			if ((typeof propertyValue) == "object") {
+	    			if ((typeof propertyValue) === "object") {
 	    				propertyValue = locationApiFactory.downCaseProperties(propertyValue);
 	    			}
 	    			newObject[newPropertyName] = propertyValue;

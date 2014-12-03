@@ -30,6 +30,23 @@
         }
     };
 
+    models.GetLocationsApiRequst = function(data) {
+        var self = this;
+        if (data === undefined) {
+            self.page = 0;
+            self.perPage = 100;
+            self.sortBy = '';
+            self.sortOrder = '';
+            self.filter = '';
+        } else {
+            self.page = data.page;
+            self.perPage = data.perPage;
+            self.sortBy = data.sortBy;
+            self.sortOrder = data.sortOrder;
+            self.filter = data.filter;
+        }
+    };
+
     models.Location = function(data) {
         var self = this;
         if (data === undefined) {

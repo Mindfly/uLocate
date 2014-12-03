@@ -57,8 +57,8 @@
                         </div>
                     </div>
                 </div>
-                
-                <table class="table table-hover sortable">
+                <!-- Locations -->
+                <table class="table table-hover sortable" ng-show="haveLocations()">
                     <thead>
                         <tr> <!-- TODO: Should be able to sort by name, address, phone, lat/long, and type -->
                             <th><input type="checkbox" /></th> <!-- TODO: The only bulk action that should be available is delete. See Janae about the best way to do this? -->
@@ -71,22 +71,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="vcard"> <!-- TODO: When clicking on the row of an address, it zooms in on the pin -->
+                        <tr ng-repeat="location in locations" class="vcard"> <!-- TODO: When clicking on the row of an address, it zooms in on the pin -->
                             <td><input type="checkbox"/></td>
-                            <td class="fn"><a href class="link-blue" data-ng-click="openViewDialog()">Mindfly</a></td> <!-- TODO: This should open the view pane and not the edit pane. The view pane shows extra any information such as any location-type specific data, which is not displayed on this list -->
+                            <td class="fn"><a href class="link-blue" data-ng-click="openViewDialog(location)">Mindfly</a></td>
                             <td class="adr">
-                                <span class="street-address">114 W Magnolia St</span>
-                                <span class="extended-address">Suite 300</span> <!-- TODO: Only displays if an extended address has been enterred; not a required field -->
-                                <span class="locality">Bellingham</span>, <span class="region">WA</span> <span class="postal-code">98229</span>
-                                <span class="country-name">United States</span>
+                                <span class="street-address">{{location.address.address1}}</span>
+                                <span class="extended-address" ng-show="location.address.address2 != ''">{{location.address.address2}}</span>
+                                <span class="locality">{{location.address.locality}}</span>, <span class="region">{{location.address.region}}</span> <span class="postal-code">{{location.address.postalCode}}</span>
+                                <span class="country-name">{{location.address.countryName}}</span>
                             </td>
-                            <td class="tel">360-647-7470</td>
+                            <td class="tel" ng-show="location.phone != ''">{{location.phone}}</td>
                             <td class="geo">
-                                <span class="latitude">48.751527</span> / <span class="longitude">-122.478205</span>
+                                <span class="latitude">{{location.coordinates.latitude}}</span> / <span class="longitude">{{location.coordinates.longitude}}</span>
                             </td>
-                            <td>Business</td> <!-- TODO: This would be set to "Default" if there are no location types -->
+                            <td>{{location.type}}</td>
                             <td class="btn-group text-right">
-                                <a class="btn btn-mini" data-ng-click="openEditDialog()"><i class="icon-edit"></i></a> <!-- TODO: Opens the edit dialog pane -->
+                                <a class="btn btn-mini" data-ng-click="openEditDialog(location)"><i class="icon-edit"></i></a>
                                 <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a> <!-- TODO: Should have a delete confirmation; we should check how Umbraco does it - I think it's a generic alert -->
                             </td>
                         </tr>

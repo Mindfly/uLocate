@@ -44,6 +44,7 @@
             var options = $scope.mapOptions;
             $scope.map = uLocateMapService.loadMap('#location-map', options);
             $scope.map.setOptions({ styles: $scope.mapStyles });
+            $scope.getLocations();
             //uLocateMapService.addMarker($scope.map, [48, -122], { title: 'Somewhere', icon: $scope.customMarkerIcon });
         };
 
@@ -54,12 +55,15 @@
          * 
          * @description - Sets the initial state for $scope variables.
          */
-        $scope.setVariables = function() {
+        $scope.setVariables = function () {
+            $scope.customMarkerIcon = new uLocate.Models.MarkerSymbolIcon(uLocate.Constants.MARKER_ICON);
+            $scope.filter = '';
+            $scope.locations = [];
             $scope.map = null;
             $scope.mapOptions = {
                 center: {
-                    latitude: 48,
-                    longitude: -122
+                    latitude: 0,
+                    longitude: 0
                 },
                 zoom: 12,
                 mapTypeControlOptions: {
@@ -75,108 +79,11 @@
                     position: google.maps.ControlPosition.LEFT_CENTER
                 }
             };
-            $scope.customMarkerIcon = new uLocate.Models.MarkerSymbolIcon({
-                path: 'M0-165c-27.618 0-50 21.966-50 49.054C-50-88.849 0 0 0 0s50-88.849 50-115.946C50-143.034 27.605-165 0-165z',
-                fillColor: '#ff7100',
-                fillOpacity: 1,
-                strokeColor: '#000000',
-                strokeWeight: 2,
-                scale: 1/4
-            });
-            $scope.mapStyles = [
-                {
-                    "featureType": "landscape",
-                    "stylers": [
-                        { "visibility": "on" },
-                        { "color": "#ffffff" }
-                    ]
-                }, {
-                    "featureType": "road",
-                    "elementType": "geometry",
-                    "stylers": [
-                        { "visibility": "on" },
-                        { "color": "#d9d9d9" }
-                    ]
-                }, {
-                    "featureType": "poi.attraction",
-                    "stylers": [
-                        { "visibility": "on" },
-                        { "color": "#f8f8f8" }
-                    ]
-                }, {
-                    "featureType": "poi.business",
-                    "stylers": [
-                        { "visibility": "on" },
-                        { "color": "#d9d9d9" }
-                    ]
-                }, {
-                    "featureType": "poi.government",
-                    "stylers": [
-                        { "visibility": "on" },
-                        { "color": "#f8f8f8" }
-                    ]
-                }, {
-                    "featureType": "poi.medical",
-                    "stylers": [
-                        { "visibility": "on" },
-                        { "color": "#f8f8f8" }
-                    ]
-                }, {
-                    "featureType": "poi.park",
-                    "stylers": [
-                        { "visibility": "on" },
-                        { "color": "#53a93f" },
-                        { "lightness": 37 }
-                    ]
-                }, {
-                    "featureType": "poi.place_of_worship",
-                    "stylers": [
-                        { "visibility": "off" }
-                    ]
-                }, {
-                    "featureType": "poi.school",
-                    "stylers": [
-                        { "visibility": "on" },
-                        { "color": "#f8f8f8" }
-                    ]
-                }, {
-                    "featureType": "poi.sports_complex",
-                    "stylers": [
-                        { "visibility": "off" }
-                    ]
-                }, {
-                    "featureType": "water",
-                    "stylers": [
-                        { "visibility": "on" },
-                        { "color": "#049cdb" }
-                    ]
-                }, {
-                    "featureType": "poi.business",
-                    "elementType": "labels"
-                }, {
-                      
-                }, {
-                    "featureType": "administrative",
-                    "stylers": [
-                        { "visibility": "on" },
-                        { "color": "#f8f8f8" }
-                    ]
-                }, {
-                    "elementType": "labels.text.fill",
-                    "stylers": [
-                        { "visibility": "on" },
-                        { "color": "#1d1d1d" }
-                    ]
-                }, {
-                    "elementType": "labels.text.stroke",
-                    "stylers": [
-                        { "visibility": "on" },
-                        { "color": "#ffffff" }
-                    ]
-                }, {
-                      
-                }
-            ];
+            $scope.mapStyles = uLocate.Constants.MAP_STYLES;
+            $scope.page = 0;
+            $scope.perPage = 100;
+            $scope.sortBy = 'name';
+            $scope.sortOrder = 'ascending';
             $scope.loadMap();
         };
 
@@ -189,19 +96,26 @@
             var dialogData = {};
             dialogData.sampleItem = 'Example';
             dialogService.open({
-                template: '/App_Plugins/uLocate/Dialogs/edit.dialog.html',
+                template: '/App_Plugins/uLocate/Dialogs/edit.location.dialog.html',
                 show: true,
                 callback: $scope.processEditDialog,
                 dialogData: dialogData
             });
         };
 
-        $scope.openViewDialog = function () {
-            console.info('clicked');
+        /**
+         * @ngdoc method
+         * @name openViewDialog
+         * @function
+         * 
+         * @param {uLocate.Models.Location} location - The location to view.
+         * @description - Opens a location view dialog.
+         */
+        $scope.openViewDialog = function (location) {
             var dialogData = {};
-            dialogData.sampleItem = 'Example';
+            dialogData.location = new uLocate.Models.Location(location);
             dialogService.open({
-                template: '/App_Plugins/uLocate/Dialogs/view.dialog.html',
+                template: '/App_Plugins/uLocate/Dialogs/view.location.dialog.html',
                 show: true,
                 callback: $scope.openEditDialog,
                 dialogData: dialogData
@@ -211,6 +125,64 @@
         /*-------------------------------------------------------------------
          * Helper Methods
          * ------------------------------------------------------------------*/
+
+        /**
+         * @ngdoc method
+         * @name getLocations
+         * @function
+         * 
+         * @description - Acquires locations via API call, using the parameters defined by the user.
+         */
+        $scope.addLocationMarkersToMap = function () {
+            uLocateMapService.deleteAllMarkers();
+            _.each($scope.locations, function(location) {
+                var coord = [location.coordinates.latitude, location.coordinates.longitude];
+                uLocateMapService.addMarker($scope.map, coord, { title: location.name, icon: $scope.customMarkerIcon });
+            });
+            uLocateMapService.fitBoundsToMarkers($scope.map);
+        };
+
+        /**
+         * @ngdoc method
+         * @name getLocations
+         * @function
+         * 
+         * @description - Acquires locations via API call, using the parameters defined by the user.
+         */
+        $scope.getLocations = function() {
+            var request = new uLocate.Models.GetLocationsApiRequst({
+                filter: $scope.filter,
+                page: $scope.page,
+                perPage: $scope.perPage,
+                sortBy: $scope.sortBy,
+                sortOrder: $scope.sortOrder
+            });
+            var promise = uLocateLocationApiService.getLocations(request);
+            promise.then(function(response) {
+                $scope.locations = _.map(response, function(location) {
+                    return new uLocate.Models.Location(location);
+                });
+                $scope.addLocationMarkersToMap();
+            });
+        };
+
+        /**
+        * @ngdoc method
+        * @name haveLocations
+        * @function
+        * 
+        * @returns {boolean}
+        * @description - Returns true if the scope has at least one location.
+        */
+        $scope.haveLocations = function() {
+            var result = false;
+            if ($scope.locations) {
+                if ($scope.locations.length > 0) {
+                    result = true;
+                }
+            }
+            return result;
+        };
 
         $scope.processEditDialog = function(data) {
             console.info(data);
