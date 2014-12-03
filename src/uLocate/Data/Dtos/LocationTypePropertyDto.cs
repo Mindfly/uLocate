@@ -1,11 +1,14 @@
 ﻿namespace uLocate.Data
 {
     using System;
+
+    using uLocate.Models;
+
     using Umbraco.Core.Persistence;
     using Umbraco.Core.Persistence.DatabaseAnnotations;
 
     /// <summary>
-    /// Dto representing the "uLocate_LocationTypeProperty" table
+    /// Dto representing the "uLocate_LocationTypeProperty" table - used for creating/deleting the table
     /// </summary>
     [TableName("uLocate_LocationTypeProperty")]
     [PrimaryKey("Id")]
@@ -44,7 +47,7 @@
         /// Gets or sets the related Location Type for the property
         /// </summary>
         [Column("LocationTypeId")]
-        [ForeignKey(typeof(LocationTypeDto), Name = "FK_uLocateLocationTypeProperty_uLocateLocationType", Column = "Id")]
+        [ForeignKey(typeof(LocationType), Name = "FK_uLocateLocationTypeProperty_uLocateLocationType", Column = "Id")]
         public int LocationTypeId { get; set; }
 
         /// <summary>
@@ -67,13 +70,13 @@
         [Constraint(Default = "getdate()")]
         public DateTime UpdateDate { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LocationTypePropertyDto"/> class and sets some default values.
-        /// </summary>
-        public LocationTypePropertyDto()
-        {
-            UpdateDate = DateTime.Now;
-            CreateDate = DateTime.Now;
-        }
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="LocationTypePropertyDto"/> class and sets some default values.
+        ///// </summary>
+        //public LocationTypePropertyDto()
+        //{
+        //    UpdateDate = DateTime.Now;
+        //    CreateDate = DateTime.Now;
+        //}
     }
 }

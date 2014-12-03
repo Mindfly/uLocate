@@ -58,7 +58,7 @@ namespace uLocate.Persistance
             throw new NotImplementedException();
         }
 
-        protected override void PersistNewItem(Location item)
+        protected override object PersistNewItem(Location item)
         {
             throw new NotImplementedException();
         }
@@ -72,8 +72,6 @@ namespace uLocate.Persistance
         {
             throw new NotImplementedException();
         }
-
-
 
         /// <summary>
         /// Gets the base sql string
@@ -89,8 +87,8 @@ namespace uLocate.Persistance
             var sql = new Sql();
             sql.Select(isCount ? "COUNT(*)" : "*")
                 .From<LocationDto>()
-                .InnerJoin<LocationTypeDto>()
-                .On<LocationDto, LocationTypeDto>(left => left.LocationTypeId, right => right.Id);
+                .InnerJoin<LocationType>()
+                .On<LocationDto, LocationType>(left => left.LocationTypeId, right => right.Id);
 
             return sql;
         }

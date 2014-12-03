@@ -1,6 +1,9 @@
 ﻿namespace uLocate.Data
 {
     using System;
+
+    using uLocate.Models;
+
     using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;
 
@@ -32,7 +35,7 @@
         {
             LogHelper.Info<DatabaseDefaultDataInsert>(string.Format("Initializing default data..."));
 
-            CreateAllowedDataTypesData();
+            //CreateAllowedDataTypesData();
             CreateLocationTypeData();
             CreateLocationTypePropertyData();
         }
@@ -40,21 +43,21 @@
         /// <summary>
         /// Inserts data for table "uLocate_AllowedDataTypes"
         /// </summary>
-        private void CreateAllowedDataTypesData()
-        {
-            LogHelper.Info<DatabaseDefaultDataInsert>(string.Format("CreateAllowedDataTypesData() running..."));
+        //private void CreateAllowedDataTypesData()
+        //{
+        //    LogHelper.Info<DatabaseDefaultDataInsert>(string.Format("CreateAllowedDataTypesData() running..."));
 
-            string TableName = "uLocate_AllowedDataTypes";
-            string PrimaryKeyFieldName = "Id";
+        //    string TableName = "uLocate_AllowedDataTypes";
+        //    string PrimaryKeyFieldName = "Id";
 
-            LogHelper.Info<DatabaseDefaultDataInsert>(string.Format("Adding data for table '{0}'...", TableName));
+        //    LogHelper.Info<DatabaseDefaultDataInsert>(string.Format("Adding data for table '{0}'...", TableName));
 
-            //uLocate.Constants includes the list of allowed datatypes
-            foreach (var DataType in uLocate.Constants.AllowedDataTypesDictionary)
-            {
-                _database.Insert(TableName, PrimaryKeyFieldName, new AllowedDataTypesDto() { UmbracoDataTypeId = DataType.Value });
-            }
-        }
+        //    //uLocate.Constants includes the list of allowed datatypes
+        //    foreach (var DataType in uLocate.Constants.AllowedDataTypesDictionary)
+        //    {
+        //        _database.Insert(TableName, PrimaryKeyFieldName, new AllowedDataTypesDto() { UmbracoDataTypeId = DataType.Value });
+        //    }
+        //}
 
         /// <summary>
         /// Inserts data for table "uLocate_LocationType"
@@ -68,7 +71,7 @@
 
             LogHelper.Info<DatabaseDefaultDataInsert>(string.Format("Adding data for table '{0}'...", TableName));
 
-            _database.Insert(TableName, PrimaryKeyFieldName, new LocationTypeDto() { Name = "Default" });
+            _database.Insert(TableName, PrimaryKeyFieldName, new LocationType() { Name = "Default" });
         }
 
         /// <summary>
@@ -86,7 +89,7 @@
             //'Default' Properties
             foreach (var Prop in uLocate.Constants.DefaultLocationTypeProperties)
             {
-                var Data = new LocationTypePropertyDto
+                var Data = new LocationTypeProperty
                                {
                                    LocationTypeId = Prop.LocationTypeId,
                                    Alias = Prop.Alias,

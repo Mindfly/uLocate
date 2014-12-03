@@ -1,5 +1,5 @@
 ﻿<!-- TODO: The ng-controller goes on this starting div -->
-<div>
+<div class="uLocate">
     <umb-panel>
         <umb-header>
             <div class="span7">
@@ -13,13 +13,52 @@
                         <!-- TODO: In umbraco, this is generated using umb-options-menu, which you can see an example of in Umbraco.Web.UI.Client\build\belle\views\content\edit.html. The actions allowed for this menu item are determined in the uLocate TreeController -->
                         <ul class="dropdown-menu umb-actions">
                             <!-- ngRepeat: action in actions -->
-                            <li class="action ng-scope">
-                                <a><i class="icon icon-add"></i><span class="menu-label">Create</span></a>
+                            <li class="action">
+                                <a><i class="icon icon-add"></i><span class="menu-label">Create</span></a> <!-- TODO: Opens the page to create a new location type -->
+                            </li>
+                            <li class="action sep">
+                                <a><i class="icon icon-refresh"></i><span class="menu-label">Reload nodes</span></a> <!-- TODO: Reloads the location types and ideally kicks the cache in the teeth -->
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </umb-header>
+        <div class="umb-panel-body">
+
+            <div class="umb-pane">
+                
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td><input type="checkbox"/></td>
+                            <td>Name</td>
+                            <td>Fields</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><!-- TODO: The default location type should always display -->
+                            <td></td>
+                            <td>Default</td> <!-- TODO: Change "Default" to a more user friendly term -->
+                            <td>Name, Street Address, Extended Address, City, State/Province, Zip/Postal Code, Country, Latitude/Longitude, Phone Number</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"/></td>
+                            <td>Business</td>
+                            <td>Contact Name, Phone Extention, Accepts Marketing</td> <!-- TODO: This should be a repeater that displays all the field names in a comma separated list -->
+                            <td class="btn-group text-right">
+                                <a class="btn btn-mini" data-ng-click="openEditDialog()"><i class="icon-edit"></i></a> <!-- TODO: Opens the create/edit page, not a dialog -->
+                                <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a> <!-- TODO: Will have a pop-up delete notification asking users if they want to revert associated locations to the default location type or delete them -->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
     </umb-panel>
 </div>

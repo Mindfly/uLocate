@@ -9,6 +9,7 @@
 
     using Umbraco.Core;
     using Umbraco.Core.Cache;
+    using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;
 
     /// <summary>
@@ -38,14 +39,40 @@
         #region Public Methods
         public void Insert(LocationType Entity)
         {
-            PersistNewItem(Entity);
+            var NewItemId = PersistNewItem(Entity);
         }
 
-        public void Delete(LocationType Entity)
+        public void Insert(LocationType Entity, out int NewItemId)
         {
+            var NewItemInfo = PersistNewItem(Entity);
+            NewItemId = Convert.ToInt32(NewItemInfo);
+        }
+
+        public void Delete(int LocationTypeId, bool ConvertLocationsToDefault = true)
+        {
+            LocationType ThisLocType = this.GetById(LocationTypeId);
+            if (ThisLocType != null)
+            {
+                this.Delete(ThisLocType, ConvertLocationsToDefault);
+            }
+        }
+
+        public void Delete(LocationType Entity, bool ConvertLocationsToDefault = true)
+        {
+            if (ConvertLocationsToDefault)
+            {
+                //TODO: Add Location handling logic here
+                //Check for associated locations and update them to use LocationTypeId = DefaultId
+                
+            }
+            else
+            {
+                //Cascade deletes to matching Locations
+            }
+
             PersistDeletedItem(Entity);
         }
-
+        
         public void Update(LocationType Entity)
         {
             PersistUpdatedItem(Entity);
@@ -85,18 +112,17 @@
         #region Protected Methods
         protected override IEnumerable<LocationType> PerformGetAll(params object[] IdKeys)
         {
-            CurrentCollection.Clear();
             IEnumerable<LocationType> Result;
             var MySql = new Sql();
 
             if (IdKeys.Any())
             {
                 var ParamsCsv = string.Join(",", IdKeys);
-                MySql.Select("*").From<LocationTypeDto>().Where("Id IN @0;", ParamsCsv);
+                MySql.Select("*").From<LocationType>().Where("Id IN @0;", ParamsCsv);
             }
             else
             {
-                MySql.Select("*").From<LocationTypeDto>();
+                MySql.Select("*").From<LocationType>();
             }
 
             Result = Repositories.ThisDb.Fetch<LocationType>(MySql).ToList();
@@ -107,32 +133,44 @@
         protected override LocationType PerformGet(object IdKey)
         {
             var MySql = new Sql();
-            MySql.Select("*").From<LocationTypeDto>().Where("Id = @0;", IdKey);
-
+            MySql
+                .Select("*")
+                .From<LocationType>()
+                .Where("Id = @0", IdKey);
+            //.Where<LocationType>(n => n.Id == IdKey);
             return Repositories.ThisDb.Fetch<LocationType>(MySql).FirstOrDefault();
         }
 
-        protected override void PersistNewItem(LocationType item)
+        protected override object PersistNewItem(LocationType item)
         {
-            throw new NotImplementedException();
+            string Msg = string.Format("LocationType '{0}' has been saved.", item.Name);
+            var InsertedItem = Repositories.ThisDb.Insert(item);
+            LogHelper.Info(typeof(LocationTypeRepository), Msg);
+            
+            PersistChildren(item);
+
+            return InsertedItem;
         }
 
         protected override void PersistUpdatedItem(LocationType item)
         {
-            throw new NotImplementedException();
+            string Msg = string.Format("LocationType '{0}' has been updated.", item.Name);
+            Repositories.ThisDb.Update(item);
+            LogHelper.Info(typeof(LocationTypeRepository), Msg);
         }
 
         protected override void PersistDeletedItem(LocationType item)
         {
-            //var MySql = new Sql();
-            //MySql.Select("*").From<LocationTypeDto>();
-            throw new NotImplementedException();
+            DeleteChildren(item);
+            string Msg = string.Format("LocationType '{0}' has been deleted.", item.Name);
+            Repositories.ThisDb.Delete<LocationType>(item.Id);
+            LogHelper.Info(typeof(LocationTypeRepository), Msg);
         }
 
         protected override Sql GetBaseQuery(bool isCount)
         {
             var MySql = new Sql();
-            MySql.Select("*").From<LocationTypeDto>();
+            MySql.Select("*").From<LocationType>();
             return MySql;
         }
 
@@ -158,12 +196,47 @@
             this.FillProperties();
         }
 
+        private void PersistChildren(LocationType item)
+        {
+            this.PersistProperties(item);
+        }
+
+        private void DeleteChildren(LocationType LocationType)
+        {
+            this.DeleteProperties(LocationType);
+        }
+
         private void FillProperties()
         {
             var Repo = new LocationTypePropertyRepository(Repositories.ThisDb, Helper.ThisCache);
             foreach (var LocType in CurrentCollection)
             {
-                LocType.Properties = Repo.GetByLocationType(LocType.Id);
+                LocType.Properties = Repo.GetByLocationType(LocType.Id).ToList();
+            }
+        }
+
+        private void PersistProperties(LocationType item)
+        {
+            var Repo = new LocationTypePropertyRepository(Repositories.ThisDb, Helper.ThisCache);
+            foreach (var NewProp in item.Properties)
+            {
+                if (NewProp.LocationTypeId == 0)
+                {
+                    NewProp.LocationTypeId = item.Id;
+                }
+
+                Repo.Insert(NewProp);
+            }
+        }
+
+        private void DeleteProperties(LocationType item)
+        {
+            var Repo = new LocationTypePropertyRepository(Repositories.ThisDb, Helper.ThisCache);
+            var MatchingProps = Repo.GetByLocationType(item.Id);
+
+            foreach (var Prop in MatchingProps)
+            {
+                Repo.Delete(Prop);
             }
         }
 

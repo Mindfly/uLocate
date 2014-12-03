@@ -6,7 +6,7 @@
     using Umbraco.Core.Persistence.DatabaseAnnotations;
 
     /// <summary>
-    /// The location type dto.
+    /// The location type dto - used for creating/deleting the table
     /// </summary>
     [TableName("uLocate_LocationType")]
     [PrimaryKey("Id")]
