@@ -1,5 +1,7 @@
-﻿<div data-ng-controller="uLocate.Controllers.LocationsController">
-    <umb-panel class="uLocate">
+﻿<div data-ng-controller="uLocate.Controllers.LocationsController" class="uLocate">
+
+    <!-- The locations view route -->
+    <umb-panel>
         <umb-header>
             <div class="span7">
                 <h1>Locations</h1>
@@ -100,5 +102,135 @@
 
         </div>
 
+    </umb-panel>
+
+    <!-- The create location route -->
+    <umb-panel>
+        <umb-header>
+            <div class="span7">
+                <form>
+                    <div class="umb-headline-editor-wrapper">
+                        <input type="text" name="name" localize="placeholder" class="umb-headline" placeholder="Enter a name for your location" required=""> <!-- TODO: Displays the name if editing. -->
+                        <span class="help-inline" val-msg-for="name" val-toggle-msg="required" style="display: none;">Required</span>
+                    </div>
+                </form>
+            </div>
+            <div class="span5">
+                <div class="btn-toolbar pull-right umb-btn-toolbar">
+                    <div class="btn-group">
+                        <a class="btn btn-primary">Save</a> <!-- TODO: Add the save functionality -->
+                    </div>
+                </div>
+            </div>
+        </umb-header>
+        <div class="umb-panel-body">
+
+            <div class="umb-pane form-horizontal">
+
+                <div class="control-group umb-control-group">
+                    <label class="control-label" for="streetAddress">
+                        Street Address
+                        <small>Street address or c/o</small>
+                    </label>
+
+                    <div class="controls controls-row">
+                        <input type="text" name="textbox" id="streetAddress" class="umb-editor umb-textstring textstring" required=""> <!-- TODO: The id should match the model name -->
+
+                        <span class="help-inline" style="display: none;">Required</span>
+                        <span class="help-inline" style="display: none;"></span>
+                    </div>
+                </div>
+
+                <div class="control-group umb-control-group">
+                    <label class="control-label" for="extendedAddress">
+                        Extended Address
+                        <small>Suite, apartment, unit, etc</small>
+                    </label>
+
+                    <div class="controls controls-row">
+                        <input type="text" name="textbox" id="extendedAddress" class="umb-editor umb-textstring textstring"> <!-- TODO: The id should match the model name -->
+                    </div>
+                </div>
+
+                <div class="control-group umb-control-group">
+                    <label class="control-label" for="locality">City</label>
+
+                    <div class="controls controls-row">
+                        <input type="text" name="textbox" id="locality" class="umb-editor umb-textstring textstring" required=""> <!-- TODO: The id should match the model name -->
+
+                        <span class="help-inline" style="display: none;">Required</span>
+                        <span class="help-inline" style="display: none;"></span>
+                    </div>
+                </div>
+                
+                <div class="control-group umb-control-group">
+                    <label class="control-label" for="region">State</label>
+
+                    <div class="controls controls-row">
+                        <input type="text" name="textbox" id="region" class="umb-editor umb-textstring textstring" required=""> <!-- TODO: The id should match the model name -->
+
+                        <span class="help-inline" style="display: none;">Required</span>
+                        <span class="help-inline" style="display: none;"></span>
+                    </div>
+                </div>
+
+                <div class="control-group umb-control-group">
+                    <label class="control-label" for="postalCode">Zip/Postal Code</label>
+
+                    <div class="controls controls-row">
+                        <input type="text" name="textbox" id="postalCode" class="umb-editor umb-textstring textstring" required=""> <!-- TODO: The id should match the model name -->
+
+                        <span class="help-inline" style="display: none;">Required</span>
+                        <span class="help-inline" style="display: none;"></span>
+                    </div>
+                </div>
+
+                <div class="control-group umb-control-group">
+                    <label class="control-label" for="countryName">Country</label>
+
+                    <div class="controls controls-row">
+                        <select id="countryName" class="umb-editor umb-dropdown"> <!-- TODO: The id should match the model name -->
+                            <option>Choose...</option>
+                        </select>
+                        <span class="help-inline" style="display: none;">Required</span>
+                        <span class="help-inline" style="display: none;"></span>
+                    </div>
+                </div>
+                
+                <div class="control-group umb-control-group">
+                    <label class="control-label" for="latitude">
+                        Latitutde
+                        <small>Optional. Will auto-generate based on address unless entered here.</small>
+                    </label>
+
+                    <div class="controls controls-row">
+                        <input type="text" name="textbox" id="latitude" class="umb-editor umb-textstring textstring"> <!-- TODO: The id should match the model name -->
+                    </div>
+                </div>
+                
+                <div class="control-group umb-control-group">
+                    <label class="control-label" for="longitude">
+                        Longitude
+                        <small>Optional. Will auto-generate based on address unless entered here.</small>
+                    </label>
+
+                    <div class="controls controls-row">
+                        <input type="text" name="textbox" id="longitude" class="umb-editor umb-textstring textstring"> <!-- TODO: The id should match the model name -->
+                    </div>
+                </div>
+                
+                <div class="control-group umb-control-group">
+                    <label class="control-label" for="tel">Phone Number</label>
+
+                    <div class="controls controls-row">
+                        <input type="text" name="textbox" id="longitude" class="umb-editor umb-textstring textstring" required=""> <!-- TODO: The id should match the model name -->
+                    </div>
+                </div>
+                
+                <!-- TODO: All items after this point would be custom items based on a custom location type -->
+
+            </div>
+
+        </div>
     </umb-panel>
 </div>
