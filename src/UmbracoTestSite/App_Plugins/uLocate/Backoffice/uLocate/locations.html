@@ -1,5 +1,5 @@
-﻿<div data-ng-controller="uLocate.Controllers.LocationsController">
-    <umb-panel class="uLocate">
+﻿<div data-ng-controller="uLocate.Controllers.LocationsController" class="uLocate">
+    <umb-panel>
         <umb-header>
             <div class="span7">
                 <h1>Locations</h1>
@@ -13,7 +13,7 @@
                         <ul class="dropdown-menu umb-actions">
                             <!-- ngRepeat: action in actions -->
                             <li class="action">
-                                <a><i class="icon icon-add"></i><span class="menu-label">Create</span></a> <!-- TODO: Opens the page to create a new location -->
+                                <a ng-click="executeMenuItem(action)"><i class="icon icon-add"></i><span class="menu-label">Create</span></a> <!-- TODO: Opens the page to create a new location -->
                             </li>
                             <li class="action sep">
                                 <a><i class="icon icon-refresh"></i><span class="menu-label">Reload nodes</span></a> <!-- TODO: Reloads the locations and ideally kicks the cache in the teeth -->
@@ -23,11 +23,11 @@
                 </div>
             </div>
         </umb-header>
-        
+
         <div class="umb-panel-body">
-            
+
             <div class="umb-pane">
-                
+
                 <div class="map-wrapper span12">
                     <div class="map-bar top row-fluid">
                         <form class="span7 form-search">
@@ -44,7 +44,8 @@
                     <div class="map-bar bottom row-fluid">
                         <div class="span6 form-inline">
                             <label class="control-label">Show:</label>
-                            <select class="input-small"> <!-- TODO: Sets the amount of items that display on a page -->
+                            <select class="input-small">
+                                <!-- TODO: Sets the amount of items that display on a page -->
                                 <option selected="selected">25</option>
                                 <option>50</option>
                                 <option>100</option>
@@ -60,7 +61,8 @@
                 <!-- Locations -->
                 <table class="table table-hover sortable" ng-show="haveLocations()">
                     <thead>
-                        <tr> <!-- TODO: Should be able to sort by name, address, phone, lat/long, and type -->
+                        <tr>
+                            <!-- TODO: Should be able to sort by name, address, phone, lat/long, and type -->
                             <th><input type="checkbox" /></th> <!-- TODO: The only bulk action that should be available is delete. See Janae about the best way to do this? -->
                             <th>Name</th>
                             <th>Address</th>
@@ -71,8 +73,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="location in locations" class="vcard"> <!-- TODO: When clicking on the row of an address, it zooms in on the pin -->
-                            <td><input type="checkbox"/></td>
+                        <tr ng-repeat="location in locations" class="vcard">
+                            <!-- TODO: When clicking on the row of an address, it zooms in on the pin -->
+                            <td><input type="checkbox" /></td>
                             <td class="fn"><a href class="link-blue" data-ng-click="openViewDialog(location)">Mindfly</a></td>
                             <td class="adr">
                                 <span class="street-address">{{location.address.address1}}</span>
@@ -97,5 +100,9 @@
 
         </div>
 
+    </umb-panel>
+
+    <umb-panel>
+        This is a create dialog
     </umb-panel>
 </div>

@@ -1,0 +1,22 @@
+﻿<div class="umb-dialog-body with-footer">
+    <div class="umb-pane">
+        <h5><localize key="create_createUnder">Create an item under </localize> {{currentNode.name}}</h5>
+
+        <ul class="umb-actions umb-actions-child">
+            <li><!-- TODO: Should be a repeater displaying the default location type and all custom location types beneath it as options. -->
+                <a href="#/uLocate/uLocate/createLocation/create" ng-click="nav.hideNavigation()">
+                    <i class="large icon-map-loaction"></i>
+                    <span class="menu-label">
+                        Default Location
+                        <small>A basic location with a name, address, and phone number</small>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="umb-dialog-footer btn-toolbar umb-btn-toolbar">
+    <button class="btn" ng-click="nav.hideDialog()">
+        <localize key="buttons_somethingElse">Do something else</localize>
+    </button>
+</div>

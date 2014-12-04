@@ -72,10 +72,13 @@
             {
                 menu.Items.Add<RefreshNode, ActionRefresh>(ui.Text("actions", ActionRefresh.Instance.Alias));
             }
-            if (id == "1" || id == "2")
+            if (id == "1")
             {
-                menu.Items.Add<CreateChildEntity, ActionNew>(ui.Text("actions", ActionNew.Instance.Alias));
-                menu.Items.Add<RefreshNode, ActionRefresh>(ui.Text("actions", ActionRefresh.Instance.Alias), true);
+                menu.Items.Add<ActionNew>(ui.Text("actions", ActionNew.Instance.Alias)).LaunchDialogView("/App_Plugins/uLocate/Dialogs/create.location.dialog.html", "Create");
+            }
+            if (id == "2")
+            {
+                menu.Items.Add<ActionNew>(ui.Text("actions", ActionNew.Instance.Alias)).LaunchDialogView("/App_Plugins/uLocate/Dialogs/create.locationType.dialog.html", "Create");
             }
 
             return menu;
