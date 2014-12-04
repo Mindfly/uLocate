@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function ($scope, $routeParams, assetsService, dialogService, uLocateMapService, uLocateLocationApiService, notificationsService) {
+    controllers.LocationsController = function ($scope, $routeParams, treeService, assetsService, dialogService, navigationService, uLocateMapService, uLocateLocationApiService, notificationsService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -20,6 +20,23 @@
             } else {
                 $scope.setVariables();
             }
+        };
+
+        /**
+         * @ngdoc method
+         * @name getCurrentNode
+         * @function
+         * 
+         * @description - Get the node for this page from the treeService for use with opening a create dialog later.
+         */
+        $scope.getCurrentNode = function() {
+            var promise = treeService.getTree({ section: 'uLocate' }).then(function (tree) {
+                _.each(tree.root.children, function(node) {
+                    if (node.id == '1') {
+                        $scope.currentNode = node;
+                    }
+                });
+            });
         };
 
         /**
@@ -60,6 +77,7 @@
          * @description - Sets the initial state for $scope variables.
          */
         $scope.setVariables = function () {
+            $scope.currentNode = false;
             $scope.customMarkerIcon = new uLocate.Models.MarkerSymbolIcon(uLocate.Constants.MARKER_ICON);
             $scope.filter = '';
             $scope.locations = [];
@@ -75,6 +93,7 @@
             $scope.sortBy = 'name';
             $scope.sortOrder = 'ascending';
             $scope.totalPages = 0;
+            $scope.getCurrentNode();
             // Load the map now that the required variables have been assigned.
             if ($scope.selectedView === 'view') {
                 $scope.map = null;
@@ -138,6 +157,23 @@
                 $scope.page = $scope.totalPages - 1;
             }
             $scope.getLocations();
+        };
+
+        $scope.openCreateDialog = function() {
+            navigationService.showDialog({
+                node: $scope.currentNode,
+                action: {
+                    alias: 'create',
+                    cssclass: 'add',
+                    name: 'Create',
+                    seperator: false,
+                    metaData: {
+                        actionView: '/App_Plugins/uLocate/Dialogs/create.location.dialog.html',
+                        dialogTitle: 'Create'
+                    }
+                },
+                section: 'uLocate'
+            });
         };
 
         $scope.openEditDialog = function () {
@@ -295,6 +331,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$routeParams', 'assetsService', 'dialogService', 'uLocateMapService', 'uLocateLocationApiService', 'notificationsService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'uLocateMapService', 'uLocateLocationApiService', 'notificationsService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));
