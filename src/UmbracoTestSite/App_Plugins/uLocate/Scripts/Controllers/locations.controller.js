@@ -45,7 +45,6 @@
             $scope.map = uLocateMapService.loadMap('#location-map', options);
             $scope.map.setOptions({ styles: $scope.mapStyles });
             $scope.getLocations();
-            //uLocateMapService.addMarker($scope.map, [48, -122], { title: 'Somewhere', icon: $scope.customMarkerIcon });
         };
 
         /**
@@ -99,7 +98,21 @@
         /*-------------------------------------------------------------------
          * Event Handler Methods
          *-------------------------------------------------------------------*/
-        
+
+        /**
+         * @ngdoc method
+         * @name changeFilter
+         * @function
+         * 
+         * @param {string} filter - The search filter string.
+         * @description - changes the search filter and triggers getLocations();
+         */
+        $scope.changeFilter = function(filter) {
+            $scope.filter = filter;
+            $scope.page = 0;
+            $scope.getLocations();
+        };
+
         /**
          * @ngdoc method
          * @name changePage
@@ -232,8 +245,7 @@
                     return new uLocate.Models.Location(location);
                 });
                 $scope.page = response.page;
-                $scope.perPage = response.perPage
-                console.info(response.perPage);
+                $scope.perPage = response.perPage;
                 _.each($scope.options.perPage, function(option, index) {
                     if (option == response.perPage) {
                         $scope.selected.perPage = $scope.options.perPage[index];

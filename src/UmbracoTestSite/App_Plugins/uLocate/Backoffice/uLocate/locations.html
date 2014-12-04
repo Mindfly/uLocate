@@ -33,8 +33,8 @@
                         <!-- Search -->
                         <form class="span8 form-search">
                             <i class="icon-search"></i>
-                            <input type="text" placeholder="Search uLocate addresses" class="span9" /> <!-- TODO: Will filter out addresses in the list that match the criteria in the filter (similar to Merchello's filter functionality). Would love it if this automatically happened as you were typing -->
-                            <a class="btn btn-primary">Search</a>
+                            <input type="text" placeholder="Search uLocate addresses" class="span9" ng-modoel="filter" />
+                            <a class="btn btn-primary" ng-click="changeFilter(filter)">Search</a>
                         </form>
                         <div class="span4">
                             <div class="btn-group pull-right">
