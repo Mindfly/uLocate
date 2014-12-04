@@ -215,6 +215,9 @@
     </None>
     <None Include="App_Plugins\uLocate\Css\ulocate.scss" />
     <None Include="App_Plugins\uLocate\package.manifest" />
+    <Content Include="App_Plugins\uLocate\Backoffice\uLocate\createLocation.html" />
+    <Content Include="App_Plugins\uLocate\Dialogs\create.locationType.dialog.html" />
+    <Content Include="App_Plugins\uLocate\Dialogs\create.location.dialog.html" />
     <Content Include="App_Plugins\uLocate\Scripts\ApiMocks\get.locations.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Services\location.api.service.js" />
     <None Include="packages.config" />
