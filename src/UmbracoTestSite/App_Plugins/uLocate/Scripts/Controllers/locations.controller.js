@@ -14,8 +14,12 @@
          * @description - Called when the $scope is initalized.
          */
         $scope.init = function () {
-            console.info($routeParams);
-            $scope.loadGoogleMapAsset();
+            $scope.selectedView = $routeParams.id;
+            if ($scope.selectedView === 'view') {
+                $scope.loadGoogleMapAsset();
+            } else {
+                $scope.setVariables();
+            }
         };
 
         /**
@@ -60,27 +64,6 @@
             $scope.filter = '';
             $scope.locations = [];
             $scope.locationsLoaded = false;
-            $scope.map = null;
-            $scope.mapOptions = {
-                center: {
-                    latitude: 0,
-                    longitude: 0
-                },
-                zoom: 12,
-                mapTypeControlOptions: {
-                    position: google.maps.ControlPosition.LEFT_CENTER,
-                    style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-                },
-                panControlOptions: {
-                    position: google.maps.ControlPosition.LEFT_CENTER
-                },
-                streetViewControl: false,
-                zoomControlOptions: {
-                    style: google.maps.ZoomControlStyle.SMALL,
-                    position: google.maps.ControlPosition.LEFT_CENTER
-                }
-            };
-            $scope.mapStyles = uLocate.Constants.MAP_STYLES;
             $scope.options = {
                 perPage: [25, 50, 100]
             };
@@ -88,12 +71,36 @@
             $scope.perPage = 100;
             $scope.selected = {
                 perPage: $scope.options.perPage[2]
-        }
+            }
             $scope.sortBy = 'name';
             $scope.sortOrder = 'ascending';
             $scope.totalPages = 0;
             // Load the map now that the required variables have been assigned.
-            $scope.loadMap();
+            if ($scope.selectedView === 'view') {
+                $scope.map = null;
+                $scope.mapOptions = {
+                    center: {
+                        latitude: 0,
+                        longitude: 0
+                    },
+                    zoom: 12,
+                    mapTypeControlOptions: {
+                        position: google.maps.ControlPosition.LEFT_CENTER,
+                        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+                    },
+                    panControlOptions: {
+                        position: google.maps.ControlPosition.LEFT_CENTER
+                    },
+                    streetViewControl: false,
+                    zoomControlOptions: {
+                        style: google.maps.ZoomControlStyle.SMALL,
+                        position: google.maps.ControlPosition.LEFT_CENTER
+                    }
+                };
+                $scope.mapStyles = uLocate.Constants.MAP_STYLES;
+
+                $scope.loadMap();
+            }
         };
 
         /*-------------------------------------------------------------------

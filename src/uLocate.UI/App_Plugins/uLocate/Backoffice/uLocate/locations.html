@@ -1,7 +1,7 @@
 ﻿<div data-ng-controller="uLocate.Controllers.LocationsController" class="uLocate">
 
     <!-- The locations view route -->
-    <umb-panel>
+    <umb-panel ng-hide="selectedView != 'view'">
         <umb-header>
             <div class="span7">
                 <h1>Locations</h1>
@@ -105,7 +105,7 @@
     </umb-panel>
 
     <!-- The create location route -->
-    <umb-panel>
+    <umb-panel ng-hide="selectedView != 'create'">
         <umb-header>
             <div class="span7">
                 <form>
