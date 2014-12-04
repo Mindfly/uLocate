@@ -78,8 +78,8 @@
                             <td><input type="checkbox" /></td>
                             <td class="fn"><a href class="link-blue" ng-click="openViewDialog(location)">Mindfly</a></td>
                             <td class="adr">
-                                <span class="street-address">{{location.address.address1}}</span>
-                                <span class="extended-address" ng-show="location.address.address2 != ''">{{location.address.address2}}</span>
+                                <span class="street-address">{{location.address.streetAddress}}</span>
+                                <span class="extended-address" ng-show="location.address.address2 != ''">{{location.address.extendedAddress}}</span>
                                 <span class="locality">{{location.address.locality}}</span>, <span class="region">{{location.address.region}}</span> <span class="postal-code">{{location.address.postalCode}}</span>
                                 <span class="country-name">{{location.address.countryName}}</span>
                             </td>
