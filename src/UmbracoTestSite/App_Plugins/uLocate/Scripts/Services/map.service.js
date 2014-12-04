@@ -39,6 +39,30 @@
 
         /**
          * @ngdoc method
+         * @name changeView
+         * @function
+         * 
+         * @param {Google.maps.Map} map - The map to update.
+         * @param {uLocate.Models.MapView} options - The directions on how to change the view.
+         * @description - Changes the view of the map.
+         */
+        mapFactory.changeView = function (map, options) {
+            options = new uLocate.Models.MapView(options);
+            if (options.coordinates) {
+                var coord = new google.maps.LatLng(options.coordinates[0], options.coordinates[1]);
+                if (options.smoothAnimation) {
+                    map.panTo(coord);
+                } else {
+                    map.setCenter(coord);
+                }
+            }
+            if (options.zoom) {
+                map.setZoom(options.zoom);
+            }
+        };
+
+        /**
+         * @ngdoc method
          * @name deleteAllMarkers
          * @function
          * 
@@ -86,6 +110,18 @@
             if (map.getZoom() > 15) {
                 map.setZoom(15);
             }
+        };
+
+        /**
+         * @ngdoc method
+         * @name getAllMarkers
+         * @function
+         * 
+         * @returns {array of google.maps.Marker} - The markers returned.
+         * @description - Returns all markers in mapFactory.markers array.
+         */
+        mapFactory.getAllMarkers = function() {
+            return mapFactory.markers;
         };
 
         /**

@@ -1,5 +1,5 @@
-﻿<div data-ng-controller="uLocate.Controllers.LocationsController" class="uLocate">
-    <umb-panel>
+﻿<div data-ng-controller="uLocate.Controllers.LocationsController">
+    <umb-panel class="uLocate">
         <umb-header>
             <div class="span7">
                 <h1>Locations</h1>
@@ -13,7 +13,7 @@
                         <ul class="dropdown-menu umb-actions">
                             <!-- ngRepeat: action in actions -->
                             <li class="action">
-                                <a ng-click="executeMenuItem(action)"><i class="icon icon-add"></i><span class="menu-label">Create</span></a> <!-- TODO: Opens the page to create a new location -->
+                                <a><i class="icon icon-add"></i><span class="menu-label">Create</span></a> <!-- TODO: Opens the page to create a new location -->
                             </li>
                             <li class="action sep">
                                 <a><i class="icon icon-refresh"></i><span class="menu-label">Reload nodes</span></a> <!-- TODO: Reloads the locations and ideally kicks the cache in the teeth -->
@@ -30,11 +30,13 @@
 
                 <div class="map-wrapper span12">
                     <div class="map-bar top row-fluid">
-                        <form class="span7 form-search">
+                        <!-- Search -->
+                        <form class="span8 form-search">
                             <i class="icon-search"></i>
-                            <input type="text" placeholder="Search uLocate addresses" class="span12" /> <!-- TODO: Will filter out addresses in the list that match the criteria in the filter (similar to Merchello's filter functionality). Would love it if this automatically happened as you were typing -->
+                            <input type="text" placeholder="Search uLocate addresses" class="span9" ng-modoel="filter" />
+                            <a class="btn btn-primary" ng-click="changeFilter(filter)">Search</a>
                         </form>
-                        <div class="span5">
+                        <div class="span4">
                             <div class="btn-group pull-right">
                                 <a class="btn btn-primary">Create</a> <!-- TODO: Opens the page to create a new location -->
                             </div>
@@ -42,24 +44,21 @@
                     </div>
                     <div class="map" id="location-map"></div>
                     <div class="map-bar bottom row-fluid">
-                        <div class="span6 form-inline">
+                        <!-- perPage dropdown -->
+                        <div class="span6 form-inline" ng-show="locationsLoaded">
                             <label class="control-label">Show:</label>
-                            <select class="input-small">
-                                <!-- TODO: Sets the amount of items that display on a page -->
-                                <option selected="selected">25</option>
-                                <option>50</option>
-                                <option>100</option>
-                            </select>
+                            <select class="input-small" ng-model="selected.perPage" ng-options="option for option in options.perPage" ng-change="updatePerPage(selected.perPage)"></select>
                         </div>
-                        <div class="span6 text-right">
-                            <button class="btn btn-link"><i class="icon-left-double-arrow"></i></button> <!-- TODO: Only displays if not the first page -->
-                            <span>2 / 3</span> <!-- TODO: current / total pages. Updates based on the amount of items that show -->
-                            <button class="btn btn-link"><i class="icon-right-double-arrow"></i></button> <!-- TODO: Only displays if not the last page -->
+                        <!-- Pagination -->
+                        <div class="span6 text-right" ng-show="hasLocations()">
+                            <button type="button" class="btn btn-link" ng-click="changePage(-1)" ng-show="page > 0"><i class="icon-left-double-arrow"></i></button>
+                            <span>{{page + 1}} / {{totalPages}}</span>
+                            <button type="button" class="btn btn-link" ng-click="changePage(1)" ng-show="page < (totalPages - 1)"><i class="icon-right-double-arrow"></i></button>
                         </div>
                     </div>
                 </div>
                 <!-- Locations -->
-                <table class="table table-hover sortable" ng-show="haveLocations()">
+                <table class="table table-hover sortable" ng-show="hasLocations()">
                     <thead>
                         <tr>
                             <!-- TODO: Should be able to sort by name, address, phone, lat/long, and type -->
@@ -73,10 +72,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="location in locations" class="vcard">
+                        <tr ng-repeat="location in locations" class="vcard" ng-click="zoomToLocation(location)">
                             <!-- TODO: When clicking on the row of an address, it zooms in on the pin -->
                             <td><input type="checkbox" /></td>
-                            <td class="fn"><a href class="link-blue" data-ng-click="openViewDialog(location)">Mindfly</a></td>
+                            <td class="fn"><a href class="link-blue" ng-click="openViewDialog(location)">Mindfly</a></td>
                             <td class="adr">
                                 <span class="street-address">{{location.address.address1}}</span>
                                 <span class="extended-address" ng-show="location.address.address2 != ''">{{location.address.address2}}</span>
@@ -89,7 +88,7 @@
                             </td>
                             <td>{{location.type}}</td>
                             <td class="btn-group text-right">
-                                <a class="btn btn-mini" data-ng-click="openEditDialog(location)"><i class="icon-edit"></i></a>
+                                <a class="btn btn-mini" ng-click="openEditDialog(location)"><i class="icon-edit"></i></a>
                                 <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a> <!-- TODO: Should have a delete confirmation; we should check how Umbraco does it - I think it's a generic alert -->
                             </td>
                         </tr>
@@ -100,9 +99,5 @@
 
         </div>
 
-    </umb-panel>
-
-    <umb-panel>
-        This is a create dialog
     </umb-panel>
 </div>

@@ -45,7 +45,6 @@
             $scope.map = uLocateMapService.loadMap('#location-map', options);
             $scope.map.setOptions({ styles: $scope.mapStyles });
             $scope.getLocations();
-            //uLocateMapService.addMarker($scope.map, [48, -122], { title: 'Somewhere', icon: $scope.customMarkerIcon });
         };
 
         /**
@@ -59,6 +58,7 @@
             $scope.customMarkerIcon = new uLocate.Models.MarkerSymbolIcon(uLocate.Constants.MARKER_ICON);
             $scope.filter = '';
             $scope.locations = [];
+            $scope.locationsLoaded = false;
             $scope.map = null;
             $scope.mapOptions = {
                 center: {
@@ -80,16 +80,57 @@
                 }
             };
             $scope.mapStyles = uLocate.Constants.MAP_STYLES;
+            $scope.options = {
+                perPage: [25, 50, 100]
+            };
             $scope.page = 0;
             $scope.perPage = 100;
+            $scope.selected = {
+                perPage: $scope.options.perPage[2]
+        }
             $scope.sortBy = 'name';
             $scope.sortOrder = 'ascending';
+            $scope.totalPages = 0;
+            // Load the map now that the required variables have been assigned.
             $scope.loadMap();
         };
 
         /*-------------------------------------------------------------------
          * Event Handler Methods
          *-------------------------------------------------------------------*/
+
+        /**
+         * @ngdoc method
+         * @name changeFilter
+         * @function
+         * 
+         * @param {string} filter - The search filter string.
+         * @description - changes the search filter and triggers getLocations();
+         */
+        $scope.changeFilter = function(filter) {
+            $scope.filter = filter;
+            $scope.page = 0;
+            $scope.getLocations();
+        };
+
+        /**
+         * @ngdoc method
+         * @name changePage
+         * @function
+         * 
+         * @param {integer} difference - The amount to change the current page by.
+         * @description - changes the current page and triggers getLocations();
+         */
+        $scope.changePage = function(difference) {
+            $scope.page = $scope.page + difference;
+            if ($scope.page < 0) {
+                $scope.page = 0;
+            }
+            if ($scope.page >= $scope.totalPages) {
+                $scope.page = $scope.totalPages - 1;
+            }
+            $scope.getLocations();
+        };
 
         $scope.openEditDialog = function () {
             console.info('clicked');
@@ -119,6 +160,47 @@
                 show: true,
                 callback: $scope.openEditDialog,
                 dialogData: dialogData
+            });
+        };
+
+        /**
+         * @ngdoc method
+         * @name updatePerPage
+         * @function
+         * 
+         * @param {integer} perPage - The number of locations to show per page.
+         * @description - Updates the amount of locations to show per page and triggers getLocations();
+         */
+        $scope.updatePerPage = function(perPage) {
+            $scope.perPage = perPage;
+            $scope.page = 0;
+            $scope.getLocations();
+        };
+
+        /**
+         * @ngdoc method
+         * @name zoomToLocation
+         * @function
+         * 
+         * @param {uLocate.Models.Location} location - The location to zoom to.
+         * @description - Zoom to the provided location and bounce a marker if one is present.
+         */
+        $scope.zoomToLocation = function (location) {
+            var view = new uLocate.Models.MapView({
+                coordinates: [location.coordinates.latitude, location.coordinates.longitude],
+                smoothAnimation: true,
+                zoom: 15
+            });
+            uLocateMapService.changeView($scope.map, view);
+            var markers = uLocateMapService.getAllMarkers();
+            _.each(markers, function(marker) {
+                var position = marker.getPosition();
+                var lat = position.lat();
+                var lng = position.lng();
+                if (lat === location.coordinates.latitude && lng === location.coordinates.longitude) {
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                    setTimeout(function() { marker.setAnimation(null); }, 1500);
+                }
             });
         };
 
@@ -159,22 +241,31 @@
             });
             var promise = uLocateLocationApiService.getLocations(request);
             promise.then(function(response) {
-                $scope.locations = _.map(response, function(location) {
+                $scope.locations = _.map(response.locations, function(location) {
                     return new uLocate.Models.Location(location);
                 });
+                $scope.page = response.page;
+                $scope.perPage = response.perPage;
+                _.each($scope.options.perPage, function(option, index) {
+                    if (option == response.perPage) {
+                        $scope.selected.perPage = $scope.options.perPage[index];
+                    }
+                });
+                $scope.totalPages = response.totalPages;
+                $scope.locationsLoaded = true;
                 $scope.addLocationMarkersToMap();
             });
         };
 
         /**
         * @ngdoc method
-        * @name haveLocations
+        * @name hasLocations
         * @function
         * 
         * @returns {boolean}
         * @description - Returns true if the scope has at least one location.
         */
-        $scope.haveLocations = function() {
+        $scope.hasLocations = function() {
             var result = false;
             if ($scope.locations) {
                 if ($scope.locations.length > 0) {
