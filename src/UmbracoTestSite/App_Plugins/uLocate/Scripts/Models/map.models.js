@@ -97,6 +97,19 @@
         }
     };
 
+    models.MapView = function(data) {
+        var self = this;
+        if (data === undefined) {
+            self.coordinates = [0, 0];
+            self.smoothAnimation = false;
+            self.zoom = 15;
+        } else {
+            self.coordinates = data.coordinates;
+            self.smoothAnimation = data.smoothAnimation;
+            self.zoom = data.zoom;
+        }
+    }
+
     models.MarkerSymbolIcon = function(data) {
         var self = this;
         if (data == undefined) {
