@@ -61,9 +61,10 @@
                     <thead>
                         <tr>
                             <!-- TODO: Should be able to sort by name, address, phone, lat/long, and type -->
-                            <th><input type="checkbox" /></th> <!-- TODO: The only bulk action that should be available is delete. See Janae about the best way to do this? -->
+                            <!--th><input type="checkbox" /></th--> <!-- TODO: The only bulk action that should be available is delete. See Janae about the best way to do this? -->
                             <th>Name</th>
                             <th>Address</th>
+                            <th>Email</th>
                             <th>Phone</th>
                             <th>Lat/Long</th>
                             <th>Type</th>
@@ -72,7 +73,7 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="location in locations" class="vcard" ng-click="zoomToLocation(location)">
-                            <td><input type="checkbox" /></td>
+                            <!--td><input type="checkbox" /></td-->
                             <td class="fn"><a href class="link-blue" ng-click="openViewDialog(location)">{{location.name}}</a></td>
                             <td class="adr">
                                 <span class="street-address">{{location.address.streetAddress}}</span>
@@ -80,7 +81,8 @@
                                 <span class="locality">{{location.address.locality}}</span>, <span class="region">{{location.address.region}}</span> <span class="postal-code">{{location.address.postalCode}}</span>
                                 <span class="country-name">{{location.address.countryName}}</span>
                             </td>
-                            <td class="tel" ng-show="location.phone != ''">{{location.phone}}</td>
+                            <td class="email"><a href="mailto:{{location.email}}" ng-show="location.email != ''">{{location.email}}</a></td>
+                            <td class="tel">{{location.phone}}</td>
                             <td class="geo">
                                 <span class="latitude">{{location.coordinates.latitude}}</span> / <span class="longitude">{{location.coordinates.longitude}}</span>
                             </td>
@@ -209,10 +211,18 @@
                 </div>
                 
                 <div class="control-group umb-control-group">
+                    <label class="control-label" for="email">Email</label>
+
+                    <div class="controls controls-row">
+                        <input type="text" name="textbox" id="email" class="umb-editor umb-textstring textstring"> <!-- TODO: The id should match the model name -->
+                    </div>
+                </div>
+
+                <div class="control-group umb-control-group">
                     <label class="control-label" for="tel">Phone Number</label>
 
                     <div class="controls controls-row">
-                        <input type="text" name="textbox" id="longitude" class="umb-editor umb-textstring textstring" required=""> <!-- TODO: The id should match the model name -->
+                        <input type="text" name="textbox" id="longitude" class="umb-editor umb-textstring textstring"> <!-- TODO: The id should match the model name -->
                     </div>
                 </div>
                 
