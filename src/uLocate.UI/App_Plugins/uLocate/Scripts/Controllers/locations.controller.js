@@ -205,10 +205,18 @@
             });
         };
 
-        $scope.openEditDialog = function () {
-            console.info('clicked');
-            var dialogData = {};
-            dialogData.sampleItem = 'Example';
+        /**
+         * @ngdoc method
+         * @name openEditDialog
+         * @function
+         * 
+         * @param {uLocate.Models.Location} location - the location to edit.
+         * @description - Opens the Edit Location dialog.
+         */
+        $scope.openEditDialog = function (location) {
+            var dialogData = {
+                location: location
+            };
             dialogService.open({
                 template: '/App_Plugins/uLocate/Dialogs/edit.location.dialog.html',
                 show: true,

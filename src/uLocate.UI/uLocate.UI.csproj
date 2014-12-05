@@ -219,6 +219,7 @@
     <Content Include="App_Plugins\uLocate\Dialogs\create.location.dialog.html" />
     <Content Include="App_Plugins\uLocate\Dialogs\delete.confirmation.dialog.html" />
     <Content Include="App_Plugins\uLocate\Scripts\ApiMocks\delete.location.js" />
+    <Content Include="App_Plugins\uLocate\Scripts\ApiMocks\get.location.js" />
     <Content Include="App_Plugins\uLocate\Scripts\ApiMocks\get.locations.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Controllers\delete.confirmation.dialog.controller.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Services\location.api.service.js" />
