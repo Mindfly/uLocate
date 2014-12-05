@@ -7,19 +7,16 @@
                 <h1>Locations</h1>
             </div>
             <div class="span5">
-                <!-- TODO: This whole section could be included using umb-options-menu, but there may need to be added functionality. Can be viewed in: Umbraco.Web.UI.Client\src\views\content\edit.html and thedialog itself in Umbraco.Web.UI.Client\src\views\directives\umb-optionsmenu.html -->
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
-                    <div class="btn-group">
-                        <!-- TODO: Clicking should add .open to the .btn-group parent div, which will display the dropdown -->
-                        <a class="btn">Actions <span class="caret"></span></a>
-                        <!-- TODO: In umbraco, this is generated using umb-options-menu, which you can see an example of in Umbraco.Web.UI.Client\build\belle\views\content\edit.html. The actions allowed for this menu item are determined in the uLocate TreeController -->
+                    <div class="btn-group" ng-class="{'open': openMenu}">
+                        <a class="btn" ng-click="openMenu = !openMenu">Actions <span class="caret"></span></a>
                         <ul class="dropdown-menu umb-actions">
                             <!-- ngRepeat: action in actions -->
                             <li class="action">
-                                <a><i class="icon icon-add"></i><span class="menu-label">Create</span></a> <!-- TODO: Opens the page to create a new location -->
+                                <a ng-click="openCreateDialog(); openMenu = !openMenu;"><i class="icon icon-add"></i><span class="menu-label">Create</span></a> <!-- TODO: Opens the page to create a new location -->
                             </li>
                             <li class="action sep">
-                                <a><i class="icon icon-refresh"></i><span class="menu-label">Reload nodes</span></a> <!-- TODO: Reloads the locations and ideally kicks the cache in the teeth -->
+                                <a ng-click="getLocations(); openMenu = !openMenu;"><i class="icon icon-refresh"></i><span class="menu-label">Reload nodes</span></a> <!-- TODO: Reloads the locations and ideally kicks the cache in the teeth -->
                             </li>
                         </ul>
                     </div>

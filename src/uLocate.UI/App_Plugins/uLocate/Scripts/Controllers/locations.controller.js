@@ -82,6 +82,7 @@
             $scope.filter = '';
             $scope.locations = [];
             $scope.locationsLoaded = false;
+            $scope.openMenu = false;
             $scope.options = {
                 perPage: [25, 50, 100]
             };
@@ -282,7 +283,9 @@
          * 
          * @description - Acquires locations via API call, using the parameters defined by the user.
          */
-        $scope.getLocations = function() {
+        $scope.getLocations = function () {
+            uLocateMapService.deleteAllMarkers();
+            $scope.locations = [];
             var request = new uLocate.Models.GetLocationsApiRequst({
                 filter: $scope.filter,
                 page: $scope.page,
