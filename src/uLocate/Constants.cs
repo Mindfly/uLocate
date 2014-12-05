@@ -259,26 +259,22 @@
 
         #region 'Default' Location Type
 
-        ///// <summary>
-        ///// Gets the default location type key
-        ///// </summary>
-        //public static Guid DefualtLocationTypeKey
-        //{
-        //    get
-        //    {
-        //        return "00EEC1F9-7152-4B3B-B8D5-5B813F86EB66".EncodeAsGuid();
-        //    }
-        //}
-
         /// <summary>
-        /// Gets the "Default" location type id
+        /// Gets the "Default" location type key
         /// </summary>
-        public static int DefaultLocationTypeId
+        public static Guid DefaultLocationTypeKey
         {
             get
             {
-                //TODO: Update to check Db?
-                return 1;
+                return "00EEC1F9-7152-4B3B-B8D5-5B813F86EB66".EncodeAsGuid();
+            }
+        }
+
+        public static string BaseLocationTypeIcon
+        {
+            get
+            {
+                return "icon-pin-location";
             }
         }
 
@@ -288,12 +284,12 @@
             {
                 List<LocationTypeProperty> DefaultProps = new List<LocationTypeProperty>();
 
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.Address1, Name = "Address 1", DataTypeId = -88, SortOrder = 1 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.Address2, Name = "Address 2", DataTypeId = -88, SortOrder = 2 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.Region, Name = "State/Province", DataTypeId = -88, SortOrder = 3 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.PostalCode, Name = "Zip/Postal Code", DataTypeId = -88, SortOrder = 4 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = Constants.DefaultLocPropertyAlias.CountryCode, Name = "Country", DataTypeId = -88, SortOrder = 5 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeId = Constants.DefaultLocationTypeId, Alias = "PhoneNumber", Name = "Phone Number", DataTypeId = -88, SortOrder = 6 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = Constants.DefaultLocPropertyAlias.Address1, Name = "Address 1", DataTypeId = -88, SortOrder = 1 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = Constants.DefaultLocPropertyAlias.Address2, Name = "Address 2", DataTypeId = -88, SortOrder = 2 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = Constants.DefaultLocPropertyAlias.Region, Name = "State/Province", DataTypeId = -88, SortOrder = 3 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = Constants.DefaultLocPropertyAlias.PostalCode, Name = "Zip/Postal Code", DataTypeId = -88, SortOrder = 4 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = Constants.DefaultLocPropertyAlias.CountryCode, Name = "Country", DataTypeId = -88, SortOrder = 5 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = "PhoneNumber", Name = "Phone Number", DataTypeId = -88, SortOrder = 6 });
 
                 return DefaultProps;
             }

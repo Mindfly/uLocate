@@ -7,6 +7,9 @@
     using Umbraco.Core.Persistence;
     using Umbraco.Core.Persistence.DatabaseAnnotations;
 
+    /// <summary>
+    /// The location dto for creating/deleting the table
+    /// </summary>
     [TableName("uLocate_Location")]
     [PrimaryKey("Key", autoIncrement = false)]
     [ExplicitColumns]
@@ -51,30 +54,9 @@
         /// <summary>
         /// Gets or sets the location type key.
         /// </summary>
-        [Column("LocationTypeId")]
-        [ForeignKey(typeof(LocationType), Name = "FK_uLocateLocation_uLocateLocationType", Column = "Id")]
-        public int LocationTypeId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the location type dto.
-        /// </summary>
-        [ResultColumn]
-        public LocationType LocationType { get; set; } 
-
-        ///// <summary>
-        ///// Gets or sets the location type key.
-        ///// </summary>
-        //[Column("LocationTypePropertyDataId")]
-        //[ForeignKey(typeof(LocationType), Name = "FK_uLocateLocation_uLocateLocationTypeData", Column = "Id")]
-        //public int LocationTypePropertyDataId { get; set; }
-
-        ///// <summary>
-        ///// Gets or sets the field values (JSON)
-        ///// </summary>
-        //[Column("fieldValues")]
-        //[NullSetting(NullSetting = NullSettings.Null)]
-        //[SpecialDbType(SpecialDbTypes.NTEXT)]
-        //public string FieldValues { get; set; }
+        [Column("LocationTypeKey")]
+        [ForeignKey(typeof(LocationTypeDto), Name = "FK_uLocateLocation_uLocateLocationType", Column = "Key")]
+        public Guid LocationTypeKey { get; set; }
 
         /// <summary>
         /// Gets or sets the create date.
@@ -90,6 +72,15 @@
         [Constraint(Default = "getdate()")]
         public DateTime UpdateDate { get; set; }
 
-
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocationDto"/> class and sets some default values.
+        /// </summary>
+        public LocationDto()
+        {
+            UpdateDate = DateTime.Now;
+            CreateDate = DateTime.Now;
+            Key = Guid.NewGuid();
+        }
     }
 }

@@ -51,10 +51,10 @@
         }
 
 
-        #region object IdKey operations
+        #region Get Entities
 
         /// <summary>
-        /// Gets an entity by the passed in IdKey
+        /// Gets an entity by the passed in Key
         /// </summary>
         /// <param name="key">
         /// The key.
@@ -62,18 +62,18 @@
         /// <returns>
         /// The entity retrieved
         /// </returns>
-        public TEntity Get(object IdKey)
+        public TEntity Get(Guid Key)
         {
-            var fromCache = TryGetFromCache(IdKey);
+            var fromCache = TryGetFromCache(Key);
             if (fromCache.Success)
             {
                 return fromCache.Result;
             }
 
-            var entity = PerformGet(IdKey);
+            var entity = PerformGet(Key);
             if (entity != null)
             {
-                _cache.GetCacheItem(GetCacheKey(IdKey), () => entity);
+                _cache.GetCacheItem(GetCacheKey(Key), () => entity);
             }
 
             return entity;
@@ -84,19 +84,19 @@
         /// </summary>
         /// <param name="keys">The keys of the entities to be returned</param>
         /// <returns>A collection of entities</returns>
-        public IEnumerable<TEntity> GetAll(params object[] IdKeys)
+        public IEnumerable<TEntity> GetAll(params Guid[] Keys)
         {
-            if (IdKeys.Any())
+            if (Keys.Any())
             {
                 var entities = new List<TEntity>();
 
-                foreach (var key in IdKeys)
+                foreach (var key in Keys)
                 {
                     var entity = _cache.GetCacheItem(GetCacheKey(key));
                     if (entity != null) entities.Add((TEntity)entity);
                 }
 
-                if (entities.Count().Equals(IdKeys.Count()) && entities.Any(x => x.Equals(default(TEntity))) == false)
+                if (entities.Count().Equals(Keys.Count()) && entities.Any(x => x.Equals(default(TEntity))) == false)
                     return entities;
             }
             else
@@ -114,14 +114,14 @@
                 }
             }
 
-            var entityCollection = PerformGetAll(IdKeys).ToArray();
+            var entityCollection = PerformGetAll(Keys).ToArray();
 
             foreach (var entity in entityCollection)
             {
                 if (!entity.Equals(default(TEntity)))
                 {
                     var en = entity;
-                    _cache.GetCacheItem(GetCacheKey(entity.IdKey), () => en);
+                    _cache.GetCacheItem(GetCacheKey(entity.Key), () => en);
                 }
             }
 
@@ -137,7 +137,7 @@
         /// <returns>
         /// The collection of all entities or with keys matching those in the parameter collection.
         /// </returns>
-        protected abstract IEnumerable<TEntity> PerformGetAll(params object[] IdKeys);
+        protected abstract IEnumerable<TEntity> PerformGetAll(params Guid[] Keys);
 
         /// <summary>
         /// The perform get.
@@ -148,7 +148,7 @@
         /// <returns>
         /// The <see cref="TEntity"/>.
         /// </returns>
-        protected abstract TEntity PerformGet(object IdKey);
+        protected abstract TEntity PerformGet(Guid Key);
 
         /// <summary>
         /// The perform exists.
@@ -159,10 +159,10 @@
         /// <returns>
         /// A value indicating whether or not an entity with the key exists.
         /// </returns>
-        protected bool PerformExists(object IdKey)
+        protected bool PerformExists(Guid Key)
         {
             var sql = GetBaseQuery(true);
-            sql.Where(GetBaseWhereClause(), new { Key = IdKey });
+            sql.Where(GetBaseWhereClause(), new { Key = Key });
             var count = _database.ExecuteScalar<int>(sql);
             return count == 1;
         }
@@ -176,9 +176,9 @@
         /// <returns>
         /// The <see cref="Attempt"/>.
         /// </returns>
-        protected Attempt<TEntity> TryGetFromCache(object IdKey)
+        protected Attempt<TEntity> TryGetFromCache(Guid Key)
         {
-            var cacheKey = GetCacheKey(IdKey);
+            var cacheKey = GetCacheKey(Key);
 
             var retEntity = _cache.GetCacheItem(cacheKey);
 
@@ -196,325 +196,13 @@
         /// <returns>
         /// The cache key <see cref="string"/>.
         /// </returns>
-        protected static string GetCacheKey(object IdKey)
+        protected static string GetCacheKey(Guid Key)
         {
-            return Caching.CacheKeys.GetEntityCacheKey<TEntity>(IdKey);
+            return Caching.CacheKeys.GetEntityCacheKey<TEntity>(Key);
         }
 
         #endregion
-
-        //#region Guid Key operations
-
-        ///// <summary>
-        ///// Gets an entity by the passed in Guid Key
-        ///// </summary>
-        ///// <param name="key">
-        ///// The key.
-        ///// </param>
-        ///// <returns>
-        ///// The entity retrieved
-        ///// </returns>
-        //public TEntity Get(Guid key)
-        //{
-        //    var fromCache = TryGetFromCache(key);
-        //    if (fromCache.Success)
-        //    {
-        //        return fromCache.Result;
-        //    }
-
-        //    var entity = PerformGet(key);
-        //    if (entity != null)
-        //    {
-        //        _cache.GetCacheItem(GetCacheKey(key), () => entity);
-        //    }
-
-        //    return entity;
-        //}
-
-        ///// <summary>
-        ///// Gets all entities of type TEntity or a list according to the passed in Guid Keys
-        ///// </summary>
-        ///// <param name="keys">The keys of the entities to be returned</param>
-        ///// <returns>A collection of entities</returns>
-        //public IEnumerable<TEntity> GetAll(params Guid[] keys)
-        //{
-        //    if (keys.Any())
-        //    {
-        //        var entities = new List<TEntity>();
-
-        //        foreach (var key in keys)
-        //        {
-        //            var entity = _cache.GetCacheItem(GetCacheKey(key));
-        //            if (entity != null) entities.Add((TEntity)entity);
-        //        }
-
-        //        if (entities.Count().Equals(keys.Count()) && entities.Any(x => x.Equals(default(TEntity))) == false)
-        //            return entities;
-        //    }
-        //    else
-        //    {
-        //        var allEntities = _cache.GetCacheItemsByKeySearch(typeof(TEntity).Name + ".").ToArray();
-
-
-        //        if (allEntities.Any())
-        //        {
-        //            var query = this.GetBaseQuery(true);
-        //            var totalCount = PerformCount(query);
-
-        //            if (allEntities.Count() == totalCount)
-        //                return allEntities.Select(x => (TEntity)x);
-        //        }
-        //    }
-
-        //    var entityCollection = PerformGetAll(keys).ToArray();
-
-        //    foreach (var entity in entityCollection)
-        //    {
-        //        if (!entity.Equals(default(TEntity)))
-        //        {
-        //            var en = entity;
-        //            _cache.GetCacheItem(GetCacheKey(entity.Key), () => en);
-        //        }
-        //    }
-
-        //    return entityCollection;
-        //}
- 
-        ///// <summary>
-        ///// The abstract perform get all.
-        ///// </summary>
-        ///// <param name="keys">
-        ///// The keys.
-        ///// </param>
-        ///// <returns>
-        ///// The collection of all entities or with keys matching those in the parameter collection.
-        ///// </returns>
-        //protected abstract IEnumerable<TEntity> PerformGetAll(params Guid[] keys);
-
-        ///// <summary>
-        ///// The perform get.
-        ///// </summary>
-        ///// <param name="key">
-        ///// The key.
-        ///// </param>
-        ///// <returns>
-        ///// The <see cref="TEntity"/>.
-        ///// </returns>
-        //protected abstract TEntity PerformGet(Guid key);
-
-        ///// <summary>
-        ///// The perform exists.
-        ///// </summary>
-        ///// <param name="key">
-        ///// The key.
-        ///// </param>
-        ///// <returns>
-        ///// A value indicating whether or not an entity with the key exists.
-        ///// </returns>
-        //protected bool PerformExists(Guid key)
-        //{
-        //    var sql = GetBaseQuery(true);
-        //    sql.Where(GetBaseWhereClause(), new { Key = key });
-        //    var count = _database.ExecuteScalar<int>(sql);
-        //    return count == 1;
-        //}
-
-        ///// <summary>
-        ///// The try get from cache.
-        ///// </summary>
-        ///// <param name="key">
-        ///// The key.
-        ///// </param>
-        ///// <returns>
-        ///// The <see cref="Attempt"/>.
-        ///// </returns>
-        //protected Attempt<TEntity> TryGetFromCache(Guid key)
-        //{
-        //    var cacheKey = GetCacheKey(key);
-
-        //    var retEntity = _cache.GetCacheItem(cacheKey);
-
-        //    return retEntity != null ?
-        //        Attempt<TEntity>.Succeed((TEntity)retEntity) :
-        //        Attempt<TEntity>.Fail();
-        //}
-
-        ///// <summary>
-        ///// Gets the cache key for the entity.
-        ///// </summary>
-        ///// <param name="key">
-        ///// The key.
-        ///// </param>
-        ///// <returns>
-        ///// The cache key <see cref="string"/>.
-        ///// </returns>
-        //protected static string GetCacheKey(Guid key)
-        //{
-        //    return Caching.CacheKeys.GetEntityCacheKey<TEntity>(key);
-        //}
-
-        //#endregion
-
-
-        //#region Int Id operations
-
-        ///// <summary>
-        ///// Gets an entity by the passed in int Id
-        ///// </summary>
-        ///// <param name="key">
-        ///// The key.
-        ///// </param>
-        ///// <returns>
-        ///// The entity retrieved
-        ///// </returns>
-        //public TEntity Get(int Id)
-        //{
-        //    var fromCache = TryGetFromCache(Id);
-        //    if (fromCache.Success)
-        //    {
-        //        return fromCache.Result;
-        //    }
-
-        //    var entity = PerformGet(Id);
-        //    if (entity != null)
-        //    {
-        //        _cache.GetCacheItem(GetCacheKey(Id), () => entity);
-        //    }
-
-        //    return entity;
-        //}
-
-        ///// <summary>
-        ///// Gets all entities of type TEntity or a list according to the passed in int Ids
-        ///// </summary>
-        ///// <param name="keys">The keys of the entities to be returned</param>
-        ///// <returns>A collection of entities</returns>
-        //public IEnumerable<TEntity> GetAll(params int[] Ids)
-        //{
-        //    if (Ids.Any())
-        //    {
-        //        var entities = new List<TEntity>();
-
-        //        foreach (var Id in Ids)
-        //        {
-        //            var entity = _cache.GetCacheItem(GetCacheKey(Id));
-        //            if (entity != null) entities.Add((TEntity)entity);
-        //        }
-
-        //        if (entities.Count().Equals(Ids.Count()) && entities.Any(x => x.Equals(default(TEntity))) == false)
-        //            return entities;
-        //    }
-        //    else
-        //    {
-        //        var allEntities = _cache.GetCacheItemsByKeySearch(typeof(TEntity).Name + ".").ToArray();
-
-
-        //        if (allEntities.Any())
-        //        {
-        //            var query = this.GetBaseQuery(true);
-        //            var totalCount = PerformCount(query);
-
-        //            if (allEntities.Count() == totalCount)
-        //                return allEntities.Select(x => (TEntity)x);
-        //        }
-        //    }
-
-        //    var entityCollection = PerformGetAll(Ids).ToArray();
-
-        //    foreach (var entity in entityCollection)
-        //    {
-        //        if (!entity.Equals(default(TEntity)))
-        //        {
-        //            var en = entity;
-
-        //            if (entity.EntityIdType == "guid")
-        //            {
-        //                var KeyEntity = entity;
-        //            }
-        //            _cache.GetCacheItem(GetCacheKey(entity.Id), () => en);
-        //        }
-                
-        //    }
-
-        //    return entityCollection;
-        //}
-
-        ///// <summary>
-        ///// The abstract perform get all.
-        ///// </summary>
-        ///// <param name="keys">
-        ///// The keys.
-        ///// </param>
-        ///// <returns>
-        ///// The collection of all entities or with keys matching those in the parameter collection.
-        ///// </returns>
-        //protected abstract IEnumerable<TEntity> PerformGetAll(params int[] Ids);
-
-        ///// <summary>
-        ///// The perform get.
-        ///// </summary>
-        ///// <param name="key">
-        ///// The key.
-        ///// </param>
-        ///// <returns>
-        ///// The <see cref="TEntity"/>.
-        ///// </returns>
-        //protected abstract TEntity PerformGet(int Id);
-
-        ///// <summary>
-        ///// The perform exists.
-        ///// </summary>
-        ///// <param name="key">
-        ///// The key.
-        ///// </param>
-        ///// <returns>
-        ///// A value indicating whether or not an entity with the key exists.
-        ///// </returns>
-        //protected bool PerformExists(int Id)
-        //{
-        //    var sql = GetBaseQuery(true);
-        //    sql.Where(GetBaseWhereClause(), new { Id = Id });
-        //    var count = _database.ExecuteScalar<int>(sql);
-        //    return count == 1;
-        //}
-
-
-        ///// <summary>
-        ///// The try get from cache.
-        ///// </summary>
-        ///// <param name="key">
-        ///// The key.
-        ///// </param>
-        ///// <returns>
-        ///// The <see cref="Attempt"/>.
-        ///// </returns>
-        //protected Attempt<TEntity> TryGetFromCache(int Id)
-        //{
-        //    var cacheKey = GetCacheKey(key);
-
-        //    var retEntity = _cache.GetCacheItem(cacheKey);
-
-        //    return retEntity != null ?
-        //        Attempt<TEntity>.Succeed((TEntity)retEntity) :
-        //        Attempt<TEntity>.Fail();
-        //}
-
-        ///// <summary>
-        ///// Gets the cache key for the entity.
-        ///// </summary>
-        ///// <param name="key">
-        ///// The key.
-        ///// </param>
-        ///// <returns>
-        ///// The cache key <see cref="string"/>.
-        ///// </returns>
-        //protected static string GetCacheKey(int Id)
-        //{
-        //    return Caching.CacheKeys.GetEntityCacheKey<TEntity>(Id);
-        //}
-
-        //#endregion
-
+    
         #region Persist Entities
 
         /// <summary>
@@ -526,7 +214,7 @@
         /// <returns>
         /// An <see cref="object"/> representing the new item's Id/Key
         /// </returns>
-        protected abstract object PersistNewItem(TEntity item);
+        protected abstract void PersistNewItem(TEntity item);
 
         /// <summary>
         /// The persist updated item.
@@ -542,7 +230,7 @@
         /// <param name="item">
         /// The item.
         /// </param>
-        protected abstract void PersistDeletedItem(TEntity item);
+        protected abstract void PersistDeletedItem(TEntity item, out StatusMessage StatusMsg);
 
         #endregion
 

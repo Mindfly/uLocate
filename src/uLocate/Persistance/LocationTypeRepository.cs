@@ -12,15 +12,16 @@
     using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;
 
+    using Constants = uLocate.Constants;
+
     /// <summary>
     /// Represents the <see cref="LocationTypeRepository"/>.
     /// </summary>
-    internal class LocationTypeRepository : RepositoryBase<LocationType> //, ILocationTypeRepository
+    internal class LocationTypeRepository : RepositoryBase<LocationType> 
     {
         /// <summary>
-        /// The database.
+        /// The current collection of matched entities
         /// </summary>
-
         private List<LocationType> CurrentCollection = new List<LocationType>();
 
         /// <summary>
@@ -37,28 +38,53 @@
         }
 
         #region Public Methods
+
         public void Insert(LocationType Entity)
         {
-            var NewItemId = PersistNewItem(Entity);
+            PersistNewItem(Entity);
         }
 
-        public void Insert(LocationType Entity, out int NewItemId)
+        public void Insert(LocationType Entity, out Guid NewItemKey)
         {
-            var NewItemInfo = PersistNewItem(Entity);
-            NewItemId = Convert.ToInt32(NewItemInfo);
+            //TODO: might not be needed
+            PersistNewItem(Entity);
+            NewItemKey = Entity.Key;
         }
 
-        public void Delete(int LocationTypeId, bool ConvertLocationsToDefault = true)
+        public StatusMessage Delete(Guid LocationTypeKey, bool ConvertLocationsToDefault = true)
         {
-            LocationType ThisLocType = this.GetById(LocationTypeId);
+            StatusMessage ReturnMsg = new StatusMessage();
+
+            LocationType ThisLocType = this.GetByKey(LocationTypeKey);
+
             if (ThisLocType != null)
             {
-                this.Delete(ThisLocType, ConvertLocationsToDefault);
+                this.Delete(ThisLocType,  out ReturnMsg, ConvertLocationsToDefault);
             }
+            else
+            {
+                ReturnMsg.Success = false;
+                ReturnMsg.Code = "NotFound";
+                ReturnMsg.ObjectName = LocationTypeKey.ToString();
+                ReturnMsg.Message = string.Format("Location Type with key '{0}' was not found and can not be deleted.", ReturnMsg.ObjectName);
+            }
+
+            return ReturnMsg;
         }
 
-        public void Delete(LocationType Entity, bool ConvertLocationsToDefault = true)
+        public StatusMessage Delete(LocationType Entity,bool ConvertLocationsToDefault = true)
         {
+            StatusMessage ReturnMsg = new StatusMessage();
+            Delete(Entity, out ReturnMsg, ConvertLocationsToDefault);
+
+            return ReturnMsg;
+        }
+
+        private void Delete(LocationType Entity, out StatusMessage StatusMsg, bool ConvertLocationsToDefault = true )
+        {
+            StatusMessage ReturnMsg = new StatusMessage();
+            ReturnMsg.ObjectName = Entity.Name;
+
             if (ConvertLocationsToDefault)
             {
                 //TODO: Add Location handling logic here
@@ -70,7 +96,8 @@
                 //Cascade deletes to matching Locations
             }
 
-            PersistDeletedItem(Entity);
+            PersistDeletedItem(Entity, out ReturnMsg);
+            StatusMsg = ReturnMsg;
         }
         
         public void Update(LocationType Entity)
@@ -78,19 +105,44 @@
             PersistUpdatedItem(Entity);
         }
 
-        public LocationType GetById(int Id)
+        public IEnumerable<LocationType> GetByName(string LocationTypeName)
         {
             CurrentCollection.Clear();
-            CurrentCollection.Add((LocationType)Get(Id));
+            var sql = new Sql();
+            sql.Select("*")
+                .From<LocationTypeDto>()
+                .Where<LocationTypeDto>(n => n.Name == LocationTypeName);
+
+
+            var dtoResult = Repositories.ThisDb.Fetch<LocationTypeDto>(sql).ToList();
+
+            var converter = new DtoConverter();
+            CurrentCollection.AddRange(converter.ToLocationTypeEntity(dtoResult));
+
             FillChildren();
 
-            return CurrentCollection[0]; 
+            return CurrentCollection; 
         }
 
-        public IEnumerable<LocationType> GetById(int[] Ids)
+        public LocationType GetByKey(Guid Key)
         {
             CurrentCollection.Clear();
-            CurrentCollection.AddRange(GetAll(Ids));
+            CurrentCollection.Add((LocationType)Get(Key));
+            FillChildren();
+            if (CurrentCollection.Count != 0)
+            {
+                return CurrentCollection[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public IEnumerable<LocationType> GetByKey(Guid[] Keys)
+        {
+            CurrentCollection.Clear();
+            CurrentCollection.AddRange(GetAll(Keys));
             FillChildren();
 
             return CurrentCollection; 
@@ -98,7 +150,7 @@
 
         public IEnumerable<LocationType> GetAll()
         {
-            var EmptyParams = new object[] { };
+            var EmptyParams = new Guid[] { };
 
             CurrentCollection.Clear();
             CurrentCollection.AddRange(GetAll(EmptyParams));
@@ -110,73 +162,131 @@
         #endregion
 
         #region Protected Methods
-        protected override IEnumerable<LocationType> PerformGetAll(params object[] IdKeys)
-        {
-            IEnumerable<LocationType> Result;
-            var MySql = new Sql();
 
-            if (IdKeys.Any())
+        protected override IEnumerable<LocationType> PerformGetAll(params Guid[] Keys)
+        {
+            List<LocationType> Result = new List<LocationType>();
+            IEnumerable<LocationTypeDto> dtoResults;
+
+            if (Keys.Any())
             {
-                var ParamsCsv = string.Join(",", IdKeys);
-                MySql.Select("*").From<LocationType>().Where("Id IN @0;", ParamsCsv);
+                foreach (var key in Keys)
+                {
+                    Result.Add(Get(key));
+                }
             }
             else
             {
-                MySql.Select("*").From<LocationType>();
-            }
+                var sql = new Sql();
+                sql.Select("*").From<LocationTypeDto>();
 
-            Result = Repositories.ThisDb.Fetch<LocationType>(MySql).ToList();
+                dtoResults = Repositories.ThisDb.Fetch<LocationTypeDto>(sql).ToList();
+
+                var converter = new DtoConverter();
+                foreach (var result in dtoResults)
+                {
+                    Result.Add(converter.ToLocationTypeEntity(result));
+                }
+            }
 
             return Result;
         }
 
-        protected override LocationType PerformGet(object IdKey)
+        protected override LocationType PerformGet(Guid Key)
         {
-            var MySql = new Sql();
-            MySql
+            var sql = new Sql();
+            sql
                 .Select("*")
-                .From<LocationType>()
-                .Where("Id = @0", IdKey);
-            //.Where<LocationType>(n => n.Id == IdKey);
-            return Repositories.ThisDb.Fetch<LocationType>(MySql).FirstOrDefault();
+                .From<LocationTypeDto>()
+                .Where<LocationTypeDto>(n => n.Key == Key);
+
+            var dtoResult = Repositories.ThisDb.Fetch<LocationTypeDto>(sql).FirstOrDefault();
+
+            if (dtoResult == null)
+                return null;
+
+            var converter = new DtoConverter();
+            var entity = converter.ToLocationTypeEntity(dtoResult);
+
+            return entity;
         }
 
-        protected override object PersistNewItem(LocationType item)
+        protected override void PersistNewItem(LocationType item)
         {
             string Msg = string.Format("LocationType '{0}' has been saved.", item.Name);
-            var InsertedItem = Repositories.ThisDb.Insert(item);
+
+            item.AddingEntity();
+
+            var converter = new DtoConverter();
+            var dto = converter.ToLocationTypeDto(item);
+
+            Repositories.ThisDb.Insert(dto);
+            item.Key = dto.Key;
+
             LogHelper.Info(typeof(LocationTypeRepository), Msg);
             
             PersistChildren(item);
 
-            return InsertedItem;
+
         }
 
         protected override void PersistUpdatedItem(LocationType item)
         {
             string Msg = string.Format("LocationType '{0}' has been updated.", item.Name);
-            Repositories.ThisDb.Update(item);
+
+            item.UpdatingEntity();
+
+            var converter = new DtoConverter();
+            var dto = converter.ToLocationTypeDto(item);
+
+            Repositories.ThisDb.Update(dto);
+            
             LogHelper.Info(typeof(LocationTypeRepository), Msg);
         }
 
-        protected override void PersistDeletedItem(LocationType item)
+        protected override void PersistDeletedItem(LocationType item, out StatusMessage StatusMsg)
         {
-            DeleteChildren(item);
-            string Msg = string.Format("LocationType '{0}' has been deleted.", item.Name);
-            Repositories.ThisDb.Delete<LocationType>(item.Id);
-            LogHelper.Info(typeof(LocationTypeRepository), Msg);
+            StatusMessage ReturnMsg = new StatusMessage();
+            ReturnMsg.ObjectName = item.Name;
+
+            if (item.Key != Constants.DefaultLocationTypeKey)
+            {
+                DeleteChildren(item);
+                ReturnMsg.Message = string.Format("LocationType '{0}' has been deleted.", ReturnMsg.ObjectName);
+                var converter = new DtoConverter();
+                var dto = converter.ToLocationTypeDto(item);
+
+                Repositories.ThisDb.Delete(dto);
+                ReturnMsg.Success = true;
+            }
+            else
+            {
+                ReturnMsg.Message = string.Format("LocationType '{0}' is the default location type and cannot be deleted.", item.Name);
+                ReturnMsg.Code = "Prohibited";
+                ReturnMsg.Success = false;
+            }
+
+            StatusMsg = ReturnMsg;
+            LogHelper.Info(typeof(LocationTypeRepository), ReturnMsg.Message);
         }
 
         protected override Sql GetBaseQuery(bool isCount)
         {
             var MySql = new Sql();
-            MySql.Select("*").From<LocationType>();
+            MySql.Select(isCount ? "COUNT(*)" : "*")
+			.From<LocationType>();
             return MySql;
         }
 
+        /// <summary>
+        /// Gets the base where clause
+        /// </summary>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
         protected override string GetBaseWhereClause()
         {
-            return " WHERE Id= @0;";
+            return " WHERE Id= @0";
         }
 
         protected override IEnumerable<string> GetDeleteClauses()
@@ -201,9 +311,9 @@
             this.PersistProperties(item);
         }
 
-        private void DeleteChildren(LocationType LocationType)
+        private void DeleteChildren(LocationType item)
         {
-            this.DeleteProperties(LocationType);
+            this.DeleteProperties(item);
         }
 
         private void FillProperties()
@@ -211,7 +321,7 @@
             var Repo = new LocationTypePropertyRepository(Repositories.ThisDb, Helper.ThisCache);
             foreach (var LocType in CurrentCollection)
             {
-                LocType.Properties = Repo.GetByLocationType(LocType.Id).ToList();
+                LocType.Properties = Repo.GetByLocationType(LocType.Key).ToList();
             }
         }
 
@@ -220,9 +330,9 @@
             var Repo = new LocationTypePropertyRepository(Repositories.ThisDb, Helper.ThisCache);
             foreach (var NewProp in item.Properties)
             {
-                if (NewProp.LocationTypeId == 0)
+                if (NewProp.LocationTypeKey == Guid.Empty)
                 {
-                    NewProp.LocationTypeId = item.Id;
+                    NewProp.LocationTypeKey = item.Key;
                 }
 
                 Repo.Insert(NewProp);
@@ -232,7 +342,7 @@
         private void DeleteProperties(LocationType item)
         {
             var Repo = new LocationTypePropertyRepository(Repositories.ThisDb, Helper.ThisCache);
-            var MatchingProps = Repo.GetByLocationType(item.Id);
+            var MatchingProps = Repo.GetByLocationType(item.Key);
 
             foreach (var Prop in MatchingProps)
             {

@@ -93,7 +93,7 @@
             NewItem2.Name = "Shopping Center";
             NewItem2.AddProperty("SCName", "Shopping Center Name", uLocate.Constants.DataTypeId.TextBox);
             NewItem2.AddProperty("SCHours", "Hours of Operation", uLocate.Constants.DataTypeId.TextBoxMultiple);
-            Repositories.LocationTypeRepo.Insert(NewItem2, out NewItemId);
+            Repositories.LocationTypeRepo.Insert(NewItem2);
             Msg += string.Format("Type '{0}' added. ", NewItem2.Name);
 
             //TEST: Return all Location Types
@@ -119,7 +119,7 @@
             List<LocationType> Result = new List<LocationType>();
 
             //change the data
-            var Lt = Repositories.LocationTypeRepo.GetById(3);
+            var Lt = Repositories.LocationTypeRepo.GetByName("Shopping Center").FirstOrDefault();
             Lt.Name = "Shopping Mall";
             Repositories.LocationTypeRepo.Update(Lt);
 
@@ -139,10 +139,42 @@
             }
 
             //show new data
-            Result.Add(Repositories.LocationTypeRepo.GetById(3));
+            Result.Add(Lt);
 
             return Result;
         }
+
+        /// <summary>
+        /// Used for testing
+        ///  /Umbraco/Api/InitializationApi/TestDeleteLocationType?LookupName="name"
+        /// </summary>
+        /// <param name="LookupName">
+        /// The Lookup Name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="List"/>.
+        /// </returns>
+        [AcceptVerbs("GET")]
+        public StatusMessage TestDeleteLocationType(string LookupName = "Business")
+        {
+            StatusMessage StatusMsg = new StatusMessage();
+            StatusMsg.ObjectName = LookupName;
+
+            //TEST Delete a LocationType
+            var LookupItem = Repositories.LocationTypeRepo.GetByName(LookupName).FirstOrDefault();
+            if (LookupItem != null)
+            {
+                StatusMsg = Repositories.LocationTypeRepo.Delete(LookupItem);
+            }
+            else
+            {
+                StatusMsg.Message = string.Format("'{0}' was not found and can not be deleted.", LookupName);
+                StatusMsg.Success = false;
+            }
+
+            return StatusMsg;
+        }
+
 
         /// <summary>
         /// Used for testing

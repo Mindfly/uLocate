@@ -23,14 +23,9 @@
         bool HasIdentity { get; }
 
         /// <summary>
-        /// Gets the int Id or Guid Key
+        /// Gets the Guid Key
         /// </summary>
-        object IdKey { get; }
-
-        ///// <summary>
-        ///// Gets the entity id type (int or guid)
-        ///// </summary>
-        string EntityIdType { get; }
+        Guid Key { get; }
 
         /// <summary>
         /// The updating entity.

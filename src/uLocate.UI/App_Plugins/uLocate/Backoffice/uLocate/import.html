@@ -8,10 +8,32 @@
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <div class="btn-group">
-                        <a class="btn btn-primary">Import</a>
+                        <a class="btn btn-primary">Import</a> <!-- TODO: Add the notification service for a successful import -->
                     </div>
                 </div>
             </div>
         </umb-header>
+
+        <umb-tab-view>
+
+            <div class="umb-pane">
+                
+                <div class="control-group umb-control-group">
+                    <label class="control-label" for="import"> <!-- TODO: Allow for XML and JSON file imports later -->
+                        Import File
+                        <small>Select a CSV file to import. You can save Excel spreadsheets to a CSV format.</small>
+                    </label>
+
+                    <div class="controls controls-row">
+                        <input type="file" name="import" id="import" class="umb-editor umb-file file" required=""> <!-- TODO: The id should match the model name. Would also be great to make sure the file they're uploading is actually a csv file - not sure how much control we have over that -->
+
+                        <span class="help-inline" style="display: none;">Required</span>
+                        <span class="help-inline" style="display: none;"></span>
+                    </div>
+                </div>
+
+            </div>
+
+        </umb-tab-view>
     </umb-panel>
 </div>
