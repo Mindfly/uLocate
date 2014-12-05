@@ -35,7 +35,9 @@
     color: $blue;
 }
 
-.umb-modal {
+// The uLocate class is a child of .umb-modal in this case,
+// so we're targeting it in the uLocate.scss file by using "&" here
+.umb-modal & {
     .umb-panel-body {
         top: 121px;
     }

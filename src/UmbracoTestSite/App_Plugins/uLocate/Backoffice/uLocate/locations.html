@@ -89,7 +89,7 @@
                             <td>{{location.type}}</td>
                             <td class="btn-group text-right">
                                 <a class="btn btn-mini" ng-click="openEditDialog(location)"><i class="icon-edit"></i></a>
-                                <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a> <!-- TODO: Should have a delete confirmation; we should check how Umbraco does it - I think it's a generic alert -->
+                                <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a> <!-- TODO: Should have a delete confirmation dialog: https://github.com/umbraco/Umbraco-CMS/blob/788a0241d828cecd09f84a2a356b643422c6599c/src/Umbraco.Web.UI.Client/src/views/datatype/delete.html -->
                             </td>
                         </tr>
                     </tbody>
@@ -222,7 +222,7 @@
                 
                 <div class="umb-tab-buttons" detect-fold> <!-- TODO: -->
                     <div class="btn-group">
-                        <a class="btn" href="#/uLocate/uLocate/locations/view">Cancel</a>
+                        <a class="btn" href="#/uLocate/uLocate/locations/view">Cancel</a> <!-- TODO: Would like this to trigger the "do you want to leave this page?" notification pane: https://github.com/umbraco/Umbraco-CMS/blob/788a0241d828cecd09f84a2a356b643422c6599c/src/Umbraco.Web.UI.Client/src/views/common/notifications/confirmroutechange.html -->
                     </div>
 
                     <div class="btn-group">
