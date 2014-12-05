@@ -50,6 +50,8 @@
     vertical-align: middle; }
   .uLocate .map-bar input, .uLocate .map-bar label, .uLocate .map-bar select {
     margin: 0; }
+  .uLocate .map-bar .control-label {
+    width: auto; }
   .uLocate .map-bar form {
     margin: 0; }
 .uLocate .map {
