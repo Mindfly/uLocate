@@ -215,7 +215,6 @@
     </None>
     <None Include="App_Plugins\uLocate\Css\ulocate.scss" />
     <None Include="App_Plugins\uLocate\package.manifest" />
-    <Content Include="App_Plugins\uLocate\Backoffice\uLocate\createLocation.html" />
     <Content Include="App_Plugins\uLocate\Dialogs\create.locationType.dialog.html" />
     <Content Include="App_Plugins\uLocate\Dialogs\create.location.dialog.html" />
     <Content Include="App_Plugins\uLocate\Scripts\ApiMocks\get.locations.js" />
@@ -223,7 +222,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\uLocate\Backoffice\uLocate\editLocationType.html" />
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\export.html" />
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\import.html" />
     <Content Include="App_Plugins\uLocate\Backoffice\uLocate\locations.html" />

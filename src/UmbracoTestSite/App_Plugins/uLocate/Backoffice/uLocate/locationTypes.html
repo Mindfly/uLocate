@@ -1,5 +1,7 @@
 ﻿<!-- TODO: The ng-controller goes on this starting div -->
 <div class="uLocate">
+
+    <!-- The location types view route displays this panel -->
     <umb-panel>
         <umb-header>
             <div class="span7">
@@ -24,28 +26,30 @@
                 </div>
             </div>
         </umb-header>
-        <div class="umb-panel-body">
+
+        <umb-tab-view>
 
             <div class="umb-pane">
-                
+
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <td><input type="checkbox"/></td>
+                            <td><input type="checkbox" /></td>
                             <td>Name</td>
                             <td>Fields</td>
                             <td></td>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><!-- TODO: The default location type should always display -->
+                        <tr>
+                            <!-- TODO: The default location type should always display -->
                             <td></td>
                             <td>Default</td> <!-- TODO: Change "Default" to a more user friendly term -->
                             <td>Name, Street Address, Extended Address, City, State/Province, Zip/Postal Code, Country, Latitude/Longitude, Phone Number</td>
                             <td></td>
                         </tr>
                         <tr>
-                            <td><input type="checkbox"/></td>
+                            <td><input type="checkbox" /></td>
                             <td>Business</td>
                             <td>Contact Name, Phone Extention, Accepts Marketing</td> <!-- TODO: This should be a repeater that displays all the field names in a comma separated list -->
                             <td class="btn-group text-right">
@@ -57,8 +61,128 @@
                 </table>
 
             </div>
+        </umb-tab-view>
 
-        </div>
+    </umb-panel>
+
+    <!-- The location types edit (also create) route displays this panel -->
+    <umb-panel>
+        <umb-header tabs="tabs">
+            <div class="span7">
+                <form>
+                    <div class="umb-headline-editor-wrapper">
+                        <input type="text" name="name" localize="placeholder" class="umb-headline" placeholder="Enter a name for your location type" value="Business" required=""> <!-- TODO: Displays the name if editing. -->
+                        <span class="help-inline" val-msg-for="name" val-toggle-msg="required" style="display: none;">Required</span>
+                    </div>
+                </form>
+            </div>
+            <div class="span5">
+                <div class="btn-toolbar pull-right umb-btn-toolbar">
+                    <div class="btn-group">
+                        <a class="btn btn-primary">Save</a> <!-- TODO: Add the save functionality -->
+                    </div>
+                </div>
+            </div>
+        </umb-header>
+
+        <umb-tab-view>
+
+            <umb-tab id="tabinfo" active="true" rel="info" label="Info">
+
+                <div class="umb-pane">
+
+                    <div class="control-group umb-control-group">
+                        
+                        <label class="control-label" for="icon">Icon</label>
+
+                        <div class="controls controls-row">
+
+                            <div class="umbIconDropdownList">
+                                <a href="#" class="btn btn-link picker-icons"> <i class="icon-store color-blue"></i> Choose...</a> <!-- TODO: Should show the chosen icon, and clicking should open the icon picker dialog -->
+                                <input name="icon" type="hidden" value="icon-store color-blue"> <!-- TODO: This should submit the icon and color from the icon dialog -->
+                            </div>
+
+                        </div>
+
+                    </div>
+                    
+                    <div class="control-group umb-control-group">
+                        
+                        <label class="control-label" for="description">
+                            Description
+                            <small>Displayed with the icon when creating a new location of this type</small>
+                        </label>
+                        <div class="controls controls-row">
+                            <textarea name="description" class="umb-editor umb-textarea"></textarea>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </umb-tab>
+
+            <umb-tab id="tabproperties" rel="properties" label="Properties">
+
+                <div class="umb-pane form-horizontal">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>Alias</td>
+                                <td>Name</td>
+                                <td>Type</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" placeholder="Add a property alias" value="contactName" /></td> <!-- TODO: If we can enforce no spaces or special characters in this, that would be great. -->
+                                <td><input type="text" placeholder="Add a property name" value="Contact Name" /></td>
+                                <td>
+                                    <select>
+                                        <option>Textbox</option> <!-- TODO: Umbraco.Textbox -->
+                                        <option>Textbox Multiple</option> <!-- TODO: Umbraco.TextboxMultiple -->
+                                        <option>True/False</option> <!-- TODO: Umbraco.TrueFalse -->
+                                        <option>Multiple Media Picker</option> <!-- TODO: Umbraco.MultipleMediaPicker -->
+                                        <option>Single Media Picker</option> <!-- TODO: Umbraco.MediaPicker -->
+                                        <option>Member Picker</option> <!-- TODO: Umbraco.MemberPicker -->
+                                        <option>Content Picker</option> <!-- TODO: Umbraco.ContentPickerAlias -->
+                                        <option>Checkbox List</option> <!-- TODO: Discuss between Kyle, HFloyd, and Janae -->
+                                    </select>
+                                </td>
+                                <td class="btn-group text-right">
+                                    <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a> <!-- TODO: Will have a pop-up delete confirmation letting users know that deleting this field will remove any data locations have -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" placeholder="Add a property alias" /></td>
+                                <td><input type="text" placeholder="Add a property name" /></td>
+                                <td>
+                                    <select>
+                                        <option>Choose...</option>
+                                        <option>Textbox</option> <!-- TODO: Umbraco.Textbox -->
+                                        <option>Textbox Multiple</option> <!-- TODO: Umbraco.TextboxMultiple -->
+                                        <option>True/False</option> <!-- TODO: Umbraco.TrueFalse -->
+                                        <option>Multiple Media Picker</option> <!-- TODO: Umbraco.MultipleMediaPicker -->
+                                        <option>Single Media Picker</option> <!-- TODO: Umbraco.MediaPicker -->
+                                        <option>Member Picker</option> <!-- TODO: Umbraco.MemberPicker -->
+                                        <option>Content Picker</option> <!-- TODO: Umbraco.ContentPickerAlias -->
+                                        <option>Checkbox List</option> <!-- TODO: Discuss between Kyle, HFloyd, and Janae -->
+                                    </select>
+                                </td>
+                                <td class="btn-group text-right">
+                                    <a class="btn btn-mini btn-primary"><i class="icon-add"></i></a> <!-- TODO: Clicking add will automatically generate a new row -->
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </umb-tab>
+
+        </umb-tab-view>
 
     </umb-panel>
 </div>
