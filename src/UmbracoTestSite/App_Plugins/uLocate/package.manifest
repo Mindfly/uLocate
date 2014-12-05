@@ -6,8 +6,9 @@
         "~/App_Plugins/uLocate/Scripts/Models/map.models.js",
         "~/App_Plugins/uLocate/Scripts/Services/location.api.service.js",
         "~/App_Plugins/uLocate/Scripts/Services/map.service.js",
-        "~/App_Plugins/uLocate/Scripts/Controllers/view.location.dialog.controller.js",
+        "~/App_Plugins/uLocate/Scripts/Controllers/delete.confirmation.dialog.controller.js",
         "~/App_Plugins/uLocate/Scripts/Controllers/edit.location.dialog.controller.js",
+        "~/App_Plugins/uLocate/Scripts/Controllers/view.location.dialog.controller.js",
         "~/App_Plugins/uLocate/Scripts/Controllers/locations.controller.js"
     ],
     "css": [

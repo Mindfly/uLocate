@@ -29,17 +29,6 @@
             //{ 4, typeof(AllowedDataTypesDto) }
         };
 
-        ///// <summary>
-        ///// Collection of additional constraints which should be deleted on un-install 
-        ///// (generally ones which connect to tables which won't be deleted)
-        ///// </summary>
-        //private static readonly Dictionary<string, string> ConnectedConstraints = new Dictionary<string, string>
-        //{
-        //    // {"Constraint Name", "Table Name"}
-        //    { "FK_uLocateLocationTypeProperty_cmsDataType", "cmsDataType" }, 
-        //    { "FK_uLocateAllowedDataTypes_cmsDataType", "cmsDataType" }
-        //};
-
         /// <summary>
         /// The database.
         /// </summary>
@@ -65,17 +54,30 @@
             foreach (var item in OrderedTables.OrderBy(x => x.Key))
             {
                 var TableType = item.Value;              
-                var TableAttrib = (TableNameAttribute) Attribute.GetCustomAttribute(TableType, typeof (TableNameAttribute));
+                var TableAttrib = (TableNameAttribute) Attribute.GetCustomAttribute(TableType, typeof(TableNameAttribute));
                 string TableName = TableAttrib.Value;
+
+                var message = string.Concat("About to create Table '", TableName, "'");
+                LogHelper.Info(typeof(DatabaseSchemaCreation), message);
 
                 if (!_database.TableExist(TableName))
                 {
-                    //Create DB table - and set overwrite to false
-                    _database.CreateTable(false, TableType);
+                    try
+                    {
+                        //Create DB table - and set overwrite to false
+                        _database.CreateTable(false, TableType);
+                    }
+                    catch (Exception ex)
+                    {
+                        message = string.Concat("Unable to create table '", TableName, "': ", ex);
+                        LogHelper.Error(typeof(DatabaseSchemaCreation), message, ex);
+
+                        throw;
+                    }
                 }
 
 
-                var message = string.Concat("uLocate.Data.DatabaseSchemaCreation.InitializeDatabaseSchema - Created Table '", TableName, "'");
+                message = string.Concat("Successfully created Table '", TableName, "'");
                 LogHelper.Info(typeof(DatabaseSchemaCreation), message);
             }
         }

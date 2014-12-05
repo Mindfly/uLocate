@@ -67,11 +67,13 @@
             LogHelper.Info<DatabaseDefaultDataInsert>(string.Format("CreateLocationTypeData() running..."));
 
             string TableName = "uLocate_LocationType";
-            string PrimaryKeyFieldName = "Id";
+            string PrimaryKeyFieldName = "Key";
 
             LogHelper.Info<DatabaseDefaultDataInsert>(string.Format("Adding data for table '{0}'...", TableName));
 
-            _database.Insert(TableName, PrimaryKeyFieldName, new LocationType() { Name = "Default" });
+            LocationTypeDto newLocType = new LocationTypeDto() { Name = "Default", Key = Constants.DefaultLocationTypeKey, Icon = Constants.BaseLocationTypeIcon };
+
+            _database.Insert(newLocType);
         }
 
         /// <summary>
@@ -82,26 +84,23 @@
             LogHelper.Info<DatabaseDefaultDataInsert>(string.Format("CreateLocationTypePropertyData() running..."));
 
             string TableName = "uLocate_LocationTypeProperty";
-            string PrimaryKeyFieldName = "Id";
+            string PrimaryKeyFieldName = "Key";
 
             LogHelper.Info<DatabaseDefaultDataInsert>(string.Format("Adding data for table '{0}'...", TableName));
 
             //'Default' Properties
             foreach (var Prop in uLocate.Constants.DefaultLocationTypeProperties)
             {
-                var Data = new LocationTypeProperty
+                var Data = new LocationTypePropertyDto()
                                {
-                                   LocationTypeId = Prop.LocationTypeId,
+                                   LocationTypeKey = Prop.LocationTypeKey,
                                    Alias = Prop.Alias,
                                    Name = Prop.Name,
                                    DataTypeId = Prop.DataTypeId,
                                    SortOrder = Prop.SortOrder
                                };
                 
-                _database.Insert(
-                    TableName,
-                    PrimaryKeyFieldName,
-                    Data);
+                _database.Insert(Data);
             }
         }
 

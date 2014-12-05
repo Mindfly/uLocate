@@ -11,16 +11,17 @@
     /// Dto representing the "uLocate_LocationTypeProperty" table - used for creating/deleting the table
     /// </summary>
     [TableName("uLocate_LocationTypeProperty")]
-    [PrimaryKey("Id")]
+    [PrimaryKey("Key", autoIncrement = false)]
     [ExplicitColumns] 
     internal class LocationTypePropertyDto
     {
         /// <summary>
-        /// Gets or sets the Primary Key ID for the property
+        /// Gets or sets the key.
         /// </summary>
-        [Column("Id")]
-        [PrimaryKeyColumn(AutoIncrement = true)]
-        public int Id { get; set; }
+        [Column("Key")]
+        [PrimaryKeyColumn(AutoIncrement = false)]
+        [Constraint(Default = "newid()")]
+        public Guid Key { get; set; }
 
         /// <summary>
         /// Gets or sets the Alias for the property
@@ -46,9 +47,9 @@
         /// <summary>
         /// Gets or sets the related Location Type for the property
         /// </summary>
-        [Column("LocationTypeId")]
-        [ForeignKey(typeof(LocationType), Name = "FK_uLocateLocationTypeProperty_uLocateLocationType", Column = "Id")]
-        public int LocationTypeId { get; set; }
+        [Column("LocationTypeKey")]
+        [ForeignKey(typeof(LocationTypeDto), Name = "FK_uLocateLocationTypeProperty_uLocateLocationType", Column = "Key")]
+        public Guid LocationTypeKey { get; set; }
 
         /// <summary>
         /// Gets or sets the sort order for the property
@@ -70,13 +71,14 @@
         [Constraint(Default = "getdate()")]
         public DateTime UpdateDate { get; set; }
 
-        ///// <summary>
-        ///// Initializes a new instance of the <see cref="LocationTypePropertyDto"/> class and sets some default values.
-        ///// </summary>
-        //public LocationTypePropertyDto()
-        //{
-        //    UpdateDate = DateTime.Now;
-        //    CreateDate = DateTime.Now;
-        //}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocationTypePropertyDto"/> class and sets some default values.
+        /// </summary>
+        public LocationTypePropertyDto()
+        {
+            UpdateDate = DateTime.Now;
+            CreateDate = DateTime.Now;
+            Key = Guid.NewGuid();
+        }
     }
 }

@@ -45,26 +45,25 @@
             // 1. Schema Creation
             try
             {
-                var DbSchema =
-                    new DatabaseSchemaCreation(Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database);
+                var DbSchema = new DatabaseSchemaCreation(Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database);
                 DbSchema.InitializeDatabaseSchema();
             }
-            catch (SqlException SqlEx)
-            {
-                if (SqlEx.Message.Contains(
-                        "There is already an object named 'FK_uLocateLocationTypeProperty_cmsDataType' in the database."))
-                {
-                    var message = string.Concat("uLocate.Data.Helper.InitializeDatabase - Schema Creation: ", SqlEx);
-                    LogHelper.Info(typeof(uLocate.Data.Helper), message);
-                }
-                else
-                {
-                    var message = string.Concat("uLocate.Data.Helper.InitializeDatabase - Schema Creation Error: ", SqlEx);
-                    LogHelper.Error(typeof(uLocate.Data.Helper), message, SqlEx);
+            //catch (SqlException SqlEx)
+            //{
+            //    if (SqlEx.Message.Contains(
+            //            "There is already an object named 'FK_uLocateLocationTypeProperty_cmsDataType' in the database."))
+            //    {
+            //        var message = string.Concat("uLocate.Data.Helper.InitializeDatabase - Schema Creation: ", SqlEx);
+            //        LogHelper.Info(typeof(uLocate.Data.Helper), message);
+            //    }
+            //    else
+            //    {
+            //        var message = string.Concat("uLocate.Data.Helper.InitializeDatabase - Schema Creation Error: ", SqlEx);
+            //        LogHelper.Error(typeof(uLocate.Data.Helper), message, SqlEx);
 
-                    return false;
-                }
-            }
+            //        return false;
+            //    }
+            //}
             catch (Exception ex)
             {
                 var message = string.Concat("uLocate.Data.Helper.InitializeDatabase - Schema Creation Error: ", ex);

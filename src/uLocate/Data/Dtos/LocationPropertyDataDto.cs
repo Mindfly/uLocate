@@ -11,16 +11,17 @@
     /// Dto for the "uLocate_LocationPropertyData" table
     /// </summary>
     [TableName("uLocate_LocationPropertyData")]
-    [PrimaryKey("Id")]
+    [PrimaryKey("Key", autoIncrement = false)]
     [ExplicitColumns]
     internal class LocationPropertyDataDto
     {
         /// <summary>
         /// Gets or sets the id for the location property data
         /// </summary>
-        [Column("Id")]
-        [PrimaryKeyColumn(AutoIncrement = true)]
-        public int Id { get; set; }
+        [Column("Key")]
+        [PrimaryKeyColumn(AutoIncrement = false)]
+        [Constraint(Default = "newid()")]
+        public Guid Key { get; set; }
 
         /// <summary>
         /// Gets or sets the related Location key
@@ -32,15 +33,15 @@
         /// <summary>
         /// Gets or sets the related LocationTypeProperty
         /// </summary>
-        [Column("LocationTypePropertyId")]
-        [ForeignKey(typeof(LocationTypeProperty), Name = "FK_uLocateLocationPropertyData_uLocateLocationTypeProperty", Column = "Id")]
-        public int LocationTypePropertyId { get; set; }
+        [Column("LocationTypePropertyKey")]
+        [ForeignKey(typeof(LocationTypePropertyDto), Name = "FK_uLocateLocationPropertyData_uLocateLocationTypeProperty", Column = "Key")]
+        public Guid LocationTypePropertyKey { get; set; }
 
         /// <summary>
         /// Gets or sets int data for the location property
         /// </summary>
         [Column("dataInt")]
-        public string dataInt { get; set; }
+        public int dataInt { get; set; }
 
         /// <summary>
         /// Gets or sets date data for the location property
@@ -83,7 +84,9 @@
         {
             UpdateDate = DateTime.Now;
             CreateDate = DateTime.Now;
+            Key = Guid.NewGuid();
         }
+
     }
 }
 
