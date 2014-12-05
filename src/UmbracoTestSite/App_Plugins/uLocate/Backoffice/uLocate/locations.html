@@ -11,12 +11,11 @@
                     <div class="btn-group" ng-class="{'open': openMenu}">
                         <a class="btn" ng-click="openMenu = !openMenu">Actions <span class="caret"></span></a>
                         <ul class="dropdown-menu umb-actions">
-                            <!-- ngRepeat: action in actions -->
                             <li class="action">
-                                <a ng-click="openCreateDialog(); openMenu = !openMenu;"><i class="icon icon-add"></i><span class="menu-label">Create</span></a> <!-- TODO: Opens the page to create a new location -->
+                                <a ng-click="openCreateDialog(); openMenu = !openMenu;"><i class="icon icon-add"></i><span class="menu-label">Create</span></a>
                             </li>
                             <li class="action sep">
-                                <a ng-click="getLocations(); openMenu = !openMenu;"><i class="icon icon-refresh"></i><span class="menu-label">Reload nodes</span></a> <!-- TODO: Reloads the locations and ideally kicks the cache in the teeth -->
+                                <a ng-click="getLocations(); openMenu = !openMenu;"><i class="icon icon-refresh"></i><span class="menu-label">Reload nodes</span></a>
                             </li>
                         </ul>
                     </div>
@@ -73,9 +72,8 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="location in locations" class="vcard" ng-click="zoomToLocation(location)">
-                            <!-- TODO: When clicking on the row of an address, it zooms in on the pin -->
                             <td><input type="checkbox" /></td>
-                            <td class="fn"><a href class="link-blue" ng-click="openViewDialog(location)">Mindfly</a></td>
+                            <td class="fn"><a href class="link-blue" ng-click="openViewDialog(location)">{{location.name}}</a></td>
                             <td class="adr">
                                 <span class="street-address">{{location.address.streetAddress}}</span>
                                 <span class="extended-address" ng-show="location.address.address2 != ''">{{location.address.extendedAddress}}</span>
@@ -89,7 +87,7 @@
                             <td>{{location.type}}</td>
                             <td class="btn-group text-right">
                                 <a class="btn btn-mini" ng-click="openEditDialog(location)"><i class="icon-edit"></i></a>
-                                <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a> <!-- TODO: Should have a delete confirmation; we should check how Umbraco does it - I think it's a generic alert -->
+                                <a class="btn btn-mini btn-danger" ng-click="openDeleteDialog(location)"><i class="icon-trash"></i></a>
                             </td>
                         </tr>
                     </tbody>
@@ -222,7 +220,7 @@
                 
                 <div class="umb-tab-buttons" detect-fold> <!-- TODO: -->
                     <div class="btn-group">
-                        <a class="btn" href="#/uLocate/uLocate/locations/view">Cancel</a>
+                        <a class="btn" href="#/uLocate/uLocate/locations/view">Cancel</a> <!-- TODO: Would like this to trigger the "do you want to leave this page?" notification pane: https://github.com/umbraco/Umbraco-CMS/blob/788a0241d828cecd09f84a2a356b643422c6599c/src/Umbraco.Web.UI.Client/src/views/common/notifications/confirmroutechange.html -->
                     </div>
 
                     <div class="btn-group">

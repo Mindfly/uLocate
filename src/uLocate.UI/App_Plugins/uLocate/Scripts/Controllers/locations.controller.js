@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function ($scope, $routeParams, treeService, assetsService, dialogService, navigationService, uLocateMapService, uLocateLocationApiService, notificationsService) {
+    controllers.LocationsController = function ($scope, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateMapService, uLocateLocationApiService, notificationsService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -184,6 +184,27 @@
             });
         };
 
+        /**
+         * @ngdoc method
+         * @name openDeleteDialog
+         * @function
+         * 
+         * @param {uLocate.Models.Location} location - the location to delete.
+         * @description - Opens the Delete Location dialog.
+         */
+        $scope.openDeleteDialog = function(location) {
+            var dialogData = {
+                name: location.name,
+                location: location,
+            };
+            dialogService.open({
+                template: '/App_Plugins/uLocate/Dialogs/delete.confirmation.dialog.html',
+                show: true,
+                callback: $scope.processDeleteDialog,
+                dialogData: dialogData
+            });
+        };
+
         $scope.openEditDialog = function () {
             console.info('clicked');
             var dialogData = {};
@@ -293,7 +314,7 @@
                 sortBy: $scope.sortBy,
                 sortOrder: $scope.sortOrder
             });
-            var promise = uLocateLocationApiService.getLocations(request);
+            var promise = uLocateLocationApiService.getAllLocations(request);
             promise.then(function(response) {
                 $scope.locations = _.map(response.locations, function(location) {
                     return new uLocate.Models.Location(location);
@@ -329,6 +350,32 @@
             return result;
         };
 
+        /**
+        * @ngdoc method
+        * @name processDeleteDialog
+        * @function
+        * 
+        * @param {object} data - Returned object from dialog
+        * @param {string} data.name - Name of location.
+        * @param {uLocate.Models.Location} data.location - Location to delete.
+        * @description - Deletes a location.
+        */
+        $scope.processDeleteDialog = function(data) {
+            if (data) {
+                var location = data.location;
+                var promise = uLocateLocationApiService.deleteLocation(location.id);
+                promise.then(function(response) {
+                    if (response.success) {
+                        notificationsService.success("Location '" + location.name + "' successfully deleted.");
+                    } else {
+                        notificationsService.error("Attempt to delete location '" + location.name + "' failed.", reason.message);
+                    }
+                }, function(reason) {
+                    notificationsService.error("Attempt to delete location '" + location.name + "' failed.", reason.message);
+                });
+            }
+        };
+
         $scope.processEditDialog = function(data) {
             console.info(data);
             notificationsService.success("Location edited", "This location has been successfully updated. #h5yr!");
@@ -341,6 +388,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'uLocateMapService', 'uLocateLocationApiService', 'notificationsService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateMapService', 'uLocateLocationApiService', 'notificationsService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

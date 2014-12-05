@@ -6,14 +6,58 @@
 
 	    /**
          * @ngdoc method
-         * @name getLocations
+         * @name deleteLocation
+         * @function
+         * 
+         * @param {integer} id - ID of the location.
+         * @returns {object}
+         * @description - Delete indicated location.
+         */
+		locationApiFactory.deleteLocation = function (id) {
+		    var config = { params: { id: id } };
+	        // TODO: Change out the url in this line for the live one below when not using mocks.
+	        return $http.get('/App_Plugins/uLocate/Scripts/ApiMocks/delete.location.js', config).then(function(response) {
+	            if (response.data) {
+	                var data = locationApiFactory.downCaseProperties(response.data);
+	                return data;
+	            } else {
+	                return false;
+	            }
+	        });
+	    };
+
+	    /**
+         * @ngdoc method
+         * @name getAllLocations
+         * @function
+         * 
+         * @param {integer} id - The id of the desired location.
+         * @returns {uLocate.Models.Location} - Location retrieved.
+         * @description - Get a specific location.
+         */
+	    locationApiFactory.getLocation = function(id) {
+	        var config = { params: { id: id } };
+	        // TODO: Change out the url in this line for the live one below when not using mocks.
+	        return $http.get('/App_Plugins/uLocate/Scripts/ApiMocks/get.location.js', config).then(function (response) {
+	            if (response.data) {
+	                var data = locationApiFactory.downCaseProperties(response.data);
+	                return data;
+	            } else {
+	                return false;
+	            }
+	        });
+	    };
+
+	    /**
+         * @ngdoc method
+         * @name getAllLocations
          * @function
          * 
          * @param {uLocate.Models.GetLocationsApiRequest} options - The desired options for the request.
-         * @returns {google.maps.Map} - The Google Map that was created.
-         * @description - Load and initialize a Google map.
+         * @returns {array of uLocate.Models.Location} - List of locations.
+         * @description - Get all the locations that match the options.
          */
-		locationApiFactory.getLocations = function (options) {
+		locationApiFactory.getAllLocations = function (options) {
 		    var request;
 		    if (!options) {
 		        request = new uLocate.Models.GetLocationsApiRequst();
