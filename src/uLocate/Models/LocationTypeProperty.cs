@@ -26,12 +26,13 @@
 
         #region Public Properties
 
+     
         /// <summary>
-        /// Gets or sets the Primary Key ID for the property
+        /// Gets or sets the Key
         /// </summary>
-        [Column("Id")]
+        [Column("Key")]
         [PrimaryKeyColumn(AutoIncrement = true)]
-        public int Id { get; set; }
+        public override Guid Key { get; internal set; }
 
         /// <summary>
         /// Gets or sets the Alias for the property
@@ -50,9 +51,9 @@
         /// <summary>
         /// Gets or sets the related Location Type for the property
         /// </summary>
-        [Column("LocationTypeId")]
-        [ForeignKey(typeof(LocationType), Name = "FK_uLocateLocationTypeProperty_uLocateLocationType", Column = "Id")]
-        public int LocationTypeId { get; set; }
+        [Column("LocationTypeKey")]
+        [ForeignKey(typeof(LocationType), Name = "FK_uLocateLocationTypeProperty_uLocateLocationType", Column = "Key")]
+        public Guid LocationTypeKey { get; set; }
 
         /// <summary>
         /// Gets or sets the related DataType (from the umbraco DataTypes) for the property
@@ -91,38 +92,9 @@
         [Constraint(Default = "getdate()")]
         public DateTime UpdateDate { get; set; }
 
-        /// <summary>
-        /// Gets the id key.
-        /// </summary>
-        public override object IdKey
-        {
-            get
-            {
-                return this.Id;
-            }
-        }
 
-        /// <summary>
-        /// Gets a value indicating whether the entity has a valid id
-        /// </summary>
-        public override bool HasIdentity
-        {
-            get
-            {
-                return !Id.Equals(0) & !Id.Equals(null);
-            }
-        }
 
-        /// <summary>
-        /// Gets the entity id type (int)
-        /// </summary>
-        public override string EntityIdType
-        {
-            get
-            {
-                return "int";
-            }
-        }
+
 
         #endregion
 

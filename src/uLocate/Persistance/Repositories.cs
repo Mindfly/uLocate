@@ -16,7 +16,7 @@ namespace uLocate.Persistance
         public static UmbracoDatabase ThisDb = ApplicationContext.Current.DatabaseContext.Database;
         public static LocationTypeRepository LocationTypeRepo = new LocationTypeRepository(ThisDb, ApplicationContext.Current.ApplicationCache.RuntimeCache);
         public static LocationTypePropertyRepository LocationTypePropertyRepo = new LocationTypePropertyRepository(ThisDb, ApplicationContext.Current.ApplicationCache.RuntimeCache);
-
+        public static LocationPropertyDataRepository LocationPropertyDataRepo = new LocationPropertyDataRepository(ThisDb, ApplicationContext.Current.ApplicationCache.RuntimeCache);
 
         //public static LocationTypeProperty CreateLocationTypeProp( string Alias, string DisplayName, int DataTypeId, int SortOrder = 0)
         //{//int LocTypeId,

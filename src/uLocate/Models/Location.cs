@@ -6,36 +6,23 @@
     /// <summary>
     /// Represents a Location
     /// </summary>
-    public class Location : EntityBase //, IEntity
+    public class Location : EntityBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Location"/> class.
         /// </summary>
-        //public Location()
-        //    : this()//new CustomFieldsCollection()
-        //{
-        //}
-
-        ///// <summary>
-        ///// Initializes a new instance of the <see cref="Location"/> class.
-        ///// </summary>
-        ///// <param name="customFields">
-        ///// The custom fields.
-        ///// </param>
-        ///// <exception cref="ArgumentNullException">
-        ///// Throws an exception if customFields is null
-        ///// </exception>
-        //internal Location()//CustomFieldsCollection customFields
-        //{
-        //    //if (customFields == null) throw new ArgumentNullException("customFields");
-
-        //    //Fields = customFields;
-        //}
+        public Location()
+        {
+            UpdateDate = DateTime.Now;
+            CreateDate = DateTime.Now;
+            //this.Key = Guid.NewGuid();
+            this.PropertyData = new List<LocationPropertyData>();
+        }
 
         /// <summary>
-        /// Gets or sets the key.
+        /// Gets the key.
         /// </summary>
-        public Guid Key { get; set; }
+        public override Guid Key { get; internal set; }
 
         /// <summary>
         /// Gets or sets the name.
@@ -45,7 +32,7 @@
         /// <summary>
         /// Gets or sets the location type key.
         /// </summary>
-        public int LocationTypeId { get; set; }
+        public Guid LocationTypeKey { get; set; }
 
         /// <summary>
         /// Gets or sets the geocode status.
@@ -68,56 +55,12 @@
         public IEnumerable<LocationPropertyData> PropertyData { get; internal set; }
 
         /// <summary>
-        /// Utility method used to update the update date when the entity is about to be created
+        /// Gets or sets the location type.
         /// </summary>
-        public override void AddingEntity()
-        {
-            base.AddingEntity();
-            Key = Guid.NewGuid();
-        }
+        public LocationType LocationType { get; set; }
 
-        /// <summary>
-        /// Gets the Guid key.
-        /// </summary>
-        public override object IdKey {
-            get
-            {
-                return Key;
-            }
-        }
-
-        /// <summary>
-        /// Gets the entity id type of "guid"
-        /// </summary>
-        public override string EntityIdType
-        {
-            get
-            {
-                return "guid";
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the location type definition.
-        /// </summary>
-        /// <remarks>
-        /// Used for validation
-        /// </remarks>
-        internal LocationType LocationType { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether the entity has an identity.
-        /// </summary>
-        public override bool HasIdentity
-        {
-            get
-            {
-                return !Key.Equals(Guid.Empty);
-            }
-        }
 
 
     }
 
-    
 }

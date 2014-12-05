@@ -43,26 +43,5 @@
             return string.Format("ulocate.{0}.{1}", typeof(TEntity), key);
         }
 
-        /// <summary>
-        /// Gets a cache key used by repositories for caching entities
-        /// </summary>
-        /// <param name="Id">
-        /// The int Id.
-        /// </param>
-        /// <typeparam name="TEntity">
-        /// The type of <see cref="IEntity"/>
-        /// </typeparam>
-        /// <returns>
-        /// The cache key <see cref="string"/>.
-        /// </returns>
-        public static string GetEntityCacheKey<TEntity>(int Id) where TEntity : IEntity
-        {
-            return string.Format("ulocate.{0}.{1}", typeof(TEntity), Id);
-        }
-
-        public static string GetEntityCacheKey<TEntity>(object IdKey) where TEntity : IEntity
-        {
-            return string.Format("ulocate.{0}.{1}", typeof(TEntity), IdKey);
-        }
     }
 }

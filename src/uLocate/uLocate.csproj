@@ -186,7 +186,8 @@
     <Compile Include="Configuration\SettingsCollection.cs" />
     <Compile Include="Configuration\uLocateSection.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Data\cmsDataTypeDto.cs" />
+    <Compile Include="Data\DtoConverter.cs" />
+    <Compile Include="Data\Dtos\cmsDataTypeDto.cs" />
     <Compile Include="Data\Data.Helper.cs" />
     <Compile Include="Data\DatabaseDefaultDataInsert.cs" />
     <Compile Include="Data\Dtos\LocationDto.cs" />
@@ -227,11 +228,13 @@
     <Compile Include="Models\LocationTypeProperty.cs" />
     <Compile Include="Data\DatabaseSchemaCreation.cs" />
     <Compile Include="Persistance\LocationRepository.cs" />
+    <Compile Include="Persistance\LocationPropertyDataRepository.cs" />
     <Compile Include="Persistance\LocationTypePropertyRepository.cs" />
     <Compile Include="Persistance\LocationTypeRepository.cs" />
     <Compile Include="Persistance\PagedRepositoryBase.cs" />
     <Compile Include="Persistance\Repositories.cs" />
     <Compile Include="Persistance\RepositoryBase.cs" />
+    <Compile Include="StatusMessage.cs" />
     <Compile Include="Properties\AssemblyVisibility.cs" />
     <Compile Include="Helpers\GeographyHelper.cs" />
     <Compile Include="Helpers\UtilityExtensions.cs" />
