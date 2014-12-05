@@ -159,6 +159,13 @@
             $scope.getLocations();
         };
 
+        /**
+         * @ngdoc method
+         * @name openCreateDialog
+         * @function
+         * 
+         * @description - Opens the Create Location dialog.
+         */
         $scope.openCreateDialog = function() {
             navigationService.showDialog({
                 node: $scope.currentNode,
