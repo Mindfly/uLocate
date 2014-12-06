@@ -52,6 +52,7 @@
         if (data === undefined) {
             self.address = new uLocate.Models.Address();
             self.coordinates = new uLocate.Models.Coordinates();
+            self.email = '';
             self.id = '';
             self.name = '';
             self.phone = '';
@@ -59,6 +60,7 @@
         } else {
             self.address = new uLocate.Models.Address(data.address);
             self.coordinates = new uLocate.Models.Coordinates(data.coordinates);
+            self.email = data.email;
             self.id = data.id;
             self.name = data.name;
             self.phone = data.phone;

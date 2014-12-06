@@ -3,54 +3,54 @@
         <h1>Edit {{dialogData.location.name}}</h1>
     </div>
     <div class="umb-panel-body with-header with-footer">
-        <!-- TODO: All the default location type data loads in first -->
-        <div class="control-group row-fluid">
-            <label>Name</label>
-            <input type="text" class="span12" ng-model="dialogData.location.name" required />
-        </div>
-        <div class="control-group row-fluid">
-            <label>Address 1</label>
-            <input type="text" class="span12" ng-model="dialogData.location.address.streetAddress" required />
-        </div>
-        <div class="control-group row-fluid">
-            <label>Address 2</label>
-            <input type="text" class="span12" ng-model="dialogData.location.address.extendedAddress" />
-        </div>
-        <div class="control-group row-fluid">
-            <label>City</label>
-            <input type="text" class="span12" ng-model="dialogData.location.address.locality" required />
-        </div>
-        <div class="control-group row-fluid">
-            <!-- TODO: Needs to populate with a list of states/provinces by country. Not sure where this data is coming from, but it would be great if we could load config files and associate them with a country -->            
-            <label>State/Province</label>
-            <select class="span12" ng-model="selected.region" ng-options="option for option in options.regions" required></select>
-        </div>
-        <div class="control-group row-fluid">
-            <label>Zip/Postal Code</label>
-            <input type="text" class="span12" ng-model="dialogData.location.address.postalCode" required />
-        </div>
-        <div class="control-group row-fluid">
-            <!-- TODO: Should load a list of countries to select from -->
-            <label>Country</label>
-            <select class="span12" ng-model="selected.country" ng-options="option for option in options.countries" required></select>
-        </div>
-        <div class="control-group row-fluid">
-            <label>Latitude</label>
-            <input type="text" class="span12" ng-model="dialogData.location.coordinates.latitude" required />
-        </div>
-        <div class="control-group row-fluid">
-            <label>Longitude</label>
-            <input type="text" class="span12" ng-model="dialogData.location.coordinates.longitude" required />
-        </div>
-        <div class="control-group row-fluid">
-            <label>Email</label>
-            <input type="text" class="span12" ng-model="dialogData.location.email" />
-        </div>
-        <div class="control-group row-fluid">
-            <label>Phone Number</label>
-            <input type="text" class="span12" ng-model="dialogData.location.phone" />
-        </div>
-        <!-- TODO: After the default location type data loads in, any created location type data associated with this location is loaded -->
+        <form id="editLocationDialogForm">
+            <div class="control-group row-fluid">
+                <label>Name</label>
+                <input type="text" class="span12" ng-model="dialogData.location.name" required />
+            </div>
+            <div class="control-group row-fluid">
+                <label>Address 1</label>
+                <input type="text" class="span12" ng-model="dialogData.location.address.streetAddress" required />
+            </div>
+            <div class="control-group row-fluid">
+                <label>Address 2</label>
+                <input type="text" class="span12" ng-model="dialogData.location.address.extendedAddress" />
+            </div>
+            <div class="control-group row-fluid">
+                <label>City</label>
+                <input type="text" class="span12" ng-model="dialogData.location.address.locality" required />
+            </div>
+            <div class="control-group row-fluid">
+                <label>{{provinceLabel}}</label>
+                <select class="span12" ng-model="selected.region" ng-options="option.name for option in selected.country.provinces" required></select>
+            </div>
+            <div class="control-group row-fluid">
+                <label>Zip/Postal Code</label>
+                <input type="text" class="span12" ng-model="dialogData.location.address.postalCode" required />
+            </div>
+            <div class="control-group row-fluid">
+                <label>Country</label>
+                <select class="span12" ng-model="selected.country" ng-options="option.name for option in options.countries" ng-change="updateCountry(selected.country)" required></select>
+            </div>
+            <div class="control-group row-fluid">
+                <label><input type="checkbox" ng-model="shouldHideCoordinatesEditor" /> Automatically Update Lat/Lng</label>
+            </div>
+            <div ng-show="!shouldHideCoordinatesEditor">
+                <div class="control-group row-fluid">
+                    <label>Latitude</label>
+                    <input type="text" class="span12" ng-model="dialogData.location.coordinates.latitude" required />
+                </div>
+                <div class="control-group row-fluid">
+                    <label>Longitude</label>
+                    <input type="text" class="span12" ng-model="dialogData.location.coordinates.longitude" required />
+                </div>
+            </div>
+            <div class="control-group row-fluid">
+                <label>Phone Number</label>
+                <input type="text" class="span12" ng-model="dialogData.location.phone" />
+            </div>
+            <!-- TODO: After the default location type data loads in, any created location type data associated with this location is loaded -->
+        </form>
     </div>
 
     <div class="umb-panel-footer">
