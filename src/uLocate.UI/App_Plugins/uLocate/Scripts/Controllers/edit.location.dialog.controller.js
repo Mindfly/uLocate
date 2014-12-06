@@ -109,6 +109,7 @@
          * @description - Make necessary location model modifications before submitting.
          */
         $scope.save = function () {
+            $scope.formSubmitted = true;
             if ($scope.editLocationDialogForm.$valid) {
                 $scope.dialogData.location.address.countryName = $scope.selected.country.name;
                 if ($scope.hasRegions) {
@@ -118,6 +119,7 @@
                         $scope.dialogData.location.address.region = $scope.selected.region.name;
                     }
                 }
+                $scope.dialogData.generateLatLng = $scope.shouldHideCoordinatesEditor;
                 $scope.submit();
             }
         };
@@ -138,7 +140,11 @@
          */
         $scope.updateCountry = function(country) {
             $scope.selected.region = country.provinces[0];
-            $scope.provinceLabel = country.provinceLabel;
+            if (country.provinceLabel !== '') {
+                $scope.provinceLabel = country.provinceLabel;
+            } else {
+                $scope.provinceLabel = 'Province/State';
+            }
         };
 
         /*-------------------------------------------------------------------
@@ -155,6 +161,22 @@
         $scope.getLocationTypes = function () {
             // TODO: Wire in functionality to get a list of location types.    
         }
+
+        /**
+         * @ngdoc method
+         * @name hasProvinces
+         * @function
+         * 
+         * @returns {boolean} - true or false
+         * @description - Returns true if the currently selected country has provinces.
+         */
+        $scope.hasProvinces = function() {
+            var result = false;
+            if ($scope.selected.country.provinces.length > 1) {
+                result = true;
+            }
+            return result;
+        };
 
         /*-------------------------------------------------------------------*/
 

@@ -3,47 +3,55 @@
         <h1>Edit {{dialogData.location.name}}</h1>
     </div>
     <div class="umb-panel-body with-header with-footer">
-        <form id="editLocationDialogForm">
+        <form name="editLocationDialogForm">
             <div class="control-group row-fluid">
-                <label>Name</label>
-                <input type="text" class="span12" ng-model="dialogData.location.name" required />
+                <label>Name <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.name.$invalid">- Required</span></label>
+                <input type="text" class="span12" name="name" ng-model="dialogData.location.name" required />
             </div>
             <div class="control-group row-fluid">
-                <label>Address 1</label>
-                <input type="text" class="span12" ng-model="dialogData.location.address.streetAddress" required />
+                <label>Address 1 <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.address1.$invalid">- Required</span></label>
+                <input type="text" class="span12" name="address1" ng-model="dialogData.location.address.streetAddress" required />
             </div>
             <div class="control-group row-fluid">
                 <label>Address 2</label>
                 <input type="text" class="span12" ng-model="dialogData.location.address.extendedAddress" />
             </div>
             <div class="control-group row-fluid">
-                <label>City</label>
-                <input type="text" class="span12" ng-model="dialogData.location.address.locality" required />
+                <label>City <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.locality.$invalid">- Required</span></label>
+                <input type="text" class="span12" name="locality" ng-model="dialogData.location.address.locality" required />
             </div>
-            <div class="control-group row-fluid">
+            <div class="control-group row-fluid" ng-show="hasProvinces()">
                 <label>{{provinceLabel}}</label>
-                <select class="span12" ng-model="selected.region" ng-options="option.name for option in selected.country.provinces" required></select>
+                <select class="span12" ng-model="selected.region" ng-options="option.name for option in selected.country.provinces"></select>
+            </div>
+            <div class="control-group row-fluid" ng-show="!hasProvinces()">
+                <label>{{provinceLabel}} <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.region.$invalid && !hasProvinces()">- Required</span></label>
+                <input type="text" class="span12" name="region" ng-model="dialogData.location.address.region" ng-required="!hasProvinces()" />
             </div>
             <div class="control-group row-fluid">
-                <label>Zip/Postal Code</label>
-                <input type="text" class="span12" ng-model="dialogData.location.address.postalCode" required />
+                <label>Zip/Postal Code <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.postalCode.$invalid">- Required</span></label>
+                <input type="text" class="span12" name="postalCode" ng-model="dialogData.location.address.postalCode" required />
             </div>
             <div class="control-group row-fluid">
                 <label>Country</label>
-                <select class="span12" ng-model="selected.country" ng-options="option.name for option in options.countries" ng-change="updateCountry(selected.country)" required></select>
+                <select class="span12" ng-model="selected.country" ng-options="option.name for option in options.countries" ng-change="updateCountry(selected.country)"></select>
             </div>
             <div class="control-group row-fluid">
                 <label><input type="checkbox" ng-model="shouldHideCoordinatesEditor" /> Automatically Update Lat/Lng</label>
             </div>
             <div ng-show="!shouldHideCoordinatesEditor">
                 <div class="control-group row-fluid">
-                    <label>Latitude</label>
-                    <input type="text" class="span12" ng-model="dialogData.location.coordinates.latitude" required />
+                    <label>Latitude <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.lat.$invalid">- Required</span></label>
+                    <input type="text" class="span12" name="lat" ng-model="dialogData.location.coordinates.latitude" ng-required="!shouldHideCoordinatesEditor" />
                 </div>
                 <div class="control-group row-fluid">
-                    <label>Longitude</label>
-                    <input type="text" class="span12" ng-model="dialogData.location.coordinates.longitude" required />
+                    <label>Longitude <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.lng.$invalid">- Required</span></label>
+                    <input type="text" class="span12" name="lng" ng-model="dialogData.location.coordinates.longitude" ng-required="!shouldHideCoordinatesEditor" />
                 </div>
+            </div>
+            <div class="control-group row-fluid">
+                <label>Email</label>
+                <input type="text" class="span12" ng-model="dialogData.location.email" />
             </div>
             <div class="control-group row-fluid">
                 <label>Phone Number</label>
