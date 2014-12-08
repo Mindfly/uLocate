@@ -1,7 +1,7 @@
 ﻿<div class="uLocate" ng-controller="uLocate.Controllers.LocationTypesController">
 
     <!-- The location types view route displays this panel -->
-    <umb-panel>
+    <umb-panel ng-hide="selectedView != 'view'">
         <umb-header>
             <div class="span7">
                 <h1>Location Types</h1>
@@ -13,7 +13,6 @@
                         <a class="btn">Actions <span class="caret"></span></a>
                         <!-- TODO: In umbraco, this is generated using umb-options-menu, which you can see an example of in Umbraco.Web.UI.Client\build\belle\views\content\edit.html. The actions allowed for this menu item are determined in the uLocate TreeController -->
                         <ul class="dropdown-menu umb-actions">
-                            <!-- ngRepeat: action in actions -->
                             <li class="action">
                                 <a><i class="icon icon-add"></i><span class="menu-label">Create</span></a> <!-- TODO: Opens the page to create a new location type -->
                             </li>
@@ -53,7 +52,7 @@
                             <td>Contact Name, Phone Extention, Accepts Marketing</td> <!-- TODO: This should be a repeater that displays all the field names in a comma separated list -->
                             <td class="btn-group text-right">
                                 <a class="btn btn-mini" href="#/uLocate/uLocate/locationTypes/edit"><i class="icon-edit"></i></a> <!-- TODO: Opens the create/edit page, not a dialog -->
-                                <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a> <!-- TODO: Will have a pop-up delete notification asking users if they want to revert associated locations to the default location type or delete them, perhaps using a custom dialog based on https://github.com/umbraco/Umbraco-CMS/blob/788a0241d828cecd09f84a2a356b643422c6599c/src/Umbraco.Web.UI.Client/src/views/datatype/delete.html -->
+                                <a class="btn btn-mini btn-danger" ng-click="openDeleteDialog(location)"><i class="icon-trash"></i></a> <!-- TODO: Will have a pop-up delete notification asking users if they want to revert associated locations to the default location type or delete them, perhaps using a custom dialog based on https://github.com/umbraco/Umbraco-CMS/blob/788a0241d828cecd09f84a2a356b643422c6599c/src/Umbraco.Web.UI.Client/src/views/datatype/delete.html -->
                             </td>
                         </tr>
                     </tbody>
@@ -65,7 +64,7 @@
     </umb-panel>
 
     <!-- The location types edit (also create) route displays this panel -->
-    <umb-panel>
+    <umb-panel ng-hide="selectedView != 'edit'">
         <umb-header tabs="tabs">
             <div class="span7">
                 <form>

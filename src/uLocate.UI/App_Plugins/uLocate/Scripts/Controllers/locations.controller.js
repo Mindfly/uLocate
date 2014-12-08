@@ -194,15 +194,19 @@
          * @description - Opens the Delete Location dialog.
          */
         $scope.openDeleteDialog = function(location) {
-            var dialogData = {
-                name: location.name,
-                location: location,
-            };
-            dialogService.open({
-                template: '/App_Plugins/uLocate/Dialogs/delete.confirmation.dialog.html',
-                show: true,
-                callback: $scope.processDeleteDialog,
-                dialogData: dialogData
+            navigationService.showDialog({
+                node: location,
+                action: {
+                    alias: 'delete',
+                    cssclass: 'delete',
+                    name: 'Delete',
+                    seperator: false,
+                    metaData: {
+                        actionView: '/App_Plugins/uLocate/Dialogs/delete.confirmation.dialog.html',
+                        dialogTitle: 'Delete'
+                    }
+                },
+                section: 'uLocate',
             });
         };
 
