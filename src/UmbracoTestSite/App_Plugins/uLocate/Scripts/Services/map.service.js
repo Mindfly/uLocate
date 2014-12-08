@@ -4,6 +4,7 @@
 
         var mapFactory = {};
         mapFactory.markers = [];
+        mapFactory.geocoder = false;
 
         /**
          * @ngdoc method
@@ -114,13 +115,37 @@
 
         /**
          * @ngdoc method
+         * @name geocode
+         * @function
+         * 
+         * @param {string} address - The address to geocode
+         * @returns {[number, number]} - The [lat,lng] of the address.
+         * @description - Returns the coordinates for the adddress. A promise wrapper for google's geocoder.
+         */
+        mapFactory.geocode = function (address) {
+            var deferred = $q.defer();
+            if (!mapFactory.geocoder) {
+                mapFactory.geocoder = new google.maps.Geocoder();
+            }
+            mapFactory.geocoder.geocode({ 'address': address }, function (results, status) {
+                var response = false;
+                if (status == google.maps.GeocoderStatus.OK) {
+                    response = results[0].geometry.location;
+                }
+                deferred.resolve(response);
+            });
+            return deferred.promise;
+        }
+
+        /**
+         * @ngdoc method
          * @name getAllMarkers
          * @function
          * 
          * @returns {array of google.maps.Marker} - The markers returned.
          * @description - Returns all markers in mapFactory.markers array.
          */
-        mapFactory.getAllMarkers = function() {
+        mapFactory.getAllMarkers = function () {
             return mapFactory.markers;
         };
 

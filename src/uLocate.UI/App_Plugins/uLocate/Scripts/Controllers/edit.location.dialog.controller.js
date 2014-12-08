@@ -120,7 +120,7 @@
                     }
                 }
                 $scope.dialogData.generateLatLng = $scope.shouldHideCoordinatesEditor;
-                $scope.submit();
+                $scope.submit($scope.dialogData);
             }
         };
 
@@ -177,6 +177,25 @@
             }
             return result;
         };
+
+        /**
+         * @ngdoc method
+         * @name isInvalidField
+         * @function
+         * 
+         * @param {object} field - The field in the form to verify.
+         * @returns {boolean} - true or false
+         * @description - Returns true if the field is invalid and the form has been submitted.
+         */
+        $scope.isInvalidField = function(field) {
+            var result = false;
+            if ($scope.formSubmitted) {
+                if (field.$invalid) {
+                    result = true;
+                }
+            }
+            return result;
+        }
 
         /*-------------------------------------------------------------------*/
 

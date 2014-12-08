@@ -215,6 +215,10 @@
          * @description - Opens the Edit Location dialog.
          */
         $scope.openEditDialog = function (location) {
+            // If the view dialog called this, we'll end up with location nested down in the original object.
+            if (location.location) {
+                location = location.location;
+            }
             var dialogData = {
                 location: new uLocate.Models.Location(location)
             };
@@ -308,6 +312,28 @@
 
         /**
          * @ngdoc method
+         * @name buildAddressString
+         * @function
+         * 
+         * @param {uLocate.Models.Address} address - The address to conver to a string.
+         * @returns {string} string - The address in string form.
+         * @description - Converts a provided address object into a string.
+         */
+        $scope.buildAddressString = function(address) {
+            var string = '';
+            string += address.streetAddress;
+            if (address.extendedAddress != null && (typeof address.extendedAddress) != 'undefined' && address.extendedAddress != false) {
+                string += ' ' + address.extendedAddress;
+            }
+            string += ', ' + address.locality;
+            string += ', ' + address.region;
+            string += ' ' + address.postalCode;
+            string += ' ' + address.countryName;
+            return string;
+        };
+
+        /**
+         * @ngdoc method
          * @name getLocations
          * @function
          * 
@@ -376,6 +402,7 @@
                 promise.then(function(response) {
                     if (response.success) {
                         notificationsService.success("Location '" + location.name + "' successfully deleted.");
+                        $scope.getLocations();
                     } else {
                         notificationsService.error("Attempt to delete location '" + location.name + "' failed.", reason.message);
                     }
@@ -392,21 +419,45 @@
         * 
         * @param {object} data - Returned object from dialog
         * @param {uLocate.Models.Location} data.location - Location to update.
-        * @description - Update a location.
+        * @description - Update a location via API.
         */
         $scope.processEditDialog = function (data) {
             if (data) {
                 var location = data.location;
-                var promise = uLocateLocationApiService.updateLocation(location);
-                promise.then(function(response) {
-                    if (response) {
-                        notificationsService.success("Location '" + location.name + "' successfully updated. #h5yr!");
-                    }
-                }, function(reason) {
-                    notificationsService.error("Attempt to update location '" + location.name + "' failed.", reason.message);
-                });
+                var updatePromise;
+                if (data.generateLatLng) {
+                    var address = $scope.buildAddressString(location.address);
+                    notificationsService.success("Acquiring lat/lng for this address. This may take a moment. Do not leave or reload page.");
+                    var geocodePromise = uLocateMapService.geocode(address);
+                    geocodePromise.then(function (geocodeResponse) {
+                        if (geocodeResponse) {
+                            location.coordinates.latitude = geocodeResponse[0];
+                            location.coordinates.longitude = geocodeResponse[1];
+                            updatePromise = uLocateLocationApiService.updateLocation(location);
+                            updatePromise.then(function (response) {
+                                if (response) {
+                                    notificationsService.success("Location '" + location.name + "' successfully updated. #h5yr!");
+                                    $scope.getLocations();
+                                }
+                            }, function (reason) {
+                                notificationsService.error("Attempt to update location '" + location.name + "' failed.", reason.message);
+                            });
+                        } else {
+                            notificationsService.error("Unable to acquire lat/lng for this address.");
+                        }
+                    });
+                } else {
+                    updatePromise = uLocateLocationApiService.updateLocation(location);
+                    updatePromise.then(function (response) {
+                        if (response) {
+                            notificationsService.success("Location '" + location.name + "' successfully updated. #h5yr!");
+                            $scope.getLocations();
+                        }
+                    }, function(reason) {
+                        notificationsService.error("Attempt to update location '" + location.name + "' failed.", reason.message);
+                    });
+                }
             }
-            notificationsService.success("Location edited", "This location has been successfully updated. #h5yr!");
         };
 
         /*-------------------------------------------------------------------*/
