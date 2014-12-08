@@ -68,3 +68,9 @@ form {
         }
     }
 }
+
+.latlong {
+    @include media(98) {
+        display: none;
+    }
+}

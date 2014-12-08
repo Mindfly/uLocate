@@ -1,6 +1,6 @@
 ﻿(function (controllers, undefined) {
 
-    controllers.DeleteConfirmationDialogController = function ($scope, dialogService) {
+    controllers.DeleteConfirmationDialogController = function ($scope, navigationService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -29,7 +29,7 @@
         $scope.init();
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.DeleteConfirmationDialogController', ['$scope', 'dialogService', uLocate.Controllers.DeleteConfirmationDialogController]);
+    angular.module('umbraco').controller('uLocate.Controllers.DeleteConfirmationDialogController', ['$scope', 'navigationService', uLocate.Controllers.DeleteConfirmationDialogController]);
 
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

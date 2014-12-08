@@ -72,6 +72,9 @@
   color: #ff7100; }
   .uLocate form .validation-error.show {
     display: inline; }
+@media (max-width: 98em) {
+  .uLocate .latlong {
+    display: none; } }
 .uLocate.umb-dialog-body .controls-row {
   margin-left: 0 !important; }
 .uLocate .umb-panel-body h4 {
