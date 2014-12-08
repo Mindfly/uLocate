@@ -103,142 +103,128 @@
 
     <!-- The create location route displays this panel -->
     <umb-panel ng-hide="selectedView != 'create'">
-        <umb-header>
-            <div class="span7">
-                <form>
+        <form name="createForm">
+            <umb-header>
+                <div class="span7">
                     <div class="umb-headline-editor-wrapper">
-                        <input type="text" name="name" localize="placeholder" class="umb-headline" placeholder="Enter a name for your location" required=""> <!-- TODO: Displays the name if editing. -->
-                        <span class="help-inline" val-msg-for="name" val-toggle-msg="required" style="display: none;">Required</span>
-                    </div>
-                </form>
-            </div>
-        </umb-header>
-
-        <umb-tab-view>
-
-            <div class="umb-pane form-horizontal">
-
-                <div class="control-group umb-control-group">
-                    <label class="control-label" for="streetAddress">
-                        Street Address
-                        <small>Street address or c/o</small>
-                    </label>
-
-                    <div class="controls controls-row">
-                        <input type="text" name="textbox" id="streetAddress" class="umb-editor umb-textstring textstring" required=""> <!-- TODO: The id should match the model name -->
-
-                        <span class="help-inline" style="display: none;">Required</span>
-                        <span class="help-inline" style="display: none;"></span>
+                        <input type="text" name="name" localize="placeholder" class="umb-headline" placeholder="Enter a name for your location" ng-model="newLocation.name" required />
+                        <span class="help-inline" val-msg-for="name" ng-show="isFieldInvalid(createForm.name)">Required</span>
                     </div>
                 </div>
+            </umb-header>
 
-                <div class="control-group umb-control-group">
-                    <label class="control-label" for="extendedAddress">
-                        Extended Address
-                        <small>Suite, apartment, unit, etc</small>
-                    </label>
+            <umb-tab-view>
 
-                    <div class="controls controls-row">
-                        <input type="text" name="textbox" id="extendedAddress" class="umb-editor umb-textstring textstring"> <!-- TODO: The id should match the model name -->
+                <div class="umb-pane form-horizontal">
+
+                    <div class="control-group umb-control-group">
+                        <label class="control-label" for="streetAddress">
+                            Street Address
+                            <small>Street address or c/o</small>
+                        </label>
+
+                        <div class="controls controls-row">
+                            <input type="text" name="streetAddress" id="streetAddress" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.streetAddress" required />
+                            <span class="help-inline" ng-show="isFieldInvalid(createForm.streetAddress)">Required</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group umb-control-group">
+                        <label class="control-label" for="extendedAddress">
+                            Extended Address
+                            <small>Suite, apartment, unit, etc</small>
+                        </label>
+
+                        <div class="controls controls-row">
+                            <input type="text" name="extendedAddress" id="extendedAddress" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.extendedAddress" />
+                        </div>
+                    </div>
+
+                    <div class="control-group umb-control-group">
+                        <label class="control-label" for="locality">City</label>
+
+                        <div class="controls controls-row">
+                            <input type="text" name="locality" id="locality" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.locality" required />
+                            <span class="help-inline" ng-show="isFieldInvalid(createForm.streetAddress)">Required</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group umb-control-group">
+                        <label class="control-label" for="region">State/Province</label>
+
+                        <div class="controls controls-row">
+                            <input type="text" name="region" id="region" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.region" ng-show="!hasProvinces()" ng-required="!hasProvinces()">
+                            <select class="umb-editor umb-dropdown" ng-model="selected.region" ng-options="option.name for option in selected.country.provinces" ng-show="hasProvinces()"></select>
+                            <span class="help-inline" ng-show="!hasProvinces() && isFieldInvalid(createForm.region)">Required</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group umb-control-group">
+                        <label class="control-label" for="postalCode">Zip/Postal Code</label>
+
+                        <div class="controls controls-row">
+                            <input type="text" name="postalCode"" id="postalCode" class="umb-editor umb-textstring textstring"  ng-model="newLocation.address.postalCode" required />
+                            <span class="help-inline" ng-show="isFieldInvalid(createForm.postalCode)">Required</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group umb-control-group">
+                        <label class="control-label" for="countryName">Country</label>
+                        <div class="controls controls-row">
+                            <select id="countryName" class="umb-editor umb-dropdown" ng-model="selected.country" ng-options="option.name for option in options.countries" ng-change="updateCountry(selected.country)"></select>
+                        </div>
+                    </div>
+
+                    <div class="control-group umb-control-group">
+                        <label class="control-label" for="latitude">
+                            Latitutde
+                            <small>Optional. Will auto-generate based on address unless both latitude and longitude are manually entered.</small>
+                        </label>
+
+                        <div class="controls controls-row">
+                            <input type="text" name="textbox" id="latitude" class="umb-editor umb-textstring textstring" ng-model="newLocation.coordinates.latitude" />
+                        </div>
+                    </div>
+
+                    <div class="control-group umb-control-group">
+                        <label class="control-label" for="longitude">
+                            Longitude
+                            <small>Optional. Will auto-generate based on address unless  both latitude and longitude are manually entered.</small>
+                        </label>
+
+                        <div class="controls controls-row">
+                            <input type="text" name="textbox" id="longitude" class="umb-editor umb-textstring textstring" ng-model="newLocation.coordinates.longitude" />
+                        </div>
+                    </div>
+
+                    <div class="control-group umb-control-group">
+                        <label class="control-label" for="email">Email</label>
+
+                        <div class="controls controls-row">
+                            <input type="text" name="textbox" id="email" class="umb-editor umb-textstring textstring" ng-model="newLocation.email" />
+                        </div>
+                    </div>
+
+                    <div class="control-group umb-control-group">
+                        <label class="control-label" for="tel">Phone Number</label>
+
+                        <div class="controls controls-row">
+                            <input type="text" name="textbox" id="longitude" class="umb-editor umb-textstring textstring" ng-model="newLocation.phone" />
+                        </div>
+                    </div>
+
+                    <!-- TODO: All items after this point would be custom items based on a custom location type -->
+
+                    <div class="umb-tab-buttons" detect-fold>
+                        <div class="btn-group">
+                            <a class="btn" href="#/uLocate/uLocate/locations/view">Cancel</a>
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn btn-success" ng-click="createLocation(newLocation)">Save</a>
+                        </div>
                     </div>
                 </div>
-
-                <div class="control-group umb-control-group">
-                    <label class="control-label" for="locality">City</label>
-
-                    <div class="controls controls-row">
-                        <input type="text" name="textbox" id="locality" class="umb-editor umb-textstring textstring" required=""> <!-- TODO: The id should match the model name -->
-
-                        <span class="help-inline" style="display: none;">Required</span>
-                        <span class="help-inline" style="display: none;"></span>
-                    </div>
-                </div>
-                
-                <div class="control-group umb-control-group">
-                    <label class="control-label" for="region">State</label>
-
-                    <div class="controls controls-row">
-                        <input type="text" name="textbox" id="region" class="umb-editor umb-textstring textstring" required=""> <!-- TODO: The id should match the model name -->
-
-                        <span class="help-inline" style="display: none;">Required</span>
-                        <span class="help-inline" style="display: none;"></span>
-                    </div>
-                </div>
-
-                <div class="control-group umb-control-group">
-                    <label class="control-label" for="postalCode">Zip/Postal Code</label>
-
-                    <div class="controls controls-row">
-                        <input type="text" name="textbox" id="postalCode" class="umb-editor umb-textstring textstring" required=""> <!-- TODO: The id should match the model name -->
-
-                        <span class="help-inline" style="display: none;">Required</span>
-                        <span class="help-inline" style="display: none;"></span>
-                    </div>
-                </div>
-
-                <div class="control-group umb-control-group">
-                    <label class="control-label" for="countryName">Country</label>
-
-                    <div class="controls controls-row">
-                        <select id="countryName" class="umb-editor umb-dropdown"> <!-- TODO: The id should match the model name -->
-                            <option>Choose...</option>
-                        </select>
-                        <span class="help-inline" style="display: none;">Required</span>
-                        <span class="help-inline" style="display: none;"></span>
-                    </div>
-                </div>
-                
-                <div class="control-group umb-control-group">
-                    <label class="control-label" for="latitude">
-                        Latitutde
-                        <small>Optional. Will auto-generate based on address unless entered here.</small>
-                    </label>
-
-                    <div class="controls controls-row">
-                        <input type="text" name="textbox" id="latitude" class="umb-editor umb-textstring textstring"> <!-- TODO: The id should match the model name -->
-                    </div>
-                </div>
-                
-                <div class="control-group umb-control-group">
-                    <label class="control-label" for="longitude">
-                        Longitude
-                        <small>Optional. Will auto-generate based on address unless entered here.</small>
-                    </label>
-
-                    <div class="controls controls-row">
-                        <input type="text" name="textbox" id="longitude" class="umb-editor umb-textstring textstring"> <!-- TODO: The id should match the model name -->
-                    </div>
-                </div>
-                
-                <div class="control-group umb-control-group">
-                    <label class="control-label" for="email">Email</label>
-
-                    <div class="controls controls-row">
-                        <input type="text" name="textbox" id="email" class="umb-editor umb-textstring textstring"> <!-- TODO: The id should match the model name -->
-                    </div>
-                </div>
-
-                <div class="control-group umb-control-group">
-                    <label class="control-label" for="tel">Phone Number</label>
-
-                    <div class="controls controls-row">
-                        <input type="text" name="textbox" id="longitude" class="umb-editor umb-textstring textstring"> <!-- TODO: The id should match the model name -->
-                    </div>
-                </div>
-                
-                <!-- TODO: All items after this point would be custom items based on a custom location type -->
-                
-                <div class="umb-tab-buttons" detect-fold> <!-- TODO: -->
-                    <div class="btn-group">
-                        <a class="btn" href="#/uLocate/uLocate/locations/view">Cancel</a> <!-- TODO: Would like this to trigger the "do you want to leave this page?" notification pane: https://github.com/umbraco/Umbraco-CMS/blob/788a0241d828cecd09f84a2a356b643422c6599c/src/Umbraco.Web.UI.Client/src/views/common/notifications/confirmroutechange.html -->
-                    </div>
-
-                    <div class="btn-group">
-                        <a class="btn btn-success" href="#">Save</a>
-                    </div>
-                </div>
-            </div>
-
-        </umb-tab-view>
+            </umb-tab-view>
+        </form>
     </umb-panel>
 </div>

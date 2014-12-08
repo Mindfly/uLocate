@@ -24,6 +24,44 @@
 
         /**
          * @ngdoc method
+         * @name buildCountriesList
+         * @function
+         * 
+         * @description - Build the list of countries to populate to $scope.options.countries
+         */
+        $scope.buildCountriesList = function () {
+            _.each(uLocate.Constants.COUNTRIES, function (country) {
+                var newCountry = {
+                    name: country.name,
+                    provinceLabel: country.provinceLabel,
+                    provinces: _.map(country.provinces, function (province) {
+                        return {
+                            name: province.name,
+                            code: province.code
+                        };
+                    })
+                };
+                var provinceLabel = 'Province';
+                if (newCountry.provinceLabel != '') {
+                    provinceLabel = newCountry.provinceLabel;
+                }
+                var provinceSelector = {
+                    name: 'Select a ' + provinceLabel,
+                    code: ''
+                };
+                newCountry.provinces.unshift(provinceSelector);
+                $scope.options.countries.push(newCountry);
+            });
+            _.each($scope.options.countries, function(country, index) {
+                if (country.name == 'United States') {
+                    $scope.selected.country = $scope.options.countries[index];
+                    $scope.selected.region = $scope.selected.country.provinces[0];
+                }
+            });
+        };
+
+        /**
+         * @ngdoc method
          * @name getCurrentNode
          * @function
          * 
@@ -83,18 +121,25 @@
             $scope.filter = '';
             $scope.locations = [];
             $scope.locationsLoaded = false;
+            $scope.newLocation = new uLocate.Models.Location();
             $scope.openMenu = false;
             $scope.options = {
+                countries: [{ name: 'Select a Country', provinceLabel: 'Province/State', provinces: [{ name: 'Select A Province/State', code: '' }] }],
                 perPage: [25, 50, 100]
             };
             $scope.page = 0;
             $scope.perPage = 100;
+            $scope.provinceLabel = 'Province/State';
             $scope.selected = {
+                country: $scope.options.countries[0],
                 perPage: $scope.options.perPage[2]
             }
+            $scope.selected.region = $scope.selected.country.provinces[0];
             $scope.sortBy = 'name';
             $scope.sortOrder = 'ascending';
             $scope.totalPages = 0;
+            $scope.wasFormSubmitted = false;
+            $scope.buildCountriesList();
             $scope.getCurrentNode();
             // Load the map now that the required variables have been assigned.
             if ($scope.selectedView === 'view') {
@@ -159,6 +204,29 @@
                 $scope.page = $scope.totalPages - 1;
             }
             $scope.getLocations();
+        };
+
+        $scope.createLocation = function () {
+            $scope.wasFormSubmitted = true;
+            if ($scope.createForm.$valid) {
+                
+            }
+        };
+
+        /**
+         * @ngdoc method
+         * @name hasProvinces
+         * @function
+         * 
+         * @returns {boolean} - true or false
+         * @description - Returns true if the currently selected country has provinces.
+         */
+        $scope.hasProvinces = function () {
+            var result = false;
+            if ($scope.selected.country.provinces.length > 1) {
+                result = true;
+            }
+            return result;
         };
 
         /**
@@ -247,6 +315,29 @@
                 callback: $scope.openEditDialog,
                 dialogData: dialogData
             });
+        };
+
+        /**
+         * @ngdoc method
+         * @name updateCountry
+         * @function
+         * 
+         * @param {object} country - The country to update the information from.
+         * @param {string} country.countryCode - The country code of a country.
+         * @param {string} country.name - The name of the country.
+         * @param {string} country.provinceLabel - The term for the country's provinces.
+         * @param {array of object} country.provinces - The provinces inside the country.
+         * @param {string} country.provinces[x].name - The name of a province.
+         * @param {string} country.provinces[x].code - the code for a province.
+         * @description - Update info for province selection based on chosen country.
+         */
+        $scope.updateCountry = function (country) {
+            $scope.selected.region = country.provinces[0];
+            if (country.provinceLabel !== '') {
+                $scope.provinceLabel = country.provinceLabel;
+            } else {
+                $scope.provinceLabel = 'Province/State';
+            }
         };
 
         /**
@@ -379,6 +470,25 @@
             var result = false;
             if ($scope.locations) {
                 if ($scope.locations.length > 0) {
+                    result = true;
+                }
+            }
+            return result;
+        };
+
+        /**
+        * @ngdoc method
+        * @name isFormInvalid
+        * @function
+        * 
+        * @param {object} field - The input field to check.
+        * @returns {boolean}
+        * @description - Returns true if the field is invalid and the form was submitted.
+        */
+        $scope.isFieldInvalid = function (field) {
+            var result = false;
+            if ($scope.wasFormSubmitted) {
+                if (field.$invalid) {
                     result = true;
                 }
             }
