@@ -63,8 +63,8 @@
          * @name openDeleteDialog
          * @function
          * 
-         * @param {uLocate.Models.Location} location - the location to delete.
-         * @description - Opens the Delete Location dialog.
+         * @param {uLocate.Models.LocationType} locationType - the location type to delete.
+         * @description - Opens the Delete Conirmation dialog.
          */
         $scope.openDeleteDialog = function (locationType) {
             navigationService.showDialog({

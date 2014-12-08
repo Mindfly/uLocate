@@ -259,7 +259,7 @@
          * @function
          * 
          * @param {uLocate.Models.Location} location - the location to delete.
-         * @description - Opens the Delete Location dialog.
+         * @description - Opens the Delete Confirmation dialog.
          */
         $scope.openDeleteDialog = function(location) {
             navigationService.showDialog({
