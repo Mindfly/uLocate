@@ -28,7 +28,7 @@
 
 	    /**
          * @ngdoc method
-         * @name getAllLocations
+         * @name getLocation
          * @function
          * 
          * @param {integer} id - The id of the desired location.
@@ -65,7 +65,7 @@
 		        request = new uLocate.Models.GetLocationsApiRequst(options);
 		    }
 		    // TODO: Change out this line for the one below it when not using mocks.
-		    /*return $http.post('', request).then(function (response) {*/
+		    /*return $http.post('urlgoeshere', request).then(function (response) {*/
 		    return $http.get('/App_Plugins/uLocate/Scripts/ApiMocks/get.locations.js').then(function(response) {
 			    if (response.data) {
 			    	var data = locationApiFactory.downCaseProperties(response.data);
@@ -75,6 +75,30 @@
 			    }
 			});
 		};
+
+	    /**
+         * @ngdoc method
+         * @name updateLocation
+         * @function
+         * 
+         * @param {uLocate.Models.Location} location - The location to update.
+         * @param {integer} location.id - This must match an existing location in the db.
+         * @returns {object}
+         * @description - Delete indicated location.
+         */
+		locationApiFactory.updateLocation = function (location) {
+	        var request = new uLocate.Models.Location(location);
+	        // TODO: Change out this line for the one below it when not using mocks.
+	        /*return $http.post('urlgoeshere', request).then(function (response) {*/
+	        return $http.get('/App_Plugins/uLocate/Scripts/ApiMocks/update.location.js').then(function (response) {
+	            if (response.data) {
+	                var data = locationApiFactory.downCaseProperties(response.data);
+	                return data;
+	            } else {
+	                return false;
+	            }
+	        });
+	    };
 
 	    /**
          * @ngdoc method
