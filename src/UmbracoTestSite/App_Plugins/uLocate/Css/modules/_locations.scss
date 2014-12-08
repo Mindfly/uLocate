@@ -58,3 +58,13 @@
         max-width: none;
     }
 }
+
+form {
+    .validation-error { 
+        display: none;
+        color: #ff7100;
+        &.show {
+            display: inline;
+        }
+    }
+}

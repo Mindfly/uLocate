@@ -5,11 +5,11 @@
     <div class="umb-panel-body with-header with-footer">
         <form name="editLocationDialogForm">
             <div class="control-group row-fluid">
-                <label>Name <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.name.$invalid">- Required</span></label>
+                <label>Name <span class="validation-error" ng-class="{'show':formSubmitted && editLocationDialogForm.name.$invalid}">- Required</span></label>
                 <input type="text" class="span12" name="name" ng-model="dialogData.location.name" required />
             </div>
             <div class="control-group row-fluid">
-                <label>Address 1 <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.address1.$invalid">- Required</span></label>
+                <label>Address 1 <span class="validation-error" ng-class="{'show': formSubmitted && editLocationDialogForm.address1.$invalid}">- Required</span></label>
                 <input type="text" class="span12" name="address1" ng-model="dialogData.location.address.streetAddress" required />
             </div>
             <div class="control-group row-fluid">
@@ -17,7 +17,7 @@
                 <input type="text" class="span12" ng-model="dialogData.location.address.extendedAddress" />
             </div>
             <div class="control-group row-fluid">
-                <label>City <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.locality.$invalid">- Required</span></label>
+                <label>City <span class="validation-error" ng-class="{'show': formSubmitted && editLocationDialogForm.locality.$invalid}">- Required</span></label>
                 <input type="text" class="span12" name="locality" ng-model="dialogData.location.address.locality" required />
             </div>
             <div class="control-group row-fluid" ng-show="hasProvinces()">
@@ -25,11 +25,11 @@
                 <select class="span12" ng-model="selected.region" ng-options="option.name for option in selected.country.provinces"></select>
             </div>
             <div class="control-group row-fluid" ng-show="!hasProvinces()">
-                <label>{{provinceLabel}} <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.region.$invalid && !hasProvinces()">- Required</span></label>
+                <label>{{provinceLabel}} <span class="validation-error" ng-class="{'show': formSubmitted && editLocationDialogForm.region.$invalid && !hasProvinces()}">- Required</span></label>
                 <input type="text" class="span12" name="region" ng-model="dialogData.location.address.region" ng-required="!hasProvinces()" />
             </div>
             <div class="control-group row-fluid">
-                <label>Zip/Postal Code <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.postalCode.$invalid">- Required</span></label>
+                <label>Zip/Postal Code <span class="validation-error" ng-class="{'show': formSubmitted && editLocationDialogForm.postalCode.$invalid}">- Required</span></label>
                 <input type="text" class="span12" name="postalCode" ng-model="dialogData.location.address.postalCode" required />
             </div>
             <div class="control-group row-fluid">
@@ -41,11 +41,11 @@
             </div>
             <div ng-show="!shouldHideCoordinatesEditor">
                 <div class="control-group row-fluid">
-                    <label>Latitude <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.lat.$invalid">- Required</span></label>
+                    <label>Latitude <span class="validation-error" ng-class="{'show': formSubmitted && editLocationDialogForm.lat.$invalid}">- Required</span></label>
                     <input type="text" class="span12" name="lat" ng-model="dialogData.location.coordinates.latitude" ng-required="!shouldHideCoordinatesEditor" />
                 </div>
                 <div class="control-group row-fluid">
-                    <label>Longitude <span style="color:#ff7100;" ng-show="formSubmitted && editLocationDialogForm.lng.$invalid">- Required</span></label>
+                    <label>Longitude <span class="validation-error" ng-show="{'show': formSubmitted && editLocationDialogForm.lng.$invalid}">- Required</span></label>
                     <input type="text" class="span12" name="lng" ng-model="dialogData.location.coordinates.longitude" ng-required="!shouldHideCoordinatesEditor" />
                 </div>
             </div>

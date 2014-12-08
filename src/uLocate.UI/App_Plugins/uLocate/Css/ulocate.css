@@ -67,6 +67,11 @@
   display: inline; }
 .uLocate #location-map img, .uLocate .map img {
   max-width: none; }
+.uLocate form .validation-error {
+  display: none;
+  color: #ff7100; }
+  .uLocate form .validation-error.show {
+    display: inline; }
 .uLocate.umb-dialog-body .controls-row {
   margin-left: 0 !important; }
 .uLocate .umb-panel-body h4 {
