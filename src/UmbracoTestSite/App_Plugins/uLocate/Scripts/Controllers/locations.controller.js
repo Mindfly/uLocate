@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function ($scope, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateMapService, uLocateLocationApiService, notificationsService) {
+    controllers.LocationsController = function ($scope, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateMapService, uLocateLocationApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -30,7 +30,8 @@
          * @description - Get the node for this page from the treeService for use with opening a create dialog later.
          */
         $scope.getCurrentNode = function() {
-            var promise = treeService.getTree({ section: 'uLocate' }).then(function (tree) {
+            var promise = treeService.getTree({ section: 'uLocate' });
+            promise.then(function (tree) {
                 _.each(tree.root.children, function(node) {
                     if (node.id == '1') {
                         $scope.currentNode = node;
@@ -215,7 +216,7 @@
          */
         $scope.openEditDialog = function (location) {
             var dialogData = {
-                location: location
+                location: new uLocate.Models.Location(location)
             };
             dialogService.open({
                 template: '/App_Plugins/uLocate/Dialogs/edit.location.dialog.html',
@@ -384,8 +385,27 @@
             }
         };
 
-        $scope.processEditDialog = function(data) {
-            console.info(data);
+        /**
+        * @ngdoc method
+        * @name processEditDialog
+        * @function
+        * 
+        * @param {object} data - Returned object from dialog
+        * @param {uLocate.Models.Location} data.location - Location to update.
+        * @description - Update a location.
+        */
+        $scope.processEditDialog = function (data) {
+            if (data) {
+                var location = data.location;
+                var promise = uLocateLocationApiService.updateLocation(location);
+                promise.then(function(response) {
+                    if (response) {
+                        notificationsService.success("Location '" + location.name + "' successfully updated. #h5yr!");
+                    }
+                }, function(reason) {
+                    notificationsService.error("Attempt to update location '" + location.name + "' failed.", reason.message);
+                });
+            }
             notificationsService.success("Location edited", "This location has been successfully updated. #h5yr!");
         };
 
@@ -396,6 +416,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateMapService', 'uLocateLocationApiService', 'notificationsService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateMapService', 'uLocateLocationApiService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));
