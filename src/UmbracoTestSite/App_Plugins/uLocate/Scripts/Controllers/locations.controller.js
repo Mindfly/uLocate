@@ -221,10 +221,25 @@
             $scope.getLocations();
         };
 
-        $scope.createLocation = function () {
+        /**
+         * @ngdoc method
+         * @name createLocation
+         * @function
+         * 
+         * @param {uLocate.Models.Location} location - The location to create.
+         * @description - Creates a location.
+         */
+        $scope.createLocation = function (location) {
             $scope.wasFormSubmitted = true;
+            var isValid = false;
             if ($scope.createForm.$valid) {
-                
+                if (hasProvinces()) {
+                    if ($scope.selected.region.name !== '' && $scope.selected.region.name !== $scope.selected.country.provinces[0].name) {
+
+                    }
+                } else {
+                    
+                }
             }
         };
 
@@ -438,7 +453,6 @@
         * @description - Deletes a location, then redirect to viewing all locations.
         */
         $scope.deleteLocation = function (id) {
-            console.info(id);
             if (id) {
                 var promise = uLocateLocationApiService.deleteLocation(id);
                 promise.then(function (response) {
