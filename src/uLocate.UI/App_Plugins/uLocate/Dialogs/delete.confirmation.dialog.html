@@ -1,9 +1,9 @@
 ﻿<div class="umb-dialog umb-pane" ng-controller="uLocate.Controllers.DeleteConfirmationDialogController">
     <div class="umb-dialog-body">
         <p class="umb-abstract">
-            Are you sure you want to delete <strong>{{currentNode.name}}<span ng-show="isCurrentNodeALocation()">*</span></strong>?
+            Are you sure you want to delete <strong>{{currentNode.name}}<span ng-show="isCurrentNodeALocationType()">*</span></strong>?
         </p>
-        <label ng-show="isCurrentNodeALocation()">
+        <label ng-show="isCurrentNodeALocationType()">
             <small>*Deleting a location type does not delete the locations in that type. Instead, locations that were assigned to the deleted type are set to the type <strong>Default</strong>. Custom information will be permanently deleted.</small>
         </label>
         <div>

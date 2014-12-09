@@ -83,9 +83,22 @@
             });
         };
 
+        $scope.openIconPicker = function() {
+            dialogService.iconPicker({
+                callback: populateIcon
+            });
+        };
+
+
+
         /*-------------------------------------------------------------------
          * Helper Methods
          * ------------------------------------------------------------------*/
+
+        function populateIcon(locationType) {
+            $scope.node = locationType;
+            $scope.icon = locationType.icon;
+        }
 
         /*-------------------------------------------------------------------*/
 
