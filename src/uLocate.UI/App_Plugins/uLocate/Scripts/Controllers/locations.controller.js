@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function ($scope, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateMapService, uLocateLocationApiService) {
+    controllers.LocationsController = function ($scope, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateMapService, uLocateLocationApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -16,10 +16,25 @@
         $scope.init = function () {
             $scope.selectedView = $routeParams.id;
             if ($scope.selectedView === 'view') {
+                $scope.addDeleteLocationListener();
                 $scope.loadGoogleMapAsset();
             } else {
                 $scope.setVariables();
             }
+        };
+
+        /**
+         * @ngdoc method
+         * @name addDeleteLocationListener
+         * @function
+         * 
+         * @description - If a broadcast event in the deleteLocation channel is dictated, retrieve the message stored and use it to delete a location.
+         */
+        $scope.addDeleteLocationListener = function() {
+            $scope.$on('deleteLocation', function() {
+                var id = uLocateBroadcastService.message;
+                $scope.deleteLocation(id);
+            });
         };
 
         /**
@@ -215,22 +230,6 @@
 
         /**
          * @ngdoc method
-         * @name hasProvinces
-         * @function
-         * 
-         * @returns {boolean} - true or false
-         * @description - Returns true if the currently selected country has provinces.
-         */
-        $scope.hasProvinces = function () {
-            var result = false;
-            if ($scope.selected.country.provinces.length > 1) {
-                result = true;
-            }
-            return result;
-        };
-
-        /**
-         * @ngdoc method
          * @name openCreateDialog
          * @function
          * 
@@ -261,9 +260,12 @@
          * @param {uLocate.Models.Location} location - the location to delete.
          * @description - Opens the Delete Location dialog.
          */
-        $scope.openDeleteDialog = function(location) {
+        $scope.openDeleteDialog = function (location) {
+            var currentNode = location;
+            currentNode.deleteId = location.id;
+            currentNode.deleteChannel = 'deleteLocation';
             navigationService.showDialog({
-                node: location,
+                node: currentNode,
                 action: {
                     alias: 'delete',
                     cssclass: 'delete',
@@ -428,6 +430,31 @@
         };
 
         /**
+        * @ngdoc method
+        * @name deleteLocation
+        * @function
+        * 
+        * @param {integer} id - The id of a location to delete.
+        * @description - Deletes a location, then redirect to viewing all locations.
+        */
+        $scope.deleteLocation = function (id) {
+            console.info(id);
+            if (id) {
+                var promise = uLocateLocationApiService.deleteLocation(id);
+                promise.then(function (response) {
+                    if (response.success) {
+                        notificationsService.success("Location successfully deleted.");
+                        $scope.getLocations();
+                    } else {
+                        notificationsService.error("Attempt to delete location failed.");
+                    }
+                }, function (reason) {
+                    notificationsService.error("Attempt to delete location failed.", reason.message);
+                });
+            }
+        };
+
+        /**
          * @ngdoc method
          * @name getLocations
          * @function
@@ -481,6 +508,24 @@
         };
 
         /**
+         * @ngdoc method
+         * @name hasProvinces
+         * @function
+         * 
+         * @returns {boolean} - true or false
+         * @description - Returns true if the currently selected country has provinces.
+         */
+        $scope.hasProvinces = function () {
+            var result = false;
+            if ($scope.selected) {
+                if ($scope.selected.country.provinces.length > 1) {
+                    result = true;
+                }
+            }
+            return result;
+        };
+
+        /**
         * @ngdoc method
         * @name isFormInvalid
         * @function
@@ -497,33 +542,6 @@
                 }
             }
             return result;
-        };
-
-        /**
-        * @ngdoc method
-        * @name processDeleteDialog
-        * @function
-        * 
-        * @param {object} data - Returned object from dialog
-        * @param {string} data.name - Name of location.
-        * @param {uLocate.Models.Location} data.location - Location to delete.
-        * @description - Deletes a location.
-        */
-        $scope.processDeleteDialog = function(data) {
-            if (data) {
-                var location = data.location;
-                var promise = uLocateLocationApiService.deleteLocation(location.id);
-                promise.then(function(response) {
-                    if (response.success) {
-                        notificationsService.success("Location '" + location.name + "' successfully deleted.");
-                        $scope.getLocations();
-                    } else {
-                        notificationsService.error("Attempt to delete location '" + location.name + "' failed.", reason.message);
-                    }
-                }, function(reason) {
-                    notificationsService.error("Attempt to delete location '" + location.name + "' failed.", reason.message);
-                });
-            }
         };
 
         /**
@@ -581,6 +599,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateMapService', 'uLocateLocationApiService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateMapService', 'uLocateLocationApiService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));
