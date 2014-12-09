@@ -3,7 +3,7 @@
         <p class="umb-abstract">
             Are you sure you want to delete <strong>{{currentNode.name}}*</strong>?
         </p>
-        <label ng-show="currentNode instanceof uLocate.Models.Location">
+        <label ng-show="currentNode instanceof uLocate.Models.LocationType">
             <small>*Deleting a location type does not delete the locations in that type. Instead, locations that were assigned to the deleted type are set to the type <strong>Default</strong>. Custom information will be permanently deleted.</small>
         </label>
         <div>
