@@ -5,6 +5,7 @@
         "~/App_Plugins/uLocate/Scripts/Models/location.models.js",
         "~/App_Plugins/uLocate/Scripts/Models/location.type.models.js",
         "~/App_Plugins/uLocate/Scripts/Models/map.models.js",
+        "~/App_Plugins/uLocate/Scripts/Services/broadcast.service.js",
         "~/App_Plugins/uLocate/Scripts/Services/location.api.service.js",
         "~/App_Plugins/uLocate/Scripts/Services/map.service.js",
         "~/App_Plugins/uLocate/Scripts/Controllers/delete.confirmation.dialog.controller.js",

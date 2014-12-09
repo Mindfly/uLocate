@@ -225,7 +225,7 @@
     <Content Include="App_Plugins\uLocate\Scripts\ApiMocks\update.location.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Controllers\delete.confirmation.dialog.controller.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Controllers\location.types.controller.js" />
-    <Content Include="App_Plugins\uLocate\Scripts\Models\location.type.models.js" />
+    <Content Include="App_Plugins\uLocate\Scripts\Services\broadcast.service.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Services\location.api.service.js" />
     <None Include="packages.config" />
   </ItemGroup>
