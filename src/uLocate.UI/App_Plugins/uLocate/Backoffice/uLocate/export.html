@@ -13,5 +13,23 @@
                 </div>
             </div>
         </umb-header>
+        
+        <umb-tab-view>
+            <div class="umb-pane">
+                <div class="control-group umb-control-group">
+                    <label class="control-label" for="type">
+                        Location Type
+                        <small>You can only export a single location type per download.</small>
+                    </label>
+
+                    <div class="controls controls-row">
+                        <select required="required" id="type" name="type">
+                            <!-- TODO: Display a list of location type names, including default -->
+                            <option>Choose...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </umb-tab-view>
     </umb-panel>
 </div>

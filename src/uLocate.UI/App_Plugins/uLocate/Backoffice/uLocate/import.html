@@ -30,6 +30,19 @@
                         <button ng-file-select ng-model="file" class="file button btn-primary" multiple="false">Choose File</button>
                     </div>
                 </div>
+                
+                <div class="control-group umb-control-group">
+                    <label class="control-label" for="type">
+                        Location Type
+                        <small>You can only import a single location type per upload.</small>
+                    </label>
+
+                    <div class="controls controls-row">
+                        <select required="" id="type" name="type"> <!-- TODO: Display a list of location type names, including default -->
+                            <option>Choose...</option>
+                        </select>
+                    </div>
+                </div>
 
             </div>
 
