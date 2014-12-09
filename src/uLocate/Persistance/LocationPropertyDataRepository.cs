@@ -90,6 +90,30 @@ namespace uLocate.Persistance
             return CurrentCollection; 
         }
 
+        public LocationPropertyData GetByAlias(string PropertyAlias)
+        {
+            CurrentCollection.Clear();
+            var sql = new Sql();
+            sql
+                .Select("*")
+                .From<LocationPropertyDataDto>()
+                //.InnerJoin("") //TODO?
+                .Where<LocationTypePropertyDto>(n => n.Alias == PropertyAlias);
+
+            var dtoResult = Repositories.ThisDb.Fetch<LocationPropertyDataDto>(sql).FirstOrDefault();
+
+            if (dtoResult == null)
+                return null;
+
+            var converter = new DtoConverter();
+            var entity = converter.ToLocationPropertyDataEntity(dtoResult);
+
+            return entity;
+            FillChildren();
+
+            return CurrentCollection[0];
+        }
+
         public IEnumerable<LocationPropertyData> GetAll()
         {
             var EmptyParams = new Guid[] { };
