@@ -102,13 +102,13 @@
     </umb-panel>
 
     <!-- The create location route displays this panel -->
-    <umb-panel ng-hide="selectedView != 'create'">
-        <form name="form.create">
+    <div class="umb-panel" ng-hide="selectedView != 'create'">
+        <form name="createForm">
             <umb-header>
                 <div class="span7">
                     <div class="umb-headline-editor-wrapper">
                         <input type="text" name="name" localize="placeholder" class="umb-headline" placeholder="Enter a name for your location" ng-model="newLocation.name" required />
-                        <span class="help-inline" val-msg-for="name" ng-show="isFieldInvalid(form.create.name)">Required</span>
+                        <span class="help-inline" val-msg-for="name" ng-show="isFieldInvalid(createForm.name)">Required</span>
                     </div>
                 </div>
             </umb-header>
@@ -125,7 +125,7 @@
 
                         <div class="controls controls-row">
                             <input type="text" name="streetAddress" id="streetAddress" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.streetAddress" required />
-                            <span class="help-inline" ng-show="isFieldInvalid(form.create.streetAddress)">Required</span>
+                            <span class="help-inline" ng-show="isFieldInvalid(createForm.streetAddress)">Required</span>
                         </div>
                     </div>
 
@@ -145,7 +145,7 @@
 
                         <div class="controls controls-row">
                             <input type="text" name="locality" id="locality" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.locality" required />
-                            <span class="help-inline" ng-show="isFieldInvalid(form.create.streetAddress)">Required</span>
+                            <span class="help-inline" ng-show="isFieldInvalid(createForm.streetAddress)">Required</span>
                         </div>
                     </div>
 
@@ -155,7 +155,7 @@
                         <div class="controls controls-row">
                             <input type="text" name="region" id="region" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.region" ng-show="!hasProvinces()" ng-required="!hasProvinces()">
                             <select class="umb-editor umb-dropdown" ng-model="selected.region" ng-options="option.name for option in selected.country.provinces" ng-show="hasProvinces()"></select>
-                            <span class="help-inline" ng-show="!hasProvinces() && isFieldInvalid(form.create.region)">Required</span>
+                            <span class="help-inline" ng-show="!hasProvinces() && isFieldInvalid(createForm.region)">Required</span>
                         </div>
                     </div>
 
@@ -163,8 +163,8 @@
                         <label class="control-label" for="postalCode">Zip/Postal Code</label>
 
                         <div class="controls controls-row">
-                            <input type="text" name="postalCode" id="postalCode" class="umb-editor umb-textstring textstring"  ng-model="newLocation.address.postalCode" required />
-                            <span class="help-inline" ng-show="isFieldInvalid(form.create.postalCode)">Required</span>
+                            <input type="text" name="postalCode" id="postalCode" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.postalCode" required />
+                            <span class="help-inline" ng-show="isFieldInvalid(createForm.postalCode)">Required</span>
                         </div>
                     </div>
 
@@ -226,5 +226,5 @@
                 </div>
             </umb-tab-view>
         </form>
-    </umb-panel>
+    </div>
 </div>
