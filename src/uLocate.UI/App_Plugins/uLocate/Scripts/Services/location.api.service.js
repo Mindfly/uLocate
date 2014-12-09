@@ -2,7 +2,35 @@
 
 	uLocateServices.LocationApiService = function ($http, $q) {
 
-		var locationApiFactory = {};
+	    var locationApiFactory = {};
+
+	    /**
+         * @ngdoc method
+         * @name createLocation
+         * @function
+         * 
+         * @param {uLocate.Models.Location} location - The location being added.
+         * @returns {uLocate.Models.Location}
+         * @description - Creates a new location.
+         */
+	    locationApiFactory.createLocation = function (location) {
+	        var request;
+	        if (location) {
+	            request = new uLocate.Models.Location(location);
+	        } else {
+	            request = new uLocate.Models.Location();
+	        }
+	        // TODO: Change out this line for the one below it when not using mocks.
+	        /*return $http.post('urlgoeshere', request).then(function (response) {*/
+	        return $http.get('/App_Plugins/uLocate/Scripts/ApiMocks/create.location.js').then(function (response) {
+	            if (response.data) {
+	                var data = locationApiFactory.downCaseProperties(response.data);
+	                return data;
+	            } else {
+	                return false;
+	            }
+	        });
+	    };
 
 	    /**
          * @ngdoc method

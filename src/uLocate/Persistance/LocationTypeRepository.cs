@@ -240,6 +240,13 @@
             var dto = converter.ToLocationTypeDto(item);
 
             Repositories.ThisDb.Update(dto);
+
+            foreach (var prop in item.Properties)
+            {
+                prop.UpdatingEntity();
+                var pDto = converter.ToLocationTypePropertyDto(prop);
+                Repositories.ThisDb.Update(pDto);
+            }
             
             LogHelper.Info(typeof(LocationTypeRepository), Msg);
         }

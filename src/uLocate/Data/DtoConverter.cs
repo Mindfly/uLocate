@@ -151,9 +151,9 @@
                 //TODO: HLF - check special property conversions
                 Key = entity.Key,
                 Name = entity.Name,
-                Coordinate = entity.Coordinate.ToString(),
-                GeocodeStatus = entity.GeocodeStatus.ToString(),
-                Viewport = entity.Viewport.ToString(),
+                //Coordinate = entity.Coordinate.ToString(),
+                //GeocodeStatus = entity.GeocodeStatus.ToString(),
+                //Viewport = entity.Viewport.ToString(),
                 LocationTypeKey = entity.LocationTypeKey,
                 UpdateDate = entity.UpdateDate,
                 CreateDate = entity.CreateDate

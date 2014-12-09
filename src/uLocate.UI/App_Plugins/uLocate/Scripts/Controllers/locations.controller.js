@@ -20,6 +20,7 @@
                 $scope.loadGoogleMapAsset();
             } else {
                 $scope.setVariables();
+                console.info($scope.createForm);
             }
         };
 
@@ -134,6 +135,7 @@
             $scope.currentNode = false;
             $scope.customMarkerIcon = new uLocate.Models.MarkerSymbolIcon(uLocate.Constants.MARKER_ICON);
             $scope.filter = '';
+            $scope.form = {};
             $scope.locations = [];
             $scope.locationsLoaded = false;
             $scope.newLocation = new uLocate.Models.Location();
@@ -221,10 +223,39 @@
             $scope.getLocations();
         };
 
-        $scope.createLocation = function () {
+        /**
+         * @ngdoc method
+         * @name createLocation
+         * @function
+         * 
+         * @param {uLocate.Models.Location} location - The location to create.
+         * @description - Creates a location.
+         */
+        $scope.createLocation = function (location) {
             $scope.wasFormSubmitted = true;
-            if ($scope.createForm.$valid) {
-                
+            var isValid = false;
+            if ($scope.form.create.$valid) {
+                if (hasProvinces()) {
+                    if ($scope.selected.region.name !== '' && $scope.selected.region.name !== $scope.selected.country.provinces[0].name) {
+                        location.address.region = $scope.selected.region.name;
+                        if ($scope.selected.country.name !== '' && $scope.selected.country.name !== $scope.options.countries[0].name){
+                            location.address.countryName = $scope.selected.country.name;
+                            isValid = true;
+                        }
+                    }
+                }
+            }
+            if (isValid) {
+                var promise = uLocateLocationApiService.createLocation(location);
+                promise.then(function (reponse) {
+                    if (response) {
+                        notificationsService.success("Location '" + location.name + "' successfully created. #h5yr!");
+                    } else {
+                        notificationsService.error("Attempt to update location '" + location.name + "' failed.");
+                    }
+                }, function (reason) {
+                    notificationsService.error("Attempt to update location '" + location.name + "' failed.", reason.message);
+                });
             }
         };
 
@@ -438,7 +469,6 @@
         * @description - Deletes a location, then redirect to viewing all locations.
         */
         $scope.deleteLocation = function (id) {
-            console.info(id);
             if (id) {
                 var promise = uLocateLocationApiService.deleteLocation(id);
                 promise.then(function (response) {
