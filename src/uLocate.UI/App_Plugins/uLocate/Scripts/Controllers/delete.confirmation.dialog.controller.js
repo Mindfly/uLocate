@@ -36,9 +36,9 @@
          * Helper Methods
          * ------------------------------------------------------------------*/
 
-        $scope.isCurrentNodeALocation = function () {
+        $scope.isCurrentNodeALocationType = function () {
             var result = false;
-            if ($scope.currentNode instanceof uLocate.Models.Location) {
+            if ($scope.currentNode instanceof uLocate.Models.LocationType) {
                 result = true;
             }
             return result;
