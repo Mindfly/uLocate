@@ -7,7 +7,7 @@
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <div class="btn-group">
-                        <a class="btn btn-primary">Import</a> <!-- TODO: Add the notification service for a successful import -->
+                        <a class="btn btn-primary" ng-click="uploadFile()">Import</a>
                     </div>
                 </div>
             </div>
@@ -26,8 +26,7 @@
                     
 
                     <div class="controls controls-row">
-                        <input type="file" name="import" id="import" class="umb-editor umb-file file" required=""> <!-- TODO: The id should match the model name. Would also be great to make sure the file they're uploading is actually a csv file - not sure how much control we have over that -->
-                        <button ng-file-select ng-model="file" class="file button btn-primary" multiple="false">Choose File</button>
+                        <button ng-file-select ng-model="files" ng-file-change="fileSelected(files)" class="file button btn-primary" ng-multiple="false">Choose File</button> {{file.name}}
                     </div>
                 </div>
                 
