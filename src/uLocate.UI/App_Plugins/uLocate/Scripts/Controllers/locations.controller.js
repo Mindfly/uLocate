@@ -15,12 +15,11 @@
          */
         $scope.init = function () {
             $scope.selectedView = $routeParams.id;
-            if ($scope.selectedView === 'view') {
+            if ($scope.selectedView === 'view' || $scope.selectedView === 'create') {
                 $scope.addDeleteLocationListener();
                 $scope.loadGoogleMapAsset();
             } else {
                 $scope.setVariables();
-                console.info($scope.createForm);
             }
         };
 
@@ -234,8 +233,8 @@
         $scope.createLocation = function (location) {
             $scope.wasFormSubmitted = true;
             var isValid = false;
-            if ($scope.form.create.$valid) {
-                if (hasProvinces()) {
+            if ($scope.createForm.$valid) {
+                if ($scope.hasProvinces()) {
                     if ($scope.selected.region.name !== '' && $scope.selected.region.name !== $scope.selected.country.provinces[0].name) {
                         location.address.region = $scope.selected.region.name;
                         if ($scope.selected.country.name !== '' && $scope.selected.country.name !== $scope.options.countries[0].name){
@@ -246,16 +245,46 @@
                 }
             }
             if (isValid) {
-                var promise = uLocateLocationApiService.createLocation(location);
-                promise.then(function (reponse) {
-                    if (response) {
+                notificationsService.success("Acquiring lat/lng for this address. This may take a moment. Do not leave or reload page until location is created.");
+                var lat = location.coordinates.latitude;
+                var lng = location.coordinates.longitude;
+                var createPromise;
+                if ((lat == 0 & lng == 0) || lat == '' || lng == '') {
+                    var address = $scope.buildAddressString(location.address);
+                    var geocodePromise = uLocateMapService.geocode(address);
+                    geocodePromise.then(function(geocodeResponse) {
+                        if (geocodeResponse) {
+                            location.coordinates.latitude = geocodeResponse[0];
+                            location.coordinates.longitude = geocodeResponse[1];
+                            createPromise = uLocateLocationApiService.createLocation(location);
+                            createPromise.then(function(createResponse) {
+                                notificationsService.success("Location '" + location.name + "' successfully created. #h5yr!");
+                                window.location = '/umbraco/#/uLocate/uLocate/locations/view';
+                            }, function(reason) {
+                                notificationsService.error("Attempt to update location '" + location.name + "' failed.", reason.message);
+                            });
+                        } else {
+                            notificationsService.error("Unable to get coordinates for provided location address.");
+                        }
+                    });
+                } else {
+                    createPromise = uLocateLocationApiService.createLocation(location);
+                    createPromise.then(function (createResponse) {
                         notificationsService.success("Location '" + location.name + "' successfully created. #h5yr!");
-                    } else {
-                        notificationsService.error("Attempt to update location '" + location.name + "' failed.");
-                    }
-                }, function (reason) {
-                    notificationsService.error("Attempt to update location '" + location.name + "' failed.", reason.message);
-                });
+                        window.location = '/umbraco/#/uLocate/uLocate/locations/view';
+                    }, function (reason) {
+                        notificationsService.error("Attempt to update location '" + location.name + "' failed.", reason.message);
+                    });
+
+                }
+            }
+        };
+
+        $scope.createLocationSuccessResponse = function(success, response) {
+            if (success) {
+                notificationService.success(response);
+            } else {
+                notificationService.error(response);
             }
         };
 

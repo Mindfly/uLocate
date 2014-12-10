@@ -14,7 +14,7 @@
          * @description - Called when the $scope is initalized.
          */
         $scope.init = function () {
-            $scope.selectedView = $routeParams.id;
+            $scope.setVariables;
         };
 
         /**
@@ -27,6 +27,7 @@
         $scope.setVariables = function () {
             $scope.currentNode = false;
             $scope.openMenu = false;
+            $scope.selectedView = $routeParams.id;
             $scope.getCurrentNode();
         };
 
