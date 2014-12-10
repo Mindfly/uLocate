@@ -44,7 +44,7 @@
         $scope.uploadFile = function () {
             $http({
                 method: 'POST',
-                url: "/Api/PostStuff",
+                url: "/Umbraco/Api/FileUploadTestApi/PostStuff",
                 // TODO: Change Content-Type to undefined in Umbraco 7.5 (or whenever the Angular version is bumped to 1.2 or higher)
                 headers: { 'Content-Type': false },
                 transformRequest: function (data) {
