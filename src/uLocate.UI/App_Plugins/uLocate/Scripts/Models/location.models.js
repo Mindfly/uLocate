@@ -57,6 +57,7 @@
             self.name = '';
             self.phone = '';
             self.type = '';
+            self.properties = [];
         } else {
             self.address = new uLocate.Models.Address(data.address);
             self.coordinates = new uLocate.Models.Coordinates(data.coordinates);
