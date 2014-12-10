@@ -4,18 +4,18 @@
     <umb-panel ng-hide="selectedView != 'view'">
         <umb-header>
             <div class="span7">
-                <h1>Locations</h1>
+                <h1><ulocate-localize key="locations">Locations</ulocate-localize></h1>
             </div>
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <div class="btn-group" ng-class="{'open': openMenu}">
-                        <a class="btn" ng-click="openMenu = !openMenu">Actions <span class="caret"></span></a>
+                        <a class="btn" ng-click="openMenu = !openMenu"><localize key="general_actions">Actions</localize> <span class="caret"></span></a>
                         <ul class="dropdown-menu umb-actions">
                             <li class="action">
-                                <a ng-click="openCreateDialog(); openMenu = !openMenu;"><i class="icon icon-add"></i><span class="menu-label">Create</span></a>
+                                <a ng-click="openCreateDialog(); openMenu = !openMenu;"><i class="icon icon-add"></i><span class="menu-label"><ulocate-localize key="create">Create</ulocate-localize></span></a>
                             </li>
                             <li class="action sep">
-                                <a ng-click="getLocations(); openMenu = !openMenu;"><i class="icon icon-refresh"></i><span class="menu-label">Reload nodes</span></a>
+                                <a ng-click="getLocations(); openMenu = !openMenu;"><i class="icon icon-refresh"></i><span class="menu-label"><ulocate-localize key="reload">Reload nodes</ulocate-localize></span></a>
                             </li>
                         </ul>
                     </div>
