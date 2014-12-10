@@ -119,23 +119,30 @@
          * @function
          * 
          * @param {string} address - The address to geocode
+         * @param {boolean} useNominatim - Optional. If true, use Nominatim (http://nominatim.openstreetmap.org/) for geocoding.
          * @returns {[number, number]} - The [lat,lng] of the address.
          * @description - Returns the coordinates for the adddress. A promise wrapper for google's geocoder.
          */
-        mapFactory.geocode = function (address) {
-            var deferred = $q.defer();
-            if (!mapFactory.geocoder) {
-                mapFactory.geocoder = new google.maps.Geocoder();
-            }
-            mapFactory.geocoder.geocode({ 'address': address }, function (results, status) {
-                var response = false;
-                if (status == google.maps.GeocoderStatus.OK) {
-                    response = results[0].geometry.location;
+        mapFactory.geocode = function(address, useNominatim) {
+            if (useNominatim) {
+                return $http.get('http://nominatim.openstreetmap.org/search?format=json&q=' + address).then(function (response) {
+                    console.info(response);
+                });
+            } else {
+                var deferred = $q.defer();
+                if (!mapFactory.geocoder) {
+                    mapFactory.geocoder = new google.maps.Geocoder();
                 }
-                deferred.resolve(response);
-            });
-            return deferred.promise;
-        }
+                mapFactory.geocoder.geocode({ 'address': address }, function(results, status) {
+                    var response = false;
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        response = results[0].geometry.location;
+                    }
+                    deferred.resolve(response);
+                });
+                return deferred.promise;
+            }
+        };
 
         /**
          * @ngdoc method
