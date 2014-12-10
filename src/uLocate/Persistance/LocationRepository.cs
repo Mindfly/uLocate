@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Web.UI;
 
     using uLocate.Data;
     using uLocate.Models;
@@ -153,6 +154,7 @@
             string Msg = string.Format("Location '{0}' has been saved.", item.Name);
 
             item.AddingEntity();
+            this.SyncProperties(item);
 
             var converter = new DtoConverter();
             var dto = converter.ToLocationDto(item);
@@ -175,6 +177,14 @@
             var dto = converter.ToLocationDto(item);
 
             Repositories.ThisDb.Update(dto);
+
+            foreach (var prop in item.PropertyData)
+            {
+                prop.UpdatingEntity();
+                var pDto = converter.ToLocationPropertyDataDto(prop);
+                Repositories.ThisDb.Update(pDto);
+            }
+
             LogHelper.Info(typeof(LocationRepository), Msg);
         }
 
@@ -236,6 +246,7 @@
         private void FillChildren()
         {
             this.FillProperties();
+            
         }
 
         private void PersistChildren(Location item)
@@ -261,6 +272,7 @@
 
         private void PersistProperties(Location item)
         {
+            this.SyncProperties(item);
             var Repo = Repositories.LocationPropertyDataRepo;
             foreach (var NewProp in item.PropertyData)
             {
@@ -283,6 +295,36 @@
                 Repo.Delete(Prop);
             }
         }
+
+        private void SyncProperties(Location item)
+        {
+            //Get location type properties
+            var AllTypeProperties = Repositories.LocationTypePropertyRepo.GetByLocationType(item.LocationTypeKey);
+            
+            //Get location property data
+            List<LocationPropertyData> AllData = item.PropertyData.ToList();
+            List<Guid> PropsToAdd = new List<Guid>();
+            //compare type properties with location data
+            foreach (var typeProperty in AllTypeProperties)
+            {
+                var MatchingProp = AllData.Where(p => p.LocationTypePropertyKey == typeProperty.Key);
+                if (!MatchingProp.Any())
+                {
+                    PropsToAdd.Add(typeProperty.Key);
+                }
+            }
+
+            foreach (var propKey in PropsToAdd)
+            {
+                var NewProp = new LocationPropertyData(item.Key, propKey);
+                AllData.Add(NewProp);
+            }
+
+
+            //Add missing properties to Location with blank values
+
+        }
+
 
         #endregion
 

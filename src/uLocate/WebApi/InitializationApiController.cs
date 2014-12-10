@@ -184,20 +184,18 @@
         /// The <see cref="List"/>.
         /// </returns>
         [AcceptVerbs("GET")]
-        public IEnumerable<LocationType> Test()
+        public Location Test()
         {
             int NewItemId = 0;
             string Msg = "";
 
-            //TEST Delete a LocationType by Id
-            //var LookupItem = Repositories.LocationTypeRepo.GetById(14);
-            //string Msg = string.Format("'{0}' has been deleted.", LookupItem.Name);
-            //Repositories.LocationTypeRepo.Delete(14);
+      
 
-            //TEST: Return all Location Types
-            var Result = Repositories.LocationTypeRepo.GetAll();
-            //return Result;
+            //TEST: Add a new Location 
+            var newLoc = new Location("Test Location");
+            Repositories.LocationRepo.Insert(newLoc);
 
+            var Result = Repositories.LocationRepo.GetByKey(newLoc.Key);
 
             return Result;
         }

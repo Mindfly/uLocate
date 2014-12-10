@@ -34,6 +34,7 @@
         [Column("Description")]
         [SpecialDbType(SpecialDbTypes.NTEXT)]
         [NullSetting(NullSetting = NullSettings.Null)]
+
         public string Description { get; set; }
 
         /// <summary>

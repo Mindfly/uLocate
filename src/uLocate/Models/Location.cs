@@ -2,22 +2,40 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+
+    using uLocate.Persistance;
+
+    using umbraco.presentation.webservices;
 
     /// <summary>
     /// Represents a Location
     /// </summary>
     public class Location : EntityBase
     {
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Location"/> class.
         /// </summary>
         public Location()
         {
-            UpdateDate = DateTime.Now;
-            CreateDate = DateTime.Now;
-            //this.Key = Guid.NewGuid();
-            this.PropertyData = new List<LocationPropertyData>();
+            this.CreateNewLocation(string.Empty, Constants.DefaultLocationTypeKey);
         }
+
+        public Location(string LocName)
+        {
+            this.CreateNewLocation(LocName, Constants.DefaultLocationTypeKey);
+        }
+
+        public Location(string LocName, Guid LocTypeKey)
+        {
+            this.CreateNewLocation(LocName, LocTypeKey);
+        }
+
+        #endregion
+
+        #region Public Properties
 
         /// <summary>
         /// Gets the key.
@@ -59,6 +77,66 @@
         /// </summary>
         public LocationType LocationType { get; set; }
 
+        public Address Address
+        {
+            get
+            {
+                var add = new Address();
+                add.Address1 = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Address1).Value.ToString();
+                add.Address2 = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Address2).Value.ToString();
+                add.CountryCode = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.CountryCode).Value.ToString();
+                add.Locality = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Locality).Value.ToString();
+                add.PostalCode = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.PostalCode).Value.ToString();
+                add.Region = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Region).Value.ToString();
+                return add;
+            }
+
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void CreateNewLocation(string LocName, Guid LocTypeKey)
+        {
+            this.UpdateDate = DateTime.Now;
+            this.CreateDate = DateTime.Now;
+            this.Key = Guid.NewGuid();
+            this.Name = LocName;
+            this.LocationTypeKey = LocTypeKey;
+            this.LocationType = Repositories.LocationTypeRepo.GetByKey(LocTypeKey);
+            this.PropertyData = this.DefaultProperties(LocTypeKey);
+        }
+
+        private IEnumerable<LocationPropertyData> DefaultProperties()
+        {
+            return DefaultProperties(Constants.DefaultLocationTypeKey);
+        }
+
+        private IEnumerable<LocationPropertyData> DefaultProperties(Guid LocTypeKey)
+        {
+            List<LocationPropertyData> NewData = new List<LocationPropertyData>();
+            var DefaultProps = Repositories.LocationTypePropertyRepo.GetByLocationType(Constants.DefaultLocationTypeKey);
+            foreach (var typeProperty in DefaultProps)
+            {
+                var NewProp = new LocationPropertyData(this.Key, typeProperty.Key);
+                NewData.Add(NewProp);
+            }
+
+            //custom type props
+            if (LocTypeKey != Constants.DefaultLocationTypeKey)
+            {
+                var CustomProps = Repositories.LocationTypePropertyRepo.GetByLocationType(LocTypeKey);
+                foreach (var typeProperty in CustomProps)
+                {
+                    var NewProp = new LocationPropertyData(this.Key, typeProperty.Key);
+                    NewData.Add(NewProp);
+                }
+            }
+
+            return NewData;
+        }
+        #endregion
 
 
     }

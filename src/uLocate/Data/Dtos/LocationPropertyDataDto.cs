@@ -41,12 +41,14 @@
         /// Gets or sets int data for the location property
         /// </summary>
         [Column("dataInt")]
+        [NullSetting(NullSetting = NullSettings.Null)]
         public int dataInt { get; set; }
 
         /// <summary>
         /// Gets or sets date data for the location property
         /// </summary>
         [Column("dataDate")]
+        [NullSetting(NullSetting = NullSettings.Null)]
         public DateTime dataDate { get; set; }
 
         /// <summary>
@@ -54,6 +56,7 @@
         /// </summary>
         [Column("dataNvarchar")]
         [Length(500)]
+        [NullSetting(NullSetting = NullSettings.Null)]
         public string dataNvarchar { get; set; }
 
         /// <summary>
@@ -61,6 +64,7 @@
         /// </summary>
         [Column("dataNtext")]
         [SpecialDbType(SpecialDbTypes.NTEXT)]
+        [NullSetting(NullSetting = NullSettings.Null)]
         public string dataNtext { get; set; }
 
         /// <summary>

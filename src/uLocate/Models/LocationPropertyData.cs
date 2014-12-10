@@ -12,6 +12,8 @@
     using Umbraco.Core.Persistence;
     using Umbraco.Core.Persistence.DatabaseAnnotations;
 
+    using UmbracoExamine.DataServices;
+
     /// <summary>
     /// Property data for a Location
     /// </summary>
@@ -20,13 +22,32 @@
     [ExplicitColumns]
     public class LocationPropertyData : EntityBase
     {
+        internal LocationPropertyData()
+        {
+            this.CreateNewPropData(Guid.Empty, Guid.Empty);
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationPropertyData"/> class and sets some default values.
         /// </summary>
-        public LocationPropertyData()
+        public LocationPropertyData(Guid LocationKey)
+        {
+            this.CreateNewPropData(LocationKey, Guid.Empty);
+        }
+
+        public LocationPropertyData(Guid LocationKey, Guid PropertyKey)
+        {
+            this.CreateNewPropData(LocationKey, PropertyKey);
+        }
+
+        private void CreateNewPropData(Guid LocationKey, Guid PropertyKey)
         {
             UpdateDate = DateTime.Now;
             CreateDate = DateTime.Now;
+            this.Key = Guid.NewGuid();
+            this.LocationKey = LocationKey;
+            this.LocationTypePropertyKey = PropertyKey;
+            
         }
 
         /// <summary>
@@ -101,6 +122,14 @@
             }
         }
 
+        public string PropertyAlias
+        {
+            get
+            {
+                return this.PropertyAttributes.Alias;
+            }
+        }
+
         /// <summary>
         /// Gets the value of the data
         /// </summary>
@@ -126,7 +155,6 @@
         [Constraint(Default = "getdate()")]
         public DateTime CreateDate { get; set; }
 
-     
     }
 
     /// <summary>
@@ -216,6 +244,7 @@
         /// </summary>
         public ValueType Type { get; internal set; }
 
+        
         #endregion
 
         #region Public Methods
@@ -228,12 +257,14 @@
         /// </returns>
         public override string ToString()
         {
-            //if (this.Type == ValueType.String)
-            //{
-            //    return _dataString;
-            //}
-            //else 
-            return _dataObject.ToString();
+            if (_dataObject == null)
+            {
+                return "";
+            }
+            else
+            {
+                return _dataObject.ToString();
+            }
         }
 
         /// <summary>
@@ -244,7 +275,7 @@
         /// </returns>
         public int ToInt()
         {
-            if (this.Type == ValueType.Int)
+            if (this.Type == ValueType.Int & _dataObject != null)
             {
                 return _dataInt;
             }
