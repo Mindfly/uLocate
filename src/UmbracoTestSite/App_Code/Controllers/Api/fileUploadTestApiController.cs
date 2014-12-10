@@ -30,19 +30,20 @@ public class FileUploadTestApiController : UmbracoApiController
         Directory.CreateDirectory(root);
         var provider = new MultipartFormDataStreamProvider(root);
         var result = await Request.Content.ReadAsMultipartAsync(provider);
-        if (result.FormData["dataType"] == null)
+        if (result.FormData["locationType"] == null)
         {
             throw new HttpResponseException(HttpStatusCode.BadRequest);
         }
 
-        var model = result.FormData["dataType"];
+        var model = result.FormData["locationType"];
         // TODO: Do something with the json model which is currently a string
 
 
-
+        var fileName = string.Empty;
         // get the files
         foreach (var file in result.FileData)
         {
+            fileName = file.LocalFileName;
             // TODO: Do something with each uploaded file
         }
 
