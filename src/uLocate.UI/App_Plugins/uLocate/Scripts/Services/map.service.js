@@ -119,29 +119,22 @@
          * @function
          * 
          * @param {string} address - The address to geocode
-         * @param {boolean} useNominatim - Optional. If true, use Nominatim (http://nominatim.openstreetmap.org/) for geocoding.
          * @returns {[number, number]} - The [lat,lng] of the address.
          * @description - Returns the coordinates for the adddress. A promise wrapper for google's geocoder.
          */
-        mapFactory.geocode = function(address, useNominatim) {
-            if (useNominatim) {
-                return $http.get('http://nominatim.openstreetmap.org/search?format=json&q=' + address).then(function (response) {
-                    console.info(response);
-                });
-            } else {
-                var deferred = $q.defer();
-                if (!mapFactory.geocoder) {
-                    mapFactory.geocoder = new google.maps.Geocoder();
-                }
-                mapFactory.geocoder.geocode({ 'address': address }, function(results, status) {
-                    var response = false;
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        response = results[0].geometry.location;
-                    }
-                    deferred.resolve(response);
-                });
-                return deferred.promise;
+        mapFactory.geocode = function(address) {
+            var deferred = $q.defer();
+            if (!mapFactory.geocoder) {
+                mapFactory.geocoder = new google.maps.Geocoder();
             }
+            mapFactory.geocoder.geocode({ 'address': address }, function(results, status) {
+                var response = false;
+                if (status == google.maps.GeocoderStatus.OK) {
+                    response = results[0].geometry.location;
+                }
+                deferred.resolve(response);
+            });
+            return deferred.promise;
         };
 
         /**
@@ -154,31 +147,6 @@
          */
         mapFactory.getAllMarkers = function () {
             return mapFactory.markers;
-        };
-
-        /**
-         * @ngdoc method
-         * @name geocode
-         * @function
-         * 
-         * @param {string} address - a string representation of an address (e.g. '114 W Magnolia Street, Bellingham, WA 98225').
-         * @returns {[number, number]} - an object containing the [lat, lng] for the address provided.
-         * @description - Return lat/lng coordinates of provided address via promise.
-         */
-        mapFactory.geocode = function (address) {
-            var coord;
-            var deferred = $q.defer();
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ 'address': address }, function (results, status) {
-                if (status === google.maps.GeocoderStatus.OK) {
-                    var location = results[0].geometry.location;
-                    coord = [location.lat() * 1, location.lng() * 1];
-                    deferred.resolve(coord);
-                } else {
-                    deferred.resolve(false);
-                }
-            });
-            return deferred.promise;
         };
 
         /**

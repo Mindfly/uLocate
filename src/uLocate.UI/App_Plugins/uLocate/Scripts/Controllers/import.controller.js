@@ -1,6 +1,6 @@
 ﻿(function (controllers, undefined) {
 
-    controllers.ImportController = function ($scope, $routeParams, $http, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateMapService, uLocateFileApiService) {
+    controllers.ImportController = function ($scope, $routeParams, $q, $http, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateLocationApiService, uLocateMapService, uLocateFileApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -25,7 +25,7 @@
          * @description - Sets the initial state for $scope variables.
          */
         $scope.setVariables = function () {
-            $scope.selectedView = $routeParams.id;
+            $scope.mode = 'import';
             $scope.options = {
                 locationType: [new uLocate.Models.LocationType({
                     name: 'Default'
@@ -81,9 +81,6 @@
                 promise.then(function(response) {
                     if (response) {
                         notificationsService.success("File successfully imported. #h5yr!");
-                        uLocateMapService.geocode('White House', true).then(function(mapResponse) {
-                            console.info(mapResponse);
-                        });
                     } else {
                         notificationsService.error("File import failed.");
                     }
@@ -107,6 +104,6 @@
 
     app.requires.push('angularFileUpload');
 
-    angular.module('umbraco').controller('uLocate.Controllers.ImportController', ['$scope', '$routeParams', '$http', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateMapService', 'uLocateFileApiService', uLocate.Controllers.ImportController]);
+    angular.module('umbraco').controller('uLocate.Controllers.ImportController', ['$scope', '$routeParams', '$q', '$http', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateLocationApiService', 'uLocateMapService', 'uLocateFileApiService', uLocate.Controllers.ImportController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));
