@@ -1,5 +1,6 @@
 ﻿{
     "locations" : "Locations",
-    "create" : "Create",
-    "reload" : "Reload Nodes"
+    "address" : "Address",
+    "phone" : "Phone",
+    "latLong" : "Lat/Long"
 }

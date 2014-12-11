@@ -12,10 +12,10 @@
                         <a class="btn" ng-click="openMenu = !openMenu"><localize key="general_actions">Actions</localize> <span class="caret"></span></a>
                         <ul class="dropdown-menu umb-actions">
                             <li class="action">
-                                <a ng-click="openCreateDialog(); openMenu = !openMenu;"><i class="icon icon-add"></i><span class="menu-label"><ulocate-localize key="create">Create</ulocate-localize></span></a>
+                                <a ng-click="openCreateDialog(); openMenu = !openMenu;"><i class="icon icon-add"></i><span class="menu-label"><localize key="actions_create">Create</localize></span></a>
                             </li>
                             <li class="action sep">
-                                <a ng-click="getLocations(); openMenu = !openMenu;"><i class="icon icon-refresh"></i><span class="menu-label"><ulocate-localize key="reload">Reload nodes</ulocate-localize></span></a>
+                                <a ng-click="getLocations(); openMenu = !openMenu;"><i class="icon icon-refresh"></i><span class="menu-label"><localize key="actions_refreshNode">Reload nodes</localize></span></a>
                             </li>
                         </ul>
                     </div>
@@ -33,11 +33,11 @@
                         <form class="span8 form-search">
                             <i class="icon-search"></i>
                             <input type="text" placeholder="Search uLocate addresses" class="span9" ng-modoel="filter" />
-                            <a class="btn btn-primary" ng-click="changeFilter(filter)">Search</a>
+                            <a class="btn btn-primary" ng-click="changeFilter(filter)"><localize key="general_search">Search</localize></a>
                         </form>
                         <div class="span4">
                             <div class="btn-group pull-right">
-                                <a class="btn btn-primary" ng-click="openCreateDialog()">Create</a>
+                                <a class="btn btn-primary" ng-click="openCreateDialog()"><localize key="actions_create">Create</localize></a>
                             </div>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                     <div class="map-bar bottom row-fluid">
                         <!-- perPage dropdown -->
                         <div class="span6 form-inline" ng-show="locationsLoaded">
-                            <label class="control-label">Show:</label>
+                            <label class="control-label"><localize key="general_show">Show</localize>:</label>
                             <select class="input-small" ng-model="selected.perPage" ng-options="option for option in options.perPage" ng-change="updatePerPage(selected.perPage)"></select>
                         </div>
                         <!-- Pagination -->
@@ -62,12 +62,12 @@
                         <tr>
                             <!-- TODO: Should be able to sort by name, address, phone, lat/long, and type -->
                             <!--th><input type="checkbox" /></th--> <!-- TODO: The only bulk action that should be available is delete. See Janae about the best way to do this? -->
-                            <th>Name</th>
-                            <th>Address</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th class="latlong">Lat/Long</th>
-                            <th>Type</th>
+                            <th><localize key="general_name">Name</localize></th>
+                            <th><ulocate-localize key="address">Address</ulocate-localize></th>
+                            <th><localize key="general_email">Email</localize></th>
+                            <th><ulocate-localize key="phone">Phone</ulocate-localize></th>
+                            <th class="latlong"><ulocate-localize key="latLong">Lat/Long</ulocate-localize></th>
+                            <th><localize key="general_type">Type</localize></th>
                             <th></th>
                         </tr>
                     </thead>
