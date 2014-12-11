@@ -37,9 +37,7 @@
                     </label>
 
                     <div class="controls controls-row">
-                        <select required="" id="type" name="type"> <!-- TODO: Display a list of location type names, including default -->
-                            <option>Choose...</option>
-                        </select>
+                        <select id="type" name="type" ng-model="selected.locationType" ng-options="option.name for option in options.locationType" ng-change="locationTypeSelected(selected.locationType)"></select>
                     </div>
                 </div>
 
