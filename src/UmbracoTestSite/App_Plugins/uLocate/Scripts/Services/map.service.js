@@ -14,11 +14,10 @@
          * @param {google.maps.Map} map - The map object to add the marker to.
          * @param {[number, number]} coord - The [lat, lng] coordinates of the marker.
          * @param {uLocate.Models.MapMarkerOptions} options - Optional details for the marker's style and popup.
-         * @param {function} callback - An optional callback function when the marker is clicked on.
          * @returns {integer} - The index of the marker created in the mapFactory.markers array.
          * @description - Add a marker to the map.
          */
-        mapFactory.addMarker = function(map, coord, options, callback) {
+        mapFactory.addMarker = function(map, coord, options) {
             var setup = {
                 map: map,
                 position: coord,
