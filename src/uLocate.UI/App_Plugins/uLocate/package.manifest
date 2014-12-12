@@ -13,6 +13,7 @@
         "~/App_Plugins/uLocate/Scripts/Controllers/delete.confirmation.dialog.controller.js",
         "~/App_Plugins/uLocate/Scripts/Controllers/edit.location.dialog.controller.js",
         "~/App_Plugins/uLocate/Scripts/Controllers/view.location.dialog.controller.js",
+        "~/App_Plugins/uLocate/Scripts/Controllers/export.controller.js",
         "~/App_Plugins/uLocate/Scripts/Controllers/import.controller.js",
         "~/App_Plugins/uLocate/Scripts/Controllers/locations.controller.js",
         "~/App_Plugins/uLocate/Scripts/Controllers/location.types.controller.js"

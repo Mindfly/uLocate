@@ -4,6 +4,33 @@
 
         var fileApiFactory = {};
 
+
+        /**
+         * @ngdoc method
+         * @name exportFile
+         * @function
+         * 
+         * @param {string} locationType - string key for location type desired for export.
+         * @param {strong} fileFormat - Optional. Desired format of resulting file. Defaults to CSV.
+         * @param {boolean} shouldCompress - Optional. Whether to compress file to a zip or not. Defaults to false.
+         * @returns {string} - The url that the desired file can be downloaded from.
+         * @description - Export all locations of a specific type to a file on the end user's system.
+         */
+        fileApiFactory.exportFile = function(locationType, fileFormat, shouldCompress) {
+            if (!fileFormat) {
+                fileFormat = 'csv';
+            }
+            if (!shouldCompress) {
+                shouldCompress = false;
+            }
+            if (locationType) {
+                return '/urlgoeshere/filedownload.axd?format=' + fileFormat + '&type=' + locationType + '&compress=' + shouldCompress;
+            } else {
+                return false;
+            }
+
+        };
+
         /**
          * @ngdoc method
          * @name importFile
@@ -39,8 +66,6 @@
                 }
             });
         };
-
-
 
         /**
          * @ngdoc method

@@ -1,5 +1,4 @@
-﻿<!-- TODO: The ng-controller goes on this starting div -->
-<div>
+﻿<div ng-controller="uLocate.Controllers.ExportController">
     <umb-panel>
         <umb-header>
             <div class="span7">
@@ -8,7 +7,7 @@
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <div class="btn-group">
-                        <a class="btn btn-primary">Export</a>
+                        <a class="btn btn-primary" ng-click="export()">Export</a>
                     </div>
                 </div>
             </div>
@@ -23,10 +22,7 @@
                     </label>
 
                     <div class="controls controls-row">
-                        <select required="required" id="type" name="type">
-                            <!-- TODO: Display a list of location type names, including default -->
-                            <option>Choose...</option>
-                        </select>
+                        <select id="type" name="type" ng-model="selected.locationType" ng-options="option.name for option in options.locationType" ng-change="locationTypeSelected(selected.locationType)"></select>
                     </div>
                 </div>
             </div>

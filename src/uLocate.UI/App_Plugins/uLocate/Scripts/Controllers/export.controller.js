@@ -1,6 +1,6 @@
 ﻿(function (controllers, undefined) {
 
-    controllers.ImportController = function ($scope, $routeParams, $q, $http, notificationsService, uLocateFileApiService) {
+    controllers.ExportController = function ($scope, notificationsService, uLocateFileApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -25,7 +25,6 @@
          * @description - Sets the initial state for $scope variables.
          */
         $scope.setVariables = function () {
-            $scope.mode = 'import';
             $scope.options = {
                 locationType: [new uLocate.Models.LocationType({
                     name: 'Default'
@@ -54,44 +53,6 @@
             $scope.locationType = locationType;
         };
 
-        /**
-         * @ngdoc method
-         * @name fileSelected
-         * @function
-         * 
-         * @param {array of file} files - One or more files selected by the HTML5 File Upload API.
-         * @description - Get the file selected and store it in scope.
-         */
-        $scope.fileSelected = function(files) {
-            if (files.length > 0) {
-                $scope.file = files[0];
-            }
-        };
-
-        /**
-         * @ngdoc method
-         * @name uploadFile
-         * @function
-         * 
-         * @description - Uploads a CSV file to the backend to convert the data to locations.
-         */
-        $scope.uploadFile = function () {
-            if ($scope.file) {
-                var promise = uLocateFileApiService.importFile($scope.file, $scope.locationType);
-                promise.then(function(response) {
-                    if (response) {
-                        notificationsService.success("File successfully imported. #h5yr!");
-                    } else {
-                        notificationsService.error("File import failed.");
-                    }
-                }, function(reason) {
-                    notificationsService.error("File import failed.", reason.message);
-                });
-            } else {
-                notificationsService.error("Must select a file to import.");
-            }
-        };
-
         /*-------------------------------------------------------------------
          * Helper Methods
          * ------------------------------------------------------------------*/
@@ -104,6 +65,6 @@
 
     app.requires.push('angularFileUpload');
 
-    angular.module('umbraco').controller('uLocate.Controllers.ImportController', ['$scope', '$routeParams', '$q', '$http', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateLocationApiService', 'uLocateMapService', 'uLocateFileApiService', uLocate.Controllers.ImportController]);
+    angular.module('umbraco').controller('uLocate.Controllers.ExportController', ['$scope', 'notificationsService', 'uLocateFileApiService', uLocate.Controllers.ExportController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));
