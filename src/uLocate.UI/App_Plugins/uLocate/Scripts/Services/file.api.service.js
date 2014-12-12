@@ -28,7 +28,6 @@
             } else {
                 return false;
             }
-
         };
 
         /**

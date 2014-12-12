@@ -27,7 +27,8 @@
         $scope.setVariables = function () {
             $scope.options = {
                 locationType: [new uLocate.Models.LocationType({
-                    name: 'Default'
+                    name: 'Default',
+                    key: '00001'
                 })]
             }
             $scope.selected = {
@@ -40,6 +41,23 @@
         /*-------------------------------------------------------------------
          * Event Handler Methods
          *-------------------------------------------------------------------*/
+
+        /**
+         * @ngdoc method
+         * @name exportFile
+         * @function
+         * 
+         * @description - Generate a URL to open in a new window to trigger the export file download.
+         */
+        $scope.exportFile = function () {
+            var key = $scope.selected.locationType.key;
+            var url = uLocateFileApiService.exportFile(key);
+            if (url) {
+                window.open(url, '_blank');
+            } else {
+                notificationsService.error('Unable to initialize the export.');
+            }
+        };
 
         /**
          * @ngdoc method
