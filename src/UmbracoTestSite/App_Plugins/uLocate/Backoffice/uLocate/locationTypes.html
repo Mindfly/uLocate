@@ -4,20 +4,20 @@
     <umb-panel ng-hide="selectedView != 'view'">
         <umb-header>
             <div class="span7">
-                <h1>Location Types</h1>
+                <h1><ulocate-localize key="locationTypes">Location Types</ulocate-localize></h1>
             </div>
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <div class="btn-group">
                         <!-- TODO: Clicking should add .open to the .btn-group parent div, which will display the dropdown -->
-                        <a class="btn">Actions <span class="caret"></span></a>
+                        <a class="btn"><localize key="general_actions">Actions</localize> <span class="caret"></span></a>
                         <!-- TODO: In umbraco, this is generated using umb-options-menu, which you can see an example of in Umbraco.Web.UI.Client\build\belle\views\content\edit.html. The actions allowed for this menu item are determined in the uLocate TreeController -->
                         <ul class="dropdown-menu umb-actions">
                             <li class="action">
-                                <a><i class="icon icon-add"></i><span class="menu-label">Create</span></a> <!-- TODO: Opens the page to create a new location type -->
+                                <a><i class="icon icon-add"></i><span class="menu-label"><localize key="actions_create">Create</localize></span></a> <!-- TODO: Opens the page to create a new location type -->
                             </li>
                             <li class="action sep">
-                                <a><i class="icon icon-refresh"></i><span class="menu-label">Reload nodes</span></a> <!-- TODO: Reloads the location types and ideally kicks the cache in the teeth -->
+                                <a><i class="icon icon-refresh"></i><span class="menu-label"><localize key="actions_refreshNode">Reload nodes</localize></span></a> <!-- TODO: Reloads the location types and ideally kicks the cache in the teeth -->
                             </li>
                         </ul>
                     </div>
@@ -33,8 +33,8 @@
                     <thead>
                         <tr>
                             <td><input type="checkbox" /></td>
-                            <td>Name</td>
-                            <td>Fields</td>
+                            <td><localize key="general_name">Name</localize></td>
+                            <td><ulocate-localize key="fields">Fields</ulocate-localize></td>
                             <td></td>
                         </tr>
                     </thead>
@@ -42,8 +42,8 @@
                         <tr>
                             <!-- TODO: The default location type should always display -->
                             <td></td>
-                            <td><i class="icon-pin-location"></i> Default</td> <!-- TODO: Change "Default" to a more user friendly term -->
-                            <td>Name, Street Address, Extended Address, City, State/Province, Zip/Postal Code, Country, Latitude/Longitude, Phone Number</td>
+                            <td><i class="icon-pin-location"></i> <ulocate-localize key="default">Default</ulocate-localize></td> <!-- TODO: Change "Default" to a more user friendly term -->
+                            <td><ulocate-localize key="defaultFields">Name, Street Address, Extended Address, City, State/Province, Zip/Postal Code, Country, Latitude/Longitude, Phone Number</ulocate-localize></td>
                             <td></td>
                         </tr>
                         <tr>
@@ -67,17 +67,15 @@
     <umb-panel ng-hide="selectedView != 'edit'">
         <umb-header tabs="tabs">
             <div class="span7">
-                <form>
-                    <div class="umb-headline-editor-wrapper">
-                        <input type="text" name="name" localize="placeholder" class="umb-headline" placeholder="Enter a name for your location type" value="Business" required=""> <!-- TODO: Displays the name if editing. -->
-                        <span class="help-inline" val-msg-for="name" val-toggle-msg="required" style="display: none;">Required</span>
-                    </div>
-                </form>
+                <div class="umb-headline-editor-wrapper">
+                    <input type="text" name="name" ulocate-localize="placeholder" class="umb-headline" placeholder="locationTypeName" value="Business" required=""> <!-- TODO: Displays the name if editing. -->
+                    <span class="help-inline"><localize key="general_required">Required</localize></span>
+                </div>
             </div>
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <div class="btn-group">
-                        <a class="btn btn-primary">Save</a> <!-- TODO: Add the save functionality -->
+                        <a class="btn btn-primary"><localize key="buttons_save">Save</localize></a> <!-- TODO: Add the save functionality -->
                     </div>
                 </div>
             </div>
@@ -91,12 +89,12 @@
 
                     <div class="control-group umb-control-group">
 
-                        <label class="control-label" for="icon">Icon</label>
+                        <label class="control-label" for="icon"><localize key="general_icon">Icon</localize></label>
 
                         <div class="controls controls-row">
 
                             <div class="umbIconDropdownList">
-                                <a class="btn btn-link picker-icons" ng-click="openIconPicker()"> <i class="icon-store color-blue"></i> Choose...</a> <!-- TODO: Should show the chosen icon, and clicking should open the icon picker dialog -->
+                                <a class="btn btn-link picker-icons" ng-click="openIconPicker()"> <i class="icon-store color-blue"></i> <localize key="general_choose">Choose</localize>...</a> <!-- TODO: Should show the chosen icon, and clicking should open the icon picker dialog -->
                                 <input name="icon" type="hidden" value="icon-store color-blue"> <!-- TODO: This should submit the icon and color from the icon dialog -->
                             </div>
 
@@ -107,8 +105,8 @@
                     <div class="control-group umb-control-group">
 
                         <label class="control-label" for="description">
-                            Description
-                            <small>Displayed with the icon when creating a new location of this type</small>
+                            <localize key="editcontenttype_description">Description</localize>
+                            <small><ulocate-localize key="descriptionHelp">Displayed with the icon when creating a new location of this type</ulocate-localize></small>
                         </label>
                         <div class="controls controls-row">
                             <textarea name="description" class="umb-editor umb-textarea"></textarea>
@@ -126,9 +124,9 @@
 
                     <div class="control-group umb-control-group">
                         <label class="control-label">
-                            Business Properties <!-- TODO: Replace "business" with the location type name variable -->
+                            Business <localize key="general_properties">Properties</localize> <!-- TODO: Replace "business" with the location type name variable -->
                             <small>
-                                New location types <strong>append</strong> the default location, so you will always have address, phone, email, and lat/long fields.
+                                <ulocate-localize key="propertiesHelp">New location types <strong>append</strong> the default location, so you will always have address, phone, email, and lat/long fields.</ulocate-localize>
                             </small>
                         </label>
 
@@ -137,16 +135,16 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <td>Alias</td>
-                                        <td>Name</td>
-                                        <td>Type</td>
+                                        <td><localize key="general_alias">Alias</localize></td>
+                                        <td><localize key="general_name">Name</localize></td>
+                                        <td><localize key="general_type">Type</localize></td>
                                         <td></td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><input type="text" placeholder="Add a property alias" value="contactName" /></td> <!-- TODO: If we can enforce no spaces or special characters in this, that would be great. -->
-                                        <td><input type="text" placeholder="Add a property name" value="Contact Name" /></td>
+                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyAlias" value="contactName" /></td> <!-- TODO: If we can enforce no spaces or special characters in this, that would be great. -->
+                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyName" value="Contact Name" /></td>
                                         <td>
                                             <select>
                                                 <option>Textbox</option> <!-- TODO: Umbraco.Textbox -->
@@ -164,8 +162,8 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><input type="text" placeholder="Add a property alias" /></td>
-                                        <td><input type="text" placeholder="Add a property name" /></td>
+                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyAlias" /></td>
+                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyName" /></td>
                                         <td>
                                             <select>
                                                 <option>Choose...</option>
