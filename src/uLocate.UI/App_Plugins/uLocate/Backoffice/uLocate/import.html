@@ -2,12 +2,12 @@
     <umb-panel>
         <umb-header>
             <div class="span7">
-                <h1>Import Locations</h1>
+                <h1><ulocate-localize key="importLocations">Import Locations</ulocate-localize></h1>
             </div>
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <div class="btn-group">
-                        <a class="btn btn-primary" ng-show="!isUploading" ng-click="uploadFile()" ng-disabled="isUploading">Import</a>
+                        <a class="btn btn-primary" ng-show="!isUploading" ng-click="uploadFile()" ng-disabled="isUploading"><localize key="general_import">Import</localize></a>
                         <a class="btn btn-disabled" ng-show="isUploading" ng-disabled="isUploading">Importing File...</a>
                     </div>
                 </div>
@@ -21,20 +21,20 @@
                 <div class="control-group umb-control-group">
                     <label class="control-label" for="import">
                         <!-- TODO: Allow for XML and JSON file imports later -->
-                        Import File
-                        <small>Select a CSV file to import. You can save Excel spreadsheets to a CSV format.</small>
+                        <ulocate-localize key="importFile">Import File</ulocate-localize>
+                        <small><ulocate-localize key="importFileHelp">Select a CSV file to import. You can save Excel spreadsheets to a CSV format.</ulocate-localize></small>
                     </label>
-
+                    
 
                     <div class="controls controls-row">
-                        <button ng-file-select ng-model="files" ng-file-change="fileSelected(files)" class="file button btn-primary" ng-multiple="false">Choose File</button> {{file.name}}
+                        <button ng-file-select ng-model="files" ng-file-change="fileSelected(files)" class="file button btn-primary" ng-multiple="false"><ulocate-localize key="chooseFile">Choose File</ulocate-localize></button> {{file.name}}
                     </div>
                 </div>
-
+                
                 <div class="control-group umb-control-group">
                     <label class="control-label" for="type">
-                        Location Type
-                        <small>You can only import a single location type per upload.</small>
+                        <ulocate-localize key="locationType">Location Type</ulocate-localize>
+                        <small><ulocate-localize key="locationTypeImportHelp">You can only import a single location type per upload.</ulocate-localize></small>
                     </label>
 
                     <div class="controls controls-row">
