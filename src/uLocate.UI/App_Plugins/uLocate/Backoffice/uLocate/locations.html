@@ -107,8 +107,8 @@
             <umb-header>
                 <div class="span7">
                     <div class="umb-headline-editor-wrapper">
-                        <input type="text" name="name" localize="placeholder" class="umb-headline" placeholder="Enter a name for your location" ng-model="newLocation.name" required />
-                        <span class="help-inline" val-msg-for="name" ng-show="isFieldInvalid(createForm.name)">Required</span>
+                        <input type="text" name="name" ulocate-localize="placeholder" class="umb-headline" placeholder="locationName" ng-model="newLocation.name" required />
+                        <span class="help-inline" val-msg-for="name" ng-show="isFieldInvalid(createForm.name)"><localize key="general_required">Required</localize></span>
                     </div>
                 </div>
             </umb-header>
@@ -119,20 +119,20 @@
 
                     <div class="control-group umb-control-group">
                         <label class="control-label" for="streetAddress">
-                            Street Address
-                            <small>Street address or c/o</small>
+                            <ulocate-localize key="streetAddress">Street Address</ulocate-localize>
+                            <small><ulocate-localize key="streetAddressHelp">Street address or c/o</ulocate-localize></small>
                         </label>
 
                         <div class="controls controls-row">
                             <input type="text" name="streetAddress" id="streetAddress" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.streetAddress" required />
-                            <span class="help-inline" ng-show="isFieldInvalid(createForm.streetAddress)">Required</span>
+                            <span class="help-inline" ng-show="isFieldInvalid(createForm.streetAddress)"><localize key="general_required">Required</localize></span>
                         </div>
                     </div>
 
                     <div class="control-group umb-control-group">
                         <label class="control-label" for="extendedAddress">
-                            Extended Address
-                            <small>Suite, apartment, unit, etc</small>
+                            <ulocate-localize key="extendedAddress">Extended Address</ulocate-localize>
+                            <small><ulocate-localize key="extendedAddressHelp">Suite, apartment, unit, etc</ulocate-localize></small>
                         </label>
 
                         <div class="controls controls-row">
@@ -141,35 +141,35 @@
                     </div>
 
                     <div class="control-group umb-control-group">
-                        <label class="control-label" for="locality">City</label>
+                        <label class="control-label" for="locality"><ulocate-localize key="city">City</ulocate-localize></label>
 
                         <div class="controls controls-row">
                             <input type="text" name="locality" id="locality" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.locality" required />
-                            <span class="help-inline" ng-show="isFieldInvalid(createForm.streetAddress)">Required</span>
+                            <span class="help-inline" ng-show="isFieldInvalid(createForm.streetAddress)"><localize key="general_required">Required</localize></span>
                         </div>
                     </div>
 
                     <div class="control-group umb-control-group">
-                        <label class="control-label" for="region">State/Province</label>
+                        <label class="control-label" for="region"><ulocate-localize key="stateProvince">State/Province</ulocate-localize></label>
 
                         <div class="controls controls-row">
                             <input type="text" name="region" id="region" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.region" ng-show="!hasProvinces()" ng-required="!hasProvinces()">
                             <select class="umb-editor umb-dropdown" ng-model="selected.region" ng-options="option.name for option in selected.country.provinces" ng-show="hasProvinces()"></select>
-                            <span class="help-inline" ng-show="!hasProvinces() && isFieldInvalid(createForm.region)">Required</span>
+                            <span class="help-inline" ng-show="!hasProvinces() && isFieldInvalid(createForm.region)"><localize key="general_required">Required</localize></span>
                         </div>
                     </div>
 
                     <div class="control-group umb-control-group">
-                        <label class="control-label" for="postalCode">Zip/Postal Code</label>
+                        <label class="control-label" for="postalCode"><ulocate-localize key="zipPostalCode">Zip/Postal Code</ulocate-localize></label>
 
                         <div class="controls controls-row">
                             <input type="text" name="postalCode" id="postalCode" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.postalCode" required />
-                            <span class="help-inline" ng-show="isFieldInvalid(createForm.postalCode)">Required</span>
+                            <span class="help-inline" ng-show="isFieldInvalid(createForm.postalCode)"><localize key="general_required">Required</localize></span>
                         </div>
                     </div>
 
                     <div class="control-group umb-control-group">
-                        <label class="control-label" for="countryName">Country</label>
+                        <label class="control-label" for="countryName"><ulocate-localize key="country">Country</ulocate-localize></label>
                         <div class="controls controls-row">
                             <select id="countryName" class="umb-editor umb-dropdown" ng-model="selected.country" ng-options="option.name for option in options.countries" ng-change="updateCountry(selected.country)"></select>
                         </div>
@@ -177,8 +177,8 @@
 
                     <div class="control-group umb-control-group">
                         <label class="control-label" for="latitude">
-                            Latitutde
-                            <small>Optional. Will auto-generate based on address unless both latitude and longitude are manually entered.</small>
+                            <ulocate-localize key="latitude">Latitutde</ulocate-localize>
+                            <small><ulocate-localize key="latitudeHelp">Optional. Will auto-generate based on address unless both latitude and longitude are manually entered.</ulocate-localize></small>
                         </label>
 
                         <div class="controls controls-row">
@@ -188,8 +188,8 @@
 
                     <div class="control-group umb-control-group">
                         <label class="control-label" for="longitude">
-                            Longitude
-                            <small>Optional. Will auto-generate based on address unless  both latitude and longitude are manually entered.</small>
+                            <ulocate-localize key="longitude">Longitude</ulocate-localize>
+                            <small><ulocate-localize key="longitudeHelp">Optional. Will auto-generate based on address unless  both latitude and longitude are manually entered.</ulocate-localize></small>
                         </label>
 
                         <div class="controls controls-row">
@@ -198,7 +198,7 @@
                     </div>
 
                     <div class="control-group umb-control-group">
-                        <label class="control-label" for="email">Email</label>
+                        <label class="control-label" for="email"><localize key="general_email">Email</localize></label>
 
                         <div class="controls controls-row">
                             <input type="text" name="textbox" id="email" class="umb-editor umb-textstring textstring" ng-model="newLocation.email" />
@@ -206,7 +206,7 @@
                     </div>
 
                     <div class="control-group umb-control-group">
-                        <label class="control-label" for="tel">Phone Number</label>
+                        <label class="control-label" for="tel"><ulocate-localize key="phone">Phone Number</ulocate-localize></label>
 
                         <div class="controls controls-row">
                             <input type="text" name="textbox" id="longitude" class="umb-editor umb-textstring textstring" ng-model="newLocation.phone" />
@@ -215,12 +215,12 @@
 
                     <!-- TODO: All items after this point would be custom items based on a custom location type -->
 
-                    <div class="umb-tab-buttons" detect-fold>
+                    <div class="umb-tab-buttons">
                         <div class="btn-group">
-                            <a class="btn" href="#/uLocate/uLocate/locations/view">Cancel</a>
+                            <a class="btn" href="#/uLocate/uLocate/locations/view"><localize key="general_cancel">Cancel</localize></a>
                         </div>
                         <div class="btn-group">
-                            <a class="btn btn-success" ng-click="createLocation(newLocation)">Save</a>
+                            <a class="btn btn-success" ng-click="createLocation(newLocation)"><localize key="buttons_save">Save</localize></a>
                         </div>
                     </div>
                 </div>

@@ -3,12 +3,12 @@
     <umb-panel>
         <umb-header>
             <div class="span7">
-                <h1>Export Locations</h1>
+                <h1><ulocate-localize key="exportLocations">Export Locations</ulocate-localize></h1>
             </div>
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <div class="btn-group">
-                        <a class="btn btn-primary">Export</a>
+                        <a class="btn btn-primary"><ulocate-localize key="export">Export</ulocate-localize></a>
                     </div>
                 </div>
             </div>
@@ -18,14 +18,14 @@
             <div class="umb-pane">
                 <div class="control-group umb-control-group">
                     <label class="control-label" for="type">
-                        Location Type
-                        <small>You can only export a single location type per download.</small>
+                        <ulocate-localize key="locationType">Location Type</ulocate-localize>
+                        <small><ulocate-localize key="locationTypeExportHelp">You can only export a single location type per download.</ulocate-localize></small>
                     </label>
 
                     <div class="controls controls-row">
                         <select required="required" id="type" name="type">
                             <!-- TODO: Display a list of location type names, including default -->
-                            <option>Choose...</option>
+                            <option><localize key="general_choose">Choose</localize>...</option>
                         </select>
                     </div>
                 </div>
