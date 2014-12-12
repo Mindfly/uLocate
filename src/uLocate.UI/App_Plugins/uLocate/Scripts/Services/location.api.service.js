@@ -88,9 +88,9 @@
 		locationApiFactory.getAllLocations = function (options) {
 		    var request;
 		    if (!options) {
-		        request = new uLocate.Models.GetLocationsApiRequst();
+		        request = new uLocate.Models.GetLocationsApiRequest();
 		    } else {
-		        request = new uLocate.Models.GetLocationsApiRequst(options);
+		        request = new uLocate.Models.GetLocationsApiRequest(options);
 		    }
 		    // TODO: Change out this line for the one below it when not using mocks.
 		    /*return $http.post('urlgoeshere', request).then(function (response) {*/

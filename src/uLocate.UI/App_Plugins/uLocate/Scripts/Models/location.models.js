@@ -30,7 +30,7 @@
         }
     };
 
-    models.GetLocationsApiRequst = function(data) {
+    models.GetLocationsApiRequest = function(data) {
         var self = this;
         if (data === undefined) {
             self.page = 0;
