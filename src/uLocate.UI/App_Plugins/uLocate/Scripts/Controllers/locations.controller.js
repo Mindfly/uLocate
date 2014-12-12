@@ -523,7 +523,7 @@
         $scope.getLocations = function () {
             uLocateMapService.deleteAllMarkers();
             $scope.locations = [];
-            var request = new uLocate.Models.GetLocationsApiRequst({
+            var request = new uLocate.Models.GetLocationsApiRequest({
                 filter: $scope.filter,
                 page: $scope.page,
                 perPage: $scope.perPage,
