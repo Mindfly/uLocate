@@ -7809,12 +7809,6 @@
             </param>
             <param name="contentType"></param>
         </member>
-        <member name="M:Umbraco.Core.Models.Member.SetProviderUserKeyType(System.Type)">
-            <summary>
-            Sets the type of the provider user key.
-            </summary>
-            <param name="type">The type.</param>
-        </member>
         <member name="M:Umbraco.Core.Models.Member.AddingEntity">
             <summary>
             Method to call when Entity is being saved
@@ -7940,14 +7934,6 @@
             Otherwise it will the one available from the asp.net
             membership provider.
             </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Models.Member.ProviderUserKeyType">
-            <summary>
-            Gets or sets the type of the provider user key.
-            </summary>
-            <value>
-            The type of the provider user key.
-            </value>
         </member>
         <member name="P:Umbraco.Core.Models.Member.ContentType">
             <summary>
@@ -8375,12 +8361,6 @@
             is part of the roadmap.
             </remarks>
         </member>
-        <member name="M:Umbraco.Core.Models.Membership.User.SetProviderUserKeyType(System.Type)">
-            <summary>
-            Sets the type of the provider user key.
-            </summary>
-            <param name="type">The type.</param>
-        </member>
         <member name="M:Umbraco.Core.Models.Membership.User.ResetDirtyProperties(System.Boolean)">
             <summary>
             Whenever resetting occurs, clear the remembered add/removed collections, even if 
@@ -8395,14 +8375,6 @@
             </summary>
             <param name="sender"></param>
             <param name="e"></param>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.User.ProviderUserKeyType">
-            <summary>
-            Gets or sets the type of the provider user key.
-            </summary>
-            <value>
-            The type of the provider user key.
-            </value>
         </member>
         <member name="P:Umbraco.Core.Models.Membership.User.AddedSections">
             <summary>

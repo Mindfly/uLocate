@@ -5,9 +5,10 @@
     using System.Linq;
     using System.Web.Http;
 
+    using uLocate.Data;
     using uLocate.Models;
     using uLocate.Persistance;
-    using uLocate.Data;
+
     using Umbraco.Core;
     using Umbraco.Web.WebApi;
 
@@ -18,54 +19,6 @@
     /// </summary>
     public class TestApiController : UmbracoApiController
     {
-        /// <summary>
-        /// Initializes the uLocate Database tables
-        /// /Umbraco/Api/TestApi/InitDb
-        /// </summary>
-        /// <returns>
-        /// The <see cref="bool"/>.
-        /// </returns>
-        [AcceptVerbs("GET")]
-        public bool InitDb()
-        {
-            bool Result = uLocate.Data.Helper.InitializeDatabase();
-
-            return Result;
-        }
-
-        /// <summary>
-        /// Deletes the uLocate Database tables
-        /// /Umbraco/Api/TestApi/DeleteDb
-        /// </summary>
-        /// <returns>
-        /// The <see cref="bool"/>.
-        /// </returns>
-        [AcceptVerbs("GET")]
-        public bool DeleteDb()
-        {
-            bool Result = uLocate.Data.Helper.DeleteDatabase();
-
-            return Result;
-        }
-
-        /// <summary>
-        /// Used for testing (deletes &amp; re-creates database)
-        ///  /Umbraco/Api/TestApi/ResetDb
-        /// </summary>
-        /// <returns>
-        /// The <see cref="bool"/>.
-        /// </returns>
-        [AcceptVerbs("GET")]
-        public bool ResetDb()
-        {
-            bool Result = uLocate.Data.Helper.DeleteDatabase();
-            if (Result)
-            {
-                Result = uLocate.Data.Helper.InitializeDatabase();
-            }
-
-            return Result;
-        }
 
         /// <summary>
         /// Used for testing

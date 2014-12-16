@@ -7,14 +7,18 @@
     using System.Threading.Tasks;
     using System.Web.Http;
 
+    using uLocate.Data;
     using uLocate.Models;
     using uLocate.Persistance;
-    using uLocate.Data;
+
     using Umbraco.Core;
     using Umbraco.Web.WebApi;
 
     //TODO: Add to back-office App area / secure this
 
+    /// <summary>
+    /// The location type api controller for use by the umbraco back-office
+    /// </summary>
     class LocationTypeApiController : UmbracoApiController
     {
         /// <summary>
@@ -39,6 +43,15 @@
             return Result;
         }
 
+        /// <summary>
+        /// Update a location type
+        /// </summary>
+        /// <param name="UpdatedLocationType">
+        /// The updated location type.
+        /// </param>
+        /// <returns>
+        /// The <see cref="LocationType"/>.
+        /// </returns>
         [AcceptVerbs("GET")]
         public LocationType Update(LocationType UpdatedLocationType)
         {
@@ -49,6 +62,15 @@
             return Result;
         }
 
+        /// <summary>
+        /// Get a location type by its Key
+        /// </summary>
+        /// <param name="Key">
+        /// The key.
+        /// </param>
+        /// <returns>
+        /// The <see cref="LocationType"/>.
+        /// </returns>
         [AcceptVerbs("GET")]
         public LocationType GetByKey(Guid Key)
         {
@@ -57,6 +79,15 @@
             return Result;
         }
 
+        /// <summary>
+        /// Delete a location type
+        /// </summary>
+        /// <param name="Key">
+        /// The key.
+        /// </param>
+        /// <returns>
+        /// The <see cref="StatusMessage"/>.
+        /// </returns>
         [AcceptVerbs("GET")]
         public StatusMessage Delete(Guid Key)
         {
