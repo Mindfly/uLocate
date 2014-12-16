@@ -14,13 +14,13 @@
     //TODO: Add to back-office App area / secure this
 
     /// <summary>
-    /// uLocate initialization api controller.
+    /// uLocate test api controller.
     /// </summary>
-    public class InitializationApiController : UmbracoApiController
+    public class TestApiController : UmbracoApiController
     {
         /// <summary>
         /// Initializes the uLocate Database tables
-        /// /Umbraco/Api/InitializationApi/InitDb
+        /// /Umbraco/Api/TestApi/InitDb
         /// </summary>
         /// <returns>
         /// The <see cref="bool"/>.
@@ -35,7 +35,7 @@
 
         /// <summary>
         /// Deletes the uLocate Database tables
-        /// /Umbraco/Api/InitializationApi/DeleteDb
+        /// /Umbraco/Api/TestApi/DeleteDb
         /// </summary>
         /// <returns>
         /// The <see cref="bool"/>.
@@ -50,7 +50,7 @@
 
         /// <summary>
         /// Used for testing (deletes &amp; re-creates database)
-        ///  /Umbraco/Api/InitializationApi/ResetDb
+        ///  /Umbraco/Api/TestApi/ResetDb
         /// </summary>
         /// <returns>
         /// The <see cref="bool"/>.
@@ -69,7 +69,7 @@
 
         /// <summary>
         /// Used for testing
-        ///  /Umbraco/Api/InitializationApi/TestPopulateSomeLocationTypes
+        ///  /Umbraco/Api/TestApi/TestPopulateSomeLocationTypes
         /// </summary>
         /// <returns>
         /// The <see cref="List"/>.
@@ -104,19 +104,19 @@
 
         /// <summary>
         /// Used for testing
-        ///  /Umbraco/Api/InitializationApi/TestUpdateLocationType
+        ///  /Umbraco/Api/TestApi/TestUpdateLocationType
         /// </summary>
         /// <returns>
         /// The <see cref="List"/>.
         /// </returns>
         [AcceptVerbs("GET")]
-        public IEnumerable<LocationTypeApiController> TestUpdateLocationType()
+        public IEnumerable<LocationType> TestUpdateLocationType()
         {
             int NewItemId = 0;
             string Msg = "";
 
             //TEST: Update a Location Type
-            List<LocationTypeApiController> Result = new List<LocationTypeApiController>();
+            List<LocationType> Result = new List<LocationType>();
 
             //change the data
             var Lt = Repositories.LocationTypeRepo.GetByName("Shopping Center").FirstOrDefault();
@@ -146,7 +146,7 @@
 
         /// <summary>
         /// Used for testing
-        ///  /Umbraco/Api/InitializationApi/TestDeleteLocationType?LookupName="name"
+        ///  /Umbraco/Api/TestApi/TestDeleteLocationType?LookupName="name"
         /// </summary>
         /// <param name="LookupName">
         /// The Lookup Name.
@@ -178,7 +178,7 @@
 
         /// <summary>
         /// Used for testing
-        /// /Umbraco/Api/InitializationApi/Test
+        /// /Umbraco/Api/TestApi/Test
         /// </summary>
         /// <returns>
         /// The <see cref="List"/>.

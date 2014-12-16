@@ -59,7 +59,7 @@
 
             if (ThisLocType != null)
             {
-                this.Delete(ThisLocType,  out ReturnMsg, ConvertLocationsToDefault);
+                this.DeleteLocType(ThisLocType,  out ReturnMsg, ConvertLocationsToDefault);
             }
             else
             {
@@ -75,27 +75,31 @@
         public StatusMessage Delete(LocationType Entity,bool ConvertLocationsToDefault = true)
         {
             StatusMessage ReturnMsg = new StatusMessage();
-            Delete(Entity, out ReturnMsg, ConvertLocationsToDefault);
+            this.DeleteLocType(Entity, out ReturnMsg, ConvertLocationsToDefault);
 
             return ReturnMsg;
         }
 
-        private void Delete(LocationType Entity, out StatusMessage StatusMsg, bool ConvertLocationsToDefault = true )
+        private void DeleteLocType(LocationType Entity, out StatusMessage StatusMsg, bool ConvertLocationsToDefault = true)
         {
             StatusMessage ReturnMsg = new StatusMessage();
             ReturnMsg.ObjectName = Entity.Name;
 
             if (ConvertLocationsToDefault)
             {
-                //TODO: Add Location handling logic here
                 //Check for associated locations and update them to use LocationTypeId = DefaultId
-                
-            }
-            else
-            {
-                //Cascade deletes to matching Locations
-            }
+                var MatchingLocs = Repositories.LocationRepo.GetByType(Entity.Key);
 
+                foreach (var location in MatchingLocs)
+                {
+                    location.LocationTypeKey = Constants.DefaultLocationTypeKey;
+                    Repositories.LocationRepo.Update(location);
+                }
+            }
+            //else matching Locations will be deleted with children
+            
+            this.DeleteChildren(Entity);
+        
             PersistDeletedItem(Entity, out ReturnMsg);
             StatusMsg = ReturnMsg;
         }
@@ -321,6 +325,12 @@
         private void DeleteChildren(LocationType item)
         {
             this.DeleteProperties(item);
+            this.DeleteAssociatedLocations(item);
+        }
+
+        private void DeleteAssociatedLocations(LocationType item)
+        {
+            throw new NotImplementedException();
         }
 
         private void FillProperties()

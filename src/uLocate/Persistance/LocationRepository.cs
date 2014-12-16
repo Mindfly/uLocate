@@ -34,7 +34,6 @@
         {
         }
 
-
         #region Public Methods
 
         public void Insert(Location Entity)
@@ -69,6 +68,20 @@
             FillChildren();
 
             return CurrentCollection[0];
+        }
+
+        internal IEnumerable<Location> GetByType(Guid LocationTypeKey)
+        {
+            CurrentCollection.Clear();
+            var sql = new Sql();
+            sql.Select("*")
+                .From<Location>()
+                .Where<Location>(n => n.LocationTypeKey == LocationTypeKey);
+
+            CurrentCollection.AddRange(Repositories.ThisDb.Fetch<Location>(sql).ToList());
+            FillChildren();
+
+            return CurrentCollection; 
         }
 
         public IEnumerable<Location> GetByKey(Guid[] Keys)
