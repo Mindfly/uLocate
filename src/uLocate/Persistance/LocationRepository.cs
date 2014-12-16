@@ -48,13 +48,46 @@
             NewItemKey = Entity.Key;
         }
 
-        public StatusMessage Delete(Location Entity)
+        public StatusMessage Delete(Guid LocationKey)
         {
             StatusMessage ReturnMsg = new StatusMessage();
-            PersistDeletedItem(Entity, out ReturnMsg);
+
+            Location ThisLoc = this.GetByKey(LocationKey);
+
+            if (ThisLoc != null)
+            {
+                this.DeleteLocation(ThisLoc, out ReturnMsg);
+            }
+            else
+            {
+                ReturnMsg.Success = false;
+                ReturnMsg.Code = "NotFound";
+                ReturnMsg.ObjectName = LocationKey.ToString();
+                ReturnMsg.Message = string.Format("Location with key '{0}' was not found and can not be deleted.", ReturnMsg.ObjectName);
+            }
 
             return ReturnMsg;
         }
+
+        public StatusMessage Delete(Location Entity)
+        {
+            StatusMessage ReturnMsg = new StatusMessage();
+            this.DeleteLocation(Entity, out ReturnMsg);
+
+            return ReturnMsg;
+        }
+
+        private void DeleteLocation(Location Entity, out StatusMessage StatusMsg)
+        {
+            StatusMessage ReturnMsg = new StatusMessage();
+            ReturnMsg.ObjectName = Entity.Name;
+
+            this.DeleteChildren(Entity);
+
+            PersistDeletedItem(Entity, out ReturnMsg);
+            StatusMsg = ReturnMsg;
+        }
+        
 
         public void Update(Location Entity)
         {

@@ -14,15 +14,22 @@
     using Umbraco.Core;
     using Umbraco.Web.WebApi;
 
-    //TODO: Add to back-office App area / secure this
-
     /// <summary>
     /// The location type api controller for use by the umbraco back-office
     /// </summary>
-    class LocationTypeApiController : UmbracoApiController
+    [Umbraco.Web.Mvc.PluginController("uLocate")]
+    public class LocationTypeApiController : UmbracoAuthorizedApiController
     {
+        ///// /umbraco/backoffice/uLocate/LocationTypeApi/Test
+        //[System.Web.Http.AcceptVerbs("GET")]
+        //public bool Test()
+        //{
+        //    return true;
+        //}
+
         /// <summary>
-        /// The create.
+        /// Create a new Location Type
+        /// /umbraco/backoffice/uLocate/LocationTypeApi/Create?LocationTypeName="xxx"
         /// </summary>
         /// <param name="LocationTypeName">
         /// The location type name.
@@ -30,7 +37,7 @@
         /// <returns>
         /// The <see cref="Guid"/> of the newly created LocationType
         /// </returns>
-        [AcceptVerbs("GET")]
+        [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string LocationTypeName)
         {
             LocationType newLocType = new LocationType();
@@ -45,14 +52,15 @@
 
         /// <summary>
         /// Update a location type
+        /// /umbraco/backoffice/uLocate/LocationTypeApi/Update
         /// </summary>
         /// <param name="UpdatedLocationType">
-        /// The updated location type.
+        /// The updated location type object
         /// </param>
         /// <returns>
         /// The <see cref="LocationType"/>.
         /// </returns>
-        [AcceptVerbs("GET")]
+        [System.Web.Http.AcceptVerbs("GET")]
         public LocationType Update(LocationType UpdatedLocationType)
         {
             Repositories.LocationTypeRepo.Update(UpdatedLocationType);
@@ -64,6 +72,7 @@
 
         /// <summary>
         /// Get a location type by its Key
+        /// /umbraco/backoffice/uLocate/LocationTypeApi/GetByKey
         /// </summary>
         /// <param name="Key">
         /// The key.
@@ -71,7 +80,7 @@
         /// <returns>
         /// The <see cref="LocationType"/>.
         /// </returns>
-        [AcceptVerbs("GET")]
+        [System.Web.Http.AcceptVerbs("GET")]
         public LocationType GetByKey(Guid Key)
         {
             var Result = Repositories.LocationTypeRepo.GetByKey(Key);
@@ -81,6 +90,7 @@
 
         /// <summary>
         /// Delete a location type
+        /// /umbraco/backoffice/uLocate/LocationTypeApi/Delete
         /// </summary>
         /// <param name="Key">
         /// The key.
@@ -88,7 +98,7 @@
         /// <returns>
         /// The <see cref="StatusMessage"/>.
         /// </returns>
-        [AcceptVerbs("GET")]
+        [System.Web.Http.AcceptVerbs("GET")]
         public StatusMessage Delete(Guid Key)
         {
             var Result = Repositories.LocationTypeRepo.Delete(Key, true);
