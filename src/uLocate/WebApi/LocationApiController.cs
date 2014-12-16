@@ -29,7 +29,7 @@
 
         /// <summary>
         /// Create a new Location 
-        /// /umbraco/backoffice/uLocate/LocationApi/Create?LocationName="xxx"
+        /// /umbraco/backoffice/uLocate/LocationApi/Create?LocationName=xxx
         /// </summary>
         /// <param name="LocationName">
         /// The location name.

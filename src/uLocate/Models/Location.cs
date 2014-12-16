@@ -77,6 +77,9 @@
         /// </summary>
         public LocationType LocationType { get; set; }
 
+        /// <summary>
+        /// Gets the address.
+        /// </summary>
         public Address Address
         {
             get
@@ -91,6 +94,49 @@
                 return add;
             }
 
+        }
+
+        /// <summary>
+        /// Gets the phone number
+        /// </summary>
+        public string Phone
+        {
+            get
+            {
+                return this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Phone).Value.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Email
+        /// </summary>
+        public string Email
+        {
+            get
+            {
+                return this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Email).Value.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets the custom fields data as a simple dictionary
+        /// </summary>
+        public Dictionary<string, string> CustomProperties 
+        {
+            get
+            {
+                Dictionary<string, string> PropData = new Dictionary<string, string>();
+
+                foreach (var prop in this.PropertyData)
+                {
+                    if (!prop.PropertyAttributes.IsDefaultProp)
+                    {
+                        PropData.Add(prop.PropertyAlias, prop.Value.ToString());
+                    }
+                }
+
+                return PropData;
+            }
         }
 
         #endregion

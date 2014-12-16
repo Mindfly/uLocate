@@ -108,10 +108,14 @@
             CurrentCollection.Clear();
             var sql = new Sql();
             sql.Select("*")
-                .From<Location>()
-                .Where<Location>(n => n.LocationTypeKey == LocationTypeKey);
+                .From<LocationDto>()
+                .Where<LocationDto>(n => n.LocationTypeKey == LocationTypeKey);
 
-            CurrentCollection.AddRange(Repositories.ThisDb.Fetch<Location>(sql).ToList());
+            var dtoResult = Repositories.ThisDb.Fetch<LocationDto>(sql).ToList();
+
+            var converter = new DtoConverter();
+            CurrentCollection.AddRange(converter.ToLocationEntity(dtoResult));
+
             FillChildren();
 
             return CurrentCollection; 
@@ -257,7 +261,7 @@
             var MySql = new Sql();
             MySql
                 .Select(isCount ? "COUNT(*)" : "*")
-                .From<Location>();
+                .From<LocationDto>();
             // .InnerJoin<LocationType>()
             // .On<LocationDto, LocationType>(left => left.LocationTypeId, right => right.Id);
 

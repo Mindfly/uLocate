@@ -36,7 +36,7 @@ namespace uLocate.Persistance
         public LocationTypePropertyRepository(UmbracoDatabase database, IRuntimeCacheProvider cache)
             : base(database, cache)
         {
-           // this._database = database;
+            // this._database = database;
         }
 
         #region Public Methods
@@ -49,8 +49,8 @@ namespace uLocate.Persistance
         public void Insert(LocationTypeProperty Entity, out Guid NewItemKey)
         {
             //TODO: might not be needed
-           PersistNewItem(Entity);
-           NewItemKey = Entity.Key;
+            PersistNewItem(Entity);
+            NewItemKey = Entity.Key;
         }
 
         public void Delete(Guid PropertyKey)
@@ -64,7 +64,7 @@ namespace uLocate.Persistance
             StatusMessage ReturnMsg = new StatusMessage();
             PersistDeletedItem(Entity, out ReturnMsg);
 
-            return ReturnMsg; 
+            return ReturnMsg;
         }
 
         public void Update(LocationTypeProperty Entity)
@@ -78,7 +78,7 @@ namespace uLocate.Persistance
             CurrentCollection.Add(Get(Key));
             FillChildren();
 
-            return CurrentCollection[0]; 
+            return CurrentCollection[0];
         }
 
         public IEnumerable<LocationTypeProperty> GetByKey(Guid[] Keys)
@@ -87,7 +87,7 @@ namespace uLocate.Persistance
             CurrentCollection.AddRange(GetAll(Keys));
             FillChildren();
 
-            return CurrentCollection; 
+            return CurrentCollection;
         }
 
         public IEnumerable<LocationTypeProperty> GetAll()
@@ -98,7 +98,7 @@ namespace uLocate.Persistance
             CurrentCollection.AddRange(GetAll(EmptyParams));
             FillChildren();
 
-            return CurrentCollection; 
+            return CurrentCollection;
         }
 
         public IEnumerable<LocationTypeProperty> GetByLocationType(Guid LocationTypeKey)
@@ -106,13 +106,24 @@ namespace uLocate.Persistance
             CurrentCollection.Clear();
             var sql = new Sql();
             sql.Select("*")
-                .From<LocationTypeProperty>()
-                .Where<LocationTypeProperty>(n => n.LocationTypeKey == LocationTypeKey);
-                //.Where("LocationTypeKey = @0", LocationTypeKey);
-            CurrentCollection.AddRange(Repositories.ThisDb.Fetch<LocationTypeProperty>(sql).ToList());
-            FillChildren();
+                .From<LocationTypePropertyDto>()
+                .Where<LocationTypePropertyDto>(n => n.LocationTypeKey == LocationTypeKey);
 
-            return CurrentCollection; 
+            var dtoResultList = Repositories.ThisDb.Fetch<LocationTypePropertyDto>(sql);
+
+            if (dtoResultList != null)
+            {
+                foreach (var dtoResult in dtoResultList)
+                {
+                    var converter = new DtoConverter();
+                    var entity = converter.ToLocationTypePropertyEntity(dtoResult);
+
+                    CurrentCollection.Add(entity);
+                    FillChildren();
+                }
+            }
+
+            return CurrentCollection;
         }
 
         #endregion
@@ -217,7 +228,7 @@ namespace uLocate.Persistance
         protected override Sql GetBaseQuery(bool isCount)
         {
             var MySql = new Sql();
-            MySql.Select("*").From<LocationTypeProperty>();
+            MySql.Select("*").From<LocationTypePropertyDto>();
             return MySql;
         }
 

@@ -285,7 +285,7 @@
         {
             var MySql = new Sql();
             MySql.Select(isCount ? "COUNT(*)" : "*")
-			.From<LocationType>();
+			.From<LocationTypeDto>();
             return MySql;
         }
 
@@ -297,7 +297,7 @@
         /// </returns>
         protected override string GetBaseWhereClause()
         {
-            return " WHERE Id= @0";
+            return " WHERE Key= @0";
         }
 
         protected override IEnumerable<string> GetDeleteClauses()
@@ -330,7 +330,19 @@
 
         private void DeleteAssociatedLocations(LocationType item)
         {
-            throw new NotImplementedException();
+            //find locations by type
+            StatusMessage StatusMsg = new StatusMessage();
+            StatusMsg.ObjectName = item.Name;
+
+            var MatchingLocations = Repositories.LocationRepo.GetByType(item.Key);
+            if (MatchingLocations.Any())
+            {
+                foreach (var loc in MatchingLocations)
+                {
+                    StatusMsg = Repositories.LocationRepo.Delete(loc);
+                }
+                
+            }
         }
 
         private void FillProperties()

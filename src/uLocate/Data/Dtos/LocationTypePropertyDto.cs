@@ -16,6 +16,17 @@
     internal class LocationTypePropertyDto
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="LocationTypePropertyDto"/> class and sets some default values.
+        /// </summary>
+        public LocationTypePropertyDto()
+        {
+            UpdateDate = DateTime.Now;
+            CreateDate = DateTime.Now;
+            IsDefaultProp = false;
+            Key = Guid.NewGuid();
+        }
+
+        /// <summary>
         /// Gets or sets the key.
         /// </summary>
         [Column("Key")]
@@ -55,9 +66,15 @@
         /// Gets or sets the sort order for the property
         /// </summary>
         [Column("sortOrder")]
-        public int SortOrder { get; set; } 
+        public int SortOrder { get; set; }
 
-                /// <summary>
+        /// <summary>
+        /// Gets or sets a value indicating whether this is a default property
+        /// </summary>
+        [Column("IsDefaultProp")]
+        public bool IsDefaultProp { get; set; } 
+
+        /// <summary>
         /// Gets or sets the create date.
         /// </summary>
         [Column("CreateDate")]
@@ -71,14 +88,5 @@
         [Constraint(Default = "getdate()")]
         public DateTime UpdateDate { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LocationTypePropertyDto"/> class and sets some default values.
-        /// </summary>
-        public LocationTypePropertyDto()
-        {
-            UpdateDate = DateTime.Now;
-            CreateDate = DateTime.Now;
-            Key = Guid.NewGuid();
-        }
     }
 }

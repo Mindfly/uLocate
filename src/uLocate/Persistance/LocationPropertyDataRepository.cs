@@ -245,13 +245,13 @@ namespace uLocate.Persistance
         protected override Sql GetBaseQuery(bool isCount)
         {
             var MySql = new Sql();
-            MySql.Select("*").From<LocationPropertyData>();
+            MySql.Select("*").From<LocationPropertyDataDto>();
             return MySql;
         }
 
         protected override string GetBaseWhereClause()
         {
-            return " WHERE Id= @0";
+            return " WHERE Key= @0";
         }
 
         protected override IEnumerable<string> GetDeleteClauses()

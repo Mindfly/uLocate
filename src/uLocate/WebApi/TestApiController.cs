@@ -12,17 +12,16 @@
     using Umbraco.Core;
     using Umbraco.Web.WebApi;
 
-    //TODO: Add to back-office App area / secure this
-
     /// <summary>
     /// uLocate test api controller.
     /// </summary>
-    public class TestApiController : UmbracoApiController
+    [Umbraco.Web.Mvc.PluginController("uLocate")]
+    public class TestApiController : UmbracoAuthorizedApiController
     {
 
         /// <summary>
         /// Used for testing
-        ///  /Umbraco/Api/TestApi/TestPopulateSomeLocationTypes
+        /// /umbraco/backoffice/uLocate/TestApi/TestPopulateSomeLocationTypes
         /// </summary>
         /// <returns>
         /// The <see cref="List"/>.
@@ -57,7 +56,7 @@
 
         /// <summary>
         /// Used for testing
-        ///  /Umbraco/Api/TestApi/TestUpdateLocationType
+        /// /umbraco/backoffice/uLocate/TestApi/TestUpdateLocationType
         /// </summary>
         /// <returns>
         /// The <see cref="List"/>.
@@ -99,7 +98,7 @@
 
         /// <summary>
         /// Used for testing
-        ///  /Umbraco/Api/TestApi/TestDeleteLocationType?LookupName="name"
+        /// /umbraco/backoffice/uLocate/TestApi/TestDeleteLocationType?LookupName=name
         /// </summary>
         /// <param name="LookupName">
         /// The Lookup Name.
@@ -131,7 +130,7 @@
 
         /// <summary>
         /// Used for testing
-        /// /Umbraco/Api/TestApi/Test
+        /// /umbraco/backoffice/uLocate/TestApi/Test
         /// </summary>
         /// <returns>
         /// The <see cref="List"/>.
@@ -141,8 +140,6 @@
         {
             int NewItemId = 0;
             string Msg = "";
-
-      
 
             //TEST: Add a new Location 
             var newLoc = new Location("Test Location");

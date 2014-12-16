@@ -9,11 +9,12 @@
     /// <summary>
     /// uLocate initialization api controller.
     /// </summary>
-    public class InitializationApiController : UmbracoApiController
+    [Umbraco.Web.Mvc.PluginController("uLocate")]
+    public class InitializationApiController : UmbracoAuthorizedApiController
     {
         /// <summary>
         /// Initializes the uLocate Database tables
-        /// /Umbraco/Api/InitializationApi/InitDb
+        /// /umbraco/backoffice/uLocate/InitializationApi/InitDb
         /// </summary>
         /// <returns>
         /// The <see cref="bool"/>.
@@ -28,7 +29,7 @@
 
         /// <summary>
         /// Deletes the uLocate Database tables
-        /// /Umbraco/Api/InitializationApi/DeleteDb
+        /// /umbraco/backoffice/uLocate/InitializationApi/DeleteDb
         /// </summary>
         /// <returns>
         /// The <see cref="bool"/>.
@@ -43,7 +44,7 @@
 
         /// <summary>
         /// Used for testing (deletes &amp; re-creates database)
-        ///  /Umbraco/Api/InitializationApi/ResetDb
+        /// /umbraco/backoffice/uLocate/InitializationApi/ResetDb
         /// </summary>
         /// <returns>
         /// The <see cref="bool"/>.
