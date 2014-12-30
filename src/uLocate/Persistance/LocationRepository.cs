@@ -34,7 +34,6 @@
         {
         }
 
-
         #region Public Methods
 
         public void Insert(Location Entity)
@@ -49,13 +48,46 @@
             NewItemKey = Entity.Key;
         }
 
-        public StatusMessage Delete(Location Entity)
+        public StatusMessage Delete(Guid LocationKey)
         {
             StatusMessage ReturnMsg = new StatusMessage();
-            PersistDeletedItem(Entity, out ReturnMsg);
+
+            Location ThisLoc = this.GetByKey(LocationKey);
+
+            if (ThisLoc != null)
+            {
+                this.DeleteLocation(ThisLoc, out ReturnMsg);
+            }
+            else
+            {
+                ReturnMsg.Success = false;
+                ReturnMsg.Code = "NotFound";
+                ReturnMsg.ObjectName = LocationKey.ToString();
+                ReturnMsg.Message = string.Format("Location with key '{0}' was not found and can not be deleted.", ReturnMsg.ObjectName);
+            }
 
             return ReturnMsg;
         }
+
+        public StatusMessage Delete(Location Entity)
+        {
+            StatusMessage ReturnMsg = new StatusMessage();
+            this.DeleteLocation(Entity, out ReturnMsg);
+
+            return ReturnMsg;
+        }
+
+        private void DeleteLocation(Location Entity, out StatusMessage StatusMsg)
+        {
+            StatusMessage ReturnMsg = new StatusMessage();
+            ReturnMsg.ObjectName = Entity.Name;
+
+            this.DeleteChildren(Entity);
+
+            PersistDeletedItem(Entity, out ReturnMsg);
+            StatusMsg = ReturnMsg;
+        }
+        
 
         public void Update(Location Entity)
         {
@@ -69,6 +101,24 @@
             FillChildren();
 
             return CurrentCollection[0];
+        }
+
+        internal IEnumerable<Location> GetByType(Guid LocationTypeKey)
+        {
+            CurrentCollection.Clear();
+            var sql = new Sql();
+            sql.Select("*")
+                .From<LocationDto>()
+                .Where<LocationDto>(n => n.LocationTypeKey == LocationTypeKey);
+
+            var dtoResult = Repositories.ThisDb.Fetch<LocationDto>(sql).ToList();
+
+            var converter = new DtoConverter();
+            CurrentCollection.AddRange(converter.ToLocationEntity(dtoResult));
+
+            FillChildren();
+
+            return CurrentCollection; 
         }
 
         public IEnumerable<Location> GetByKey(Guid[] Keys)
@@ -211,7 +261,7 @@
             var MySql = new Sql();
             MySql
                 .Select(isCount ? "COUNT(*)" : "*")
-                .From<Location>();
+                .From<LocationDto>();
             // .InnerJoin<LocationType>()
             // .On<LocationDto, LocationType>(left => left.LocationTypeId, right => right.Id);
 

@@ -41,25 +41,6 @@
         }
 
         /// <summary>
-        /// Inserts data for table "uLocate_AllowedDataTypes"
-        /// </summary>
-        //private void CreateAllowedDataTypesData()
-        //{
-        //    LogHelper.Info<DatabaseDefaultDataInsert>(string.Format("CreateAllowedDataTypesData() running..."));
-
-        //    string TableName = "uLocate_AllowedDataTypes";
-        //    string PrimaryKeyFieldName = "Id";
-
-        //    LogHelper.Info<DatabaseDefaultDataInsert>(string.Format("Adding data for table '{0}'...", TableName));
-
-        //    //uLocate.Constants includes the list of allowed datatypes
-        //    foreach (var DataType in uLocate.Constants.AllowedDataTypesDictionary)
-        //    {
-        //        _database.Insert(TableName, PrimaryKeyFieldName, new AllowedDataTypesDto() { UmbracoDataTypeId = DataType.Value });
-        //    }
-        //}
-
-        /// <summary>
         /// Inserts data for table "uLocate_LocationType"
         /// </summary>
         private void CreateLocationTypeData()
@@ -97,7 +78,8 @@
                                    Alias = Prop.Alias,
                                    Name = Prop.Name,
                                    DataTypeId = Prop.DataTypeId,
-                                   SortOrder = Prop.SortOrder
+                                   SortOrder = Prop.SortOrder,
+                                   IsDefaultProp = true
                                };
                 
                 _database.Insert(Data);

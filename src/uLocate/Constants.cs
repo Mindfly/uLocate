@@ -278,6 +278,9 @@
             }
         }
 
+        /// <summary>
+        /// A list of properties which are part of the 'default' location type.
+        /// </summary>
         internal static List<LocationTypeProperty> DefaultLocationTypeProperties
         {
             get
@@ -285,22 +288,20 @@
                 List<LocationTypeProperty> DefaultProps = new List<LocationTypeProperty>();
 
                 //Address props
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = Constants.DefaultLocPropertyAlias.Address1, Name = "Address 1", DataTypeId = -88, SortOrder = 1 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = Constants.DefaultLocPropertyAlias.Address2, Name = "Address 2", DataTypeId = -88, SortOrder = 2 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = Constants.DefaultLocPropertyAlias.Locality, Name = "City", DataTypeId = -88, SortOrder = 3 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = Constants.DefaultLocPropertyAlias.Region, Name = "State/Province", DataTypeId = -88, SortOrder = 4 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = Constants.DefaultLocPropertyAlias.PostalCode, Name = "Zip/Postal Code", DataTypeId = -88, SortOrder = 5 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = Constants.DefaultLocPropertyAlias.CountryCode, Name = "Country", DataTypeId = -88, SortOrder = 6 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = DefaultLocPropertyAlias.Address1, Name = "Address 1", DataTypeId = -88, SortOrder = 1,  });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = DefaultLocPropertyAlias.Address2, Name = "Address 2", DataTypeId = -88, SortOrder = 2 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = DefaultLocPropertyAlias.Locality, Name = "City", DataTypeId = -88, SortOrder = 3 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = DefaultLocPropertyAlias.Region, Name = "State/Province", DataTypeId = -88, SortOrder = 4 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = DefaultLocPropertyAlias.PostalCode, Name = "Zip/Postal Code", DataTypeId = -88, SortOrder = 5 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = DefaultLocPropertyAlias.CountryCode, Name = "Country", DataTypeId = -88, SortOrder = 6 });
                 
                 //Other default props
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = "PhoneNumber", Name = "Phone Number", DataTypeId = -88, SortOrder = 7 });
-                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = "Email", Name = "Email", DataTypeId = -88, SortOrder = 8 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = DefaultLocPropertyAlias.Phone, Name = "Phone Number", DataTypeId = -88, SortOrder = 7 });
+                DefaultProps.Add(new LocationTypeProperty { LocationTypeKey = Constants.DefaultLocationTypeKey, Alias = DefaultLocPropertyAlias.Email, Name = "Email", DataTypeId = -88, SortOrder = 8 });
 
                 return DefaultProps;
             }
         }
-
-
 
 
         /// <summary>
@@ -371,6 +372,28 @@
                 get
                 {
                     return "CountryCode";
+                }
+            }
+
+            /// <summary>
+            /// Gets the phone number
+            /// </summary>
+            public static string Phone
+            {
+                get
+                {
+                    return "PhoneNumber";
+                }
+            }
+
+            /// <summary>
+            /// Gets the email address
+            /// </summary>
+            public static string Email
+            {
+                get
+                {
+                    return "Email";
                 }
             }
         }

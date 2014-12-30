@@ -3,6 +3,9 @@
     using System.Collections.Generic;
     using uLocate.Models;
 
+    /// <summary>
+    /// Converts between Dto (for database access/storage) and Model Entities
+    /// </summary>
     internal class DtoConverter
     {
         #region LocationType
@@ -75,7 +78,8 @@
                 LocationTypeKey = dto.LocationTypeKey,
                 SortOrder = dto.SortOrder,
                 UpdateDate = dto.UpdateDate,
-                CreateDate = dto.CreateDate
+                CreateDate = dto.CreateDate,
+                IsDefaultProp = dto.IsDefaultProp
             };
 
             return Entity;
@@ -92,7 +96,8 @@
                 LocationTypeKey = entity.LocationTypeKey,
                 SortOrder = entity.SortOrder,
                 UpdateDate = entity.UpdateDate,
-                CreateDate = entity.CreateDate
+                CreateDate = entity.CreateDate,
+                IsDefaultProp = entity.IsDefaultProp
             };
 
             return dto;
@@ -251,7 +256,5 @@
         }
 
         #endregion
-
-  
     }
 }
