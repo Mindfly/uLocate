@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationTypesController = function ($scope, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService) {
+    controllers.LocationTypesController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -19,6 +19,24 @@
 
         /**
          * @ngdoc method
+         * @name getCurrentNode
+         * @function
+         * 
+         * @description - Get the node for this page from the treeService for use with opening a create dialog later.
+         */
+        $scope.getCurrentNode = function () {
+            var promise = treeService.getTree({ section: 'uLocate' });
+            promise.then(function (tree) {
+                _.each(tree.root.children, function (node) {
+                    if (node.id == '1') {
+                        $scope.currentNode = node;
+                    }
+                });
+            });
+        };
+
+        /**
+         * @ngdoc method
          * @name setVariables
          * @function
          * 
@@ -28,8 +46,12 @@
             $scope.currentNode = false;
             $scope.openMenu = false;
             $scope.selectedView = $routeParams.id;
-            console.info($scope.selectedView);
-            //$scope.getCurrentNode();
+            $scope.getCurrentNode();
+            $scope.icon = 'icon-store color-blue';
+            $scope.newLocationType = new uLocate.Models.LocationType();
+            if (($location.search()).name) {
+                $scope.newLocationType.name = ($location.search()).name;
+            }
         };
 
         /*-------------------------------------------------------------------
@@ -97,9 +119,25 @@
          * Helper Methods
          * ------------------------------------------------------------------*/
 
+        /**
+         * @ngdoc method
+         * @name isTypeNameProvided
+         * @function
+         * 
+         * @param {string} typeName - A string that should contain a name for a location type.
+         * @returns {boolean}
+         * @description - Returns true if the provided string isn't empty.
+         */
+        $scope.isTypeNameProvided = function (typeName) {
+            var result = false;
+            if (typeName !== '') {
+                result = true;
+            }
+            return result;
+        };
+
         function populateIcon(locationType) {
-            $scope.node = locationType;
-            $scope.icon = locationType.icon;
+            $scope.newLocationType.icon = locationType;
         }
 
         /*-------------------------------------------------------------------*/
@@ -108,6 +146,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationTypesController', ['$scope', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', uLocate.Controllers.LocationTypesController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationTypesController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', uLocate.Controllers.LocationTypesController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

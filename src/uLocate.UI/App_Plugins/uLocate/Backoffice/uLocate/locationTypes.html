@@ -8,13 +8,11 @@
             </div>
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
-                    <div class="btn-group">
-                        <!-- TODO: Clicking should add .open to the .btn-group parent div, which will display the dropdown -->
-                        <a class="btn"><localize key="general_actions">Actions</localize> <span class="caret"></span></a>
-                        <!-- TODO: In umbraco, this is generated using umb-options-menu, which you can see an example of in Umbraco.Web.UI.Client\build\belle\views\content\edit.html. The actions allowed for this menu item are determined in the uLocate TreeController -->
+                    <div class="btn-group" ng-class="{'open': openMenu}">
+                        <a class="btn" ng-click="openMenu = !openMenu"><localize key="general_actions">Actions</localize> <span class="caret"></span></a>
                         <ul class="dropdown-menu umb-actions">
                             <li class="action">
-                                <a><i class="icon icon-add"></i><span class="menu-label"><localize key="actions_create">Create</localize></span></a> <!-- TODO: Opens the page to create a new location type -->
+                                <a ng-click="openCreateDialog(); openMenu = !openMenu;"><i class="icon icon-add"></i><span class="menu-label"><localize key="actions_create">Create</localize></span></a> <!-- TODO: Opens the page to create a new location type -->
                             </li>
                             <li class="action sep">
                                 <a><i class="icon icon-refresh"></i><span class="menu-label"><localize key="actions_refreshNode">Reload nodes</localize></span></a> <!-- TODO: Reloads the location types and ideally kicks the cache in the teeth -->
@@ -68,8 +66,8 @@
         <umb-header tabs="tabs">
             <div class="span7">
                 <div class="umb-headline-editor-wrapper">
-                    <input type="text" name="name" ulocate-localize="placeholder" class="umb-headline" placeholder="locationTypeName" value="Business" required=""> <!-- TODO: Displays the name if editing. -->
-                    <span class="help-inline"><localize key="general_required">Required</localize></span>
+                    <input type="text" name="name" ulocate-localize="placeholder" class="umb-headline" placeholder="locationTypeName" ng-model="newLocationType.name" required="" /> <!-- TODO: Displays the name if editing. -->
+                    <span class="help-inline" ng-show="!isTypeNameProvided(newLocationType.name)"><localize key="general_required">Required</localize></span>
                 </div>
             </div>
             <div class="span5">
@@ -94,8 +92,8 @@
                         <div class="controls controls-row">
 
                             <div class="umbIconDropdownList">
-                                <a class="btn btn-link picker-icons" ng-click="openIconPicker()"> <i class="icon-store color-blue"></i> <localize key="general_choose">Choose</localize>...</a> <!-- TODO: Should show the chosen icon, and clicking should open the icon picker dialog -->
-                                <input name="icon" type="hidden" value="icon-store color-blue"> <!-- TODO: This should submit the icon and color from the icon dialog -->
+                                <a class="btn btn-link picker-icons" ng-click="openIconPicker()"> <i class="{{newLocationType.icon}}"></i> <localize key="general_choose">Choose</localize>...</a> <!-- TODO: Should show the chosen icon, and clicking should open the icon picker dialog -->
+                                <input name="icon" type="hidden" ng-model="newLocationType.icon">
                             </div>
 
                         </div>
@@ -109,7 +107,7 @@
                             <small><ulocate-localize key="descriptionHelp">Displayed with the icon when creating a new location of this type</ulocate-localize></small>
                         </label>
                         <div class="controls controls-row">
-                            <textarea name="description" class="umb-editor umb-textarea"></textarea>
+                            <textarea name="description" ng-model="newLocationType.description" class="umb-editor umb-textarea"></textarea>
                         </div>
 
                     </div>
