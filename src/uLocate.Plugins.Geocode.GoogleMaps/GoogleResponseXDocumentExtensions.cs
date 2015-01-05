@@ -8,7 +8,7 @@
     /// <summary>
     /// Extension methods for the XDocument and the Google Maps API response
     /// </summary>
-    internal static class GoogleResposneXDocumentExtensions
+    internal static class GoogleResponseXDocumentExtensions
     {
         /// <summary>
         /// Gets a collection of <see cref="IGeocode"/> from the xml response data

@@ -5,6 +5,8 @@
 
 uLocate is a collaborative Umbraco package which aims to provide Geography data types for Umbraco based on the Microsoft SQL Server Geography type.
 
+*If you are looking for uLocate v.1 for Umbraco 4/6, see [bitbucket.org/rustyswayne/ulocate](https://bitbucket.org/rustyswayne/ulocate)
+
 ## Project Status
 UNDER ACTIVE DEVELOPMENT - EARLY STAGES
 
@@ -16,7 +18,7 @@ In order to use uLocate in your umbraco site, you will need to be using a full S
 
 ## Contributing
 
-If you would like to contribute to uLocate, we would love your help! This package has been thoroughly wireframed (for release and future updates), so please follow the patterns and intent displayed in them: https://moqups.com/mindfly/9TFhrBLu
+If you would like to contribute to uLocate, we would love your help! This package has been thoroughly wireframed (for release and future updates), so please follow the patterns and intent displayed in them: [uLocate Moqups](https://moqups.com/mindfly/9TFhrBLu)
 
 ## Solution Contents
 
@@ -25,21 +27,21 @@ The Visual Studio solution includes several projects:
 ### uLocate
 The Business Logic and Data access code
 
-Caching
+* Caching
 
-Configuration
+* Configuration
 
-**Data** - Includes DTOs for the uLocate tables, database install/uninstall, and static Data Helper functions.
+* **Data** - Includes DTOs for the uLocate tables, database install/uninstall, and static Data Helper functions.
 
-Helpers
+* Helpers
 
-**Models** - Interfaces and class models for all uLocate objects
+* **Models** - Interfaces and class models for all uLocate objects
 
-Persistence
+* **Persistence** - Repositories to handle CRUD operations
 
-Providers
+* Providers
 
-**WebApi** - Api Controllers
+* **WebApi** - Api Controllers
 
 ### uLocate.Package
 Umbraco Package components

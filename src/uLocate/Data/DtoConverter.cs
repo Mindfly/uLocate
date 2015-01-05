@@ -1,7 +1,12 @@
 ﻿namespace uLocate.Data
 {
     using System.Collections.Generic;
+    using System.Linq;
+
     using uLocate.Models;
+    using uLocate.Persistance;
+
+    using Umbraco.Core.Persistence;
 
     /// <summary>
     /// Converts between Dto (for database access/storage) and Model Entities
@@ -156,6 +161,8 @@
                 //TODO: HLF - check special property conversions
                 Key = entity.Key,
                 Name = entity.Name,
+                Latitude = entity.Latitude,
+                Longitude = entity.Longitude,
                 //Coordinate = entity.Coordinate.ToString(),
                 //GeocodeStatus = entity.GeocodeStatus.ToString(),
                 //Viewport = entity.Viewport.ToString(),
@@ -164,7 +171,33 @@
                 CreateDate = entity.CreateDate
             };
 
+            if (!GeogIsValid(entity))
+            {
+                dto.DbGeogNeedsUpdated = true;
+            }
+
             return dto;
+        }
+
+        private bool GeogIsValid(Location entity)
+        {
+            bool Result = false;
+            double Lat = entity.Latitude;
+            double Long = entity.Longitude;
+            string ValidMatchString = "";
+
+            var sql = new Sql();
+            sql.Select("GeogCoordinate");
+            sql.From<LocationDto>();
+            sql.Where<LocationDto>(l => l.Key == entity.Key);
+            var DbGeogString = Repositories.ThisDb.Fetch<string>(sql).FirstOrDefault();
+
+            if (ValidMatchString == DbGeogString)
+            {
+                Result = true;
+            }
+
+            return Result;
         }
 
         public IEnumerable<Location> ToLocationEntity(IEnumerable<LocationDto> DtoCollection)

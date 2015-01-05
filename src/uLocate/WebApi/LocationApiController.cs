@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using System.Web.Http;
 
+    using uLocate.Configuration;
     using uLocate.Data;
     using uLocate.Models;
     using uLocate.Persistance;
@@ -106,6 +107,41 @@
             return Result;
         }
 
+        /// <summary>
+        /// Get all locations as a list
+        /// /umbraco/backoffice/uLocate/LocationApi/GetAll
+        /// </summary>
+        /// <returns>
+        /// The <see cref="List"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public List<Location> GetAll()
+        {
+            var Result = Repositories.LocationRepo.GetAll().ToList();
+
+            return Result;
+        }
+
+        /// <summary>
+        /// Get all locations as a paged list
+        /// /umbraco/backoffice/uLocate/LocationApi/GetAllPaged?PageNum=1&ItemsPerPage=5
+        /// </summary>
+        /// <param name="PageNum">
+        /// The page num.
+        /// </param>
+        /// <param name="ItemsPerPage">
+        /// The items per page.
+        /// </param>
+        /// <returns>
+        /// The <see cref="List"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public List<Location> GetAllPaged(long PageNum, long ItemsPerPage)
+        {
+            var Result = Repositories.LocationRepo.GetPaged(PageNum, ItemsPerPage, string.Empty);
+
+            return Result;
+        }
 
     }
 }

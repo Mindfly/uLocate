@@ -30,12 +30,32 @@
         [NullSetting(NullSetting = NullSettings.Null)]
         public string Name { get; set; }
 
+        ///// <summary>
+        ///// Gets or sets the coordinate.
+        ///// </summary>
+        //[Column("GeoCoordinate")]
+        //[NullSetting(NullSetting = NullSettings.Null)]
+        //public string GeoCoordinate { get; set; }
+
         /// <summary>
-        /// Gets or sets the coordinate.
+        /// Gets or sets the latitude.
         /// </summary>
-        [Column("Coordinate")]
-        [NullSetting(NullSetting = NullSettings.Null)]
-        public string Coordinate { get; set; }
+        [Column("Latitude")]
+        //[NullSetting(NullSetting = NullSettings.Null)]
+        public double Latitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets the longitude.
+        /// </summary>
+        [Column("Longitude")]
+        //[NullSetting(NullSetting = NullSettings.Null)]
+        public double Longitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the database 'geography' field needs to be updated.
+        /// </summary>
+        [Column("GeogNeedsUpdated")]
+        public bool DbGeogNeedsUpdated { get; set; }
 
         /// <summary>
         /// Gets or sets the geocode status.

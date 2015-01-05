@@ -209,7 +209,7 @@
   <ItemGroup>
     <Compile Include="GoogleMapsGeocodeProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GoogleResposneXDocumentExtensions.cs" />
+    <Compile Include="GoogleResponseXDocumentExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\uLocate\uLocate.csproj">

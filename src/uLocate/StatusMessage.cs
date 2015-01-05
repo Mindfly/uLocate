@@ -8,6 +8,21 @@ namespace uLocate
 {
     public class StatusMessage
     {
+        public StatusMessage()
+        {
+        }
+
+        public StatusMessage(bool WasSuccessful)
+        {
+            this.Success = WasSuccessful;
+        }
+
+        public StatusMessage(bool WasSuccessful, string Msg)
+        {
+            this.Success = WasSuccessful;
+            this.Message = Msg;
+        }
+
         public bool Success { get; set; }
 
         public string Message { get; set; }
@@ -30,20 +45,7 @@ namespace uLocate
             }
         }
 
-        public StatusMessage()
-        {
-        }
-
-        public StatusMessage(bool WasSuccessful)
-        {
-            this.Success = WasSuccessful;
-        }
-
-        public StatusMessage(bool WasSuccessful, string Msg)
-        {
-            this.Success = WasSuccessful;
-            this.Message = Msg;
-        }
+        public Exception RelatedException { get; set; }
 
     }
 }

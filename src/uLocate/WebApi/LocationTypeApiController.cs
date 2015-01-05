@@ -106,7 +106,20 @@
             return Result;
         }
 
+        /// <summary>
+        /// Get all LocationTypes in the system as a List
+        /// /umbraco/backoffice/uLocate/LocationTypeApi/GetAll
+        /// </summary>
+        /// <returns>
+        /// The <see cref="List"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public List<LocationType> GetAll()
+        {
+            var Result = Repositories.LocationTypeRepo.GetAll().ToList();
 
+            return Result;
+        }
     }
 }
 

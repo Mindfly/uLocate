@@ -141,9 +141,25 @@
             return CurrentCollection;
         }
 
-        public override Page<Location> Page(long page, long itemsPerPage, Sql sql)
+        public List<Location> GetPaged(long PageNum, long ItemsPerPage, string WhereClause)
         {
-            throw new NotImplementedException();
+            Sql sql = new Sql();
+            sql.Append(
+                "SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY Key) AS Num, * FROM uLocate_Location) AS uLocateTable");
+            sql.Append(
+                "WHERE Num BETWEEN ((@PageNumber - 1) * @RowspPage + 1) AND (@PageNumber * @RowspPage)",
+                PageNum,
+                ItemsPerPage);
+            sql.Append("ORDER BY Key");
+
+            CurrentCollection.Clear();
+            var dtoResult = Repositories.ThisDb.Fetch<LocationDto>(sql).ToList();
+
+            var converter = new DtoConverter();
+            CurrentCollection.AddRange(converter.ToLocationEntity(dtoResult));
+
+            FillChildren();
+            return CurrentCollection;
         }
 
         #endregion
@@ -378,5 +394,9 @@
 
         #endregion
 
+        public override Page<Location> Page(long page, long itemsPerPage, Sql sql)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

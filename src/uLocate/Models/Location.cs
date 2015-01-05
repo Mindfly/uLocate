@@ -6,6 +6,7 @@
 
     using uLocate.Persistance;
 
+    using umbraco.editorControls.SettingControls.Pickers;
     using umbraco.presentation.webservices;
 
     /// <summary>
@@ -48,6 +49,21 @@
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets the latitude.
+        /// </summary>
+        public double Latitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets the longitude.
+        /// </summary>
+        public double Longitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the database 'geography' field needs to be updated.
+        /// </summary>
+        public bool DbGeogNeedsUpdated { get; set; }
+
+        /// <summary>
         /// Gets or sets the location type key.
         /// </summary>
         public Guid LocationTypeKey { get; set; }
@@ -70,7 +86,7 @@
         /// <summary>
         /// Gets the custom fields collection.
         /// </summary>
-        public IEnumerable<LocationPropertyData> PropertyData { get; internal set; }
+        public List<LocationPropertyData> PropertyData { get; internal set; }
 
         /// <summary>
         /// Gets or sets the location type.
@@ -139,6 +155,66 @@
             }
         }
 
+        //public string DbGeog
+        //{
+        //    get
+        //    {
+                
+        //        return this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Email).Value.ToString();
+        //    }
+        //}
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Add property data to this location
+        /// </summary>
+        /// <param name="PropertyAlias">
+        /// The property alias.
+        /// </param>
+        /// <param name="PropertyValue">
+        /// The property value.
+        /// </param>
+        public void AddPropertyData(string PropertyAlias, string PropertyValue)
+        {
+            var NewProp = CreateNewProp(PropertyAlias);
+            NewProp.dataNvarchar = PropertyValue;
+            this.PropertyData.Add(NewProp);
+        }
+
+        /// <summary>
+        /// Add property data to this location
+        /// </summary>
+        /// <param name="PropertyAlias">
+        /// The property alias.
+        /// </param>
+        /// <param name="PropertyValue">
+        /// The property value.
+        /// </param>
+        public void AddPropertyData(string PropertyAlias, int PropertyValue)
+        {
+            var NewProp = CreateNewProp(PropertyAlias);
+            NewProp.dataInt = PropertyValue;
+            this.PropertyData.Add(NewProp);
+        }
+
+        /// <summary>
+        /// Add property data to this location
+        /// </summary>
+        /// <param name="PropertyAlias">
+        /// The property alias.
+        /// </param>
+        /// <param name="PropertyValue">
+        /// The property value.
+        /// </param>
+        public void AddPropertyData(string PropertyAlias, DateTime PropertyValue)
+        {
+            var NewProp = CreateNewProp(PropertyAlias);
+            NewProp.dataDate = PropertyValue;
+            this.PropertyData.Add(NewProp);
+        }
         #endregion
 
         #region Private Methods
@@ -151,7 +227,7 @@
             this.Name = LocName;
             this.LocationTypeKey = LocTypeKey;
             this.LocationType = Repositories.LocationTypeRepo.GetByKey(LocTypeKey);
-            this.PropertyData = this.DefaultProperties(LocTypeKey);
+            this.PropertyData = this.DefaultProperties(LocTypeKey).ToList();
         }
 
         private IEnumerable<LocationPropertyData> DefaultProperties()
@@ -182,9 +258,26 @@
 
             return NewData;
         }
+
+        private LocationPropertyData CreateNewProp(string PropertyAlias)
+        {
+            var locTypeProp = this.LocationType.Properties.FirstOrDefault(p => p.Alias == PropertyAlias);
+
+            if (locTypeProp != null)
+            {
+                var NewProp = new LocationPropertyData();
+                NewProp.LocationKey = this.Key;
+                NewProp.LocationTypePropertyKey = locTypeProp.Key;
+                return NewProp;
+            }
+            else
+            {
+                throw new Exception("Provided property alias does not match a valid property for this location type.");
+            }
+        }
         #endregion
 
-
+        
     }
 
 }

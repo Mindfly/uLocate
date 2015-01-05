@@ -17,6 +17,11 @@
     internal class DatabaseSchemaCreation
     {
         /// <summary>
+        /// The database.
+        /// </summary>
+        private readonly Database _database;
+
+        /// <summary>
         /// Collection of tables to be added to the database
         /// </summary>
         private static readonly Dictionary<int, Type> OrderedTables = new Dictionary<int, Type>
@@ -29,10 +34,23 @@
             //{ 4, typeof(AllowedDataTypesDto) }
         };
 
-        /// <summary>
-        /// The database.
-        /// </summary>
-        private readonly Database _database;
+        private void SpecialSchemaUpdating()
+        {
+            //For custom table fields which can't be covered by the Dto
+            
+            //Location Table
+            var TableType = typeof(LocationDto);              
+            var TableAttrib = (TableNameAttribute) Attribute.GetCustomAttribute(TableType, typeof(TableNameAttribute));
+            string TableName = TableAttrib.Value;
+
+            if (_database.TableExist(TableName))
+            {
+                var sql = string.Format("ALTER TABLE {0} ADD GeogCoordinate geography NULL ;", TableName);
+                _database.Execute(sql);
+            }
+        }
+
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseSchemaCreation"/> class.
@@ -80,7 +98,11 @@
                 message = string.Concat("Successfully created Table '", TableName, "'");
                 LogHelper.Info(typeof(DatabaseSchemaCreation), message);
             }
+
+            SpecialSchemaUpdating();
         }
+
+
 
         /// <summary>
         /// Deletes the database tables.  (Used in package un-install)
