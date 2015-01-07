@@ -269,6 +269,7 @@
     <Content Include="App_Plugins\uLocate\Scripts\Controllers\locations.controller.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Models\location.models.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Models\map.models.js" />
+    <Content Include="App_Plugins\uLocate\Scripts\Services\location.type.api.service.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Services\map.service.js" />
     <Content Include="App_Plugins\uLocate\Scripts\uLocate.constants.js" />
     <Content Include="App_Plugins\uLocate\Scripts\uLocate.namespaces.js" />

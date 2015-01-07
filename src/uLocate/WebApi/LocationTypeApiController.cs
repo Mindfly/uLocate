@@ -60,7 +60,7 @@
         /// <returns>
         /// The <see cref="LocationType"/>.
         /// </returns>
-        [System.Web.Http.AcceptVerbs("GET")]
+        [System.Web.Http.AcceptVerbs("GET", "POST")]
         public LocationType Update(LocationType UpdatedLocationType)
         {
             Repositories.LocationTypeRepo.Update(UpdatedLocationType);

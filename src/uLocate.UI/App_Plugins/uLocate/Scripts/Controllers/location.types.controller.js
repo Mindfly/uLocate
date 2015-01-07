@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationTypesController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService) {
+    controllers.LocationTypesController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateLocationTypeApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -15,6 +15,8 @@
          */
         $scope.init = function () {
             $scope.setVariables();
+            $scope.getLocationTypesIfNeeded();
+            $scope.getLocationTypeToEditByKey();
         };
 
         /**
@@ -37,6 +39,37 @@
 
         /**
          * @ngdoc method
+         * @name getLocationTypesIfNeeded
+         * @function
+         * 
+         * @description - Get a list of location types from the API if the page is in "view" mode.
+         */
+        $scope.getLocationTypesIfNeeded = function() {
+            if ($scope.selectedView == 'view') {
+                var promise = uLocateLocationTypeApiService.getAllLocationTypes();
+                promise.then(function(response) {
+                    $scope.locationTypes = _.map(response, function(locationType) {
+                        return new uLocate.Models.LocationType(locationType);
+                    });
+                });
+
+            }
+        };
+
+        $scope.getLocationTypeToEditByKey = function () {
+            if ($scope.selectedView == 'edit') {
+                if (($location.search()).key) {
+                    var key = ($location.search()).key;
+                    var promise = uLocateLocationTypeApiService.getByKey(key);
+                    promise.then(function(response) {
+                        $scope.newLocationType = new uLocate.Models.LocationType(response);
+                    });
+                }
+            }
+        };
+
+        /**
+         * @ngdoc method
          * @name setVariables
          * @function
          * 
@@ -48,6 +81,7 @@
             $scope.selectedView = $routeParams.id;
             $scope.getCurrentNode();
             $scope.icon = 'icon-store color-blue';
+            $scope.locationTypes = [];
             $scope.newLocationType = new uLocate.Models.LocationType();
             if (($location.search()).name) {
                 $scope.newLocationType.name = ($location.search()).name;
@@ -146,6 +180,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationTypesController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', uLocate.Controllers.LocationTypesController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationTypesController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', "uLocateLocationTypeApiService", uLocate.Controllers.LocationTypesController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

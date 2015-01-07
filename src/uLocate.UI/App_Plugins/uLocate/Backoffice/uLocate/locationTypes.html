@@ -30,7 +30,6 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <td><input type="checkbox" /></td>
                             <td><localize key="general_name">Name</localize></td>
                             <td><ulocate-localize key="fields">Fields</ulocate-localize></td>
                             <td></td>
@@ -38,19 +37,16 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <!-- TODO: The default location type should always display -->
-                            <td></td>
                             <td><i class="icon-pin-location"></i> <ulocate-localize key="default">Default</ulocate-localize></td> <!-- TODO: Change "Default" to a more user friendly term -->
                             <td><ulocate-localize key="defaultFields">Name, Street Address, Extended Address, City, State/Province, Zip/Postal Code, Country, Latitude/Longitude, Phone Number</ulocate-localize></td>
                             <td></td>
                         </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td><i class="icon-pin-location"></i> Business</td>
-                            <td>Contact Name, Phone Extention, Accepts Marketing</td> <!-- TODO: This should be a repeater that displays all the field names in a comma separated list -->
+                        <tr ng-repeat="type in locationTypes">
+                            <td><i class="{{type.icon}}"></i> {{type.name}}</td>
+                            <td><span ng-repeat="property in type.properties"><span ng-show="$index != 0">, </span>{{property.name}}</span></td>
                             <td class="btn-group text-right">
-                                <a class="btn btn-mini" href="#/uLocate/uLocate/locationTypes/edit"><i class="icon-edit"></i></a> <!-- TODO: Opens the create/edit page, not a dialog -->
-                                <a class="btn btn-mini btn-danger" ng-click="openDeleteDialog(location)"><i class="icon-trash"></i></a> <!-- TODO: Will have a pop-up delete notification asking users if they want to revert associated locations to the default location type or delete them, perhaps using a custom dialog based on https://github.com/umbraco/Umbraco-CMS/blob/788a0241d828cecd09f84a2a356b643422c6599c/src/Umbraco.Web.UI.Client/src/views/datatype/delete.html -->
+                                <a class="btn btn-mini" href="#/uLocate/uLocate/locationTypes/edit?key={{type.key}}"><i class="icon-edit"></i></a>
+                                <a class="btn btn-mini btn-danger" ng-click="openDeleteDialog(type)"><i class="icon-trash"></i></a> <!-- TODO: Will have a pop-up delete notification asking users if they want to revert associated locations to the default location type or delete them, perhaps using a custom dialog based on https://github.com/umbraco/Umbraco-CMS/blob/788a0241d828cecd09f84a2a356b643422c6599c/src/Umbraco.Web.UI.Client/src/views/datatype/delete.html -->
                             </td>
                         </tr>
                     </tbody>

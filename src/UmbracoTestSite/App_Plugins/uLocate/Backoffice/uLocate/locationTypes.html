@@ -30,7 +30,6 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <td><input type="checkbox" /></td>
                             <td><localize key="general_name">Name</localize></td>
                             <td><ulocate-localize key="fields">Fields</ulocate-localize></td>
                             <td></td>
@@ -38,19 +37,16 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <!-- TODO: The default location type should always display -->
-                            <td></td>
                             <td><i class="icon-pin-location"></i> <ulocate-localize key="default">Default</ulocate-localize></td> <!-- TODO: Change "Default" to a more user friendly term -->
                             <td><ulocate-localize key="defaultFields">Name, Street Address, Extended Address, City, State/Province, Zip/Postal Code, Country, Latitude/Longitude, Phone Number</ulocate-localize></td>
                             <td></td>
                         </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td><i class="icon-pin-location"></i> Business</td>
-                            <td>Contact Name, Phone Extention, Accepts Marketing</td> <!-- TODO: This should be a repeater that displays all the field names in a comma separated list -->
+                        <tr ng-repeat="type in locationTypes">
+                            <td><i class="{{type.icon}}"></i> {{type.name}}</td>
+                            <td><span ng-repeat="property in type.properties"><span ng-show="$index != 0">, </span>{{property.name}}</span></td>
                             <td class="btn-group text-right">
-                                <a class="btn btn-mini" href="#/uLocate/uLocate/locationTypes/edit"><i class="icon-edit"></i></a> <!-- TODO: Opens the create/edit page, not a dialog -->
-                                <a class="btn btn-mini btn-danger" ng-click="openDeleteDialog(location)"><i class="icon-trash"></i></a> <!-- TODO: Will have a pop-up delete notification asking users if they want to revert associated locations to the default location type or delete them, perhaps using a custom dialog based on https://github.com/umbraco/Umbraco-CMS/blob/788a0241d828cecd09f84a2a356b643422c6599c/src/Umbraco.Web.UI.Client/src/views/datatype/delete.html -->
+                                <a class="btn btn-mini" href="#/uLocate/uLocate/locationTypes/edit?key={{type.key}}"><i class="icon-edit"></i></a>
+                                <a class="btn btn-mini btn-danger" ng-click="openDeleteDialog(type)"><i class="icon-trash"></i></a> <!-- TODO: Will have a pop-up delete notification asking users if they want to revert associated locations to the default location type or delete them, perhaps using a custom dialog based on https://github.com/umbraco/Umbraco-CMS/blob/788a0241d828cecd09f84a2a356b643422c6599c/src/Umbraco.Web.UI.Client/src/views/datatype/delete.html -->
                             </td>
                         </tr>
                     </tbody>
@@ -66,8 +62,8 @@
         <umb-header tabs="tabs">
             <div class="span7">
                 <div class="umb-headline-editor-wrapper">
-                    <input type="text" name="name" ulocate-localize="placeholder" class="umb-headline" placeholder="locationTypeName" ng-model="typeName" required="" /> <!-- TODO: Displays the name if editing. -->
-                    <span class="help-inline" ng-show="!isTypeNameProvided(typeName)"><localize key="general_required">Required</localize></span>
+                    <input type="text" name="name" ulocate-localize="placeholder" class="umb-headline" placeholder="locationTypeName" ng-model="newLocationType.name" required="" /> <!-- TODO: Displays the name if editing. -->
+                    <span class="help-inline" ng-show="!isTypeNameProvided(newLocationType.name)"><localize key="general_required">Required</localize></span>
                 </div>
             </div>
             <div class="span5">
@@ -92,8 +88,8 @@
                         <div class="controls controls-row">
 
                             <div class="umbIconDropdownList">
-                                <a class="btn btn-link picker-icons" ng-click="openIconPicker()"> <i class="{{icon}}"></i> <localize key="general_choose">Choose</localize>...</a> <!-- TODO: Should show the chosen icon, and clicking should open the icon picker dialog -->
-                                <input name="icon" type="hidden" ng-model="icon"> <!-- TODO: This should submit the icon and color from the icon dialog -->
+                                <a class="btn btn-link picker-icons" ng-click="openIconPicker()"> <i class="{{newLocationType.icon}}"></i> <localize key="general_choose">Choose</localize>...</a> <!-- TODO: Should show the chosen icon, and clicking should open the icon picker dialog -->
+                                <input name="icon" type="hidden" ng-model="newLocationType.icon">
                             </div>
 
                         </div>
@@ -107,7 +103,7 @@
                             <small><ulocate-localize key="descriptionHelp">Displayed with the icon when creating a new location of this type</ulocate-localize></small>
                         </label>
                         <div class="controls controls-row">
-                            <textarea name="description" class="umb-editor umb-textarea"></textarea>
+                            <textarea name="description" ng-model="newLocationType.description" class="umb-editor umb-textarea"></textarea>
                         </div>
 
                     </div>
