@@ -60,26 +60,41 @@
         #region DataTypes & Property Editors
 
         /// <summary>
-        /// The allowed data types dictionary.
+        /// The allowed standard data types dictionary.
+        /// { DataTypeNodeId, "PropertyEditorAlias"}
         /// </summary>
-        public static readonly Dictionary<string, int> AllowedDataTypesDictionary = new Dictionary<string, int>
+        public static readonly Dictionary<int, string> AllowedStandardDataTypes = new Dictionary<int, string>
         {
-            // {"PropertyEditorAlias", DataTypeNodeId}
-            { PropertyEditorAlias.TextBox, DataTypeId.TextBox }, 
-            { PropertyEditorAlias.TextBoxMultiple, DataTypeId.TextBoxMultiple }, 
-            { PropertyEditorAlias.TrueFalse, DataTypeId.TrueFalse }, 
-            { PropertyEditorAlias.MultipleMediaPicker, DataTypeId.MultipleMediaPicker }, 
-            { PropertyEditorAlias.MemberPicker, DataTypeId.MemberPicker }, 
-            { PropertyEditorAlias.ContentPicker, DataTypeId.ContentPicker }, 
-            { PropertyEditorAlias.CheckBoxList, DataTypeId.CheckBoxList }
+            { DataTypeId.TextBox, PropertyEditorAlias.TextBox }, 
+            { DataTypeId.TextBoxMultiple, PropertyEditorAlias.TextBoxMultiple }, 
+            { DataTypeId.TrueFalse, PropertyEditorAlias.TrueFalse }, 
+            { DataTypeId.MultipleMediaPicker, PropertyEditorAlias.MultipleMediaPicker }, 
+            { DataTypeId.MemberPicker, PropertyEditorAlias.MemberPicker }, 
+            { DataTypeId.ContentPicker, PropertyEditorAlias.ContentPicker }
         };
 
         /// <summary>
-        /// Returns NodeIds for Umbraco DataTypes
+        /// The allowed pre value data types list.
+        /// "PropertyEditorAlias"
+        /// </summary>
+        public static readonly string[] AllowedPrevalueDataTypes = 
+        { 
+            PropertyEditorAlias.TextBox, 
+            PropertyEditorAlias.TextBoxMultiple , 
+            PropertyEditorAlias.TrueFalse , 
+            PropertyEditorAlias.MultipleMediaPicker , 
+            PropertyEditorAlias.MemberPicker , 
+            PropertyEditorAlias.ContentPicker, 
+            "Umbraco.CheckBoxList", 
+            "Umbraco.DropDown" 
+        };
+
+        /// <summary>
+        /// Returns NodeIds for Umbraco Standard DataTypes
         /// </summary>
         public static class DataTypeId
         {
-            //TODO: Update to verify correct IDs from cmsDataType Table?
+            //TODO: ? Update to verify correct IDs from cmsDataType Table?
 
             /// <summary>
             /// Gets the text box datatype node id
