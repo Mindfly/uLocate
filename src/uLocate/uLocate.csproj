@@ -288,6 +288,7 @@
     <Compile Include="Models\Interfaces\IGeocodeProviderResponse.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\JsonLocationType.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Coordinate.cs" />
     <Compile Include="Models\LocationPropertyData.cs" />

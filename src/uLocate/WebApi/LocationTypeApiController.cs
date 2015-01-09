@@ -61,11 +61,30 @@
         /// The <see cref="LocationType"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET", "POST")]
-        public LocationType Update(LocationType UpdatedLocationType)
+        public LocationType Update(JsonLocationType UpdatedLocationTypeJson)
         {
+            LocationType UpdatedLocationType = UpdatedLocationTypeJson.ConvertToLocationType();
+
             Repositories.LocationTypeRepo.Update(UpdatedLocationType);
 
             var Result = Repositories.LocationTypeRepo.GetByKey(UpdatedLocationType.Key);
+
+            return Result;
+        }
+
+        /// <summary>
+        /// The get empty json location type.
+        /// /umbraco/backoffice/uLocate/LocationTypeApi/GetEmptyJsonLocationType
+        /// </summary>
+        /// <returns>
+        /// An empty <see cref="JsonLocationType"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public JsonLocationType GetEmptyJsonLocationType()
+        {
+            var Result = new JsonLocationType();
+            var EmptyProp = new JsonTypeProperty();
+            Result.Properties.Add(EmptyProp);
 
             return Result;
         }
