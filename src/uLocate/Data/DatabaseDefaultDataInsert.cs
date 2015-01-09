@@ -1,9 +1,5 @@
 ﻿namespace uLocate.Data
 {
-    using System;
-
-    using uLocate.Models;
-
     using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;
 

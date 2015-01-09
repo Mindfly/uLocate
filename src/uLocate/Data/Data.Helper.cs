@@ -1,7 +1,11 @@
 ﻿namespace uLocate.Data
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.SqlClient;
+    using System.Linq;
+
+    using uLocate.Persistance;
 
     using Umbraco.Core.Cache;
     using Umbraco.Core.Logging;
@@ -112,6 +116,28 @@
             }
 
             return Result;
+        }
+
+        
+        public static Dictionary<int, string> GetAllAllowedDataTypes()
+        {
+            //uLocate.Constants includes the list of allowed standard datatypes
+            //Dictionary<int, string> ReturnDict = uLocate.Constants.AllowedStandardDataTypes;
+            Dictionary<int, string> ReturnDict = new Dictionary<int, string>();
+
+            foreach (var PropEditor in uLocate.Constants.AllowedPrevalueDataTypes)
+            {
+                var dtService = new Umbraco.Core.Services.DataTypeService();
+
+                var ResultList = dtService.GetDataTypeDefinitionByPropertyEditorAlias(PropEditor);
+
+                foreach (var DataType in ResultList)
+                {
+                    ReturnDict.Add(DataType.Id, DataType.Name);
+                }
+            }
+
+            return ReturnDict;
         }
     }
 }
