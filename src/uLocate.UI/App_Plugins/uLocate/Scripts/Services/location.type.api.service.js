@@ -1,8 +1,15 @@
 ﻿(function (uLocateServices) {
 
-    uLocateServices.LocationTypeApiService = function ($http, $q) {
+    uLocateServices.LocationTypeApiService = function ($http, umbRequestHelper) {
 
         var locationTypeApiFactory = {};
+
+        locationTypeApiFactory.getAllDataTypes = function() {
+            // Hack - grab DataTypes from Tree API, as `dataTypeService.getAll()` isn't implemented yet
+            return umbRequestHelper.resourcePromise(
+                $http.get("/umbraco/backoffice/uLocate/DataTypeApi/GetAll", { cache: true }), 'Failed to retrieve datatypes from tree service'
+            );
+        };
 
         /**
          * @ngdoc method
@@ -26,6 +33,15 @@
             });
         };
 
+        /**
+         * @ngdoc method
+         * @name getByKey
+         * @function
+         * 
+         * @param {string} key - GUID of desired location type.
+         * @returns {uLocate.Models.LocationType}
+         * @description - Get a list of all location types.
+         */
         locationTypeApiFactory.getByKey = function (key) {
             var config = { params: { key: key } };
             return $http.get('/umbraco/backoffice/uLocate/LocationTypeApi/GetByKey', config).then(function (response) {
@@ -38,7 +54,30 @@
             });
         };
 
+        /**
+         * @ngdoc method
+         * @name updateLocationType
+         * @function
+         * 
+         * @param {string} key - GUID of desired location type.
+         * @returns {uLocate.Models.LocationType}
+         * @description - Get a list of all location types.
+         */
+        // TODO: Test this!
+        locationTypeApiFactory.updateLocationType = function (locationType) {
+            var updatedLocationType = new uLocate.Models.LocationType(locationType);
+            return $http.post('/umbraco/backoffice/ulocate/LocationTypeApi/Update', updatedLocationType).then(function(response) {
+                if (response.data) {
+                    var data = locationTypeApiFactory.downCaseProperties(response.data);
+                    return data;
+                } else {
+                    return false;
+                }
+            });
 
+        };
+
+        // TODO: Remove this when the time comes to move live.
         locationTypeApiFactory.setupDb = function() {
             $http.get('/umbraco/backoffice/uLocate/InitializationApi/DeleteDb').then(function(response) {
                 $http.get('/umbraco/backoffice/uLocate/InitializationApi/InitDb').then(function(initResponse) {
@@ -77,6 +116,6 @@
 
     };
 
-    angular.module('umbraco.resources').factory('uLocateLocationTypeApiService', ['$http', '$q', uLocate.Services.LocationTypeApiService]);
+    angular.module('umbraco.resources').factory('uLocateLocationTypeApiService', ['$http', 'umbRequestHelper', uLocate.Services.LocationTypeApiService]);
 
 }(window.uLocate.Services = window.uLocate.Services || {}));

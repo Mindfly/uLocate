@@ -17,6 +17,10 @@
             $scope.setVariables();
             $scope.getLocationTypesIfNeeded();
             $scope.getLocationTypeToEditByKey();
+            var promise = uLocateLocationTypeApiService.getAllDataTypes();
+            promise.then(function(response) {
+                console.info(response);
+            });
         };
 
         /**
@@ -52,10 +56,16 @@
                         return new uLocate.Models.LocationType(locationType);
                     });
                 });
-
             }
         };
 
+        /**
+         * @ngdoc method
+         * @name getLocationTypeToEditByKey
+         * @function
+         * 
+         * @description - If on edit mode, and a key was provided, load the associated location type from the API. Otherwise, if a name was provided, populate the name.
+         */
         $scope.getLocationTypeToEditByKey = function () {
             if ($scope.selectedView == 'edit') {
                 if (($location.search()).key) {
@@ -63,7 +73,13 @@
                     var promise = uLocateLocationTypeApiService.getByKey(key);
                     promise.then(function(response) {
                         $scope.newLocationType = new uLocate.Models.LocationType(response);
-                    });
+                        console.info($scope.newLocationType);
+                        _.each($scope.newLocationType.properties, function(property) {
+                            property.selectedType = $scope.updatePropertyTypeDropdown(property);
+                        });
+                });
+                } else if (($location.search()).name) {
+                    $scope.newLocationType.name = ($location.search()).name;
                 }
             }
         };
@@ -78,19 +94,56 @@
         $scope.setVariables = function () {
             $scope.currentNode = false;
             $scope.openMenu = false;
+            $scope.options = {
+                type: [
+                    { name: "Textbox", value: "Umbraco.Textbox" },
+                    { name: "Textbox Multiple", value: "Umbraco.TextboxMultiple" },
+                    { name: "True/False", value: "Umbraco.TrueFalse" },
+                    { name: "Multiple Media Picker", value: "Umbraco.MultipleMediaPicker" },
+                    { name: "Single Media Picker", value: "Umbraco.MediaPicker" },
+                    { name: "Member Picker", value: "Umbraco.MemberPicker" },
+                    { name: "Content Picker", value: "Umbraco.ContentPickerAlias" }
+                ]
+            };
+            $scope.selected = {
+                type: $scope.options.type[0]
+            };
             $scope.selectedView = $routeParams.id;
             $scope.getCurrentNode();
             $scope.icon = 'icon-store color-blue';
             $scope.locationTypes = [];
             $scope.newLocationType = new uLocate.Models.LocationType();
-            if (($location.search()).name) {
-                $scope.newLocationType.name = ($location.search()).name;
-            }
         };
 
         /*-------------------------------------------------------------------
          * Event Handler Methods
          *-------------------------------------------------------------------*/
+
+        /**
+         * @ngdoc method
+         * @name addNewProperty
+         * @function
+         * 
+         * @description - Add a new property to the location type.
+         */
+        $scope.addNewProperty = function () {
+            var newProperty = new uLocate.Models.LocationTypeProperty();
+            newProperty.selectedType = $scope.options.type[0];
+            $scope.newLocationType.properties.push(newProperty);
+           
+        };
+
+        /**
+         * @ngdoc method
+         * @name deleteProperty
+         * @function
+         * 
+         * @param {integer} index - The index of the property to delete.
+         * @description - Deletes a property from the location type.
+         */
+        $scope.deleteProperty = function(index) {
+            $scope.newLocationType.properties.splice(index, 1);
+        };
 
         /**
          * @ngdoc method
@@ -141,13 +194,25 @@
             });
         };
 
+        /**
+         * @ngdoc method
+         * @name openIconPicker
+         * @function
+         * 
+         * @description - Opens the Icon Picker dialog.
+         */
         $scope.openIconPicker = function() {
             dialogService.iconPicker({
                 callback: populateIcon
             });
         };
 
-
+        $scope.saveNewLocationType = function (locationType) {
+            var promise = uLocateLocationTypeApiService.updateLocationType(locationType);
+            promise.then(function(response) {
+                console.info(response);
+            });
+        };
 
         /*-------------------------------------------------------------------
          * Helper Methods
@@ -162,7 +227,7 @@
          * @returns {boolean}
          * @description - Returns true if the provided string isn't empty.
          */
-        $scope.isTypeNameProvided = function (typeName) {
+        $scope.isTypeNameProvided = function(typeName) {
             var result = false;
             if (typeName !== '') {
                 result = true;
@@ -170,9 +235,36 @@
             return result;
         };
 
-        function populateIcon(locationType) {
-            $scope.newLocationType.icon = locationType;
-        }
+        /**
+         * @ngdoc method
+         * @name updatePropertyTypeDropdown
+         * @function
+         * 
+         * @param {uLocate.Models.LocationTypeProperty} property - A property to compare.
+         * @returns {boolean}
+         * @description - Returns true if the provided string isn't empty.
+         */
+        $scope.updatePropertyTypeDropdown = function(property) {
+            var result = $scope.options.type[0];
+            _.each($scope.options.type, function(option) {
+                if (option.value === property.propertyEditorAlias) {
+                    result = option;
+                }
+            });
+            return result;
+        };
+
+        /**
+         * @ngdoc method
+         * @name populateIcon
+         * @function
+         * 
+         * @param {string} icon - Icon class name
+         * @description - Sets the icon 
+         */
+        function populateIcon(icon) {
+            $scope.newLocationType.icon = icon;
+        };
 
         /*-------------------------------------------------------------------*/
 

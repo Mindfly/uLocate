@@ -69,7 +69,7 @@
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <div class="btn-group">
-                        <a class="btn btn-primary"><localize key="buttons_save">Save</localize></a> <!-- TODO: Add the save functionality -->
+                        <a class="btn btn-primary" ng-click="saveNewLocationType(newLocationType)"><localize key="buttons_save">Save</localize></a> <!-- TODO: Add the save functionality -->
                     </div>
                 </div>
             </div>
@@ -118,7 +118,7 @@
 
                     <div class="control-group umb-control-group">
                         <label class="control-label">
-                            Business <localize key="general_properties">Properties</localize> <!-- TODO: Replace "business" with the location type name variable -->
+                            {{newLocationType.name}} <localize key="general_properties">Properties</localize>
                             <small>
                                 <ulocate-localize key="propertiesHelp">New location types <strong>append</strong> the default location, so you will always have address, phone, email, and lat/long fields.</ulocate-localize>
                             </small>
@@ -136,43 +136,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyAlias" value="contactName" /></td> <!-- TODO: If we can enforce no spaces or special characters in this, that would be great. -->
-                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyName" value="Contact Name" /></td>
+                                    <tr ng-repeat="property in newLocationType.properties">
+                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyAlias" ng-model="property.alias" /></td>
+                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyName" ng-model="property.name" /></td>
                                         <td>
-                                            <select>
-                                                <option>Textbox</option> <!-- TODO: Umbraco.Textbox -->
-                                                <option>Textbox Multiple</option> <!-- TODO: Umbraco.TextboxMultiple -->
-                                                <option>True/False</option> <!-- TODO: Umbraco.TrueFalse -->
-                                                <option>Multiple Media Picker</option> <!-- TODO: Umbraco.MultipleMediaPicker -->
-                                                <option>Single Media Picker</option> <!-- TODO: Umbraco.MediaPicker -->
-                                                <option>Member Picker</option> <!-- TODO: Umbraco.MemberPicker -->
-                                                <option>Content Picker</option> <!-- TODO: Umbraco.ContentPickerAlias -->
-                                                <option>Checkbox List</option> <!-- TODO: Discuss between Kyle, HFloyd, and Janae -->
-                                            </select>
+                                            <select ng-model="property.selectedType" ng-options="option.name for option in options.type"></select>
                                         </td>
                                         <td class="btn-group text-right">
-                                            <a class="btn btn-mini btn-danger"><i class="icon-trash"></i></a> <!-- TODO: Will have a pop-up delete confirmation letting users know that deleting this field will remove any data locations have -->
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyAlias" /></td>
-                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyName" /></td>
-                                        <td>
-                                            <select>
-                                                <option>Choose...</option>
-                                                <option>Textbox</option> <!-- TODO: Umbraco.Textbox -->
-                                                <option>Textbox Multiple</option> <!-- TODO: Umbraco.TextboxMultiple -->
-                                                <option>True/False</option> <!-- TODO: Umbraco.TrueFalse -->
-                                                <option>Multiple Media Picker</option> <!-- TODO: Umbraco.MultipleMediaPicker -->
-                                                <option>Single Media Picker</option> <!-- TODO: Umbraco.MediaPicker -->
-                                                <option>Member Picker</option> <!-- TODO: Umbraco.MemberPicker -->
-                                                <option>Content Picker</option> <!-- TODO: Umbraco.ContentPickerAlias -->
-                                                <option>Checkbox List</option> <!-- TODO: Discuss between Kyle, HFloyd, and Janae -->
-                                            </select>
-                                        </td>
-                                        <td class="btn-group text-right">
-                                            <a class="btn btn-mini btn-primary"><i class="icon-add"></i></a> <!-- TODO: Clicking add will automatically generate a new row -->
+                                            <a class="btn btn-mini btn-primary" ng-click="addNewProperty()" ng-show="$index == newLocationType.properties.length - 1"><i class="icon-add"></i></a>
+                                            <a class="btn btn-mini btn-danger" ng-click="deleteProperty($index)"><i class="icon-trash"></i></a> 
                                         </td>
                                     </tr>
                                 </tbody>

@@ -32,7 +32,11 @@
             self.name = '';
             self.properties = [new uLocate.Models.LocationTypeProperty()];
         } else {
-            self.description = data.description;
+            if (self.description != null) {
+                self.description = data.description;
+            } else {
+                self.description = '';
+            }
             self.icon = data.icon;
             self.key = data.key;
             self.name = data.name;
