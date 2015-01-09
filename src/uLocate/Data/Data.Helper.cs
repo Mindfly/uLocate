@@ -121,11 +121,11 @@
         
         public static Dictionary<int, string> GetAllAllowedDataTypes()
         {
-            //uLocate.Constants includes the list of allowed standard datatypes
-            //Dictionary<int, string> ReturnDict = uLocate.Constants.AllowedStandardDataTypes;
+            //uLocate.Constants includes the text-based list of allowed PropertyEditors
+
             Dictionary<int, string> ReturnDict = new Dictionary<int, string>();
 
-            foreach (var PropEditor in uLocate.Constants.AllowedPrevalueDataTypes)
+            foreach (var PropEditor in uLocate.Constants.AllowedPropertyEditors)
             {
                 var dtService = new Umbraco.Core.Services.DataTypeService();
 

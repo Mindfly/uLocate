@@ -74,10 +74,10 @@
         };
 
         /// <summary>
-        /// The allowed pre value data types list.
+        /// The allowed AllowedPropertyEditors list.
         /// "PropertyEditorAlias"
         /// </summary>
-        public static readonly string[] AllowedPrevalueDataTypes = 
+        public static readonly string[] AllowedPropertyEditors = 
         { 
             PropertyEditorAlias.TextBox, 
             PropertyEditorAlias.TextBoxMultiple , 
@@ -86,7 +86,8 @@
             PropertyEditorAlias.MemberPicker , 
             PropertyEditorAlias.ContentPicker, 
             "Umbraco.CheckBoxList", 
-            "Umbraco.DropDown" 
+            "Umbraco.DropDown",
+            "Umbraco.DropDownMultiple"
         };
 
         /// <summary>
