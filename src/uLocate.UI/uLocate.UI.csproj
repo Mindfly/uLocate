@@ -246,6 +246,7 @@
     <Content Include="App_Plugins\uLocate\Scripts\Directives\localize.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Models\location.type.models.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Services\broadcast.service.js" />
+    <Content Include="App_Plugins\uLocate\Scripts\Services\data.type.api.service.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Services\file.api.service.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Services\localization.service.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Services\location.api.service.js" />

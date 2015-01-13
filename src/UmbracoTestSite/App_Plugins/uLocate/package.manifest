@@ -7,6 +7,7 @@
         "~/App_Plugins/uLocate/Scripts/Models/location.type.models.js",
         "~/App_Plugins/uLocate/Scripts/Models/map.models.js",
         "~/App_Plugins/uLocate/Scripts/Services/broadcast.service.js",
+        "~/App_Plugins/uLocate/Scripts/Services/data.type.api.service.js",
         "~/App_Plugins/uLocate/Scripts/Services/location.api.service.js",
         "~/App_Plugins/uLocate/Scripts/Services/location.type.api.service.js",
         "~/App_Plugins/uLocate/Scripts/Services/file.api.service.js",

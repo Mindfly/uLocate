@@ -62,7 +62,7 @@
         <umb-header tabs="tabs">
             <div class="span7">
                 <div class="umb-headline-editor-wrapper">
-                    <input type="text" name="name" ulocate-localize="placeholder" class="umb-headline" placeholder="locationTypeName" ng-model="newLocationType.name" required="" /> <!-- TODO: Displays the name if editing. -->
+                    <input type="text" name="name" ulocate-localize="placeholder" class="umb-headline" placeholder="locationTypeName" ng-model="newLocationType.name" required="" />
                     <span class="help-inline" ng-show="!isTypeNameProvided(newLocationType.name)"><localize key="general_required">Required</localize></span>
                 </div>
             </div>
@@ -88,7 +88,7 @@
                         <div class="controls controls-row">
 
                             <div class="umbIconDropdownList">
-                                <a class="btn btn-link picker-icons" ng-click="openIconPicker()"> <i class="{{newLocationType.icon}}"></i> <localize key="general_choose">Choose</localize>...</a> <!-- TODO: Should show the chosen icon, and clicking should open the icon picker dialog -->
+                                <a class="btn btn-link picker-icons" ng-click="openIconPicker()"> <i class="{{newLocationType.icon}}"></i> <localize key="general_choose">Choose</localize>...</a>
                                 <input name="icon" type="hidden" ng-model="newLocationType.icon">
                             </div>
 
@@ -137,8 +137,8 @@
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="property in newLocationType.properties">
-                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyAlias" ng-model="property.alias" /></td>
-                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyName" ng-model="property.name" /></td>
+                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyAlias" ng-model="property.propAlias" /></td>
+                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyName" ng-model="property.propName" /></td>
                                         <td>
                                             <select ng-model="property.selectedType" ng-options="option.name for option in options.type"></select>
                                         </td>

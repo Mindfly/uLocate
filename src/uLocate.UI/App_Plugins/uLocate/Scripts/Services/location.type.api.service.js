@@ -4,13 +4,6 @@
 
         var locationTypeApiFactory = {};
 
-        locationTypeApiFactory.getAllDataTypes = function() {
-            // Hack - grab DataTypes from Tree API, as `dataTypeService.getAll()` isn't implemented yet
-            return umbRequestHelper.resourcePromise(
-                $http.get("/umbraco/backoffice/uLocate/DataTypeApi/GetAll", { cache: true }), 'Failed to retrieve datatypes from tree service'
-            );
-        };
-
         /**
          * @ngdoc method
          * @name getAllLocationTypes
@@ -53,6 +46,17 @@
                 }
             });
         };
+
+        locationTypeApiFactory.getEmptyLocationType = function () {
+            return $http.get('/umbraco/backoffice/uLocate/LocationTypeApi/GetEmptyJsonLocationType').then(function (response) {
+                if (response.data) {
+                    return response.data;
+                } else {
+                    return false;
+                }
+            });
+
+    };
 
         /**
          * @ngdoc method

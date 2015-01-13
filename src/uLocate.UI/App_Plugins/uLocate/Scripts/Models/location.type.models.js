@@ -3,23 +3,13 @@
     models.LocationTypeProperty = function(data) {
         var self = this;
         if (data === undefined) {
-            self.alias = '';
-            self.databaseType = '';
-            self.dataTypeId = '';
-            self.locationTypeKey = '';
-            self.key = '';
-            self.name = '';
-            self.propertyEditorAlias = '';
-            self.sortOrder = '';
+            self.propAlias = '';
+            self.propName = '';
+            self.propType = '';
         } else {
-            self.alias = data.alias;
-            self.databaseType = data.databaseType;
-            self.dataTypeId = data.dataTypeId;
-            self.locationTypeKey = data.locationTypeKey;
-            self.key = data.key;
-            self.name = data.name;
-            self.propertyEditorAlias = data.propertyEditorAlias;
-            self.sortOrder = data.sortOrder;
+            self.propAlias = data.propAlias;
+            self.propName = data.propName;
+            self.propType = data.propType;
         }
     }
 

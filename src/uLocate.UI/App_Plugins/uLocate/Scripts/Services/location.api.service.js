@@ -116,9 +116,7 @@
          */
 		locationApiFactory.updateLocation = function (location) {
 	        var request = new uLocate.Models.Location(location);
-	        // TODO: Change out this line for the one below it when not using mocks.
-	        /*return $http.post('urlgoeshere', request).then(function (response) {*/
-	        return $http.get('/App_Plugins/uLocate/Scripts/ApiMocks/update.location.js').then(function (response) {
+	        return $http.post('/umbraco/backoffice/uLocate/LocationTypeApi/Update', request).then(function (response) {
 	            if (response.data) {
 	                var data = locationApiFactory.downCaseProperties(response.data);
 	                return data;

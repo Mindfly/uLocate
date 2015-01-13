@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationTypesController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateLocationTypeApiService) {
+    controllers.LocationTypesController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateDataTypeApiService, uLocateLocationTypeApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -14,13 +14,13 @@
          * @description - Called when the $scope is initalized.
          */
         $scope.init = function () {
-            $scope.setVariables();
-            $scope.getLocationTypesIfNeeded();
-            $scope.getLocationTypeToEditByKey();
-            var promise = uLocateLocationTypeApiService.getAllDataTypes();
+            var promise = uLocateLocationTypeApiService.getEmptyLocationType();
             promise.then(function(response) {
                 console.info(response);
             });
+            $scope.setVariables();
+            $scope.getLocationTypesIfNeeded();
+            $scope.getDataTypesIfNeeded();
         };
 
         /**
@@ -39,6 +39,21 @@
                     }
                 });
             });
+        };
+
+        $scope.getDataTypesIfNeeded = function() {
+            if ($scope.selectedView == 'edit') {
+                var promise = uLocateDataTypeApiService.getAllDataTypes();
+                promise.then(function (response) {
+                    $scope.options.type = _.map(response, function(dataType) {
+                        return {
+                            id: dataType.id,
+                            name: dataType.name
+                        };
+                    });
+                    $scope.getLocationTypeToEditByKey();
+                });
+            }
         };
 
         /**
@@ -73,9 +88,12 @@
                     var promise = uLocateLocationTypeApiService.getByKey(key);
                     promise.then(function(response) {
                         $scope.newLocationType = new uLocate.Models.LocationType(response);
-                        console.info($scope.newLocationType);
-                        _.each($scope.newLocationType.properties, function(property) {
-                            property.selectedType = $scope.updatePropertyTypeDropdown(property);
+                        _.each($scope.newLocationType.properties, function (property) {
+                            _.each($scope.options.type, function(dataType, index) {
+                                if (dataType.id == property.propType) {
+                                    property.selectedType = $scope.options.type[index];
+                                }
+                            });
                         });
                 });
                 } else if (($location.search()).name) {
@@ -95,18 +113,7 @@
             $scope.currentNode = false;
             $scope.openMenu = false;
             $scope.options = {
-                type: [
-                    { name: "Textbox", value: "Umbraco.Textbox" },
-                    { name: "Textbox Multiple", value: "Umbraco.TextboxMultiple" },
-                    { name: "True/False", value: "Umbraco.TrueFalse" },
-                    { name: "Multiple Media Picker", value: "Umbraco.MultipleMediaPicker" },
-                    { name: "Single Media Picker", value: "Umbraco.MediaPicker" },
-                    { name: "Member Picker", value: "Umbraco.MemberPicker" },
-                    { name: "Content Picker", value: "Umbraco.ContentPickerAlias" }
-                ]
-            };
-            $scope.selected = {
-                type: $scope.options.type[0]
+                type: [{id: 0, name: 'null'}]
             };
             $scope.selectedView = $routeParams.id;
             $scope.getCurrentNode();
@@ -272,6 +279,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationTypesController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', "uLocateLocationTypeApiService", uLocate.Controllers.LocationTypesController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationTypesController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateDataTypeApiService','uLocateLocationTypeApiService', uLocate.Controllers.LocationTypesController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));
