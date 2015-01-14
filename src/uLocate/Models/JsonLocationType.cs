@@ -20,6 +20,26 @@
             this.Properties = new List<JsonTypeProperty>();
         }
 
+        public JsonLocationType(LocationType ConvertedFromLocationType)
+        {
+            this.Key = ConvertedFromLocationType.Key;
+            this.Name = ConvertedFromLocationType.Name;
+            this.Description = ConvertedFromLocationType.Description;
+            this.Icon = ConvertedFromLocationType.Icon;
+
+            this.Properties = new List<JsonTypeProperty>();
+            foreach (var Prop in ConvertedFromLocationType.Properties)
+            {
+                var JsonProp = new JsonTypeProperty();
+
+                JsonProp.PropAlias = Prop.Alias;
+                JsonProp.PropName = Prop.Name;
+                JsonProp.PropType = Prop.DataTypeId;
+
+                this.Properties.Add(JsonProp);
+             }
+        }
+
         public LocationType ConvertToLocationType()
         {
             LocationType Entity;

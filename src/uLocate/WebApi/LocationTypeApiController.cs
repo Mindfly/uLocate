@@ -54,26 +54,28 @@
         /// Update a location type
         /// /umbraco/backoffice/uLocate/LocationTypeApi/Update
         /// </summary>
-        /// <param name="UpdatedLocationType">
-        /// The updated location type object
+        /// <param name="UpdatedLocationTypeJson">
+        /// The Updated Location Type Json.
         /// </param>
         /// <returns>
-        /// The <see cref="LocationType"/>.
+        /// The <see cref="JsonLocationType"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET", "POST")]
-        public LocationType Update(JsonLocationType UpdatedLocationTypeJson)
+        public JsonLocationType Update(JsonLocationType UpdatedLocationTypeJson)
         {
             LocationType UpdatedLocationType = UpdatedLocationTypeJson.ConvertToLocationType();
 
             Repositories.LocationTypeRepo.Update(UpdatedLocationType);
 
-            var Result = Repositories.LocationTypeRepo.GetByKey(UpdatedLocationType.Key);
+            var FullResult = Repositories.LocationTypeRepo.GetByKey(UpdatedLocationType.Key);
 
-            return Result;
+            var JsonResult = new JsonLocationType(FullResult);
+
+            return JsonResult;
         }
 
         /// <summary>
-        /// The get empty json location type.
+        /// Gets an empty json location type.
         /// /umbraco/backoffice/uLocate/LocationTypeApi/GetEmptyJsonLocationType
         /// </summary>
         /// <returns>
