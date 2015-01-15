@@ -9,20 +9,13 @@
          * @name createLocation
          * @function
          * 
-         * @param {uLocate.Models.Location} location - The location being added.
+         * @param {string} name - The name of the location
          * @returns {uLocate.Models.Location}
-         * @description - Creates a new location.
+         * @description - Creates a new location with the provided name.
          */
-	    locationApiFactory.createLocation = function (location) {
-	        var request;
-	        if (location) {
-	            request = new uLocate.Models.Location(location);
-	        } else {
-	            request = new uLocate.Models.Location();
-	        }
-	        // TODO: Change out this line for the one below it when not using mocks.
-	        /*return $http.post('urlgoeshere', request).then(function (response) {*/
-	        return $http.get('/App_Plugins/uLocate/Scripts/ApiMocks/create.location.js').then(function (response) {
+	    locationApiFactory.createLocation = function (name) {
+	        var config = { params: { locationName: name} };
+	        return $http.get('/umbraco/backoffice/uLocate/LocationApi/Create', config).then(function (response) {
 	            if (response.data) {
 	                var data = locationApiFactory.downCaseProperties(response.data);
 	                return data;
@@ -37,14 +30,14 @@
          * @name deleteLocation
          * @function
          * 
-         * @param {integer} id - ID of the location.
+         * @param {string} key - GUID of the location.
          * @returns {object}
          * @description - Delete indicated location.
          */
-		locationApiFactory.deleteLocation = function (id) {
-		    var config = { params: { id: id } };
+		locationApiFactory.deleteLocation = function (key) {
+		    var config = { params: { key: key } };
 	        // TODO: Change out the url in this line for the live one below when not using mocks.
-	        return $http.get('/App_Plugins/uLocate/Scripts/ApiMocks/delete.location.js', config).then(function(response) {
+		    return $http.get('/umbraco/backoffice/uLocate/LocationApi/Delete', config).then(function (response) {
 	            if (response.data) {
 	                var data = locationApiFactory.downCaseProperties(response.data);
 	                return data;
@@ -52,21 +45,39 @@
 	                return false;
 	            }
 	        });
-	    };
+		};
 
 	    /**
          * @ngdoc method
          * @name getLocation
          * @function
          * 
-         * @param {integer} id - The id of the desired location.
+         * @returns {array of uLocate.Models.Location} - Locations retrieved.
+         * @description - Get a specific location.
+         */
+		locationApiFactory.getAllLocations = function () {
+		    return $http.get('/umbraco/backoffice/uLocate/LocationApi/GetAll').then(function (response) {
+		        if (response.data) {
+		            var data = locationApiFactory.downCaseProperties(response.data);
+		            return data;
+		        } else {
+		            return false;
+		        }
+		    });
+		};
+
+	    /**
+         * @ngdoc method
+         * @name getLocation
+         * @function
+         * 
+         * @param {string} key - The GUID of the desired location.
          * @returns {uLocate.Models.Location} - Location retrieved.
          * @description - Get a specific location.
          */
-	    locationApiFactory.getLocation = function(id) {
-	        var config = { params: { id: id } };
-	        // TODO: Change out the url in this line for the live one below when not using mocks.
-	        return $http.get('/App_Plugins/uLocate/Scripts/ApiMocks/get.location.js', config).then(function (response) {
+	    locationApiFactory.getLocation = function(key) {
+	        var config = { params: { key: key } };
+	        return $http.get('/umbraco/backoffice/uLocate/LocationApi/GetByKey', config).then(function (response) {
 	            if (response.data) {
 	                var data = locationApiFactory.downCaseProperties(response.data);
 	                return data;

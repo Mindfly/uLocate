@@ -21,6 +21,15 @@
             } else {
                 $scope.setVariables();
             }
+            console.info('beep');
+            var createPromise = uLocateLocationApiService.createLocation('Test Location');
+            createPromise.then(function(createResponse) {
+                console.info(createResponse);
+                var getPromise = uLocateLocationApiService.getLocation(createResponse);
+                getPromise.then(function(getResponse) {
+                    console.info(getResponse);
+                });
+            });
         };
 
         /**
