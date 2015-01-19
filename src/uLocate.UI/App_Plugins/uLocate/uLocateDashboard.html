@@ -1,0 +1,40 @@
+﻿<div class="uLocate">
+
+    <!-- The locations view route displays this panel -->
+    <div class="umb-pane">
+        
+        <div class="span12 umb-dashboard-control clearfix">
+            <h3>Welcome to uLocate</h3>
+            <script src="~/scripts/libraries/jquery-1.11.2.min.js"></script>
+            <div style="border: solid 2px rgba(33,33,33,.7); padding: 10px 10px 0 10px; margin-bottom: 20px;">
+                <h4>Quick API Tool</h4>
+                <label>
+                    <span>API URL</span>
+                    <input type="text" id="testUrl" placeholder="e.g. /umbraco/api/FindATireApi/GetAllBicycleTires" />
+                    <button type="button" id="testButton">Test</button>
+                </label><br />
+                <span>API Response</span>
+                <div id="testResponse" style="border: solid 1px rgba(33,33,33,.7); padding: 10px;"></div><br />
+                <p>You can view the response in your browser console as well.</p>
+                <br />
+            </div>
+            <script type="text/javascript">
+            $(document).ready(function () {
+                console.info('QAPIT has been loaded.');
+                $('#testButton').on('click', function () {
+                    console.info('Going to try to use my AJAXination powers.');
+                    $.get($('#testUrl').val(), function (data) {
+                        console.info('Responsinated.');
+                        console.info(data);
+                        var stringVersion = JSON.stringify(data);
+                        $('#testResponse').text(stringVersion);
+                    });
+                });
+            });
+            </script>
+            
+        </div>
+    </div>
+
+
+</div>
