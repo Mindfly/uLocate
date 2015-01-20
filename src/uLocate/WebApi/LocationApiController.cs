@@ -29,7 +29,7 @@
         //}
 
         /// <summary>
-        /// Create a new Location 
+        /// Create a new Location of type "default"
         /// /umbraco/backoffice/uLocate/LocationApi/Create?LocationName=xxx
         /// </summary>
         /// <param name="LocationName">
@@ -41,8 +41,39 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string LocationName)
         {
+            var Result = Create(LocationName, uLocate.Constants.DefaultLocationTypeKey);
+
+            return Result;
+        }
+
+        /// <summary>
+        /// Create a new Location 
+        /// /umbraco/backoffice/uLocate/LocationApi/Create?LocationName=xxx&LocationTypeGuid=xxx
+        /// </summary>
+        /// <param name="LocationName">
+        /// The location name.
+        /// </param>
+        /// <param name="LocationTypeGuid">
+        /// The guid key for the Location Type.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Guid"/> of the newly created Location
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public Guid Create(string LocationName, Guid LocationTypeGuid)
+        {
             Location newLoc = new Location();
             newLoc.Name = LocationName;
+
+            if (LocationTypeGuid != Guid.Empty)
+            {
+                newLoc.LocationTypeKey = LocationTypeGuid;
+            }
+            else
+            {
+                newLoc.LocationTypeKey = uLocate.Constants.DefaultLocationTypeKey;
+            }
+
             Repositories.LocationRepo.Insert(newLoc);
 
             //var Result = Repositories.LocationTypeRepo.GetByKey(newLocType.Key);
