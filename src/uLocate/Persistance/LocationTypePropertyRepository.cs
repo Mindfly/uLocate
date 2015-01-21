@@ -81,6 +81,30 @@ namespace uLocate.Persistance
             return CurrentCollection[0];
         }
 
+        public LocationTypeProperty GetByAlias(string PropertyAlias)
+        {
+            CurrentCollection.Clear();
+            var sql = new Sql();
+            sql.Select("*")
+                .From<LocationTypePropertyDto>()
+                .Where<LocationTypePropertyDto>(n => n.Alias == PropertyAlias);
+
+            var dtoResultList = Repositories.ThisDb.Fetch<LocationTypePropertyDto>(sql);
+
+            if (dtoResultList != null)
+            {
+                foreach (var dtoResult in dtoResultList)
+                {
+                    var converter = new DtoConverter();
+                    var entity = converter.ToLocationTypePropertyEntity(dtoResult);
+
+                    CurrentCollection.Add(entity);
+                }
+            }
+
+            return CurrentCollection[0];
+        }
+
         public IEnumerable<LocationTypeProperty> GetByKey(Guid[] Keys)
         {
             CurrentCollection.Clear();

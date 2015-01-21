@@ -103,6 +103,24 @@
             return CurrentCollection[0];
         }
 
+        public IEnumerable<Location> GetByName(string LocationName)
+        {
+            CurrentCollection.Clear();
+            var sql = new Sql();
+            sql.Select("*")
+                .From<LocationDto>()
+                .Where<LocationDto>(n => n.Name == LocationName);
+
+            var dtoResult = Repositories.ThisDb.Fetch<LocationDto>(sql).ToList();
+
+            var converter = new DtoConverter();
+            CurrentCollection.AddRange(converter.ToLocationEntity(dtoResult));
+
+            FillChildren();
+
+            return CurrentCollection; 
+        }
+
         internal IEnumerable<Location> GetByType(Guid LocationTypeKey)
         {
             CurrentCollection.Clear();
@@ -397,5 +415,6 @@
         {
             throw new NotImplementedException();
         }
+
     }
 }

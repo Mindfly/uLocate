@@ -41,9 +41,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string LocationName)
         {
-            var Result = Create(LocationName, uLocate.Constants.DefaultLocationTypeKey);
-
-            return Result;
+            return uLocate.Helpers.Persistence.CreateLocation(LocationName);
         }
 
         /// <summary>
@@ -62,24 +60,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string LocationName, Guid LocationTypeGuid)
         {
-            Location newLoc = new Location();
-            newLoc.Name = LocationName;
-
-            if (LocationTypeGuid != Guid.Empty)
-            {
-                newLoc.LocationTypeKey = LocationTypeGuid;
-            }
-            else
-            {
-                newLoc.LocationTypeKey = uLocate.Constants.DefaultLocationTypeKey;
-            }
-
-            Repositories.LocationRepo.Insert(newLoc);
-
-            //var Result = Repositories.LocationTypeRepo.GetByKey(newLocType.Key);
-            var Result = newLoc.Key;
-            
-            return Result;
+            return uLocate.Helpers.Persistence.CreateLocation(LocationName, LocationTypeGuid);
         }
 
         /// <summary>
@@ -95,9 +76,9 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Location Update(Location UpdatedLocation)
         {
-            Repositories.LocationRepo.Update(UpdatedLocation);
+            //TODO: Heather - Accept/Return JsonLocation
 
-            var Result = Repositories.LocationRepo.GetByKey(UpdatedLocation.Key);
+            var Result = uLocate.Helpers.Persistence.UpdateLocation(UpdatedLocation);
 
             return Result;
         }
@@ -170,6 +151,23 @@
         public List<Location> GetAllPaged(long PageNum, long ItemsPerPage)
         {
             var Result = Repositories.LocationRepo.GetPaged(PageNum, ItemsPerPage, string.Empty);
+
+            return Result;
+        }
+
+        /// <summary>
+        /// Gets an empty json location.
+        /// /umbraco/backoffice/uLocate/LocationApi/GetEmptyJsonLocation
+        /// </summary>
+        /// <returns>
+        /// An empty <see cref="JsonLocation"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public JsonLocation GetEmptyJsonLocation()
+        {
+            var Result = new JsonLocation();
+            var EmptyProp = new JsonPropertyData();
+            Result.PropertyData.Add(EmptyProp);
 
             return Result;
         }

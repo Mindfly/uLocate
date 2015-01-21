@@ -215,6 +215,75 @@
             NewProp.dataDate = PropertyValue;
             this.PropertyData.Add(NewProp);
         }
+
+        /// <summary>
+        /// Add property data to this location
+        /// </summary>
+        /// <param name="PropertyAlias">
+        /// The property alias.
+        /// </param>
+        /// <param name="PropertyValue">
+        /// The property value.
+        /// </param>
+        public void AddPropertyData(string PropertyAlias, object PropertyValue)
+        {
+            Guid LocationKey = this.Key;
+            var thisProperty = Repositories.LocationTypePropertyRepo.GetByAlias(PropertyAlias);
+
+            var existingPropertyData = Repositories.LocationPropertyDataRepo.GetByAlias(PropertyAlias, LocationKey);
+
+            if (existingPropertyData != null)
+            {
+                //Update Prop
+                switch (thisProperty.DatabaseType)
+                {
+                    case Constants.DbNtext:
+                        existingPropertyData.dataNtext = PropertyValue.ToString();
+                        break;
+                    case Constants.DbNvarchar:
+                        existingPropertyData.dataNvarchar = PropertyValue.ToString();
+                        break;
+                    case Constants.DbInteger:
+                        existingPropertyData.dataInt = Convert.ToInt32(PropertyValue);
+                        break;
+                    case Constants.DbDate:
+                        existingPropertyData.dataDate = Convert.ToDateTime(PropertyValue);
+                        break;
+                }
+
+                Repositories.LocationPropertyDataRepo.Update(existingPropertyData);
+
+            }
+            else
+            {
+                //Add new prop
+                var NewPropData = CreateNewProp(PropertyAlias);
+
+                switch (thisProperty.DatabaseType)
+                {
+                    case Constants.DbNtext:
+                        NewPropData.dataNtext = PropertyValue.ToString();
+                        break;
+                    case Constants.DbNvarchar:
+                        NewPropData.dataNvarchar = PropertyValue.ToString();
+                        break;
+                    case Constants.DbInteger:
+                        NewPropData.dataInt = Convert.ToInt32(PropertyValue);
+                        break;
+                    case Constants.DbDate:
+                        NewPropData.dataDate = Convert.ToDateTime(PropertyValue);
+                        break;
+                }
+
+                this.PropertyData.Add(NewPropData);
+            }
+
+
+        }
+
+
+
+
         #endregion
 
         #region Private Methods
