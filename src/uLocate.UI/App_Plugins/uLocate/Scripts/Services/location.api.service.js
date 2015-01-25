@@ -56,9 +56,14 @@
          * @description - Get a specific location.
          */
 		locationApiFactory.getAllLocations = function () {
+		    console.info("In the proper location API getAllLocations function.");
 		    return $http.get('/umbraco/backoffice/uLocate/LocationApi/GetAll').then(function (response) {
 		        if (response.data) {
-		            var data = locationApiFactory.downCaseProperties(response.data);
+		            var data = _.map(response.data, function (location) {
+		                console.info(locationApiFactory.downCaseProperties(location));
+		                return new uLocate.Models.Location(locationApiFactory.downCaseProperties(location));
+		            });
+		            console.info(data);
 		            return data;
 		        } else {
 		            return false;
@@ -86,34 +91,6 @@
 	            }
 	        });
 	    };
-
-	    /**
-         * @ngdoc method
-         * @name getAllLocations
-         * @function
-         * 
-         * @param {uLocate.Models.GetLocationsApiRequest} options - The desired options for the request.
-         * @returns {array of uLocate.Models.Location} - List of locations.
-         * @description - Get all the locations that match the options.
-         */
-		locationApiFactory.getAllLocations = function (options) {
-		    var request;
-		    if (!options) {
-		        request = new uLocate.Models.GetLocationsApiRequest();
-		    } else {
-		        request = new uLocate.Models.GetLocationsApiRequest(options);
-		    }
-		    // TODO: Change out this line for the one below it when not using mocks.
-		    /*return $http.post('urlgoeshere', request).then(function (response) {*/
-		    return $http.get('/App_Plugins/uLocate/Scripts/ApiMocks/get.locations.js').then(function(response) {
-			    if (response.data) {
-			    	var data = locationApiFactory.downCaseProperties(response.data);
-			        return data;
-			    } else {
-			        return false;
-			    }
-			});
-		};
 
 	    /**
          * @ngdoc method

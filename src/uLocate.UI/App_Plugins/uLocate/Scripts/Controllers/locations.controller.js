@@ -21,15 +21,6 @@
             } else {
                 $scope.setVariables();
             }
-            console.info('beep');
-            var createPromise = uLocateLocationApiService.createLocation('Test Location');
-            createPromise.then(function(createResponse) {
-                console.info(createResponse);
-                var getPromise = uLocateLocationApiService.getLocation(createResponse);
-                getPromise.then(function(getResponse) {
-                    console.info(getResponse);
-                });
-            });
         };
 
         /**
@@ -331,7 +322,7 @@
          */
         $scope.openDeleteDialog = function (location) {
             var currentNode = location;
-            currentNode.deleteId = location.id;
+            currentNode.deleteId = location.key;
             currentNode.deleteChannel = 'deleteLocation';
             navigationService.showDialog({
                 node: currentNode,
@@ -540,7 +531,8 @@
                 sortOrder: $scope.sortOrder
             });
             var promise = uLocateLocationApiService.getAllLocations(request);
-            promise.then(function(response) {
+            promise.then(function (response) {
+                console.info(response);
                 $scope.locations = _.map(response.locations, function(location) {
                     return new uLocate.Models.Location(location);
                 });

@@ -3,15 +3,15 @@
     models.Address = function(data) {
         var self = this;
         if (data === undefined) {
-            self.streetAddress = '';
-            self.extendedAddress = '';
+            self.address1 = '';
+            self.address2 = '';
             self.locality = '';
             self.region = '';
             self.postalCode = '';
             self.countryName = '';
         } else {
-            self.streetAddress = data.streetAddress;
-            self.extendedAddress = data.extendedAddress;
+            self.address1 = data.address1;
+            self.address2 = data.address2;
             self.locality = data.locality;
             self.region = data.region;
             self.postalCode = data.postalCode;
@@ -53,19 +53,31 @@
             self.address = new uLocate.Models.Address();
             self.coordinates = new uLocate.Models.Coordinates();
             self.email = '';
-            self.id = '';
+            self.key = '';
             self.name = '';
             self.phone = '';
             self.type = '';
             self.properties = [];
         } else {
             self.address = new uLocate.Models.Address(data.address);
-            self.coordinates = new uLocate.Models.Coordinates(data.coordinates);
+            if (data.coordinates) {
+                self.coordinates = new uLocate.Models.Coordinates(data.coordinates);
+            } else {
+                self.coordinates = new uLocate.Models.Coordinates({
+                    latitude: data.latitude,
+                    longitude: data.longitude
+                });
+            }
             self.email = data.email;
-            self.id = data.id;
+            self.key = data.key;
+            if (data.locationTypeName) {
+                self.locationTypeName = data.locationTypeName;
+            } else {
+                self.locationTypeName = data.locationType.name;
+            }
+            self.locationTypeKey = data.locationTypeKey;
             self.name = data.name;
             self.phone = data.phone;
-            self.type = data.type;
         }
     };
 
