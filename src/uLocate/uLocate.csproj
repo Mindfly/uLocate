@@ -240,6 +240,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\Persistence.cs" />
     <Compile Include="Caching\CacheKeys.cs" />
     <Compile Include="Caching\NullCacheProvider.cs" />
     <Compile Include="Configuration\ProviderCollection.cs" />
@@ -288,6 +289,7 @@
     <Compile Include="Models\Interfaces\IGeocodeProviderResponse.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\JsonLocation.cs" />
     <Compile Include="Models\JsonLocationType.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Coordinate.cs" />

@@ -12,6 +12,8 @@
     using Umbraco.Core;
     using Umbraco.Web.WebApi;
 
+    using Constants = uLocate.Constants;
+
     /// <summary>
     /// uLocate test api controller.
     /// </summary>
@@ -128,6 +130,70 @@
         }
 
 
+
+        /// <summary>
+        /// Add two default-type locations, with addresses
+        /// /umbraco/backoffice/uLocate/TestApi/TestPopulateSomeLocations
+        /// </summary>
+        /// <returns>
+        /// The <see cref="List"/>.
+        /// </returns>
+        [AcceptVerbs("GET")]
+        public IEnumerable<Location> TestPopulateSomeLocations()
+        {
+            string Msg = "";
+
+            //TEST Add "Mindfly Office" location 
+            var NewItem1Key = uLocate.Helpers.Persistence.CreateLocation("Mindfly Office", true);
+            var NewItem1 = Repositories.LocationRepo.GetByKey(NewItem1Key);
+            NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, "114 W. Magnolia St");
+            NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Address2, "Suite 300");
+            NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Locality, "Bellingham");
+            NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Region, "WA");
+            NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.PostalCode, "98225");
+            NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.CountryCode, "USA");
+            NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Phone, "360-647-7470");
+            NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Email, "hello@mindfly.com");
+            uLocate.Helpers.Persistence.UpdateLocation(NewItem1);
+
+            Msg += string.Format("Location '{0}' added. ", NewItem1.Name);
+
+            //TEST Add "Heather's House" location 
+            var NewItem2Key = uLocate.Helpers.Persistence.CreateLocation("Heather's House", true);
+            var NewItem2 = Repositories.LocationRepo.GetByKey(NewItem2Key);
+            NewItem2.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, "1820 Madison Avenue");
+            NewItem2.AddPropertyData(Constants.DefaultLocPropertyAlias.Address2, "8C");
+            NewItem2.AddPropertyData(Constants.DefaultLocPropertyAlias.Locality, "New York");
+            NewItem2.AddPropertyData(Constants.DefaultLocPropertyAlias.Region, "NY");
+            NewItem2.AddPropertyData(Constants.DefaultLocPropertyAlias.PostalCode, "10035");
+            NewItem2.AddPropertyData(Constants.DefaultLocPropertyAlias.CountryCode, "USA");
+            uLocate.Helpers.Persistence.UpdateLocation(NewItem2);
+
+            Msg += string.Format("Location '{0}' added. ", NewItem2.Name);
+
+            //TEST: Return all Location Types
+            var Result = Repositories.LocationRepo.GetAll();
+
+            return Result;
+        }
+
+
+        /// <summary>
+        /// Used for testing
+        /// /umbraco/backoffice/uLocate/TestApi/GetPropertyDataRow?PropertyAlias=Phone,LocationKey="000..."
+        /// </summary>
+        /// <returns>
+        /// The <see cref="List"/>.
+        /// </returns>
+        [AcceptVerbs("GET")]
+        public LocationPropertyData GetPropertyDataRow(string PropertyAlias, Guid LocationKey)
+        {
+            var Result = Repositories.LocationPropertyDataRepo.GetByAlias(PropertyAlias, LocationKey);
+
+            return Result;
+        }
+
+
         /// <summary>
         /// Used for testing
         /// /umbraco/backoffice/uLocate/TestApi/Test
@@ -149,5 +215,9 @@
 
             return Result;
         }
+
+
+
+
     }
 }

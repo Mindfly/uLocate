@@ -201,25 +201,25 @@
         /// The property data.
         /// </param>
         public PropertyValue(LocationPropertyData PropertyData)
-        {
+        { 
             switch (PropertyData.PropertyAttributes.DatabaseType)
             {
-                case "Ntext":
+                case Constants.DbNtext:
                     this._dataString = PropertyData.dataNtext;
                     _dataObject = PropertyData.dataNtext;
                     this.Type = ValueType.String;
                     break;
-                case "Nvarchar":
+                case Constants.DbNvarchar:
                     this._dataString = PropertyData.dataNvarchar;
                     _dataObject = PropertyData.dataNvarchar;
                     this.Type = ValueType.String;
                     break;
-                case "Integer":
+                case Constants.DbInteger:
                     this._dataInt = PropertyData.dataInt;
                     _dataObject = PropertyData.dataInt;
                     this.Type = ValueType.Int;
                     break;
-                case "Date":
+                case Constants.DbDate:
                     this._dataDate = PropertyData.dataDate;
                     _dataObject = PropertyData.dataDate;
                     this.Type = ValueType.Date;

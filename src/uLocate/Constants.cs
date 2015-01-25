@@ -12,7 +12,7 @@
     /// <summary>
     /// uLocate constants
     /// </summary>
-    public class Constants
+    public static class Constants
     {
         #region General
 
@@ -271,6 +271,50 @@
 
         }
 
+        #endregion
+
+        #region Database Types
+
+        public const string DbNtext = "Ntext";
+        public const string DbNvarchar = "Nvarchar";
+        public const string DbInteger = "Integer";
+        public const string DbDate = "Date";
+
+        public static class DatabaseTypes
+        {
+            public static string Ntext
+            {
+                get
+                {
+                    return DbNtext;
+                }
+            }
+
+            public static string Nvarchar
+            {
+                get
+                {
+                    return DbNvarchar;
+                }
+            }
+
+            public static string Integer
+            {
+                get
+                {
+                    return DbInteger;
+                }
+            }
+
+            public static string Date
+            {
+                get
+                {
+                    return DbDate;
+                }
+            }
+
+        }
         #endregion
 
         #region 'Default' Location Type

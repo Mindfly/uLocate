@@ -90,15 +90,17 @@ namespace uLocate.Persistance
             return CurrentCollection; 
         }
 
-        public LocationPropertyData GetByAlias(string PropertyAlias)
+        public LocationPropertyData GetByAlias(string PropertyAlias, Guid LocationKey)
         {
             CurrentCollection.Clear();
             var sql = new Sql();
             sql
                 .Select("*")
                 .From<LocationPropertyDataDto>()
-                //.InnerJoin("") //TODO?
-                .Where<LocationTypePropertyDto>(n => n.Alias == PropertyAlias);
+                .InnerJoin<LocationTypePropertyDto>()
+                .On<LocationPropertyDataDto, LocationTypePropertyDto>(left => left.LocationTypePropertyKey, right => right.Key)
+                .Where<LocationTypePropertyDto>(n => n.Alias == PropertyAlias)
+                .Where<LocationPropertyDataDto>(n => n.LocationKey == LocationKey);
 
             var dtoResult = Repositories.ThisDb.Fetch<LocationPropertyDataDto>(sql).FirstOrDefault();
 
