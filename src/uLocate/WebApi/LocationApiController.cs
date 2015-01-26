@@ -127,9 +127,9 @@
         /// The <see cref="List"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public List<Location> GetAll()
+        public IEnumerable<JsonLocation> GetAll()
         {
-            var Result = Repositories.LocationRepo.GetAll().ToList();
+            var Result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetAll());
 
             return Result;
         }
@@ -167,7 +167,22 @@
         {
             var Result = new JsonLocation();
             var EmptyProp = new JsonPropertyData();
-            Result.PropertyData.Add(EmptyProp);
+            Result.CustomPropertyData.Add(EmptyProp);
+
+            return Result;
+        }
+
+        /// <summary>
+        /// Updates Lat/Long coordinates for all Locations which require it.
+        /// /umbraco/backoffice/uLocate/LocationApi/UpdateCoordinatesAsNeeded
+        /// </summary>
+        /// <returns>
+        /// The <see cref="StatusMessage"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public StatusMessage UpdateCoordinatesAsNeeded()
+        {
+            var Result = Repositories.LocationRepo.UpdateGeoForAllNeeded();
 
             return Result;
         }

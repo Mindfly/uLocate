@@ -47,7 +47,7 @@
             this.Key = Guid.NewGuid();
             this.LocationKey = LocationKey;
             this.LocationTypePropertyKey = PropertyKey;
-            
+
         }
 
         /// <summary>
@@ -155,6 +155,63 @@
         [Constraint(Default = "getdate()")]
         public DateTime CreateDate { get; set; }
 
+
+        internal void SetValue(string PropertyValue)
+        {
+            switch (this.PropertyAttributes.DatabaseType)
+            {
+                case Constants.DbDate:
+                    this.dataDate = DateTime.Parse(PropertyValue);
+                    break;
+                case Constants.DbInteger:
+                    this.dataInt = Convert.ToInt32(PropertyValue);
+                    break;
+                case Constants.DbNtext:
+                    this.dataNtext = PropertyValue;
+                    break;
+                case Constants.DbNvarchar:
+                    this.dataNvarchar = PropertyValue;
+                    break;
+            }
+        }
+
+        internal void SetValue(int PropertyValue)
+        {
+            switch (this.PropertyAttributes.DatabaseType)
+            {
+                case Constants.DbDate:
+                    this.dataDate = DateTime.MinValue;
+                    break;
+                case Constants.DbInteger:
+                    this.dataInt = PropertyValue;
+                    break;
+                case Constants.DbNtext:
+                    this.dataNtext = PropertyValue.ToString();
+                    break;
+                case Constants.DbNvarchar:
+                    this.dataNvarchar = PropertyValue.ToString();
+                    break;
+            }
+        }
+
+        internal void SetValue(DateTime PropertyValue)
+        {
+            switch (this.PropertyAttributes.DatabaseType)
+            {
+                case Constants.DbDate:
+                    this.dataDate = PropertyValue;
+                    break;
+                case Constants.DbInteger:
+                    this.dataInt = 0;
+                    break;
+                case Constants.DbNtext:
+                    this.dataNtext = PropertyValue.ToShortDateString();
+                    break;
+                case Constants.DbNvarchar:
+                    this.dataNvarchar = PropertyValue.ToShortDateString();
+                    break;
+            }
+        }
     }
 
     /// <summary>
@@ -182,7 +239,7 @@
         /// The _data object.
         /// </summary>
         private object _dataObject;
-#endregion
+        #endregion
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyValue"/> class which is blank.
@@ -201,7 +258,7 @@
         /// The property data.
         /// </param>
         public PropertyValue(LocationPropertyData PropertyData)
-        { 
+        {
             switch (PropertyData.PropertyAttributes.DatabaseType)
             {
                 case Constants.DbNtext:
@@ -244,7 +301,14 @@
         /// </summary>
         public ValueType Type { get; internal set; }
 
-        
+        public object ValueObject
+        {
+            get
+            {
+                return this._dataObject;
+            }
+        }
+
         #endregion
 
         #region Public Methods

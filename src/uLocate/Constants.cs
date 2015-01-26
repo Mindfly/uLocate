@@ -319,6 +319,7 @@
 
         #region 'Default' Location Type
 
+
         /// <summary>
         /// Gets the "Default" location type key
         /// </summary>
@@ -372,90 +373,42 @@
             /// <summary>
             /// Gets the address 1.
             /// </summary>
-            public static string Address1
-            {
-                get
-                {
-                    return "Address1";
-                }
-            }
+            public const string Address1 = "Address1";
 
             /// <summary>
             /// Gets the address 2.
             /// </summary>
-            public static string Address2
-            {
-                get
-                {
-                    return "Address2";
-                }
-            }
-
+            public const string Address2 = "Address2";
+                
             /// <summary>
             /// Gets the locality.
             /// </summary>
-            public static string Locality
-            {
-                get
-                {
-                    return "Locality";
-                }
-            }
-
+            public const string Locality = "Locality";
+               
             /// <summary>
             /// Gets the region.
             /// </summary>
-            public static string Region
-            {
-                get
-                {
-                    return "Region";
-                }
-            }
-
+            public const string Region = "Region";
+             
             /// <summary>
             /// Gets the postal code.
             /// </summary>
-            public static string PostalCode
-            {
-                get
-                {
-                    return "PostalCode";
-                }
-            }
-
+            public const string PostalCode = "PostalCode";
+           
             /// <summary>
             /// Gets the country code.
             /// </summary>
-            public static string CountryCode
-            {
-                get
-                {
-                    return "CountryCode";
-                }
-            }
-
+            public const string CountryCode = "CountryCode";
+            
             /// <summary>
             /// Gets the phone number
             /// </summary>
-            public static string Phone
-            {
-                get
-                {
-                    return "PhoneNumber";
-                }
-            }
+            public const string Phone = "PhoneNumber";
 
             /// <summary>
             /// Gets the email address
             /// </summary>
-            public static string Email
-            {
-                get
-                {
-                    return "Email";
-                }
-            }
+            public const string Email = "Email";
         }
 
         #endregion

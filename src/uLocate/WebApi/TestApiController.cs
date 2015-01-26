@@ -139,7 +139,7 @@
         /// The <see cref="List"/>.
         /// </returns>
         [AcceptVerbs("GET")]
-        public IEnumerable<Location> TestPopulateSomeLocations()
+        public IEnumerable<JsonLocation> TestPopulateSomeLocations()
         {
             string Msg = "";
 
@@ -172,7 +172,7 @@
             Msg += string.Format("Location '{0}' added. ", NewItem2.Name);
 
             //TEST: Return all Location Types
-            var Result = Repositories.LocationRepo.GetAll();
+            var Result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetAll());
 
             return Result;
         }

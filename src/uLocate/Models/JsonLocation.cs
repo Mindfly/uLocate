@@ -23,11 +23,13 @@
         public string CountryCode { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public List<JsonPropertyData> PropertyData { get; set; }
+        //public List<JsonPropertyData> AllPropertyData { get; set; }
+        public List<JsonPropertyData> CustomPropertyData { get; set; }
 
         public JsonLocation()
         {
-            this.PropertyData = new List<JsonPropertyData>();
+            //this.AllPropertyData = new List<JsonPropertyData>();
+            this.CustomPropertyData = new List<JsonPropertyData>();
         }
 
         public JsonLocation(Location ConvertedFromLocation)
@@ -48,24 +50,34 @@
             this.PostalCode = ConvertedFromLocation.Address.PostalCode;
             this.CountryCode = ConvertedFromLocation.Address.CountryCode;
 
-            this.PropertyData = new List<JsonPropertyData>();
+            //this.AllPropertyData = new List<JsonPropertyData>();
+            this.CustomPropertyData = new List<JsonPropertyData>();
             foreach (var Prop in ConvertedFromLocation.PropertyData)
             {
                 //Check for special props
                 switch (Prop.PropertyAlias)
                 {
-                    case "Phone":
+                    case Constants.DefaultLocPropertyAlias.Phone:
                         this.Phone = Prop.dataNvarchar;
                         break;
-                    case "Email":
+                    case Constants.DefaultLocPropertyAlias.Email:
                         this.Email = Prop.dataNvarchar;
                         break;
+                    case Constants.DefaultLocPropertyAlias.Address1:
+                        break;
+                    case Constants.DefaultLocPropertyAlias.Address2:
+                        break;
+                    case Constants.DefaultLocPropertyAlias.Locality:
+                        break;
+                    case Constants.DefaultLocPropertyAlias.Region:
+                        break;
+                    case Constants.DefaultLocPropertyAlias.PostalCode:
+                        break;
+                    case Constants.DefaultLocPropertyAlias.CountryCode:
+                        break;
                     default:
-                        var JsonProp = new JsonPropertyData();
-                        JsonProp.Key = Prop.Key;
-                        JsonProp.PropAlias = Prop.PropertyAlias;
-                        JsonProp.PropData = Prop.Value;
-                        this.PropertyData.Add(JsonProp);
+                        this.CustomPropertyData.Add(new JsonPropertyData(Prop));
+                        //this.AllPropertyData.Add(new JsonPropertyData(Prop));
                         break;
                 }
              }
@@ -158,8 +170,8 @@
                 Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Email, this.Email);
            
         
-                //Add properties
-                foreach (var JsonProp in this.PropertyData)
+                //Add custom properties
+                foreach (var JsonProp in this.CustomPropertyData)
                 {
                    Entity.AddPropertyData(JsonProp.PropAlias, JsonProp.PropData);
                 }
@@ -176,5 +188,16 @@
         public string PropAlias { get; set; }
         public object PropData { get; set; }
 
+        public JsonPropertyData(LocationPropertyData Prop)
+        {
+            var JsonProp = new JsonPropertyData();
+            JsonProp.Key = Prop.Key;
+            JsonProp.PropAlias = Prop.PropertyAlias;
+            JsonProp.PropData = Prop.Value.ValueObject;
+        }
+
+        public JsonPropertyData()
+        {
+        }
     }
 }
