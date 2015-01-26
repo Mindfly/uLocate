@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using uLocate.Helpers;
     using uLocate.Models;
     using uLocate.Persistance;
 
@@ -140,15 +141,17 @@
         {
             var Entity = new Location()
             {
-                //TODO: HLF - fix special property conversions
                 Key = dto.Key,
                 Name = dto.Name,
-                //Coordinate = new Coordinate(dto.Coordinate),
-                //GeocodeStatus = new GeocodeStatus(dto.GeocodeStatus),
-                //Viewport = new Viewport(dto.Viewport),
+                Latitude = dto.Latitude,
+                Longitude = dto.Longitude,
+                Coordinate = new Coordinate(dto.Latitude, dto.Longitude),
+                GeocodeStatus = DoGeocoding.GetGeocodeStatus(dto.GeocodeStatus),
+                DbGeogNeedsUpdated = dto.DbGeogNeedsUpdated,
                 LocationTypeKey = dto.LocationTypeKey,
                 UpdateDate = dto.UpdateDate,
                 CreateDate = dto.CreateDate
+                //Viewport = new Viewport(dto.Viewport),
             };
 
             return Entity;
@@ -158,47 +161,22 @@
         {
             var dto = new LocationDto()
             {
-                //TODO: HLF - check special property conversions
                 Key = entity.Key,
                 Name = entity.Name,
                 Latitude = entity.Latitude,
                 Longitude = entity.Longitude,
-                //Coordinate = entity.Coordinate.ToString(),
-                //GeocodeStatus = entity.GeocodeStatus.ToString(),
-                //Viewport = entity.Viewport.ToString(),
+                GeocodeStatus = entity.GeocodeStatus.ToString(),
+                DbGeogNeedsUpdated = entity.DbGeogNeedsUpdated,
                 LocationTypeKey = entity.LocationTypeKey,
                 UpdateDate = entity.UpdateDate,
                 CreateDate = entity.CreateDate
+                //Viewport = entity.Viewport.ToString(),
             };
-
-            if (!GeogIsValid(entity))
-            {
-                dto.DbGeogNeedsUpdated = true;
-            }
 
             return dto;
         }
 
-        private bool GeogIsValid(Location entity)
-        {
-            bool Result = false;
-            double Lat = entity.Latitude;
-            double Long = entity.Longitude;
-            string ValidMatchString = "";
-
-            var sql = new Sql();
-            sql.Select("GeogCoordinate");
-            sql.From<LocationDto>();
-            sql.Where<LocationDto>(l => l.Key == entity.Key);
-            var DbGeogString = Repositories.ThisDb.Fetch<string>(sql).FirstOrDefault();
-
-            if (ValidMatchString == DbGeogString)
-            {
-                Result = true;
-            }
-
-            return Result;
-        }
+       
 
         public IEnumerable<Location> ToLocationEntity(IEnumerable<LocationDto> DtoCollection)
         {

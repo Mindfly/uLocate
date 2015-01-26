@@ -6,6 +6,7 @@
     using System.IO;
     using System.Linq;
     using System.Net;
+    using System.Runtime.Remoting.Messaging;
     using System.Web;
     using System.Xml.Linq;
 
@@ -38,6 +39,37 @@
             }
 
             return returnCoordinate;
+        }
+
+        internal static GeocodeStatus GetGeocodeStatus(string GeoStatusString)
+        {
+            switch (GeoStatusString)
+            {
+                case "Ok":
+                    return GeocodeStatus.Ok;
+                    break;
+                case "ZeroResults":
+                    return GeocodeStatus.ZeroResults;
+                    break;
+                case "RequestDenied":
+                    return GeocodeStatus.RequestDenied;
+                    break;
+                case "InvalidRequest":
+                    return GeocodeStatus.InvalidRequest;
+                    break;
+                case "NotQueried":
+                    return GeocodeStatus.NotQueried;
+                    break;
+                case "OverQueryLimit":
+                    return GeocodeStatus.OverQueryLimit;
+                    break;
+                case "Error":
+                    return GeocodeStatus.Error;
+                    break;
+                default:
+                    return GeocodeStatus.NotQueried;
+                    break;
+            }
         }
     }
 }
