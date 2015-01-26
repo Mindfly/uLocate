@@ -17,7 +17,7 @@
 
     internal static class DoGeocoding
     {
-        //TODO: HLF - change to use umbraco plugin manager to resolve the plugins rather than hard-coding this.
+        //TODO: Heather - change to use umbraco plugin manager to resolve the plugins rather than hard-coding this.
 
         internal static Coordinate GetCoordinateForAddress(IAddress TheAddress)
         {

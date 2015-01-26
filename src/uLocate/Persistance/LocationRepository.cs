@@ -6,6 +6,7 @@
     using System.Web.UI;
 
     using uLocate.Data;
+    using uLocate.Helpers;
     using uLocate.Models;
 
     using Umbraco.Core;
@@ -88,7 +89,6 @@
             StatusMsg = ReturnMsg;
         }
         
-
         public void Update(Location Entity)
         {
             PersistUpdatedItem(Entity);
@@ -178,6 +178,63 @@
             FillChildren();
             return CurrentCollection;
         }
+
+        public IEnumerable<JsonLocation> ConvertToJsonLocations(IEnumerable<Location> Locations)
+        {
+            var ReturnList = new List<JsonLocation>();
+
+            foreach (var loc in Locations)
+            {
+                ReturnList.Add(new JsonLocation(loc));
+            }
+
+            return ReturnList;
+        }
+
+        public StatusMessage UpdateGeoForAllNeeded()
+        {
+            var ReturnMsg = new StatusMessage();
+
+            var updateCounter = 0;
+            var checkedCounter = 0;
+            foreach (var location in this.GetAll())
+            {
+                if (location.Latitude == 0 | location.Longitude == 0)
+                {
+                    UpdateLatLong(location);
+                    Repositories.LocationRepo.Update(location);
+                    updateCounter++;
+                }
+
+                checkedCounter++;
+            }
+
+            ReturnMsg.Success = true;
+            ReturnMsg.Message =
+                string.Format(
+                    "{0} location(s) were checked for needing an update. {1} had their coordinates updated.",
+                    checkedCounter,
+                    updateCounter);
+
+            return ReturnMsg;
+
+        }
+
+        public void UpdateLatLong(Location Loc)
+        {
+            var coord = DoGeocoding.GetCoordinateForAddress(Loc.Address);
+            if (coord != null)
+            {
+                Loc.Coordinate = coord;
+                Loc.Latitude = coord.Latitude;
+                Loc.Longitude = coord.Longitude;
+                Loc.GeocodeStatus = GeocodeStatus.Ok;
+                this.Update(Loc);
+            }
+
+            //TODO: Heather - Update Geography type in the Database
+        }
+
 
         #endregion
 

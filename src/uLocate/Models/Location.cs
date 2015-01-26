@@ -169,7 +169,7 @@
         #region Public Methods
 
         /// <summary>
-        /// Add property data to this location
+        /// Add  STRING property data to this location
         /// </summary>
         /// <param name="PropertyAlias">
         /// The property alias.
@@ -179,13 +179,26 @@
         /// </param>
         public void AddPropertyData(string PropertyAlias, string PropertyValue)
         {
-            var NewProp = CreateNewProp(PropertyAlias);
-            NewProp.dataNvarchar = PropertyValue;
-            this.PropertyData.Add(NewProp);
+            var matchingPropData = this.PropertyData.Where(p => p.PropertyAlias == PropertyAlias).FirstOrDefault();
+
+            if (matchingPropData != null)
+            {
+                //update existing
+                matchingPropData.SetValue(PropertyValue);
+                Repositories.LocationPropertyDataRepo.Update(matchingPropData);
+            }
+            else
+            {
+                //Add new
+                var NewProp = CreateNewProp(PropertyAlias);
+                NewProp.SetValue(PropertyValue);
+                this.PropertyData.Add(NewProp);
+            }
+            
         }
 
         /// <summary>
-        /// Add property data to this location
+        /// Add INT property data to this location
         /// </summary>
         /// <param name="PropertyAlias">
         /// The property alias.
@@ -195,13 +208,25 @@
         /// </param>
         public void AddPropertyData(string PropertyAlias, int PropertyValue)
         {
-            var NewProp = CreateNewProp(PropertyAlias);
-            NewProp.dataInt = PropertyValue;
-            this.PropertyData.Add(NewProp);
+            var matchingPropData = this.PropertyData.Where(p => p.PropertyAlias == PropertyAlias).FirstOrDefault();
+
+            if (matchingPropData != null)
+            {
+                //update existing
+                matchingPropData.SetValue(PropertyValue);
+                Repositories.LocationPropertyDataRepo.Update(matchingPropData);
+            }
+            else
+            {
+                //Add new
+                var NewProp = CreateNewProp(PropertyAlias);
+                NewProp.SetValue(PropertyValue);
+                this.PropertyData.Add(NewProp);
+            }
         }
 
         /// <summary>
-        /// Add property data to this location
+        /// Add DATETIME property data to this location
         /// </summary>
         /// <param name="PropertyAlias">
         /// The property alias.
@@ -211,9 +236,21 @@
         /// </param>
         public void AddPropertyData(string PropertyAlias, DateTime PropertyValue)
         {
-            var NewProp = CreateNewProp(PropertyAlias);
-            NewProp.dataDate = PropertyValue;
-            this.PropertyData.Add(NewProp);
+            var matchingPropData = this.PropertyData.Where(p => p.PropertyAlias == PropertyAlias).FirstOrDefault();
+
+            if (matchingPropData != null)
+            {
+                //update existing
+                matchingPropData.SetValue(PropertyValue);
+                Repositories.LocationPropertyDataRepo.Update(matchingPropData);
+            }
+            else
+            {
+                //Add new
+                var NewProp = CreateNewProp(PropertyAlias);
+                NewProp.SetValue(PropertyValue);
+                this.PropertyData.Add(NewProp);
+            }
         }
 
         /// <summary>
