@@ -322,7 +322,7 @@
          */
         $scope.openDeleteDialog = function (location) {
             var currentNode = location;
-            currentNode.deleteId = location.id;
+            currentNode.deleteId = location.key;
             currentNode.deleteChannel = 'deleteLocation';
             navigationService.showDialog({
                 node: currentNode,
