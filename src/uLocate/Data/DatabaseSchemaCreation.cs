@@ -47,6 +47,9 @@
             {
                 var sql = string.Format("ALTER TABLE {0} ADD GeogCoordinate geography NULL ;", TableName);
                 _database.Execute(sql);
+
+                var sql2 = string.Format("CREATE SPATIAL INDEX SIndx_SpatialTable_geography_col1 ON {0} ([GeogCoordinate]);", TableName);
+                _database.Execute(sql2);
             }
         }
 

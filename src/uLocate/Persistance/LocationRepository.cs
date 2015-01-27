@@ -5,6 +5,8 @@
     using System.Linq;
     using System.Web.UI;
 
+    using Mindfly;
+
     using uLocate.Data;
     using uLocate.Helpers;
     using uLocate.Models;
@@ -139,6 +141,24 @@
             return CurrentCollection; 
         }
 
+        internal IEnumerable<Location> GetByGeoSearch(double SearchLat, double SearchLong, int MilesDistance)
+        {
+            CurrentCollection.Clear();
+            var sql = new Sql();
+            sql.Select("*")
+                .From<LocationDto>()
+                .Append(GeographyHelper.GetGeoSearchSql(SearchLat, SearchLong,  MilesDistance));
+
+            var dtoResult = Repositories.ThisDb.Query<LocationDto>(sql).ToList();
+
+            var converter = new DtoConverter();
+            CurrentCollection.AddRange(converter.ToLocationEntity(dtoResult));
+
+            FillChildren();
+
+            return CurrentCollection;
+        }
+
         public IEnumerable<Location> GetByKey(Guid[] Keys)
         {
             CurrentCollection.Clear();
@@ -197,13 +217,23 @@
 
             var updateCounter = 0;
             var checkedCounter = 0;
+            var dbCounter = 0;
             foreach (var location in this.GetAll())
             {
                 if (location.Latitude == 0 | location.Longitude == 0)
                 {
-                    UpdateLatLong(location);
-                    Repositories.LocationRepo.Update(location);
+                    this.UpdateLatLong(location);
                     updateCounter++;
+                }
+                else if (location.DbGeogNeedsUpdated)
+                {
+                    this.UpdateDbGeography(location);
+                    dbCounter++;
+                }
+                else if (!this.GeogIsValid(location))
+                {
+                    this.UpdateDbGeography(location);
+                    dbCounter++;
                 }
 
                 checkedCounter++;
@@ -212,9 +242,10 @@
             ReturnMsg.Success = true;
             ReturnMsg.Message =
                 string.Format(
-                    "{0} location(s) were checked for needing an update. {1} had their coordinates updated.",
+                    "{0} location(s) were checked for needing an update. {1} had their coordinates updated. Additionally, {2} had their database geography updated.",
                     checkedCounter,
-                    updateCounter);
+                    updateCounter, 
+                    dbCounter);
 
             return ReturnMsg;
 
@@ -230,9 +261,45 @@
                 Loc.Longitude = coord.Longitude;
                 Loc.GeocodeStatus = GeocodeStatus.Ok;
                 this.Update(Loc);
+                this.UpdateDbGeography(Loc);
+            }
+        }
+
+        public void UpdateDbGeography(Location Loc)
+        {
+            var sql = new Sql();
+            sql.Append("UPDATE [uLocate_Location]");
+            sql.Append("SET [GeogCoordinate] = geography::Point([Latitude], [Longitude], 4326)");
+            sql.Append(string.Format("WHERE  ([Key] = '{0}')", Loc.Key));
+
+            Repositories.ThisDb.Execute(sql);
+
+            Loc.DbGeogNeedsUpdated = false;
+            this.Update(Loc);
+        }
+
+        private bool GeogIsValid(Location entity)
+        {
+            bool Result = false;
+            string Lat = entity.Latitude.ToString();
+            Lat = Lat.Contains("-") ? Lat.Remove(8): Lat.Remove(7);
+            string Long = entity.Longitude.ToString();
+            Long = Long.Contains("-") ? Long.Remove(8) : Long.Remove(7);
+            string ValidMatchString = string.Concat(Lat, ",", Long);
+
+            var sql = new Sql();
+            sql.Append("SELECT TOP 1 CONCAT( [GeogCoordinate].Lat, ',', [GeogCoordinate].Long)");
+            sql.Append("FROM [uLocate_Location]");
+            sql.Append(string.Format("WHERE  ([Key] = '{0}')", entity.Key));
+           
+            var DbGeogString = Repositories.ThisDb.Query<string>(sql).FirstOrDefault();
+
+            if (ValidMatchString == DbGeogString)
+            {
+                Result = true;
             }
 
-            //TODO: Heather - Update Geography type in the Database
+            return Result;
         }
 
 

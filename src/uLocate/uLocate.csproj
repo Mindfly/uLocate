@@ -320,6 +320,7 @@
     <Compile Include="Providers\GeocodeProviderSettings.cs" />
     <Compile Include="Providers\IGeocodeProvider.cs" />
     <Compile Include="WebApi\DataTypeApiController.cs" />
+    <Compile Include="WebApi\LocationSearchApiController.cs" />
     <Compile Include="WebApi\LocationTypeApiController.cs" />
     <Compile Include="WebApi\ImportExportApiController.cs" />
     <Compile Include="WebApi\TestApiController.cs" />

@@ -41,14 +41,12 @@
         /// Gets or sets the latitude.
         /// </summary>
         [Column("Latitude")]
-        //[NullSetting(NullSetting = NullSettings.Null)]
         public double Latitude { get; set; }
 
         /// <summary>
         /// Gets or sets the longitude.
         /// </summary>
         [Column("Longitude")]
-        //[NullSetting(NullSetting = NullSettings.Null)]
         public double Longitude { get; set; }
 
         /// <summary>
@@ -92,7 +90,6 @@
         [Constraint(Default = "getdate()")]
         public DateTime UpdateDate { get; set; }
 
-        
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationDto"/> class and sets some default values.
         /// </summary>
