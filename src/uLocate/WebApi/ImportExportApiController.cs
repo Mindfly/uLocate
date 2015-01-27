@@ -27,7 +27,21 @@
 
         /// <summary>
         /// Function to import locations from a csv file
-        /// /umbraco/backoffice/uLocate/ImportExportApi/ImportLocationsCSV?FileName=xxx
+        /// /umbraco/backoffice/uLocate/ImportExportApi/ImportLocationsCSV
+        /// </summary>
+        /// <returns>
+        /// The <see cref="StatusMessage"/>.
+        /// </returns>
+        [AcceptVerbs("GET")]
+        public StatusMessage ImportLocationsCSV()
+        {
+            string file = "~/uLocateLocationImport.csv";
+            return uLocate.IO.Import.LocationsCSV(file);
+        }
+
+        /// <summary>
+        /// Function to import locations from a csv file
+        /// /umbraco/backoffice/uLocate/ImportExportApi/ImportLocationsCSV?FileName=~/uLocateLocationImport.csv
         /// </summary>
         /// <param name="FileName">
         /// The file name.
@@ -38,8 +52,43 @@
         [AcceptVerbs("GET")]
         public StatusMessage ImportLocationsCSV(string FileName)
         {
-            string file = "~/uLocateLocationImport.csv";
+            string file;
+
+            if (FileName == string.Empty)
+            {
+                file = "~/uLocateLocationImport.csv";
+            }
+            else
+            {
+                file = FileName;
+            }
             return uLocate.IO.Import.LocationsCSV(file);
+        }
+
+        /// <summary>
+        /// Function to import locations from a csv file
+        /// /umbraco/backoffice/uLocate/ImportExportApi/ImportLocationsCSV?FileName=~/uLocateLocationImport.csv&LocationTypeKey=xxx
+        /// </summary>
+        /// <param name="FileName">
+        /// The file name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="StatusMessage"/>.
+        /// </returns>
+        [AcceptVerbs("GET")]
+        public StatusMessage ImportLocationsCSV(string FileName, Guid LocationTypeKey)
+        {
+            string file;
+
+            if (FileName == string.Empty)
+            {
+                file = "~/uLocateLocationImport.csv";
+            }
+            else
+            {
+                file = FileName;
+            }
+            return uLocate.IO.Import.LocationsCSV(file, LocationTypeKey);
         }
 
     }

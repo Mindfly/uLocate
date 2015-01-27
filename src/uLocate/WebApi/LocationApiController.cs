@@ -74,13 +74,11 @@
         /// The <see cref="LocationType"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public Location Update(Location UpdatedLocation)
+        public JsonLocation Update(JsonLocation UpdatedLocation)
         {
-            //TODO: Heather - Accept/Return JsonLocation
+            var Result = uLocate.Helpers.Persistence.UpdateLocation(UpdatedLocation.ConvertToLocation());
 
-            var Result = uLocate.Helpers.Persistence.UpdateLocation(UpdatedLocation);
-
-            return Result;
+            return new JsonLocation(Result);
         }
 
         /// <summary>
@@ -94,11 +92,11 @@
         /// The <see cref="Location"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public Location GetByKey(Guid Key)
+        public JsonLocation GetByKey(Guid Key)
         {
             var Result = Repositories.LocationRepo.GetByKey(Key);
 
-            return Result;
+            return new JsonLocation(Result);
         }
 
         /// <summary>

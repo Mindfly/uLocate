@@ -155,6 +155,16 @@
                 newLoc.AddPropertyData("Email", locFlat.Email);
 
                 Repositories.LocationRepo.Insert(newLoc);
+
+                if (newLoc.Latitude != 0 && newLoc.Longitude != 0)
+                {
+                    Repositories.LocationRepo.UpdateDbGeography(newLoc);
+                }
+                else
+                {
+                    newLoc.DbGeogNeedsUpdated = true;
+                    Repositories.LocationRepo.Update(newLoc);
+                }
             }
             catch (Exception ex)
             {
