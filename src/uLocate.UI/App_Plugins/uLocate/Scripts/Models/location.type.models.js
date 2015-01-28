@@ -3,10 +3,13 @@
     models.LocationTypeProperty = function(data) {
         var self = this;
         if (data === undefined) {
+            self.isDefaultProp = false;
+            self.key = '00000000-0000-0000-0000-000000000000';
             self.propAlias = '';
             self.propName = '';
             self.propType = '';
         } else {
+            self.isDefaultProp = data.isDefaultProp;
             self.propAlias = data.propAlias;
             self.propName = data.propName;
             self.propType = data.propType;
@@ -18,7 +21,7 @@
         if (data === undefined) {
             self.description = '';
             self.icon = '';
-            self.key = '';
+            self.key = '00000000-0000-0000-0000-000000000000';
             self.name = '';
             self.properties = [new uLocate.Models.LocationTypeProperty()];
         } else {

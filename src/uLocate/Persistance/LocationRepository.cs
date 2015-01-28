@@ -179,7 +179,7 @@
             return CurrentCollection;
         }
 
-        public List<Location> GetPaged(long PageNumber, long ItemsPerPage, string WhereClause)
+        public List<JsonLocation> GetPaged(long PageNumber, long ItemsPerPage, string WhereClause)
         {
             Sql sql = new Sql();
             sql.Append(
@@ -196,7 +196,14 @@
             CurrentCollection.AddRange(converter.ToLocationEntity(dtoResult));
 
             FillChildren();
-            return CurrentCollection;
+            var ReturnList = new List<JsonLocation>();
+
+            foreach (var loc in CurrentCollection)
+            {
+                ReturnList.Add(new JsonLocation(loc));
+            }
+
+            return ReturnList;
         }
 
         public IEnumerable<JsonLocation> ConvertToJsonLocations(IEnumerable<Location> Locations)

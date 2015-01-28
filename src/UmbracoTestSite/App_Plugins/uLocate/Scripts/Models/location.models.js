@@ -1,35 +1,5 @@
 ﻿(function(models, undefined) {
 
-    models.Address = function(data) {
-        var self = this;
-        if (data === undefined) {
-            self.address1 = '';
-            self.address2 = '';
-            self.locality = '';
-            self.region = '';
-            self.postalCode = '';
-            self.countryName = '';
-        } else {
-            self.address1 = data.address1;
-            self.address2 = data.address2;
-            self.locality = data.locality;
-            self.region = data.region;
-            self.postalCode = data.postalCode;
-            self.countryName = data.countryName;
-        }
-    };
-
-    models.Coordinates = function(data) {
-        var self = this;
-        if (data === undefined) {
-            self.latitude = 0;
-            self.longitude = 0;
-        } else {
-            self.latitude = data.latitude;
-            self.longitude = data.longitude;
-        }
-    };
-
     models.GetLocationsApiRequest = function(data) {
         var self = this;
         if (data === undefined) {
@@ -50,35 +20,79 @@
     models.Location = function(data) {
         var self = this;
         if (data === undefined) {
-            self.address = new uLocate.Models.Address();
-            self.coordinates = new uLocate.Models.Coordinates();
+            self.address1 = '';
+            self.address2 = '';
+            self.countryCode = '';
+            self.customPropertyData = [];
             self.email = '';
-            self.key = '';
+            self.key = '00000000-0000-0000-0000-000000000000';
+            self.latitude = 0;
+            self.locality = '';
+            self.locationTypeKey = '00000000-0000-0000-0000-000000000000';
+            self.longitude = 0;
             self.name = '';
             self.phone = '';
-            self.type = '';
-            self.properties = [];
+            self.postalCode = '';
+            self.region = '';
         } else {
-            self.address = new uLocate.Models.Address(data.address);
-            if (data.coordinates) {
-                self.coordinates = new uLocate.Models.Coordinates(data.coordinates);
+            self.address1 = data.address1;
+            self.address2 = data.address2;
+            self.countryCode = data.countryCode;
+            self.customPropertyData = _.map(data.customPropertyData, function(property) {
+                return new uLocate.Models.LocationProperty(property);
+            });
+            if ((typeof data.email)!== "object") {
+                self.email = data.email;
             } else {
-                self.coordinates = new uLocate.Models.Coordinates({
-                    latitude: data.latitude,
-                    longitude: data.longitude
-                });
+                self.email = '';
             }
-            self.email = data.email;
             self.key = data.key;
-            if (data.locationTypeName) {
-                self.locationTypeName = data.locationTypeName;
-            } else {
-                self.locationTypeName = data.locationType.name;
-            }
+            self.latitude = data.latitude;
+            self.locality = data.locality;
             self.locationTypeKey = data.locationTypeKey;
+            self.longitude = data.longitude;
             self.name = data.name;
-            self.phone = data.phone;
+            if ((typeof data.phone) !== "object") {
+                self.phone = data.phone;
+            } else {
+                self.phone = '';
+            }
+            self.postalCode = data.postalCode;
+            self.region = data.region;
         }
     };
+
+    models.LocationsPagedResponse = function (data) {
+        var self = this;
+        if (data === undefined) {
+            self.locations = [];
+            self.pageNum = 0;
+            self.itemsPerPage = 0;
+            self.totalItems = 0;
+            self.totalPages = 0;
+        } else {
+            self.locations = _.map(data.locations, function (location) {
+                return new uLocate.Models.Location(location);
+            });
+            self.pageNum = data.pageNum;
+            self.itemsPerPage = data.itemsPerPage;
+            self.totalItems = data.totalItems;
+            self.totalPages = Math.ceil(data.totalItems / data.itemsPerPage);
+        }
+    };
+
+    models.LocationProperty = function (data) {
+        var self = this;
+        if (data === undefined) {
+            self.key = '00000000-0000-0000-0000-000000000000';
+            self.propAlias = '';
+            self.propData = '';
+        } else {
+            self.key = data.key;
+            self.propAlias = data.propAlias;
+            self.propData = data.propData;
+
+        }
+    }
 
 }(window.uLocate.Models = window.uLocate.Models || {}));

@@ -56,13 +56,38 @@
          * @description - Get a specific location.
          */
 		locationApiFactory.getAllLocations = function () {
-		    console.info("In the proper location API getAllLocations function.");
 		    return $http.get('/umbraco/backoffice/uLocate/LocationApi/GetAll').then(function (response) {
 		        if (response.data) {
 		            var data = _.map(response.data, function (location) {
-		                console.info(locationApiFactory.downCaseProperties(location));
 		                return new uLocate.Models.Location(locationApiFactory.downCaseProperties(location));
 		            });
+		            return data;
+		        } else {
+		            return false;
+		        }
+		    });
+		};
+
+	    /**
+         * @ngdoc method
+         * @name getAllLocationsPaged
+         * @function
+         * 
+         * @param {uLocate.Models.GetLocationsApiRequest} request
+         * @returns {array of uLocate.Models.Location} - Locations retrieved.
+         * @description - Get a paged list of locations.
+         */
+		locationApiFactory.getAllLocationsPaged = function (request) {
+		    if (!request.pageNum) {
+		        request.pageNum = 0;
+		    }
+		    if (!request.itemsPerPage) {
+		        request.itemsPerPage = 100;
+		    }
+		    var config = { params: { pageNum: request.pageNum, itemsPerPage: request.itemsPerPage } };
+		    return $http.get('/umbraco/backoffice/uLocate/LocationApi/GetAllPaged', config).then(function (response) {
+		        if (response.data) {
+		            var data = new uLocate.Models.LocationsPagedResponse(locationApiFactory.downCaseProperties(response.data));
 		            console.info(data);
 		            return data;
 		        } else {
@@ -104,7 +129,7 @@
          */
 		locationApiFactory.updateLocation = function (location) {
 	        var request = new uLocate.Models.Location(location);
-	        return $http.post('/umbraco/backoffice/uLocate/LocationTypeApi/Update', request).then(function (response) {
+	        return $http.post('/umbraco/backoffice/uLocate/LocationApi/Update', request).then(function (response) {
 	            if (response.data) {
 	                var data = locationApiFactory.downCaseProperties(response.data);
 	                return data;

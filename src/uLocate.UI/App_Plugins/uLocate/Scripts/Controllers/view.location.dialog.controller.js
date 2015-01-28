@@ -2,10 +2,41 @@
 
     controllers.ViewLocationDialogController = function($scope, dialogService) {
 
-        $scope.init = function() {
-            console.info('You passed in the following data.');
-            console.info($scope.dialogData);
+        /*-------------------------------------------------------------------
+         * Initialization Methods
+         * ------------------------------------------------------------------*/
+
+        /**
+         * @ngdoc method
+         * @name init
+         * @function
+         * 
+         * @description - Called when the $scope is initalized.
+         */
+        $scope.init = function () {
+            $scope.setVariables();
         };
+
+        /**
+         * @ngdoc method
+         * @name setVariables
+         * @function
+         * 
+         * @description - Sets the initial state for $scope variables.
+         */
+        $scope.setVariables = function () {
+            $scope.location = $scope.dialogData.location;
+        };
+
+        /*-------------------------------------------------------------------
+         * Event Handler Methods
+         *-------------------------------------------------------------------*/
+
+        /*-------------------------------------------------------------------
+         * Helper Methods
+         * ------------------------------------------------------------------*/
+
+        /*-------------------------------------------------------------------*/
 
         $scope.init();
     };

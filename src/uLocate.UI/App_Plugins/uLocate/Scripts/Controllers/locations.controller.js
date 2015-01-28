@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function ($scope, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateMapService, uLocateLocationApiService) {
+    controllers.LocationsController = function ($scope, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateMapService, uLocateLocationApiService, uLocateLocationTypeApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -137,6 +137,7 @@
             $scope.form = {};
             $scope.locations = [];
             $scope.locationsLoaded = false;
+            $scope.locationTypes = [];
             $scope.newLocation = new uLocate.Models.Location();
             $scope.openMenu = false;
             $scope.options = {
@@ -246,16 +247,16 @@
             }
             if (isValid) {
                 notificationsService.success("Acquiring lat/lng for this address. This may take a moment. Do not leave or reload page until location is created.");
-                var lat = location.coordinates.latitude;
-                var lng = location.coordinates.longitude;
+                var lat = location.latitude;
+                var lng = location.longitude;
                 var createPromise;
                 if ((lat == 0 & lng == 0) || lat == '' || lng == '') {
-                    var address = $scope.buildAddressString(location.address);
+                    var address = $scope.buildAddressString(location);
                     var geocodePromise = uLocateMapService.geocode(address);
                     geocodePromise.then(function(geocodeResponse) {
                         if (geocodeResponse) {
-                            location.coordinates.latitude = geocodeResponse[0];
-                            location.coordinates.longitude = geocodeResponse[1];
+                            location.latitude = geocodeResponse[0];
+                            location.longitude = geocodeResponse[1];
                             createPromise = uLocateLocationApiService.createLocation(location);
                             createPromise.then(function(createResponse) {
                                 notificationsService.success("Location '" + location.name + "' successfully created. #h5yr!");
@@ -430,7 +431,7 @@
          */
         $scope.zoomToLocation = function (location) {
             var view = new uLocate.Models.MapView({
-                coordinates: [location.coordinates.latitude, location.coordinates.longitude],
+                coordinates: [location.latitude, location.longitude],
                 smoothAnimation: true,
                 zoom: 15
             });
@@ -440,7 +441,7 @@
                 var position = marker.getPosition();
                 var lat = position.lat();
                 var lng = position.lng();
-                if (lat === location.coordinates.latitude && lng === location.coordinates.longitude) {
+                if (lat === location.latitude && lng === location.longitude) {
                     marker.setAnimation(google.maps.Animation.BOUNCE);
                     setTimeout(function() { marker.setAnimation(null); }, 1500);
                 }
@@ -461,7 +462,7 @@
         $scope.addLocationMarkersToMap = function () {
             uLocateMapService.deleteAllMarkers();
             _.each($scope.locations, function(location) {
-                var coord = [location.coordinates.latitude, location.coordinates.longitude];
+                var coord = [location.latitude, location.longitude];
                 uLocateMapService.addMarker($scope.map, coord, { title: location.name, icon: $scope.customMarkerIcon });
             });
             uLocateMapService.fitBoundsToMarkers($scope.map);
@@ -476,16 +477,16 @@
          * @returns {string} string - The address in string form.
          * @description - Converts a provided address object into a string.
          */
-        $scope.buildAddressString = function(address) {
+        $scope.buildAddressString = function(location) {
             var string = '';
-            string += address.streetAddress;
-            if (address.extendedAddress != null && (typeof address.extendedAddress) != 'undefined' && address.extendedAddress != false) {
-                string += ' ' + address.extendedAddress;
+            string += location.address1;
+            if (location.address2 != null && (typeof location.address2) != 'undefined' && location.address2 != false) {
+                string += ' ' + location.address2;
             }
-            string += ', ' + address.locality;
-            string += ', ' + address.region;
-            string += ' ' + address.postalCode;
-            string += ' ' + address.countryName;
+            string += ', ' + location.locality;
+            string += ', ' + location.region;
+            string += ' ' + location.postalCode;
+            string += ' ' + location.countryCode;
             return string;
         };
 
@@ -530,23 +531,69 @@
                 sortBy: $scope.sortBy,
                 sortOrder: $scope.sortOrder
             });
-            var promise = uLocateLocationApiService.getAllLocations(request);
+            var promise = uLocateLocationApiService.getAllLocationsPaged(request);
             promise.then(function (response) {
-                console.info(response);
-                $scope.locations = _.map(response.locations, function(location) {
-                    return new uLocate.Models.Location(location);
-                });
-                $scope.page = response.page;
-                $scope.perPage = response.perPage;
+                if (response.locations) {
+                    $scope.locations = _.map(response.locations, function(location) {
+                        return new uLocate.Models.Location(location);
+                    });
+                }
+                $scope.page = response.pageNum;
+                $scope.perPage = response.itemsPerPage;
                 _.each($scope.options.perPage, function(option, index) {
                     if (option == response.perPage) {
                         $scope.selected.perPage = $scope.options.perPage[index];
                     }
                 });
                 $scope.totalPages = response.totalPages;
+                $scope.getLocationTypes();
                 $scope.locationsLoaded = true;
                 $scope.addLocationMarkersToMap();
             });
+        };
+
+        /**
+        * @ngdoc method
+        * @name getLocationTypes
+        * @function
+        * 
+        * @description - Tries to load location types from constants. If not there, then pull them from API and assign to constants.
+        */
+        $scope.getLocationTypes = function () {
+            if (uLocate.Constants.LOCATION_TYPES.length < 1) {
+                var promise = uLocateLocationTypeApiService.getAllLocationTypes();
+                promise.then(function (locationTypes) {
+                    if (locationTypes) {
+                        $scope.locationTypes = _.map(locationTypes, function (locationType) {
+                            return new uLocate.Models.LocationType(locationType);
+                        });
+                        uLocate.Constants.LOCATION_TYPES = $scope.locationTypes;
+                    }
+                });
+            } else {
+                $scope.locationTypes = uLocate.Constants.LOCATION_TYPES;
+            }
+        };
+
+        /**
+        * @ngdoc method
+        * @name getTypeOfLocation
+        * @function
+        * 
+        * @param {uLocate.Models.Location} location
+        * @returns {boolean}
+        * @description - Acquire the type name of the location provided.
+        */
+        $scope.getTypeOfLocation = function (location) {
+            var result = '';
+            if ($scope.locationTypes.length > 0) {
+                _.each($scope.locationTypes, function(type) {
+                    if (type.key === location.locationTypeKey) {
+                        result = type.name;
+                    }
+                });
+            }
+            return result;
         };
 
         /**
@@ -615,16 +662,18 @@
         */
         $scope.processEditDialog = function (data) {
             if (data) {
+                console.info(data);
                 var location = data.location;
                 var updatePromise;
                 if (data.generateLatLng) {
-                    var address = $scope.buildAddressString(location.address);
+                    var address = $scope.buildAddressString(location);
+                    console.info(address);
                     notificationsService.success("Acquiring lat/lng for this address. This may take a moment. Do not leave or reload page.");
                     var geocodePromise = uLocateMapService.geocode(address);
                     geocodePromise.then(function (geocodeResponse) {
                         if (geocodeResponse) {
-                            location.coordinates.latitude = geocodeResponse[0];
-                            location.coordinates.longitude = geocodeResponse[1];
+                            location.latitude = geocodeResponse[0];
+                            location.longitude = geocodeResponse[1];
                             updatePromise = uLocateLocationApiService.updateLocation(location);
                             updatePromise.then(function (response) {
                                 if (response) {
@@ -659,6 +708,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateMapService', 'uLocateLocationApiService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateMapService', 'uLocateLocationApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

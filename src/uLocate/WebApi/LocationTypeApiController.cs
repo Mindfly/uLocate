@@ -135,11 +135,18 @@
         /// The <see cref="List"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public List<LocationType> GetAll()
+        public List<JsonLocationType> GetAll()
         {
-            var Result = Repositories.LocationTypeRepo.GetAll().ToList();
+            var locationTypes = Repositories.LocationTypeRepo.GetAll().ToList();
 
-            return Result;
+            var returnList = new List<JsonLocationType>();
+
+            foreach (var loc in locationTypes)
+            {
+                returnList.Add(new JsonLocationType(loc));
+            }
+
+            return returnList;
         }
 
     }

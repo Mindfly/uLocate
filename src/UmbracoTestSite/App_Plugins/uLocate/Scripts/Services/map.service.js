@@ -130,6 +130,9 @@
                 var response = false;
                 if (status == google.maps.GeocoderStatus.OK) {
                     response = results[0].geometry.location;
+                } else {
+                    console.info(results);
+                    console.info(status);
                 }
                 deferred.resolve(response);
             });

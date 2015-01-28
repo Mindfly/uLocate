@@ -1183,4 +1183,6 @@
         }
     ];
 
+    constants.LOCATION_TYPES = [];
+
 }(window.uLocate.Constants = window.uLocate.Constants || {}));

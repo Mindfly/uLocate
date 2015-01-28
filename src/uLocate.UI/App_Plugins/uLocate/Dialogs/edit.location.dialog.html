@@ -10,15 +10,15 @@
             </div>
             <div class="control-group row-fluid">
                 <label>Address 1 <span class="validation-error" ng-class="{'show': isInvalidField(editLocationDialogForm.address1)}">- Required</span></label>
-                <input type="text" class="span12" name="address1" ng-model="dialogData.location.address.streetAddress" required />
+                <input type="text" class="span12" name="address1" ng-model="dialogData.location.address1" required />
             </div>
             <div class="control-group row-fluid">
                 <label>Address 2</label>
-                <input type="text" class="span12" ng-model="dialogData.location.address.extendedAddress" />
+                <input type="text" class="span12" ng-model="dialogData.location.address2" />
             </div>
             <div class="control-group row-fluid">
                 <label>City <span class="validation-error" ng-class="{'show': isInvalidField(editLocationDialogForm.locality)}">- Required</span></label>
-                <input type="text" class="span12" name="locality" ng-model="dialogData.location.address.locality" required />
+                <input type="text" class="span12" name="locality" ng-model="dialogData.location.locality" required />
             </div>
             <div class="control-group row-fluid" ng-show="hasProvinces()">
                 <label>{{provinceLabel}}</label>
@@ -26,11 +26,11 @@
             </div>
             <div class="control-group row-fluid" ng-show="!hasProvinces()">
                 <label>{{provinceLabel}} <span class="validation-error" ng-class="{'show': isInvalidField(editLocationDialogForm.region) && !hasProvinces()}">- Required</span></label>
-                <input type="text" class="span12" name="region" ng-model="dialogData.location.address.region" ng-required="!hasProvinces()" />
+                <input type="text" class="span12" name="region" ng-model="dialogData.location.region" ng-required="!hasProvinces()" />
             </div>
             <div class="control-group row-fluid">
                 <label>Zip/Postal Code <span class="validation-error" ng-class="{'show': isInvalidField(editLocationDialogForm.postalCode)}">- Required</span></label>
-                <input type="text" class="span12" name="postalCode" ng-model="dialogData.location.address.postalCode" required />
+                <input type="text" class="span12" name="postalCode" ng-model="dialogData.location.postalCode" required />
             </div>
             <div class="control-group row-fluid">
                 <label>Country</label>
@@ -42,11 +42,11 @@
             <div ng-show="!shouldHideCoordinatesEditor">
                 <div class="control-group row-fluid">
                     <label>Latitude <span class="validation-error" ng-class="{'show': isInvalidField(editLocationDialogForm.lat) && !shouldHideCoordinatesEditor}">- Required</span></label>
-                    <input type="text" class="span12" name="lat" ng-model="dialogData.location.coordinates.latitude" ng-required="!shouldHideCoordinatesEditor" />
+                    <input type="text" class="span12" name="lat" ng-model="dialogData.location.latitude" ng-required="!shouldHideCoordinatesEditor" />
                 </div>
                 <div class="control-group row-fluid">
                     <label>Longitude <span class="validation-error" ng-class="{'show': isInvalidField(editLocationDialogForm.lng) && !shouldHideCoordinatesEditor}">- Required</span></label>
-                    <input type="text" class="span12" name="lng" ng-model="dialogData.location.coordinates.longitude" ng-required="!shouldHideCoordinatesEditor" />
+                    <input type="text" class="span12" name="lng" ng-model="dialogData.location.longitude" ng-required="!shouldHideCoordinatesEditor" />
                 </div>
             </div>
             <div class="control-group row-fluid">

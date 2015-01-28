@@ -73,7 +73,7 @@
         /// <returns>
         /// The <see cref="LocationType"/>.
         /// </returns>
-        [System.Web.Http.AcceptVerbs("GET")]
+        [System.Web.Http.AcceptVerbs("GET", "POST")]
         public JsonLocation Update(JsonLocation UpdatedLocation)
         {
             var Result = uLocate.Helpers.Persistence.UpdateLocation(UpdatedLocation.ConvertToLocation());
@@ -136,21 +136,28 @@
         /// Get all locations as a paged list
         /// /umbraco/backoffice/uLocate/LocationApi/GetAllPaged?PageNum=1&ItemsPerPage=5
         /// </summary>
-        /// <param name="PageNum">
+        /// <param name="pageNum">
         /// The page num.
         /// </param>
-        /// <param name="ItemsPerPage">
+        /// <param name="itemsPerPage">
         /// The items per page.
         /// </param>
         /// <returns>
         /// The <see cref="List"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public List<Location> GetAllPaged(long PageNum, long ItemsPerPage)
+        public PagedLocations GetAllPaged(long pageNum, long itemsPerPage)
         {
-            var Result = Repositories.LocationRepo.GetPaged(PageNum, ItemsPerPage, string.Empty);
+            var paged = Repositories.LocationRepo.GetPaged(pageNum + 1, itemsPerPage, string.Empty);
+            var result = new PagedLocations() 
+                            {
+                                 Locations = paged,
+                                 PageNum = pageNum,
+                                 ItemsPerPage = itemsPerPage,
+                                 TotalItems = paged.Count
+                             };
 
-            return Result;
+            return result;
         }
 
         /// <summary>

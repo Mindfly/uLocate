@@ -28,14 +28,14 @@
          */
         $scope.attemptToSelectCountryAndProvince = function () {
             var location = $scope.dialogData.location;
-            if (location.address.countryName != '' && location.address.countryName != undefined) {
+            if (location.countryCode != '' && location.countryCode != undefined) {
                 _.each($scope.options.countries, function(country, index) {
-                    if (location.address.countryName === country.name) {
+                    if (location.countryCode === country.name) {
                         $scope.selected.country = $scope.options.countries[index];
-                        if (location.address.region != '' && location.address.region != undefined) {
-                            _.each($scope.selected.country.provinces, function(region, index) {
-                                if (location.address.region === region.name || location.address.region === region.code) {
-                                    $scope.selected.region = $scope.selected.country.provinces[index];
+                        if (location.region != '' && location.region != undefined) {
+                            _.each($scope.selected.country.provinces, function(region, regionIndex) {
+                                if (location.region === region.name || location.region === region.code) {
+                                    $scope.selected.region = $scope.selected.country.provinces[regionIndex];
                                 }
                             });
                         }
@@ -54,6 +54,7 @@
         $scope.buildCountriesList = function () {
             _.each(uLocate.Constants.COUNTRIES, function (country) {
                 var newCountry = {
+                    countryCode: country.countryCode,
                     name: country.name,
                     provinceLabel: country.provinceLabel,
                     provinces: _.map(country.provinces, function (province) {
@@ -111,12 +112,12 @@
         $scope.save = function () {
             $scope.formSubmitted = true;
             if ($scope.editLocationDialogForm.$valid) {
-                $scope.dialogData.location.address.countryName = $scope.selected.country.name;
-                if ($scope.hasRegions) {
+                $scope.dialogData.location.countryCode = $scope.selected.country.countryCode;
+                if ($scope.hasProvinces()) {
                     if ($scope.selected.region.code != '') {
-                        $scope.dialogData.location.address.region = $scope.selected.region.code;
+                        $scope.dialogData.location.region = $scope.selected.region.code;
                     } else {
-                        $scope.dialogData.location.address.region = $scope.selected.region.name;
+                        $scope.dialogData.location.region = $scope.selected.region.name;
                     }
                 }
                 $scope.dialogData.generateLatLng = $scope.shouldHideCoordinatesEditor;
@@ -195,7 +196,7 @@
                 }
             }
             return result;
-        }
+        };
 
         /*-------------------------------------------------------------------*/
 

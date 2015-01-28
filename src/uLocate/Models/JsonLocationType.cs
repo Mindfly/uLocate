@@ -10,6 +10,7 @@
     public class JsonLocationType
     {
         public Guid Key { get; set; }
+
         public string Name { get; set; }
         public string Description { get; set; }
         public string Icon { get; set; }
@@ -26,7 +27,6 @@
             this.Name = ConvertedFromLocationType.Name;
             this.Description = ConvertedFromLocationType.Description;
             this.Icon = ConvertedFromLocationType.Icon;
-
             this.Properties = new List<JsonTypeProperty>();
             foreach (var Prop in ConvertedFromLocationType.Properties)
             {
@@ -35,7 +35,7 @@
                 JsonProp.PropAlias = Prop.Alias;
                 JsonProp.PropName = Prop.Name;
                 JsonProp.PropType = Prop.DataTypeId;
-
+                JsonProp.IsDefaultProp = Prop.IsDefaultProp;
                 this.Properties.Add(JsonProp);
              }
         }
@@ -102,6 +102,6 @@
         public string PropName { get; set; }
         public string PropAlias { get; set; }
         public int PropType { get; set; }
-
+        public Boolean IsDefaultProp { get; set; }
     }
 }
