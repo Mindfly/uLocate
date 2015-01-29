@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace uLocate.Persistance
+﻿namespace uLocate.Persistance
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+
     using uLocate.Data;
     using uLocate.Models;
 
@@ -17,7 +18,7 @@ namespace uLocate.Persistance
     /// <summary>
     /// Repository for working with LocationTypeProperties
     /// </summary>
-    internal class LocationTypePropertyRepository : RepositoryBase<LocationTypeProperty> //, ILocationTypePropertyRepository
+    internal class LocationTypePropertyRepository : RepositoryBase<LocationTypeProperty>
     {
         /// <summary>
         /// The current collection of Location Types
@@ -36,7 +37,6 @@ namespace uLocate.Persistance
         public LocationTypePropertyRepository(UmbracoDatabase database, IRuntimeCacheProvider cache)
             : base(database, cache)
         {
-            // this._database = database;
         }
 
         #region Public Methods
@@ -53,10 +53,25 @@ namespace uLocate.Persistance
             NewItemKey = Entity.Key;
         }
 
-        public void Delete(Guid PropertyKey)
+        public StatusMessage Delete(Guid PropertyKey)
         {
+            StatusMessage ReturnMsg = new StatusMessage();
+
             LocationTypeProperty ThisProperty = this.GetByKey(PropertyKey);
-            this.Delete(ThisProperty);
+            if (ThisProperty != null)
+            {
+                PersistDeletedItem(ThisProperty, out ReturnMsg);
+            }
+            else
+            {
+                ReturnMsg.Success = false;
+                ReturnMsg.Code = "NotFound";
+                ReturnMsg.ObjectName = PropertyKey.ToString();
+                ReturnMsg.Message = string.Format("Location Type Property with key '{0}' was not found and can not be deleted.", ReturnMsg.ObjectName);
+
+            }
+
+            return ReturnMsg;
         }
 
         public StatusMessage Delete(LocationTypeProperty Entity)
@@ -69,16 +84,15 @@ namespace uLocate.Persistance
 
         public void Update(LocationTypeProperty Entity)
         {
-            PersistUpdatedItem(Entity);
-        }
-
-        public LocationTypeProperty GetByKey(Guid Key)
-        {
-            CurrentCollection.Clear();
-            CurrentCollection.Add(Get(Key));
-            FillChildren();
-
-            return CurrentCollection[0];
+            var StoredEntity = this.GetByKey(Entity.Key);
+            if (StoredEntity != null)
+            {
+                PersistUpdatedItem(Entity);
+            }
+            else
+            {
+                this.PersistNewItem(Entity);
+            }
         }
 
         public LocationTypeProperty GetByAlias(string PropertyAlias)
@@ -103,6 +117,32 @@ namespace uLocate.Persistance
             }
 
             return CurrentCollection[0];
+        }
+   
+
+        /// <summary>
+        /// Get the property by Key.
+        /// </summary>
+        /// <param name="Key">
+        /// The key.
+        /// </param>
+        /// <returns>
+        /// The <see cref="LocationTypeProperty"/>.
+        /// </returns>
+        public LocationTypeProperty GetByKey(Guid Key)
+        {
+            CurrentCollection.Clear();
+            CurrentCollection.Add((LocationTypeProperty)Get(Key));
+            FillChildren();
+
+            if (CurrentCollection.Count != 0)
+            {
+                return CurrentCollection[0];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public IEnumerable<LocationTypeProperty> GetByKey(Guid[] Keys)
@@ -252,13 +292,20 @@ namespace uLocate.Persistance
         protected override Sql GetBaseQuery(bool isCount)
         {
             var MySql = new Sql();
-            MySql.Select("*").From<LocationTypePropertyDto>();
+            MySql.Select(isCount ? "COUNT(*)" : "*")
+            .From<LocationTypePropertyDto>();
             return MySql;
         }
 
+        /// <summary>
+        /// Gets the base where clause
+        /// </summary>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
         protected override string GetBaseWhereClause()
         {
-            return " WHERE Id= @0";
+            return " WHERE Key= @0";
         }
 
         protected override IEnumerable<string> GetDeleteClauses()
@@ -279,18 +326,18 @@ namespace uLocate.Persistance
         {
             foreach (var Prop in CurrentCollection)
             {
-                var PropDtId = Prop.DataTypeId;
-                var MySql = new Sql();
-                MySql
-                    .Select("*")
-                    .From<cmsDataTypeDto>()
-                    .Where<cmsDataTypeDto>(n => n.DataTypeId == PropDtId);
-
-                var MatchingDt = Repositories.ThisDb.Fetch<cmsDataTypeDto>(MySql).FirstOrDefault();
-                if (MatchingDt != null)
+                if (Prop != null)
                 {
-                    Prop.DatabaseType = MatchingDt.DatabaseType;
-                    Prop.PropertyEditorAlias = MatchingDt.PropertyEditorAlias;
+                    var PropDtId = Prop.DataTypeId;
+                    var MySql = new Sql();
+                    MySql.Select("*").From<cmsDataTypeDto>().Where<cmsDataTypeDto>(n => n.DataTypeId == PropDtId);
+
+                    var MatchingDt = Repositories.ThisDb.Fetch<cmsDataTypeDto>(MySql).FirstOrDefault();
+                    if (MatchingDt != null)
+                    {
+                        Prop.DatabaseType = MatchingDt.DatabaseType;
+                        Prop.PropertyEditorAlias = MatchingDt.PropertyEditorAlias;
+                    }
                 }
             }
         }

@@ -97,6 +97,8 @@
                 NewProp.SortOrder = PropMaxSortNum() + 1;
             }
 
+            Repositories.LocationTypePropertyRepo.Insert(NewProp);
+
             this.Properties.Add(NewProp);
         }
 
