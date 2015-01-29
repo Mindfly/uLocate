@@ -6,6 +6,48 @@
 
         /**
          * @ngdoc method
+         * @name createLocationType
+         * @function
+         * 
+         * @param {string} name - Name for new location type.
+         * @returns {string} - The guid of the newly created location
+         * @description - Create a new location type.
+         */
+        locationTypeApiFactory.createLocationType = function (name) {
+            return $http.get('/umbraco/backoffice/ulocate/LocationTypeApi/Create?LocationTypeName=' + name).then(function (response) {
+                if (response.data) {
+                    var guid = response.data;
+                    guid = guid.replace(/['"]+/g, '');
+                    console.info(guid);
+                    return guid;
+                } else {
+                    return false;
+                }
+            });
+        };
+
+        /**
+         * @ngdoc method
+         * @name deleteLocationType
+         * @function
+         * 
+         * @param {string} key - Key for location type.
+         * @returns {string}
+         * @description - Delete a location type.
+         */
+        locationTypeApiFactory.deleteLocationType = function (key) {
+            return $http.get('/umbraco/backoffice/ulocate/LocationTypeApi/Delete?Key=' + key).then(function (response) {
+                if (response) {
+                    var data = locationTypeApiFactory.downCaseProperties(response.data);
+                    return data;
+                } else {
+                    return false;
+                }
+            });
+        };
+
+        /**
+         * @ngdoc method
          * @name getAllLocationTypes
          * @function
          * 
@@ -67,7 +109,6 @@
          * @returns {uLocate.Models.LocationType}
          * @description - Get a list of all location types.
          */
-        // TODO: Test this!
         locationTypeApiFactory.updateLocationType = function (locationType) {
             var updatedLocationType = new uLocate.Models.LocationType(locationType);
             return $http.post('/umbraco/backoffice/ulocate/LocationTypeApi/Update', updatedLocationType).then(function(response) {
@@ -78,7 +119,6 @@
                     return false;
                 }
             });
-
         };
 
         // TODO: Remove this when the time comes to move live.

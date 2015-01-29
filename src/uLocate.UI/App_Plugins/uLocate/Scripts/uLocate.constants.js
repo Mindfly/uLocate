@@ -1185,4 +1185,6 @@
 
     constants.LOCATION_TYPES = [];
 
+    constants.DEFAULT_LOCATION_TYPE_KEY = "30304545-4331-4639-2d37-3135322d3442";
+
 }(window.uLocate.Constants = window.uLocate.Constants || {}));

@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationTypesController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateDataTypeApiService, uLocateLocationTypeApiService) {
+    controllers.LocationTypesController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateDataTypeApiService, uLocateLocationTypeApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -14,13 +14,27 @@
          * @description - Called when the $scope is initalized.
          */
         $scope.init = function () {
-            var promise = uLocateLocationTypeApiService.getEmptyLocationType();
-            promise.then(function(response) {
-                console.info(response);
-            });
+            $scope.selectedView = $routeParams.id;
+            if ($scope.selectedView === 'view') {
+                $scope.addDeleteLocationTypeListener();
+            }
             $scope.setVariables();
             $scope.getLocationTypesIfNeeded();
             $scope.getDataTypesIfNeeded();
+        };
+
+        /**
+         * @ngdoc method
+         * @name addDeleteLocationTypeListener
+         * @function
+         * 
+         * @description - If a broadcast event in the deleteLocation channel is dictated, retrieve the message stored and use it to delete a location.
+         */
+        $scope.addDeleteLocationTypeListener = function () {
+            $scope.$on('deleteLocationType', function () {
+                var id = uLocateBroadcastService.message;
+                $scope.deleteLocationType(id);
+            });
         };
 
         /**
@@ -41,15 +55,22 @@
             });
         };
 
+        /**
+         * @ngdoc method
+         * @name getDataTypesIfNeeded
+         * @function
+         * 
+         * @description - Load a list of available data types. Once done, see if a location type needs to be loaded in the editor.
+         */
         $scope.getDataTypesIfNeeded = function() {
             if ($scope.selectedView == 'edit') {
                 var promise = uLocateDataTypeApiService.getAllDataTypes();
                 promise.then(function (response) {
-                    $scope.options.type = _.map(response, function(dataType) {
-                        return {
+                    _.each(response, function(dataType) {
+                        $scope.options.type.push({
                             id: dataType.id,
                             name: dataType.name
-                        };
+                        });
                     });
                     $scope.getLocationTypeToEditByKey();
                 });
@@ -67,9 +88,10 @@
             if ($scope.selectedView == 'view') {
                 var promise = uLocateLocationTypeApiService.getAllLocationTypes();
                 promise.then(function(response) {
-                    $scope.locationTypes = _.map(response, function(locationType) {
+                    $scope.locationTypes = _.map(response, function (locationType) {
                         return new uLocate.Models.LocationType(locationType);
                     });
+                    uLocate.Constants.LOCATION_TYPES = $scope.locationTypes;
                 });
             }
         };
@@ -89,15 +111,17 @@
                     promise.then(function(response) {
                         $scope.newLocationType = new uLocate.Models.LocationType(response);
                         _.each($scope.newLocationType.properties, function (property) {
-                            _.each($scope.options.type, function(dataType, index) {
+                            _.each($scope.options.type, function (dataType, index) {
+                                property.selectedType = $scope.options.type[0];
                                 if (dataType.id == property.propType) {
                                     property.selectedType = $scope.options.type[index];
                                 }
                             });
                         });
-                });
+                    });
                 } else if (($location.search()).name) {
                     $scope.newLocationType.name = ($location.search()).name;
+                    $scope.newLocationType.properties[0].selectedType = $scope.options.type[0];
                 }
             }
         };
@@ -113,9 +137,8 @@
             $scope.currentNode = false;
             $scope.openMenu = false;
             $scope.options = {
-                type: [{id: 0, name: 'null'}]
+                type: [{id: 0, name: 'Select Data Type'}]
             };
-            $scope.selectedView = $routeParams.id;
             $scope.getCurrentNode();
             $scope.icon = 'icon-store color-blue';
             $scope.locationTypes = [];
@@ -154,6 +177,18 @@
 
         /**
          * @ngdoc method
+         * @name flagPropertyAliasAsEdited
+         * @function
+         * 
+         * @param {uLocate.Models.Property} property - the property
+         * @description - Flag the property's alias as edited.
+         */
+        $scope.flagPropertyAliasAsEdited = function(property) {
+            property.hasAliasBeenEdited = true;
+        };
+
+        /**
+         * @ngdoc method
          * @name openCreateDialog
          * @function
          * 
@@ -185,8 +220,11 @@
          * @description - Opens the Delete Conirmation dialog.
          */
         $scope.openDeleteDialog = function (locationType) {
+            var currentNode = locationType;
+            currentNode.deleteId = locationType.key;
+            currentNode.deleteChannel = 'deleteLocationType';
             navigationService.showDialog({
-                node: locationType,
+                node: currentNode,
                 action: {
                     alias: 'delete',
                     cssclass: 'delete',
@@ -214,8 +252,67 @@
             });
         };
 
+        /**
+         * @ngdoc method
+         * @name saveNewLocationType
+         * @function
+         * 
+         * @param {uLocate.Models.LocationType} locationType
+         * @description - Saves a new LocationType via API.
+         */
         $scope.saveNewLocationType = function (locationType) {
-            var promise = uLocateLocationTypeApiService.updateLocationType(locationType);
+            var mayProceed = true;
+            var isPropertyError = false;
+            if (locationType.icon === '') {
+                mayProceed = false;
+            }
+            _.each(locationType.properties, function(property) {
+                if (property.propName === '') {
+                    mayProceed = false;
+                    isPropertyError = true;
+                }
+                if (property.propAlias === '') {
+                    mayProceed = false;
+                    isPropertyError = true;
+                } else {
+                    property.propAlias = property.propAlias.split(' ').join('');
+                }
+                if (property.selectedType) {
+                    if (property.selectedType.id === 0) {
+                        mayProceed = false;
+                        isPropertyError = true;
+                    } else {
+                        property.isDefaultProp = false;
+                        property.propType = property.selectedType.id;
+                    }
+                } else {
+                    mayProceed = false;
+                    isPropertyError = true;
+                }
+            });
+            if (mayProceed) {
+                if ((($location.search()).name)) {
+                    var promise = uLocateLocationTypeApiService.createLocationType(locationType.name);
+                    promise.then(function(guid) {
+                        if (guid) {
+                            locationType.key = guid;
+                            $scope.updateLocationType(locationType);
+                        }
+                    });
+                } else {
+                    $scope.updateLocationType(locationType);
+                }
+            } else {
+                if (isPropertyError) {
+                    notificationsService.error('All properties must have names, aliases, and a selected data type.');
+                } else {
+                    notificationsService.error('The location type requires an icon.');
+                }
+            }
+        };
+
+        $scope.updateLocationType = function(type) {
+            var promise = uLocateLocationTypeApiService.updateLocationType(type);
             promise.then(function(response) {
                 console.info(response);
             });
@@ -224,6 +321,48 @@
         /*-------------------------------------------------------------------
          * Helper Methods
          * ------------------------------------------------------------------*/
+
+        /**
+        * @ngdoc method
+        * @name deleteLocationType
+        * @function
+        * 
+        * @param {string} key
+        * @description - Deletes a location type, then redirect to viewing all location types.
+        */
+        $scope.deleteLocationType = function (key) {
+            if (key) {
+                var promise = uLocateLocationTypeApiService.deleteLocationType(key);
+                promise.then(function (response) {
+                    console.info(response);
+                    if (response.success) {
+                        notificationsService.success("Location type successfully deleted.");
+                        $scope.getLocationTypesIfNeeded();
+                    } else {
+                        notificationsService.error("Attempt to delete location type failed.");
+                    }
+                }, function (reason) {
+                    notificationsService.error("Attempt to delete location type failed.", reason.message);
+                });
+            }
+        };
+
+        /**
+         * @ngdoc method
+         * @name isDefaultLocationType
+         * @function
+         * 
+         * @param {uLocate.Models.LocationType} type
+         * @returns {boolean}
+         * @description - Returns true if the location type's key matches the default location type's key.
+         */
+        $scope.isDefaultLocationType = function(type) {
+            var result = false;
+            if (type.key === uLocate.Constants.DEFAULT_LOCATION_TYPE_KEY) {
+                result = true;
+            }
+            return result;
+        };
 
         /**
          * @ngdoc method
@@ -279,6 +418,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationTypesController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateDataTypeApiService','uLocateLocationTypeApiService', uLocate.Controllers.LocationTypesController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationTypesController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateDataTypeApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationTypesController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

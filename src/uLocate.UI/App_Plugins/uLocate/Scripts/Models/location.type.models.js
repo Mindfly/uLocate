@@ -10,6 +10,7 @@
             self.propType = '';
         } else {
             self.isDefaultProp = data.isDefaultProp;
+            self.key = data.key;
             self.propAlias = data.propAlias;
             self.propName = data.propName;
             self.propType = data.propType;

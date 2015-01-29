@@ -36,17 +36,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><i class="icon-pin-location"></i> <ulocate-localize key="default">Default</ulocate-localize></td> <!-- TODO: Change "Default" to a more user friendly term -->
-                            <td><ulocate-localize key="defaultFields">Name, Street Address, Extended Address, City, State/Province, Zip/Postal Code, Country, Latitude/Longitude, Phone Number</ulocate-localize></td>
-                            <td></td>
-                        </tr>
                         <tr ng-repeat="type in locationTypes">
                             <td><i class="{{type.icon}}"></i> {{type.name}}</td>
-                            <td><span ng-repeat="property in type.properties"><span ng-show="$index != 0">, </span>{{property.name}}</span></td>
+                            <td><span ng-repeat="property in type.properties"><span ng-show="$index != 0">, </span>{{property.propName}}</span></td>
                             <td class="btn-group text-right">
-                                <a class="btn btn-mini" href="#/uLocate/uLocate/locationTypes/edit?key={{type.key}}"><i class="icon-edit"></i></a>
-                                <a class="btn btn-mini btn-danger" ng-click="openDeleteDialog(type)"><i class="icon-trash"></i></a> <!-- TODO: Will have a pop-up delete notification asking users if they want to revert associated locations to the default location type or delete them, perhaps using a custom dialog based on https://github.com/umbraco/Umbraco-CMS/blob/788a0241d828cecd09f84a2a356b643422c6599c/src/Umbraco.Web.UI.Client/src/views/datatype/delete.html -->
+                                <a class="btn btn-mini" href="#/uLocate/uLocate/locationTypes/edit?key={{type.key}}" data-ng-show="!isDefaultLocationType(type)"><i class="icon-edit"></i></a>
+                                <a class="btn btn-mini btn-danger" ng-click="openDeleteDialog(type)" data-ng-show="!isDefaultLocationType(type)"><i class="icon-trash"></i></a> <!-- TODO: Will have a pop-up delete notification asking users if they want to revert associated locations to the default location type or delete them, perhaps using a custom dialog based on https://github.com/umbraco/Umbraco-CMS/blob/788a0241d828cecd09f84a2a356b643422c6599c/src/Umbraco.Web.UI.Client/src/views/datatype/delete.html -->
                             </td>
                         </tr>
                     </tbody>
@@ -129,16 +124,16 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <td><localize key="general_alias">Alias</localize></td>
                                         <td><localize key="general_name">Name</localize></td>
+                                        <td><localize key="general_alias">Alias</localize></td>
                                         <td><localize key="general_type">Type</localize></td>
                                         <td></td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="property in newLocationType.properties">
-                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyAlias" ng-model="property.propAlias" /></td>
                                         <td><input type="text" ulocate-localize="placeholder" placeholder="propertyName" ng-model="property.propName" /></td>
+                                        <td><input type="text" ulocate-localize="placeholder" placeholder="propertyAlias" ng-model="property.propAlias" /></td>
                                         <td>
                                             <select ng-model="property.selectedType" ng-options="option.name for option in options.type"></select>
                                         </td>
