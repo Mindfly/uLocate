@@ -86,7 +86,7 @@
                             <td class="geo latlong">
                                 <span class="latitude">{{location.latitude}}</span> / <span class="longitude">{{location.longitude}}</span>
                             </td>
-                            <td>{{getTypeOfLocation(location)}}</td>
+                            <td>{{location.locationTypeName}}</td>
                             <td class="btn-group text-right">
                                 <a class="btn btn-mini" ng-click="openEditDialog(location)"><i class="icon-edit"></i></a>
                                 <a class="btn btn-mini btn-danger" ng-click="openDeleteDialog(location)"><i class="icon-trash"></i></a>

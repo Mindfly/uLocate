@@ -546,54 +546,9 @@
                     }
                 });
                 $scope.totalPages = response.totalPages;
-                $scope.getLocationTypes();
                 $scope.locationsLoaded = true;
                 $scope.addLocationMarkersToMap();
             });
-        };
-
-        /**
-        * @ngdoc method
-        * @name getLocationTypes
-        * @function
-        * 
-        * @description - Tries to load location types from constants. If not there, then pull them from API and assign to constants.
-        */
-        $scope.getLocationTypes = function () {
-            if (uLocate.Constants.LOCATION_TYPES.length < 1) {
-                var promise = uLocateLocationTypeApiService.getAllLocationTypes();
-                promise.then(function (locationTypes) {
-                    if (locationTypes) {
-                        $scope.locationTypes = _.map(locationTypes, function (locationType) {
-                            return new uLocate.Models.LocationType(locationType);
-                        });
-                        uLocate.Constants.LOCATION_TYPES = $scope.locationTypes;
-                    }
-                });
-            } else {
-                $scope.locationTypes = uLocate.Constants.LOCATION_TYPES;
-            }
-        };
-
-        /**
-        * @ngdoc method
-        * @name getTypeOfLocation
-        * @function
-        * 
-        * @param {uLocate.Models.Location} location
-        * @returns {boolean}
-        * @description - Acquire the type name of the location provided.
-        */
-        $scope.getTypeOfLocation = function (location) {
-            var result = '';
-            if ($scope.locationTypes.length > 0) {
-                _.each($scope.locationTypes, function(type) {
-                    if (type.key === location.locationTypeKey) {
-                        result = type.name;
-                    }
-                });
-            }
-            return result;
         };
 
         /**

@@ -29,6 +29,7 @@
             self.latitude = 0;
             self.locality = '';
             self.locationTypeKey = '00000000-0000-0000-0000-000000000000';
+            self.locationTypeName = '';
             self.longitude = 0;
             self.name = '';
             self.phone = '';
@@ -50,6 +51,7 @@
             self.latitude = data.latitude;
             self.locality = data.locality;
             self.locationTypeKey = data.locationTypeKey;
+            self.locationTypeName = data.locationTypeName;
             self.longitude = data.longitude;
             self.name = data.name;
             if ((typeof data.phone) !== "object") {
