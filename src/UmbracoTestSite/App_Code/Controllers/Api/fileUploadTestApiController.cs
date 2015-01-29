@@ -43,11 +43,11 @@ public class FileUploadTestApiController : UmbracoApiController
         // get the files
         foreach (var file in result.FileData)
         {
-            fileName = file.LocalFileName;
+            fileName += ","+ file.LocalFileName;
             // TODO: Do something with each uploaded file
         }
 
-        return Request.CreateResponse(HttpStatusCode.OK, "success!");
+        return Request.CreateResponse(HttpStatusCode.OK, fileName);
 	}
 }
 }

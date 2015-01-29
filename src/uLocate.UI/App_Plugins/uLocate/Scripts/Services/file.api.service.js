@@ -30,28 +30,36 @@
             }
         };
 
+        fileApiFactory.importLocationsCsv = function(name) {
+            return $http.get('/umbraco/backoffice/ulocate/ImportExportApi/ImportLocationsCSV?FileName=' + name).then(function (response) {
+                if (response.data) {
+                    console.info(response.data);
+                    return response.data;
+                } else {
+                    return false;
+                }
+            });
+        };
+
         /**
          * @ngdoc method
          * @name importFile
          * @function
          * 
          * @param {file} file - File object acquired via File Upload API.
-         * @param {string} locationType - Key for the data type of the resulting locations.
-         * @description - Import a file to backend to create a series of locations.
+         * @description - Upload a file to the server.
          */
-        fileApiFactory.importFile = function (file, locationType) {
+        fileApiFactory.uploadFileToServer = function (file) {
             var request = {
-                file: file,
-                locationType: locationType
+                file: file
             };
             return $http({
                 method: 'POST',
-                url: "/Umbraco/Api/FileUploadTestApi/PostStuff",
+                url: "/umbraco/backoffice/ulocate/ImportExportApi/UploadFileToServer",
                 // TODO: Change Content-Type to undefined in Umbraco 7.5 (or whenever the Angular version is bumped to 1.2 or higher)
                 headers: { 'Content-Type': false },
                 transformRequest: function(data) {
                     var formData = new FormData();
-                    formData.append("locationType", angular.toJson(data.locationType));
                     formData.append("file", data.file);
                     return formData;
                 },
@@ -59,7 +67,13 @@
                 data: request
             }).then(function (response) {
                 if (response) {
-                    return response.data;
+                    var fileName = response.data.split('"').join('');
+                    fileName = fileName.split(',')[1];
+                    fileName = fileName.split('\\\\').join('/');
+                    fileName = fileName.split('\App_Data')[1];
+                    fileName = '~/App_Data' + fileName;
+                    console.info(fileName);
+                    return fileName;
                 } else {
                     return false;
                 }

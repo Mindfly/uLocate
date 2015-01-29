@@ -81,14 +81,18 @@
                 if ($scope.file) {
                     $scope.isUploading = true;
                     notificationsService.info("File import started. This may take a few moments.");
-                    var promise = uLocateFileApiService.importFile($scope.file, $scope.locationType);
+                    var promise = uLocateFileApiService.uploadFileToServer($scope.file, $scope.locationType);
                     promise.then(function(response) {
                         if (response) {
-                            notificationsService.success("File successfully imported. #h5yr!");
+                            var importPromise = uLocateFileApiService.importLocationsCsv(response);
+                            importPromise.then(function(importResponse) {
+                                console.info(importResponse);
+                                notificationsService.success('File successfully imported. #h5yr!');
+                                $scope.isUploading = false;
+                            });
                         } else {
                             notificationsService.error("File import failed.");
                         }
-                        $scope.isUploading = false;
                     }, function(reason) {
                         notificationsService.error("File import failed.", reason.message);
                         $scope.isUploading = false;

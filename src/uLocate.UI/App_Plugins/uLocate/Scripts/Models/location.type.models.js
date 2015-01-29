@@ -26,7 +26,7 @@
             self.name = '';
             self.properties = [new uLocate.Models.LocationTypeProperty()];
         } else {
-            if (data.description != null) {
+            if ((typeof data.description) != 'object') {
                 self.description = data.description;
             } else {
                 self.description = '';

@@ -118,6 +118,9 @@
                                 }
                             });
                         });
+                        if ($scope.newLocationType.properties.length < 1) {
+                            $scope.addNewProperty();
+                        }
                     });
                 } else if (($location.search()).name) {
                     $scope.newLocationType.name = ($location.search()).name;
@@ -311,10 +314,17 @@
             }
         };
 
-        $scope.updateLocationType = function(type) {
+        $scope.updateLocationType = function (type) {
+            console.info(type);
             var promise = uLocateLocationTypeApiService.updateLocationType(type);
-            promise.then(function(response) {
-                console.info(response);
+            promise.then(function (response) {
+                if (response) {
+                    notificationsService.success('Location type "' + type.name + '" saved.');
+                    window.location = '#/uLocate/uLocate/locationTypes/view';
+                    console.info(response);
+                } else {
+                    notificationsService.success('Attempt to save location type "' + type.name + '" failed.');
+                }
             });
         };
 

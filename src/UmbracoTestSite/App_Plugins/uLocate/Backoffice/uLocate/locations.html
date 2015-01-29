@@ -26,13 +26,13 @@
         <umb-tab-view>
 
             <div class="umb-pane">
-                <div class="well" style="background-color: #53a93f; color: white;" ng-show="isGeocoding">Geocoding the coordinates for the address. This may take a moment. Do not leave or reload page or your location might not save properly.</div>
+                <div class="well" style="background-color: #2e8aea; color: white;" ng-show="isGeocoding">Geocoding the coordinates for the address. This may take a moment. Do not leave or reload page or your location might not save properly.</div>
                 <div class="map-wrapper span12">
                     <div class="map-bar top row-fluid">
                         <!-- Search -->
                         <form class="span8 form-search">
                             <i class="icon-search"></i>
-                            <input type="text" placeholder="Search uLocate addresses" class="span9" ng-modoel="filter" />
+                            <input type="text" placeholder="Search uLocate addresses" class="span9" ng-model="filter" />
                             <a class="btn btn-primary" ng-click="changeFilter(filter)"><localize key="general_search">Search</localize></a>
                         </form>
                         <div class="span4">
