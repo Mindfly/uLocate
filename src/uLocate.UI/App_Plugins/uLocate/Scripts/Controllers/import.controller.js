@@ -34,6 +34,7 @@
             $scope.selected = {
                 locationType: $scope.options.locationType[0]
             };
+            $scope.importResults = '';
             $scope.locationType = $scope.options.locationType[0];
             $scope.file = false;
             $scope.isUploading = false;
@@ -86,8 +87,8 @@
                         if (response) {
                             var importPromise = uLocateFileApiService.importLocationsCsv(response);
                             importPromise.then(function(importResponse) {
-                                console.info(importResponse);
                                 notificationsService.success('File successfully imported. #h5yr!');
+                                $scope.importResults = importResponse.message;
                                 $scope.isUploading = false;
                             });
                         } else {

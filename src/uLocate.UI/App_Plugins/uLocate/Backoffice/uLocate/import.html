@@ -18,6 +18,7 @@
 
             <div class="umb-pane">
                 <div class="well" style="background-color: #2e8aea; color: white;" ng-show="isUploading">File import started. This may take a few moments. Do not leave or reload page or the import might not complete properly.</div>
+                <div class="well" ng-show="importResults != ''">{{importResults}}</div>
                 <div class="control-group umb-control-group">
                     <label class="control-label" for="import">
                         <!-- TODO: Allow for XML and JSON file imports later -->
@@ -30,9 +31,8 @@
                         <button ng-file-select ng-model="files" ng-file-change="fileSelected(files)" class="file button btn-primary" ng-multiple="false" accept="*.csv"><ulocate-localize key="chooseFile">Choose File</ulocate-localize></button> {{file.name}}
                     </div>
                 </div>
-                
-                <!--TODO: Future version will permit different location types-->
 
+                <!--TODO: Future version will permit different location types-->
                 <!--<div class="control-group umb-control-group">
                     <label class="control-label" for="type">
                         <ulocate-localize key="locationType">Location Type</ulocate-localize>

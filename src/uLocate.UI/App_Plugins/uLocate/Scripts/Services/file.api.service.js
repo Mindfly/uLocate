@@ -33,8 +33,7 @@
         fileApiFactory.importLocationsCsv = function(name) {
             return $http.get('/umbraco/backoffice/ulocate/ImportExportApi/ImportLocationsCSV?FileName=' + name).then(function (response) {
                 if (response.data) {
-                    console.info(response.data);
-                    return response.data;
+                    return fileApiFactory.downCaseProperties(response.data);
                 } else {
                     return false;
                 }
