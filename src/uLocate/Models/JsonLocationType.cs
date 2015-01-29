@@ -91,6 +91,7 @@
                 }
             }
 
+            Repositories.LocationTypeRepo.Update(Entity);
             return Entity;
         }
 

@@ -297,6 +297,7 @@
     <Compile Include="Models\LocationType.cs" />
     <Compile Include="Models\LocationTypeProperty.cs" />
     <Compile Include="Data\DatabaseSchemaCreation.cs" />
+    <Compile Include="Models\Statistics.cs" />
     <Compile Include="Models\PagedLocations.cs" />
     <Compile Include="Persistance\LocationRepository.cs" />
     <Compile Include="Persistance\LocationPropertyDataRepository.cs" />
@@ -321,6 +322,7 @@
     <Compile Include="Providers\GeocodeProviderSettings.cs" />
     <Compile Include="Providers\IGeocodeProvider.cs" />
     <Compile Include="WebApi\DataTypeApiController.cs" />
+    <Compile Include="WebApi\MaintenanceApiController.cs" />
     <Compile Include="WebApi\LocationSearchApiController.cs" />
     <Compile Include="WebApi\LocationTypeApiController.cs" />
     <Compile Include="WebApi\ImportExportApiController.cs" />
