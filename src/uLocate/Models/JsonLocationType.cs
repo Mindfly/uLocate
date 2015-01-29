@@ -37,7 +37,7 @@
                 JsonProp.PropType = Prop.DataTypeId;
                 JsonProp.IsDefaultProp = Prop.IsDefaultProp;
                 this.Properties.Add(JsonProp);
-             }
+            }
         }
 
         public LocationType ConvertToLocationType()
@@ -49,52 +49,57 @@
                 //Lookup existing entity
                 Entity = Repositories.LocationTypeRepo.GetByKey(this.Key);
 
-                //Update LT properties as needed
-                Entity.Name = this.Name;
-                Entity.Description = this.Description;
-                Entity.Icon = this.Icon;
-
-                //match up properties
-                foreach (var JsonProp in this.Properties)
+                if (Entity == null)
                 {
-                    //lookup existing property
-                    var Prop = Entity.Properties.Where(p => p.Key == JsonProp.Key).FirstOrDefault();
-
-                    if (Prop != null)
-                    {
-                        Prop.Alias = JsonProp.PropAlias;
-                        Prop.Name = JsonProp.PropName;
-                        Prop.DataTypeId = JsonProp.PropType;
-                        //Repositories.LocationTypePropertyRepo.Update(Prop);
-                    }
-                    else
-                    {
-                        //Add new property
-                        Entity.AddProperty(JsonProp.PropAlias, JsonProp.PropName, JsonProp.PropType);
-                    }
+                    Entity = this.CreateNew();
                 }
             }
             else
             {
-                //Create new entity
-                Entity = new LocationType()
-                {
-                    Name = this.Name,
-                    Description = this.Description,
-                    Icon = this.Icon,
-                };
+                Entity = this.CreateNew();
+            }
 
-                //Add properties
-                foreach (var JsonProp in this.Properties)
+            //Update LT properties as needed
+            Entity.Name = this.Name;
+            Entity.Description = this.Description;
+            Entity.Icon = this.Icon;
+
+            //match up child properties
+            foreach (var JsonProp in this.Properties)
+            {
+                //lookup existing property
+                var Prop = Entity.Properties.Where(p => p.Key == JsonProp.Key).FirstOrDefault();
+
+                if (Prop != null)
                 {
+                    Prop.Alias = JsonProp.PropAlias;
+                    Prop.Name = JsonProp.PropName;
+                    Prop.DataTypeId = JsonProp.PropType;
+                    Repositories.LocationTypePropertyRepo.Update(Prop);
+                }
+                else
+                {
+                    //Add new property
                     Entity.AddProperty(JsonProp.PropAlias, JsonProp.PropName, JsonProp.PropType);
                 }
             }
 
-            Repositories.LocationTypeRepo.Update(Entity);
             return Entity;
         }
 
+        private LocationType CreateNew()
+        {
+            //Create new entity
+            var Entity = new LocationType()
+            {
+                Key = this.Key,
+                Name = this.Name,
+                Description = this.Description,
+                Icon = this.Icon,
+            };
+
+            return Entity;
+        }
     }
 
     public class JsonTypeProperty
@@ -104,5 +109,45 @@
         public string PropAlias { get; set; }
         public int PropType { get; set; }
         public Boolean IsDefaultProp { get; set; }
+
+        public LocationTypeProperty ConvertToLocationTypeProperty()
+        {
+            LocationTypeProperty Entity;
+
+            if (this.Key != Guid.Empty)
+            {
+                //Lookup existing entity
+                Entity = Repositories.LocationTypePropertyRepo.GetByKey(this.Key);
+
+                if (Entity == null)
+                {
+                    Entity = this.CreateNew();
+                }
+            }
+            else
+            {
+                Entity = this.CreateNew();
+            }
+
+            //Update
+            Entity.Alias = this.PropAlias;
+            Entity.Name = this.PropName;
+            Entity.DataTypeId = this.PropType;
+
+            return Entity;
+        }
+
+        private LocationTypeProperty CreateNew()
+        {
+            //Create new entity
+            var Entity = new LocationTypeProperty()
+            {
+                Key = this.Key,
+                Alias = this.PropAlias,
+                Name = this.PropName,
+                DataTypeId = this.PropType
+            };
+            return Entity;
+        }
     }
 }

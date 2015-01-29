@@ -17,7 +17,7 @@
     /// <summary>
     /// Represents the <see cref="LocationTypeRepository"/>.
     /// </summary>
-    internal class LocationTypeRepository : RepositoryBase<LocationType> 
+    internal class LocationTypeRepository : RepositoryBase<LocationType>
     {
         /// <summary>
         /// The current collection of matched entities
@@ -33,7 +33,8 @@
         /// <param name="cache">
         /// The cache.
         /// </param>
-        public LocationTypeRepository(UmbracoDatabase database, IRuntimeCacheProvider cache) : base(database, cache)
+        public LocationTypeRepository(UmbracoDatabase database, IRuntimeCacheProvider cache)
+            : base(database, cache)
         {
         }
 
@@ -59,7 +60,7 @@
 
             if (ThisLocType != null)
             {
-                this.DeleteLocType(ThisLocType,  out ReturnMsg, ConvertLocationsToDefault);
+                this.DeleteLocType(ThisLocType, out ReturnMsg, ConvertLocationsToDefault);
             }
             else
             {
@@ -72,7 +73,7 @@
             return ReturnMsg;
         }
 
-        public StatusMessage Delete(LocationType Entity,bool ConvertLocationsToDefault = true)
+        public StatusMessage Delete(LocationType Entity, bool ConvertLocationsToDefault = true)
         {
             StatusMessage ReturnMsg = new StatusMessage();
             this.DeleteLocType(Entity, out ReturnMsg, ConvertLocationsToDefault);
@@ -97,16 +98,24 @@
                 }
             }
             //else matching Locations will be deleted with children
-            
+
             this.DeleteChildren(Entity);
-        
+
             PersistDeletedItem(Entity, out ReturnMsg);
             StatusMsg = ReturnMsg;
         }
-        
+
         public void Update(LocationType Entity)
         {
-            PersistUpdatedItem(Entity);
+            var StoredEntity = this.GetByKey(Entity.Key);
+            if (StoredEntity != null)
+            {
+                this.PersistUpdatedItem(Entity);
+            }
+            else
+            {
+                this.PersistNewItem(Entity);
+            }
         }
 
         public IEnumerable<LocationType> GetByName(string LocationTypeName)
@@ -125,7 +134,7 @@
 
             FillChildren();
 
-            return CurrentCollection; 
+            return CurrentCollection;
         }
 
         public LocationType GetByKey(Guid Key)
@@ -149,7 +158,7 @@
             CurrentCollection.AddRange(GetAll(Keys));
             FillChildren();
 
-            return CurrentCollection; 
+            return CurrentCollection;
         }
 
         public IEnumerable<LocationType> GetAll()
@@ -160,7 +169,7 @@
             CurrentCollection.AddRange(GetAll(EmptyParams));
             FillChildren();
 
-            return CurrentCollection; 
+            return CurrentCollection;
         }
 
         #endregion
@@ -228,9 +237,8 @@
             item.Key = dto.Key;
 
             LogHelper.Info(typeof(LocationTypeRepository), Msg);
-            
-            PersistChildren(item);
 
+            
 
         }
 
@@ -245,13 +253,8 @@
 
             Repositories.ThisDb.Update(dto);
 
-            foreach (var prop in item.Properties)
-            {
-                prop.UpdatingEntity();
-                var pDto = converter.ToLocationTypePropertyDto(prop);
-                Repositories.ThisDb.Update(pDto);
-            }
-            
+            PersistChildren(item);
+
             LogHelper.Info(typeof(LocationTypeRepository), Msg);
         }
 
@@ -285,7 +288,7 @@
         {
             var MySql = new Sql();
             MySql.Select(isCount ? "COUNT(*)" : "*")
-			.From<LocationTypeDto>();
+            .From<LocationTypeDto>();
             return MySql;
         }
 
@@ -341,7 +344,7 @@
                 {
                     StatusMsg = Repositories.LocationRepo.Delete(loc);
                 }
-                
+
             }
         }
 
@@ -356,7 +359,6 @@
 
         private void PersistProperties(LocationType item)
         {
-            var Repo = new LocationTypePropertyRepository(Repositories.ThisDb, Helper.ThisCache);
             foreach (var NewProp in item.Properties)
             {
                 if (NewProp.LocationTypeKey == Guid.Empty)
@@ -364,7 +366,7 @@
                     NewProp.LocationTypeKey = item.Key;
                 }
 
-                Repo.Insert(NewProp);
+                Repositories.LocationTypePropertyRepo.Update(NewProp);
             }
         }
 

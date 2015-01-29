@@ -20,12 +20,14 @@
     [Umbraco.Web.Mvc.PluginController("uLocate")]
     public class LocationTypeApiController : UmbracoAuthorizedApiController
     {
-        ///// /umbraco/backoffice/uLocate/LocationTypeApi/Test
-        //[System.Web.Http.AcceptVerbs("GET")]
-        //public bool Test()
-        //{
-        //    return true;
-        //}
+        /// /umbraco/backoffice/uLocate/LocationTypeApi/Test
+        [System.Web.Http.AcceptVerbs("GET")]
+        public bool Test()
+        {
+            return true;
+        }
+
+        #region Location Types
 
         /// <summary>
         /// Create a new Location Type
@@ -46,7 +48,7 @@
 
             //var Result = Repositories.LocationTypeRepo.GetByKey(newLocType.Key);
             var Result = newLocType.Key;
-            
+
             return Result;
         }
 
@@ -63,6 +65,13 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public JsonLocationType Update(JsonLocationType UpdatedLocationTypeJson)
         {
+            ////First, do properties
+            //foreach (var jsonProp in UpdatedLocationTypeJson.Properties)
+            //{
+            //    LocationTypeProperty UpdatedProp = jsonProp.ConvertToLocationTypeProperty();
+            //}
+
+            //then do LT
             LocationType UpdatedLocationType = UpdatedLocationTypeJson.ConvertToLocationType();
 
             Repositories.LocationTypeRepo.Update(UpdatedLocationType);
@@ -147,8 +156,53 @@
             }
 
             return returnList;
+        } 
+
+        #endregion
+
+        #region Location Type Properties
+
+        /// <summary>
+        /// Get a LocationType Property by key.
+        /// /umbraco/backoffice/uLocate/LocationTypeApi/GetPropertyByKey?Key=xxx
+        /// </summary>
+        /// <param name="Key">
+        /// The key.
+        /// </param>
+        /// <returns>
+        /// The <see cref="LocationTypeProperty"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public LocationTypeProperty GetPropertyByKey(Guid Key)
+        {
+            var Result = Repositories.LocationTypePropertyRepo.GetByKey(Key);
+
+            return Result;
         }
 
+        /// <summary>
+        /// Get all properties in the database
+        /// /umbraco/backoffice/uLocate/LocationTypeApi/GetAllProperties
+        /// </summary>
+        /// <returns>
+        /// The <see cref="List"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public List<LocationTypeProperty> GetAllProperties()
+        {
+            var props = Repositories.LocationTypePropertyRepo.GetAll().ToList();
+
+            //var returnList = new List<JsonLocationType>();
+
+            //foreach (var loc in locationTypes)
+            //{
+            //    returnList.Add(new JsonLocationType(loc));
+            //}
+
+            return props;
+        } 
+
+        #endregion
     }
 }
 
