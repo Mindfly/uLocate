@@ -135,6 +135,7 @@
             $scope.customMarkerIcon = new uLocate.Models.MarkerSymbolIcon(uLocate.Constants.MARKER_ICON);
             $scope.filter = '';
             $scope.form = {};
+            $scope.isGeocoding = false;
             $scope.locations = [];
             $scope.locationsLoaded = false;
             $scope.locationTypes = [];
@@ -617,30 +618,30 @@
         */
         $scope.processEditDialog = function (data) {
             if (data) {
-                console.info(data);
                 var location = data.location;
                 var updatePromise;
                 if (data.generateLatLng) {
+                    $scope.isGeocoding = true;
                     var address = $scope.buildAddressString(location);
-                    console.info(address);
                     notificationsService.success("Acquiring lat/lng for this address. This may take a moment. Do not leave or reload page.");
                     var geocodePromise = uLocateMapService.geocode(address);
                     geocodePromise.then(function (geocodeResponse) {
                         if (geocodeResponse) {
                             location.latitude = geocodeResponse[0];
                             location.longitude = geocodeResponse[1];
-                            updatePromise = uLocateLocationApiService.updateLocation(location);
-                            updatePromise.then(function (response) {
-                                if (response) {
-                                    notificationsService.success("Location '" + location.name + "' successfully updated. #h5yr!");
-                                    $scope.getLocations();
-                                }
-                            }, function (reason) {
-                                notificationsService.error("Attempt to update location '" + location.name + "' failed.", reason.message);
-                            });
                         } else {
                             notificationsService.error("Unable to acquire lat/lng for this address.");
                         }
+                        $scope.isGeocoding = false;
+                        updatePromise = uLocateLocationApiService.updateLocation(location);
+                        updatePromise.then(function (response) {
+                            if (response) {
+                                notificationsService.success("Location '" + location.name + "' successfully updated. #h5yr!");
+                                $scope.getLocations();
+                            }
+                        }, function (reason) {
+                            notificationsService.error("Attempt to update location '" + location.name + "' failed.", reason.message);
+                        });
                     });
                 } else {
                     updatePromise = uLocateLocationApiService.updateLocation(location);

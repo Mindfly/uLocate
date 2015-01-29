@@ -129,10 +129,7 @@
             mapFactory.geocoder.geocode({ 'address': address }, function(results, status) {
                 var response = false;
                 if (status == google.maps.GeocoderStatus.OK) {
-                    response = results[0].geometry.location;
-                } else {
-                    console.info(results);
-                    console.info(status);
+                    response = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
                 }
                 deferred.resolve(response);
             });

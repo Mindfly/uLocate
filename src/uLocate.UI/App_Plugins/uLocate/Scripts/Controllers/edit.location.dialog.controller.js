@@ -29,8 +29,8 @@
         $scope.attemptToSelectCountryAndProvince = function () {
             var location = $scope.dialogData.location;
             if (location.countryCode != '' && location.countryCode != undefined) {
-                _.each($scope.options.countries, function(country, index) {
-                    if (location.countryCode === country.name) {
+                _.each($scope.options.countries, function (country, index) {
+                    if (location.countryCode === country.countryCode) {
                         $scope.selected.country = $scope.options.countries[index];
                         if (location.region != '' && location.region != undefined) {
                             _.each($scope.selected.country.provinces, function(region, regionIndex) {
@@ -84,7 +84,7 @@
          * 
          * @description - Sets the initial state for $scope variables.
          */
-        $scope.setVariables = function() {
+        $scope.setVariables = function () {
             $scope.options = {
                 countries: [{ name: 'Select a Country', provinceLabel: 'Province/State', provinces: [{ name: 'Select A Province/State', code: '' }] }],
                 locationTypes: []
