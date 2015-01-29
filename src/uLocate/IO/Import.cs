@@ -38,6 +38,7 @@
             FileHelperEngine fhEngine = new FileHelperEngine(typeof(LocationFlat));
 
             string FullPath = Mindfly.Files.GetMappedPath(FilePath);
+            var MsgDetails = new StringBuilder();
 
             try
             {
@@ -59,21 +60,22 @@
                     bool RowSuccess = ImportItem(row, LocTypeKey, GeocodeCount);
                     if (RowSuccess)
                     {
-                        Msg.Message += Environment.NewLine + string.Format("'{0}' imported successfully.", row.LocationName);
+                        MsgDetails.AppendLine(string.Format("'{0}' imported successfully.", row.LocationName));
                         RowsSuccess++;
                     }
                     else
                     {
-                        Msg.Message += Environment.NewLine + string.Format("Error importing '{0}'.", row.LocationName);
+                        MsgDetails.AppendLine(string.Format("Error importing '{0}'.", row.LocationName));
                         RowsFailure++;
                     }
                 }
 
-                Msg.Message += Environment.NewLine + string.Format( 
+                Msg.Message += string.Format( 
                     "Out of {0} total locations, {1} were imported successfully and {2} failed.", 
                     RowsTotal, 
                     RowsSuccess, 
                     RowsFailure);
+                Msg.MessageDetails = MsgDetails.ToString();
                 Msg.Success = true;
             }
             catch (Exception ex)
@@ -84,6 +86,7 @@
                     Msg.Success = false;
                     Msg.Code = ex.GetType().ToString();
                     Msg.RelatedException = ex;
+                    Msg.ObjectName = FilePath;
                     LogHelper.Error(typeof(Import), string.Format("Error importing file '{0}'", FilePath), ex);
                 }
                 else

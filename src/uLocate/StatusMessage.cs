@@ -27,6 +27,8 @@ namespace uLocate
 
         public string Message { get; set; }
 
+        public string MessageDetails { get; set; }
+
         public string Code { get; set; }
 
         public string ObjectName { get; set; }

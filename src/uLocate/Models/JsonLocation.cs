@@ -12,6 +12,7 @@
     {
         public Guid Key { get; set; }
         public Guid LocationTypeKey { get; set; }
+        public string LocationTypeName { get; set; }
         public string Name { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
@@ -38,6 +39,7 @@
             this.Key = ConvertedFromLocation.Key;
             this.Name = ConvertedFromLocation.Name;
             this.LocationTypeKey = ConvertedFromLocation.LocationTypeKey;
+            this.LocationTypeName = ConvertedFromLocation.LocationType.Name;
 
             this.Latitude = ConvertedFromLocation.Latitude;
             this.Longitude = ConvertedFromLocation.Longitude;
@@ -100,17 +102,18 @@
                 Entity.Longitude = this.Longitude;
 
                 //Deal with Address
-                if (Entity.Address != null)
-                {
-                    Entity.Address.Address1 = this.Address1;
-                    Entity.Address.Address2 = this.Address2;
-                    Entity.Address.Locality = this.Locality;
-                    Entity.Address.Region = this.Region;
-                    Entity.Address.PostalCode = this.PostalCode;
-                    Entity.Address.CountryCode = this.CountryCode;
-                }
-                else
-                {
+                //if (Entity.Address != null)
+                //{
+
+                //    Entity.Address.Address1 = this.Address1;
+                //    Entity.Address.Address2 = this.Address2;
+                //    Entity.Address.Locality = this.Locality;
+                //    Entity.Address.Region = this.Region;
+                //    Entity.Address.PostalCode = this.PostalCode;
+                //    Entity.Address.CountryCode = this.CountryCode;
+                //}
+                //else
+                //{
                     //Add Address properties
                     Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, this.Address1);
                     Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Address2, this.Address2);
@@ -118,7 +121,7 @@
                     Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Region, this.Region);
                     Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.PostalCode, this.PostalCode);
                     Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.CountryCode, this.CountryCode);
-                }
+                //}
 
                 //Deal with Properties    
                 Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Phone, this.Phone);

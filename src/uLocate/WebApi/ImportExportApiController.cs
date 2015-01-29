@@ -88,7 +88,19 @@
             {
                 file = FileName;
             }
-            return uLocate.IO.Import.LocationsCSV(file, LocationTypeKey);
+
+            if (file.EndsWith(".csv"))
+            {
+                return uLocate.IO.Import.LocationsCSV(file, LocationTypeKey);
+            }
+            else
+            {
+                var msg =
+                    string.Format(
+                        "The file uploaded ({0}) is not a CSV (comma-separated values) file. Please try again.",
+                        file);
+                return new StatusMessage(false, msg) { Code = "WrongFileType", ObjectName = file, };
+            }
         }
 
     }
