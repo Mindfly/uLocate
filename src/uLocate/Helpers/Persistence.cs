@@ -25,8 +25,18 @@ namespace uLocate.Helpers
 
         public static Guid CreateLocation(string LocationName, Guid LocationTypeGuid, bool UpdateIfFound = false)
         {
-            Location newLoc = new Location();
+
             bool DoUpdate = false;
+            Guid LocType;
+
+            if (LocationTypeGuid != Guid.Empty)
+            {
+                LocType = LocationTypeGuid;
+            }
+            else
+            {
+                LocType = uLocate.Constants.DefaultLocationTypeKey;
+            }
 
             if (UpdateIfFound)
             {
@@ -34,36 +44,17 @@ namespace uLocate.Helpers
                 var matchingLocations = Repositories.LocationRepo.GetByName(LocationName);
                 if (matchingLocations.Any())
                 {
-                    newLoc = matchingLocations.FirstOrDefault();
-                    DoUpdate = true;
+                    Location lookupLoc = matchingLocations.FirstOrDefault();
+                    lookupLoc.Name = LocationName;
+                    lookupLoc.LocationTypeKey = LocType;
+                    Repositories.LocationRepo.Update(lookupLoc);
+                    return lookupLoc.Key;
                 }
             }
-            
-            newLoc.Name = LocationName;
 
-            if (LocationTypeGuid != Guid.Empty)
-            {
-                newLoc.LocationTypeKey = LocationTypeGuid;
-            }
-            else
-            {
-                newLoc.LocationTypeKey = uLocate.Constants.DefaultLocationTypeKey;
-            }
-
-            if (DoUpdate)
-            {
-                Repositories.LocationRepo.Update(newLoc);
-            }
-            else
-            {
-                Repositories.LocationRepo.Insert(newLoc);
-            }
-            
-
-            //var Result = Repositories.LocationTypeRepo.GetByKey(newLocType.Key);
-            var Result = newLoc.Key;
-
-            return Result;
+            Location newLoc = new Location(LocationName, LocType);
+            Repositories.LocationRepo.Insert(newLoc);
+            return newLoc.Key;
         }
 
         public static Location UpdateLocation(Location UpdatedLocation, bool UpdateIfFound = false)
