@@ -234,12 +234,9 @@
             var dto = converter.ToLocationTypeDto(item);
 
             Repositories.ThisDb.Insert(dto);
-            item.Key = dto.Key;
+            //item.Key = dto.Key;
 
-            LogHelper.Info(typeof(LocationTypeRepository), Msg);
-
-            
-
+            LogHelper.Info(typeof(LocationTypeRepository), Msg);    
         }
 
         protected override void PersistUpdatedItem(LocationType item)

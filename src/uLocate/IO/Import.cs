@@ -15,7 +15,10 @@
     using uLocate.Models;
     using uLocate.Persistance;
 
+    using Umbraco.Core;
     using Umbraco.Core.Logging;
+
+    using Constants = uLocate.Constants;
 
     public static class Import
     {
@@ -44,11 +47,12 @@
             {
                 LocationFlat[] csvLocationFlats = fhEngine.ReadFile(FullPath) as LocationFlat[];
 
-                int RowsTotal= csvLocationFlats.Count();
+                int RowsTotal = csvLocationFlats.Count();
                 int RowsSuccess = 0;
                 int RowsFailure = 0;
                 int GeocodeCount = 0;
-                
+                bool NeedsMaintenance = false;
+
 
                 foreach (LocationFlat row in csvLocationFlats)
                 {
@@ -57,26 +61,53 @@
                         GeocodeCount++;
                     }
 
-                    bool RowSuccess = ImportItem(row, LocTypeKey, GeocodeCount);
-                    if (RowSuccess)
+                    var RowStatusMsg = ImportItem(row, LocTypeKey, GeocodeCount);
+                    if (RowStatusMsg.Success)
                     {
-                        MsgDetails.AppendLine(string.Format("'{0}' imported successfully.", row.LocationName));
                         RowsSuccess++;
+                        if (StringExtensions.IsNullOrWhiteSpace(RowStatusMsg.Code))
+                        {
+                            MsgDetails.AppendLine(string.Format("'{0}' was imported successfully.", row.LocationName));
+                        }
+                        else
+                        {
+                            MsgDetails.AppendLine(string.Format("'{0}' was imported with some issues: {1}", row.LocationName, RowStatusMsg.Message));
+
+                            if (RowStatusMsg.Code.Contains("GeocodingProblem") || RowStatusMsg.Code.Contains("UnableToUpdateDBGeography"))
+                            {
+                                NeedsMaintenance = true;
+                            }
+                        }
+
                     }
                     else
                     {
-                        MsgDetails.AppendLine(string.Format("Error importing '{0}'.", row.LocationName));
+                        MsgDetails.AppendLine(string.Format("Error importing '{0}' : {1}", row.LocationName, RowStatusMsg.Message));
                         RowsFailure++;
+                    }
+
+                    if (RowStatusMsg.RelatedException != null)
+                    {
+                        LogHelper.Error(typeof(Import), string.Format("Error on '{0}'", row.LocationName), RowStatusMsg.RelatedException);
                     }
                 }
 
-                Msg.Message += string.Format( 
-                    "Out of {0} total locations, {1} were imported successfully and {2} failed.", 
-                    RowsTotal, 
-                    RowsSuccess, 
+
+                //Compile final status message
+                Msg.Message += string.Format(
+                    "Out of {0} total locations, {1} were imported successfully and {2} failed.",
+                    RowsTotal,
+                    RowsSuccess,
                     RowsFailure);
+
+                if (NeedsMaintenance)
+                {
+                    Msg.Message += " Some rows encountered issues which might be fixed by running some maintenance tasks.";
+                }
+
                 Msg.MessageDetails = MsgDetails.ToString();
                 Msg.Success = true;
+                LogHelper.Info(typeof(Import), string.Format("Final Status importing file '{0}': {1} : {2}", FilePath, Msg.Message, Msg.MessageDetails));
             }
             catch (Exception ex)
             {
@@ -91,18 +122,26 @@
                 }
                 else
                 {
-                    Msg.Message = "An error occurred";
+                    Msg.Message = string.Format("An error occurred : {0}", ex.Message);
                     Msg.Success = false;
                     Msg.Code = ex.GetType().ToString();
                     Msg.RelatedException = ex;
                     LogHelper.Error(typeof(Import), string.Format("Error importing file '{0}'", FilePath), ex);
                 }
-
             }
 
             return Msg;
         }
 
+        /// <summary>
+        /// Test whether this data needs to be geo-coded.
+        /// </summary>
+        /// <param name="locFlat">
+        /// The location flat record
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private static bool NeedsGeocoding(this LocationFlat locFlat)
         {
             bool Result = true;
@@ -114,33 +153,60 @@
             return Result;
         }
 
-        private static bool ImportItem(LocationFlat locFlat, Guid LocationTypeKey, int GeocodeCount)
+        private static StatusMessage ImportItem(LocationFlat locFlat, Guid LocationTypeKey, int GeocodeCount)
         {
-            bool Success = true;
+            var ReturnMsg = new StatusMessage();
+            ReturnMsg.ObjectName = locFlat.LocationName;
+            ReturnMsg.Success = true;
+            var Msg = new StringBuilder();
 
             try
             {
+                //Create new Location
                 var newLoc = new Location()
                 {
                     Name = locFlat.LocationName
                 };
 
-                //TODO: make dynamic based on provider limit
-                if (locFlat.NeedsGeocoding() && GeocodeCount < 400)
+                //Attempt geocoding
+                if (locFlat.NeedsGeocoding())
                 {
-                    var locAddress = new Address()
-                                         {
-                                             Address1 = locFlat.Address1,
-                                             Address2 = locFlat.Address2,
-                                             Locality = locFlat.Locality,
-                                             Region = locFlat.Region,
-                                             PostalCode = locFlat.PostalCode,
-                                             CountryCode = locFlat.CountryCode
-                                         };
-                    var newCoordinate = DoGeocoding.GetCoordinateForAddress(locAddress);
+                    if (GeocodeCount >= 400)
+                    {
+                        ReturnMsg.Success = true;
+                        ReturnMsg.Code = "GeocodingProblem";
+                        Msg.AppendLine("This address exceeded the limits for geo-coding in a batch.");
+                    }
+                    else
+                    {
 
-                    newLoc.Latitude = newCoordinate.Latitude;
-                    newLoc.Longitude = newCoordinate.Longitude;
+                        try
+                        {
+                            var locAddress = new Address()
+                                                 {
+                                                     Address1 = locFlat.Address1,
+                                                     Address2 = locFlat.Address2,
+                                                     Locality = locFlat.Locality,
+                                                     Region = locFlat.Region,
+                                                     PostalCode = locFlat.PostalCode,
+                                                     CountryCode = locFlat.CountryCode
+                                                 };
+
+                            //TODO: make dynamic based on provider limit
+                            var newCoordinate = DoGeocoding.GetCoordinateForAddress(locAddress);
+
+                            newLoc.Latitude = newCoordinate.Latitude;
+                            newLoc.Longitude = newCoordinate.Longitude;
+                        }
+                        catch (Exception e1)
+                        {
+                            ReturnMsg.Success = true;
+                            ReturnMsg.RelatedException = e1;
+                            ReturnMsg.Code = "GeocodingProblem";
+                            Msg.AppendLine("There was a problem geo-coding the address.");
+                            LogHelper.Error(typeof(Import), string.Format("Geo-coding error while importing '{0}'", ReturnMsg.ObjectName), e1);
+                        }
+                    }
                 }
                 else
                 {
@@ -148,6 +214,7 @@
                     newLoc.Longitude = locFlat.Longitude;
                 }
 
+                //set properties
                 newLoc.AddPropertyData("Address1", locFlat.Address1);
                 newLoc.AddPropertyData("Address2", locFlat.Address2);
                 newLoc.AddPropertyData("Locality", locFlat.Locality);
@@ -157,25 +224,51 @@
                 newLoc.AddPropertyData("PhoneNumber", locFlat.PhoneNumber);
                 newLoc.AddPropertyData("Email", locFlat.Email);
 
-                Repositories.LocationRepo.Insert(newLoc);
+                //TODO: Support additional custom properties
 
-                if (newLoc.Latitude != 0 && newLoc.Longitude != 0)
+                try
                 {
-                    Repositories.LocationRepo.UpdateDbGeography(newLoc);
+                    Repositories.LocationRepo.Insert(newLoc);
                 }
-                else
+                catch (Exception e2)
                 {
-                    newLoc.DbGeogNeedsUpdated = true;
-                    Repositories.LocationRepo.Update(newLoc);
+                    ReturnMsg.Success = false;
+                    ReturnMsg.RelatedException = e2;
+                    ReturnMsg.Code = ReturnMsg.Code != "" ? ReturnMsg.Code + ",InsertError" : "InsertError";
+                    Msg.AppendLine("There was a problem saving the new location data.");
+                }
+
+                try
+                {
+                    if (newLoc.Latitude != 0 && newLoc.Longitude != 0)
+                    {
+                        Repositories.LocationRepo.UpdateDbGeography(newLoc);
+                    }
+                    else
+                    {
+                        newLoc.DbGeogNeedsUpdated = true;
+                        Repositories.LocationRepo.Update(newLoc);
+                    }
+                }
+                catch (Exception e3)
+                {
+                    ReturnMsg.Success = true;
+                    ReturnMsg.RelatedException = e3;
+                    ReturnMsg.Code = ReturnMsg.Code != "" ? ReturnMsg.Code + ",UnableToUpdateDBGeography" : "UnableToUpdateDBGeography";
+                    Msg.AppendLine("Unable to update the coordinates in the database.");
                 }
             }
             catch (Exception ex)
             {
+                ReturnMsg.Success = false;
+                ReturnMsg.RelatedException = ex;
+                ReturnMsg.Code = ReturnMsg.Code != "" ? ReturnMsg.Code + ",UnknownException" : "UnknownException";
+                Msg.AppendLine(ex.Message);
                 LogHelper.Error(typeof(Import), string.Format("ImportItem: Error importing location '{0}'", locFlat.LocationName), ex);
-                Success = false;
             }
 
-            return Success;
+            ReturnMsg.Message = Msg.ToString();
+            return ReturnMsg;
         }
     }
 }
