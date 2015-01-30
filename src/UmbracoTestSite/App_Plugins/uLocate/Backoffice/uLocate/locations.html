@@ -11,7 +11,7 @@
                     <div class="btn-group" ng-class="{'open': openMenu}">
                         <a class="btn" ng-click="openMenu = !openMenu"><localize key="general_actions">Actions</localize> <span class="caret"></span></a>
                         <ul class="dropdown-menu umb-actions">
-                            <li class="action">
+                            <li class="action" ng-show="areLocationTypesLoaded">
                                 <a ng-click="openCreateDialog(); openMenu = !openMenu;"><i class="icon icon-add"></i><span class="menu-label"><localize key="actions_create">Create</localize></span></a>
                             </li>
                             <li class="action sep">
@@ -37,7 +37,7 @@
                         </form>
                         <div class="span4">
                             <div class="btn-group pull-right">
-                                <a class="btn btn-primary" ng-click="openCreateDialog()"><localize key="actions_create">Create</localize></a>
+                                <a class="btn btn-primary" ng-click="openCreateDialog()" ng-show="areLocationTypesLoaded"><localize key="actions_create">Create</localize></a>
                             </div>
                         </div>
                     </div>

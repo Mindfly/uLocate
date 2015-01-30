@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function ($scope, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateMapService, uLocateLocationApiService, uLocateLocationTypeApiService) {
+    controllers.LocationsController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateMapService, uLocateLocationApiService, uLocateLocationTypeApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -139,7 +139,11 @@
             $scope.isGeocoding = false;
             $scope.locations = [];
             $scope.locationsLoaded = false;
-            $scope.locationTypes = [];
+            $scope.locationTypes = uLocate.Constants.LOCATION_TYPES;
+            $scope.areLocationTypesLoaded = false;
+            if ($scope.locationTypes.length > 0) {
+                $scope.areLocationTypesLoaded = true;
+            }
             $scope.newLocation = new uLocate.Models.Location();
             $scope.openMenu = false;
             $scope.options = {
@@ -183,7 +187,6 @@
                     }
                 };
                 $scope.mapStyles = uLocate.Constants.MAP_STYLES;
-
                 $scope.loadMap();
             }
         };
@@ -232,7 +235,10 @@
          * 
          * @description - Opens the Create Location dialog.
          */
-        $scope.openCreateDialog = function() {
+        $scope.openCreateDialog = function () {
+            var currentNode = $scope.currentNode;
+            currentNode.locationTypes = $scope.locationTypes;
+            currentNode.defaultKey = uLocate.Constants.DEFAULT_LOCATION_TYPE_KEY;
             navigationService.showDialog({
                 node: $scope.currentNode,
                 action: {
@@ -470,7 +476,17 @@
         $scope.createLocation = function (location, shouldGeocode, shouldReloadPageView) {
             var createPromise;
             location.locationTypeKey = uLocate.Constants.DEFAULT_LOCATION_TYPE_KEY;
-            location.locationTypeName = 'Default';
+            if (($location.search()).key) {
+                location.locationTypeKey = ($location.search()).key;
+            }
+            _.each($scope.locationTypes, function (type) {
+                console.info(type);
+                if (type.key == location.locationTypeKey) {
+                    console.info('match!');
+                    location.locationTypeName = type.name;
+                }
+            });
+            console.info(location);
             if (shouldGeocode) {
                 var address = $scope.buildAddressString(location);
                 var geocodePromise = uLocateMapService.geocode(address);
@@ -569,7 +585,31 @@
                 $scope.totalPages = response.totalPages;
                 $scope.locationsLoaded = true;
                 $scope.addLocationMarkersToMap();
+                $scope.getLocationTypes();
             });
+        };
+
+        /**
+         * @ngdoc method
+         * @name getLocationTypes
+         * @function
+         * 
+         * @description - Gets all location types from the API, if not already stored in constants.
+         */
+        $scope.getLocationTypes = function () {
+            if (uLocate.Constants.LOCATION_TYPES.length < 1) {
+                var promise = uLocateLocationTypeApiService.getAllLocationTypes();
+                promise.then(function (response) {
+                    $scope.locationTypes = _.map(response, function (locationType) {
+                        return new uLocate.Models.LocationType(locationType);
+                    });
+                    uLocate.Constants.LOCATION_TYPES = $scope.locationTypes;
+                    $scope.areLocationTypesLoaded = true;
+                });
+            } else {
+                $scope.locationTypes = uLocate.Constants.LOCATION_TYPES;
+                $scope.areLocationTypesLoaded = true;
+            }
         };
 
         /**
@@ -706,6 +746,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateMapService', 'uLocateLocationApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateMapService', 'uLocateLocationApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));
