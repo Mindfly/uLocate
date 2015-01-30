@@ -36,6 +36,7 @@
                 JsonProp.PropName = Prop.Name;
                 JsonProp.PropType = Prop.DataTypeId;
                 JsonProp.IsDefaultProp = Prop.IsDefaultProp;
+                JsonProp.Key = Prop.Key;
                 this.Properties.Add(JsonProp);
             }
         }

@@ -109,15 +109,16 @@
                     var key = ($location.search()).key;
                     var promise = uLocateLocationTypeApiService.getByKey(key);
                     promise.then(function(response) {
-                        $scope.newLocationType = new uLocate.Models.LocationType(response);
-                        _.each($scope.newLocationType.properties, function (property) {
-                            _.each($scope.options.type, function (dataType, index) {
-                                property.selectedType = $scope.options.type[0];
+                        var newLocationType = new uLocate.Models.LocationType(response);
+                        _.each(newLocationType.properties, function (property) {
+                            property.selectedType = $scope.options.type[0];
+                            _.each($scope.options.type, function (dataType) {
                                 if (dataType.id == property.propType) {
-                                    property.selectedType = $scope.options.type[index];
+                                    property.selectedType = dataType;
                                 }
                             });
                         });
+                        $scope.newLocationType = newLocationType;
                         if ($scope.newLocationType.properties.length < 1) {
                             $scope.addNewProperty();
                         }
@@ -315,13 +316,11 @@
         };
 
         $scope.updateLocationType = function (type) {
-            console.info(type);
             var promise = uLocateLocationTypeApiService.updateLocationType(type);
             promise.then(function (response) {
                 if (response) {
                     notificationsService.success('Location type "' + type.name + '" saved.');
                     window.location = '#/uLocate/uLocate/locationTypes/view';
-                    console.info(response);
                 } else {
                     notificationsService.success('Attempt to save location type "' + type.name + '" failed.');
                 }

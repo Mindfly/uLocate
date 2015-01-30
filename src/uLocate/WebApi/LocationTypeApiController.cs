@@ -108,14 +108,16 @@
         /// The key.
         /// </param>
         /// <returns>
-        /// The <see cref="LocationType"/>.
+        /// The <see cref="JsonLocationType"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public LocationType GetByKey(Guid Key)
+        public JsonLocationType GetByKey(Guid Key)
         {
-            var Result = Repositories.LocationTypeRepo.GetByKey(Key);
+            var loc = Repositories.LocationTypeRepo.GetByKey(Key);
 
-            return Result;
+            var result = new JsonLocationType(loc);
+
+            return result;
         }
 
         /// <summary>
