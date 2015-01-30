@@ -497,7 +497,7 @@
                     } else {
                         notificationsService.error("Unable to get coordinates for provided location address.");
                     }
-                    createPromise = uLocateLocationApiService.createLocation(location.name);
+                    createPromise = uLocateLocationApiService.createLocation(location.name, location.locationTypeKey);
                     createPromise.then(function (guid) {
                         if (guid) {
                             location.key = guid;

@@ -480,13 +480,10 @@
                 location.locationTypeKey = ($location.search()).key;
             }
             _.each($scope.locationTypes, function (type) {
-                console.info(type);
                 if (type.key == location.locationTypeKey) {
-                    console.info('match!');
                     location.locationTypeName = type.name;
                 }
             });
-            console.info(location);
             if (shouldGeocode) {
                 var address = $scope.buildAddressString(location);
                 var geocodePromise = uLocateMapService.geocode(address);
@@ -500,7 +497,7 @@
                     } else {
                         notificationsService.error("Unable to get coordinates for provided location address.");
                     }
-                    createPromise = uLocateLocationApiService.createLocation(location.name);
+                    createPromise = uLocateLocationApiService.createLocation(location.name, location.locationTypeKey);
                     createPromise.then(function (guid) {
                         if (guid) {
                             location.key = guid;

@@ -200,6 +200,7 @@
     <Folder Include="PackageActions\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\uLocate\Scripts\Directives\ulocate.property.js" />
     <Content Include="App_Plugins\uLocate\uLocateDashboard.html" />
     <None Include="app.config" />
     <None Include="App_Plugins\uLocate\Config\uLocate.config" />

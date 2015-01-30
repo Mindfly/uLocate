@@ -13,8 +13,8 @@
          * @returns {uLocate.Models.Location}
          * @description - Creates a new location with the provided name.
          */
-	    locationApiFactory.createLocation = function (name) {
-	        var config = { params: { locationName: name} };
+	    locationApiFactory.createLocation = function (name, key) {
+	        var config = { params: { LocationName: name, LocationTypeGuid: key } };
 	        return $http.get('/umbraco/backoffice/uLocate/LocationApi/Create', config).then(function (response) {
 	            if (response.data) {
 	                var data = response.data.split('"').join('');

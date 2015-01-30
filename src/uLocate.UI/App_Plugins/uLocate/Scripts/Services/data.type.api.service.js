@@ -16,6 +16,7 @@
             return $http.get("/umbraco/backoffice/uLocate/DataTypeApi/GetAllAvailable").then(function (response) {
                 if (response.data) {
                     var dataString = JSON.stringify(response.data);
+                    console.info(dataString);
                     dataString = dataString.split('{"')[1].split('"}')[0];
                     var pairs = dataString.split('","');
                     var dataTypes = [];
