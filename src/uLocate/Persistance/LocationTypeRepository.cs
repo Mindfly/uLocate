@@ -278,7 +278,7 @@
             }
 
             StatusMsg = ReturnMsg;
-            LogHelper.Info(typeof(LocationTypeRepository), ReturnMsg.Message);
+            //LogHelper.Info(typeof(LocationTypeRepository), ReturnMsg.Message);
         }
 
         protected override Sql GetBaseQuery(bool isCount)

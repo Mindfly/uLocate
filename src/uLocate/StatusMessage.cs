@@ -10,15 +10,18 @@ namespace uLocate
     {
         public StatusMessage()
         {
+            this.InnerStatuses = new List<StatusMessage>();
         }
 
         public StatusMessage(bool WasSuccessful)
         {
+            this.InnerStatuses = new List<StatusMessage>();
             this.Success = WasSuccessful;
         }
 
         public StatusMessage(bool WasSuccessful, string Msg)
         {
+            this.InnerStatuses = new List<StatusMessage>();
             this.Success = WasSuccessful;
             this.Message = Msg;
         }
@@ -48,6 +51,8 @@ namespace uLocate
         }
 
         public Exception RelatedException { get; set; }
+
+        public List<StatusMessage> InnerStatuses { get; set; }
 
     }
 }

@@ -7,6 +7,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using FileHelpers;
+    using FileHelpers.Dynamic;
 
     using StackExchange.Profiling;
 
@@ -22,6 +23,7 @@
 
     public static class Import
     {
+        #region CSV Importing
         public static StatusMessage LocationsCSV(string FilePath, Guid? LocationTypeKey = null)
         {
             Guid LocTypeKey;
@@ -38,14 +40,25 @@
             StatusMessage Msg = new StatusMessage();
             Msg.ObjectName = FilePath;
 
-            FileHelperEngine fhEngine = new FileHelperEngine(typeof(LocationFlat));
+            // Using http://filehelpers.sourceforge.net/ to process CSV files 
+            // Dynamic class definition
+            string dynamicClassDef = DynamicLocationFlatClass(LocTypeKey);
+
+            Type t = ClassBuilder.ClassFromString(dynamicClassDef);
+
+            FileHelperEngine fhEngine = new FileHelperEngine(t);
+
+            //DataTable = engine.ReadFileAsDT("test.txt");
+
+            //FileHelperEngine fhEngine = new FileHelperEngine(typeof(LocationFlat));
 
             string FullPath = Mindfly.Files.GetMappedPath(FilePath);
             var MsgDetails = new StringBuilder();
 
             try
             {
-                LocationFlat[] csvLocationFlats = fhEngine.ReadFile(FullPath) as LocationFlat[];
+                //LocationFlat[] csvLocationFlats = fhEngine.ReadFile(FullPath) as LocationFlat[];
+                var csvLocationFlats = fhEngine.ReadFile(FullPath);
 
                 int RowsTotal = csvLocationFlats.Count();
                 int RowsSuccess = 0;
@@ -53,10 +66,9 @@
                 int GeocodeCount = 0;
                 bool NeedsMaintenance = false;
 
-
-                foreach (LocationFlat row in csvLocationFlats)
+                foreach (dynamic row in csvLocationFlats)
                 {
-                    if (row.NeedsGeocoding())
+                    if (NeedsGeocoding(row))
                     {
                         GeocodeCount++;
                     }
@@ -133,27 +145,7 @@
             return Msg;
         }
 
-        /// <summary>
-        /// Test whether this data needs to be geo-coded.
-        /// </summary>
-        /// <param name="locFlat">
-        /// The location flat record
-        /// </param>
-        /// <returns>
-        /// The <see cref="bool"/>.
-        /// </returns>
-        private static bool NeedsGeocoding(this LocationFlat locFlat)
-        {
-            bool Result = true;
-            if (locFlat.Latitude != 0 && locFlat.Longitude != 0)
-            {
-                Result = false;
-            }
-
-            return Result;
-        }
-
-        private static StatusMessage ImportItem(LocationFlat locFlat, Guid LocationTypeKey, int GeocodeCount)
+        private static StatusMessage ImportItem(dynamic locFlat, Guid LocationTypeKey, int GeocodeCount)
         {
             var ReturnMsg = new StatusMessage();
             ReturnMsg.ObjectName = locFlat.LocationName;
@@ -163,13 +155,42 @@
             try
             {
                 //Create new Location
-                var newLoc = new Location()
+                var newLoc = new Location(locFlat.LocationName, LocationTypeKey);
+
+                //var newKey = newLoc.Key;
+                Repositories.LocationRepo.Insert(newLoc);
+                //newLoc = Repositories.LocationRepo.GetByKey(newKey);
+
+                //Set default properties
+                newLoc.AddPropertyData("Address1", locFlat.Address1);
+                newLoc.AddPropertyData("Address2", locFlat.Address2);
+                newLoc.AddPropertyData("Locality", locFlat.Locality);
+                newLoc.AddPropertyData("Region", locFlat.Region);
+                newLoc.AddPropertyData("PostalCode", locFlat.PostalCode);
+                newLoc.AddPropertyData("CountryCode", locFlat.CountryCode);
+                newLoc.AddPropertyData("PhoneNumber", locFlat.PhoneNumber);
+                newLoc.AddPropertyData("Email", locFlat.Email);
+
+                //TODO: Support additional custom properties
+                if (LocationTypeKey != Constants.DefaultLocationTypeKey)
                 {
-                    Name = locFlat.LocationName
-                };
+                    var CustomLtProps = Repositories.LocationTypePropertyRepo.GetByLocationType(LocationTypeKey);
+                    List<string> aliasCollection = new List<string>();
+
+                    foreach (var customProp in CustomLtProps)
+                    {
+                        aliasCollection.Add(customProp.Alias);
+                    }
+
+                    foreach (var alias in aliasCollection)
+                    {
+                        var value = locFlat.GetProperty(alias);
+                        newLoc.AddPropertyData(alias, value);
+                    }
+                }
 
                 //Attempt geocoding
-                if (locFlat.NeedsGeocoding())
+                if (NeedsGeocoding(locFlat))
                 {
                     if (GeocodeCount >= 400)
                     {
@@ -179,7 +200,6 @@
                     }
                     else
                     {
-
                         try
                         {
                             var locAddress = new Address()
@@ -214,21 +234,12 @@
                     newLoc.Longitude = locFlat.Longitude;
                 }
 
-                //set properties
-                newLoc.AddPropertyData("Address1", locFlat.Address1);
-                newLoc.AddPropertyData("Address2", locFlat.Address2);
-                newLoc.AddPropertyData("Locality", locFlat.Locality);
-                newLoc.AddPropertyData("Region", locFlat.Region);
-                newLoc.AddPropertyData("PostalCode", locFlat.PostalCode);
-                newLoc.AddPropertyData("CountryCode", locFlat.CountryCode);
-                newLoc.AddPropertyData("PhoneNumber", locFlat.PhoneNumber);
-                newLoc.AddPropertyData("Email", locFlat.Email);
 
-                //TODO: Support additional custom properties
-
+                // SAVE properties of new location to db
                 try
                 {
-                    Repositories.LocationRepo.Insert(newLoc);
+                    //Repositories.LocationRepo.Insert(newLoc);
+                    Repositories.LocationRepo.Update(newLoc);
                 }
                 catch (Exception e2)
                 {
@@ -238,6 +249,7 @@
                     Msg.AppendLine("There was a problem saving the new location data.");
                 }
 
+                // UPDATE Geography field using Lat/Long
                 try
                 {
                     if (newLoc.Latitude != 0 && newLoc.Longitude != 0)
@@ -270,5 +282,183 @@
             ReturnMsg.Message = Msg.ToString();
             return ReturnMsg;
         }
+
+        #endregion
+
+        #region Custom Class Definition
+
+        private static string DynamicLocationFlatClass(Guid LocationTypeKey)
+        {
+            var classString = new StringBuilder();
+
+            //Default props
+            classString.Append(
+                @"	[DelimitedRecord("","")]
+                    [IgnoreEmptyLines()]
+                    [IgnoreFirst(1)] 
+                    public class LocationFlat
+                    {
+                        [FieldNullValue(typeof(string), """")]
+                        [FieldQuoted('""', QuoteMode.OptionalForBoth)]
+                        public string LocationName;
+
+                        [FieldNullValue(typeof(string), """")]
+                        [FieldQuoted('""', QuoteMode.OptionalForBoth)]
+                        public string Address1;
+
+                        [FieldNullValue(typeof(string), """")]
+                        [FieldQuoted('""', QuoteMode.OptionalForBoth)]
+                        public string Address2;
+
+                        [FieldNullValue(typeof(string), """")]
+                        [FieldQuoted('""', QuoteMode.OptionalForBoth)]
+                        public string Locality;
+
+                        [FieldNullValue(typeof(string), """")]
+                        [FieldQuoted('""', QuoteMode.OptionalForBoth)]
+                        public string Region;
+
+                        [FieldNullValue(typeof(string), """")]
+                        [FieldQuoted('""', QuoteMode.OptionalForBoth)]
+                        public string PostalCode;
+
+                        [FieldNullValue(typeof(string), """")]
+                        [FieldQuoted('""', QuoteMode.OptionalForBoth)]
+                        public string CountryCode;
+
+                        [FieldNullValue(typeof(string), """")]
+                        [FieldQuoted('""', QuoteMode.OptionalForBoth)]
+                        public string PhoneNumber;
+
+                        [FieldNullValue(typeof(string), """")]
+                        [FieldQuoted('""', QuoteMode.OptionalForBoth)]
+                        public string Email;
+
+                        [FieldNullValue(typeof(double), ""0"")]
+                        public double Longitude;
+
+                        [FieldNullValue(typeof(double), ""0"")]
+                        public double Latitude;
+
+			");
+
+            //Custom props
+            if (LocationTypeKey != Constants.DefaultLocationTypeKey)
+            {
+                var CustomLtProps = Repositories.LocationTypePropertyRepo.GetByLocationType(LocationTypeKey);
+
+                //Property Definitions
+                foreach (var customProp in CustomLtProps.OrderBy(p => p.SortOrder))
+                {
+                    string fhProperty = FormatCustomProperty(customProp);
+                    classString.Append(fhProperty);
+                }
+
+                //Custom 'GetProperty()' Methods
+                string fhStringMethod = GenerateCustomStringMethods(CustomLtProps.Where(p => p.DatabaseType == Constants.DbNtext || p.DatabaseType == Constants.DbNvarchar));
+                classString.Append(fhStringMethod);
+
+                //TODO: Append Methods for INT and DATE
+            }
+
+            //Close the class
+            classString.Append("}");
+
+            return classString.ToString();
+        }
+
+        private static string GenerateCustomStringMethods(IEnumerable<LocationTypeProperty> CustomProps)
+        {
+            var classMethod = new StringBuilder();
+
+            classMethod.Append(
+            @" public string GetProperty(string Alias)
+                {
+                    switch (Alias)
+                    {
+            ");
+
+            foreach (var prop in CustomProps)
+            {
+                classMethod.Append(string.Format(
+                @"
+                            case ""{0}"":
+                                return this.{0};
+                                break;
+                ", prop.Alias));
+            }
+
+            classMethod.Append(
+            @"
+                        default:
+                            return """";
+                    }
+                }
+            ");
+
+            return classMethod.ToString();
+        }
+
+        private static string FormatCustomProperty(LocationTypeProperty CustomProperty)
+        {
+            var classProp = new StringBuilder();
+
+            switch (CustomProperty.DatabaseType)
+            {
+                case Constants.DbDate:
+                    classProp.Append(
+                        string.Format(
+                        @"  [FieldConverter(ConverterKind.Date, ""MMddyyyy"")]
+            	            public DateTime {0};
+                        ",
+                            CustomProperty.Alias));
+                    break;
+                case Constants.DbInteger:
+                    classProp.Append(
+                        string.Format(
+                        @"  [FieldNullValue(typeof(int), ""0"")]
+                            public int {0};
+                        ",
+                            CustomProperty.Alias));
+                    break;
+                default:
+                    classProp.Append(
+                        string.Format(
+                        @"  [FieldNullValue(typeof(string), """")]
+                            [FieldQuoted('""', QuoteMode.OptionalForBoth)]
+                            public string {0};
+                                            ",
+                            CustomProperty.Alias));
+                    break;
+            }
+
+            return classProp.ToString();
+        }
+
+        #endregion
+
+        #region General Functions
+
+        /// <summary>
+        /// Test whether this data needs to be geo-coded.
+        /// </summary>
+        /// <param name="locFlat">
+        /// The location flat record
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        private static bool NeedsGeocoding(dynamic locFlat)
+        {
+            bool Result = true;
+            if (locFlat.Latitude != 0 && locFlat.Longitude != 0)
+            {
+                Result = false;
+            }
+
+            return Result;
+        }
+
+        #endregion
     }
 }

@@ -241,7 +241,7 @@ namespace uLocate.Persistance
             ReturnMsg.Success = true;
 
             StatusMsg = ReturnMsg;
-            LogHelper.Info(typeof(LocationPropertyDataRepository), ReturnMsg.Message);
+            //LogHelper.Info(typeof(LocationPropertyDataRepository), ReturnMsg.Message);
         }
 
         protected override Sql GetBaseQuery(bool isCount)

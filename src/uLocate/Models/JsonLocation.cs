@@ -193,10 +193,9 @@
 
         public JsonPropertyData(LocationPropertyData Prop)
         {
-            var JsonProp = new JsonPropertyData();
-            JsonProp.Key = Prop.Key;
-            JsonProp.PropAlias = Prop.PropertyAlias;
-            JsonProp.PropData = Prop.Value.ValueObject;
+            this.Key = Prop.Key;
+            this.PropAlias = Prop.PropertyAlias;
+            this.PropData = Prop.Value.ValueObject;
         }
 
         public JsonPropertyData()

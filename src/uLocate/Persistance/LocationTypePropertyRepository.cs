@@ -286,7 +286,7 @@
             ReturnMsg.Success = true;
 
             StatusMsg = ReturnMsg;
-            LogHelper.Info(typeof(LocationTypePropertyRepository), ReturnMsg.Message);
+            //LogHelper.Info(typeof(LocationTypePropertyRepository), ReturnMsg.Message);
         }
 
         protected override Sql GetBaseQuery(bool isCount)

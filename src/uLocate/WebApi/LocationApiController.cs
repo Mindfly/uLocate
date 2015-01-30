@@ -28,6 +28,8 @@
         //    return true;
         //}
 
+        #region Operations
+
         /// <summary>
         /// Create a new Location of type "default"
         /// /umbraco/backoffice/uLocate/LocationApi/Create?LocationName=xxx
@@ -82,24 +84,6 @@
         }
 
         /// <summary>
-        /// Get a location by its Key
-        /// /umbraco/backoffice/uLocate/LocationApi/GetByKey
-        /// </summary>
-        /// <param name="Key">
-        /// The key.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Location"/>.
-        /// </returns>
-        [System.Web.Http.AcceptVerbs("GET")]
-        public JsonLocation GetByKey(Guid Key)
-        {
-            var Result = Repositories.LocationRepo.GetByKey(Key);
-
-            return new JsonLocation(Result);
-        }
-
-        /// <summary>
         /// Delete a location 
         /// /umbraco/backoffice/uLocate/LocationApi/Delete
         /// </summary>
@@ -115,6 +99,94 @@
             var Result = Repositories.LocationRepo.Delete(Key);
 
             return Result;
+        }
+
+        /// <summary>
+        /// Delete all locations.
+        /// /umbraco/backoffice/uLocate/LocationApi/DeleteAllLocations?Confirm=true
+        /// </summary>
+        /// <param name="Confirm">
+        /// The confirmation (must be TRUE to run)
+        /// </param>
+        /// <returns>
+        /// The <see cref="StatusMessage"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public StatusMessage DeleteAllLocations(bool Confirm)
+        {
+            var ResultMsg = new StatusMessage();
+
+            if (Confirm)
+            {
+                int delCounter = 0;
+                List<Guid> allKeys = new List<Guid>();
+
+                var allLocations = Repositories.LocationRepo.GetAll();
+                var totCounter = allLocations.Count();
+                
+                foreach (var loc in allLocations)
+                {
+                    allKeys.Add(loc.Key);
+                }
+
+                foreach (var key in allKeys)
+                {
+                    var stat = Repositories.LocationRepo.Delete(key);
+                    ResultMsg.InnerStatuses.Add(stat);
+                    if (stat.Success)
+                    {
+                        delCounter++;
+                    }
+                }
+
+                ResultMsg.Message = string.Format("{0} Location(s) deleted out of a total of {1} Location(s)", delCounter, totCounter);
+                ResultMsg.Success = true;
+            }
+            else
+            {
+                ResultMsg.Success = false;
+                ResultMsg.Code = "NotConfirmed";
+                ResultMsg.Message = "The operation was not confirmed, and thus did not run.";
+            }
+
+            return ResultMsg;
+        }
+
+        /// <summary>
+        /// Updates Lat/Long coordinates for all Locations which require it.
+        /// /umbraco/backoffice/uLocate/LocationApi/UpdateCoordinatesAsNeeded
+        /// </summary>
+        /// <returns>
+        /// The <see cref="StatusMessage"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public StatusMessage UpdateCoordinatesAsNeeded()
+        {
+            var Result = Repositories.LocationRepo.UpdateGeoForAllNeeded();
+
+            return Result;
+        }
+
+        #endregion
+
+        #region Querying
+
+        /// <summary>
+        /// Get a location by its Key
+        /// /umbraco/backoffice/uLocate/LocationApi/GetByKey
+        /// </summary>
+        /// <param name="Key">
+        /// The key.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Location"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public JsonLocation GetByKey(Guid Key)
+        {
+            var Result = Repositories.LocationRepo.GetByKey(Key);
+
+            return new JsonLocation(Result);
         }
 
         /// <summary>
@@ -178,19 +250,26 @@
         }
 
         /// <summary>
-        /// Updates Lat/Long coordinates for all Locations which require it.
-        /// /umbraco/backoffice/uLocate/LocationApi/UpdateCoordinatesAsNeeded
+        /// Get all locations of a specified type
+        /// /umbraco/backoffice/uLocate/LocationApi/GetByLocationType?LocTypeKey=xxx
         /// </summary>
+        /// <param name="LocTypeKey">
+        /// The Location Type Key
+        /// </param>
         /// <returns>
-        /// The <see cref="StatusMessage"/>.
+        /// An <see cref="IEnumerable"/> of <see cref="JsonLocation"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public StatusMessage UpdateCoordinatesAsNeeded()
+        public IEnumerable<JsonLocation> GetByLocationType(Guid LocTypeKey)
         {
-            var Result = Repositories.LocationRepo.UpdateGeoForAllNeeded();
+            var FilteredLocs = Repositories.LocationRepo.GetByType(LocTypeKey);
+            var Result = Repositories.LocationRepo.ConvertToJsonLocations(FilteredLocs);
 
             return Result;
         }
+
+
+         #endregion
 
     }
 }
