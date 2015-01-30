@@ -116,7 +116,7 @@
             <umb-tab-view>
 
                 <div class="umb-pane form-horizontal">
-
+                    <div class="well" style="background-color: #2e8aea; color: white;" ng-show="isGeocoding">Geocoding the coordinates for the address. This may take a moment. Do not leave or reload page or your location might not save properly.</div>
                     <div class="control-group umb-control-group">
                         <label class="control-label" for="streetAddress">
                             <ulocate-localize key="streetAddress">Street Address</ulocate-localize>
@@ -124,7 +124,7 @@
                         </label>
 
                         <div class="controls controls-row">
-                            <input type="text" name="streetAddress" id="streetAddress" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.streetAddress" required />
+                            <input type="text" name="streetAddress" id="streetAddress" class="umb-editor umb-textstring textstring" ng-model="newLocation.address1" required />
                             <span class="help-inline" ng-show="isFieldInvalid(createForm.streetAddress)"><localize key="general_required">Required</localize></span>
                         </div>
                     </div>
@@ -136,7 +136,7 @@
                         </label>
 
                         <div class="controls controls-row">
-                            <input type="text" name="extendedAddress" id="extendedAddress" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.extendedAddress" />
+                            <input type="text" name="extendedAddress" id="extendedAddress" class="umb-editor umb-textstring textstring" ng-model="newLocation.address2" />
                         </div>
                     </div>
 
@@ -144,8 +144,8 @@
                         <label class="control-label" for="locality"><ulocate-localize key="city">City</ulocate-localize></label>
 
                         <div class="controls controls-row">
-                            <input type="text" name="locality" id="locality" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.locality" required />
-                            <span class="help-inline" ng-show="isFieldInvalid(createForm.streetAddress)"><localize key="general_required">Required</localize></span>
+                            <input type="text" name="locality" id="locality" class="umb-editor umb-textstring textstring" ng-model="newLocation.locality" required />
+                            <span class="help-inline" ng-show="isFieldInvalid(createForm.locality)"><localize key="general_required">Required</localize></span>
                         </div>
                     </div>
 
@@ -153,7 +153,7 @@
                         <label class="control-label" for="region"><ulocate-localize key="stateProvince">State/Province</ulocate-localize></label>
 
                         <div class="controls controls-row">
-                            <input type="text" name="region" id="region" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.region" ng-show="!hasProvinces()" ng-required="!hasProvinces()">
+                            <input type="text" name="region" id="region" class="umb-editor umb-textstring textstring" ng-model="newLocation.region" ng-show="!hasProvinces()" ng-required="!hasProvinces()">
                             <select class="umb-editor umb-dropdown" ng-model="selected.region" ng-options="option.name for option in selected.country.provinces" ng-show="hasProvinces()"></select>
                             <span class="help-inline" ng-show="!hasProvinces() && isFieldInvalid(createForm.region)"><localize key="general_required">Required</localize></span>
                         </div>
@@ -163,7 +163,7 @@
                         <label class="control-label" for="postalCode"><ulocate-localize key="zipPostalCode">Zip/Postal Code</ulocate-localize></label>
 
                         <div class="controls controls-row">
-                            <input type="text" name="postalCode" id="postalCode" class="umb-editor umb-textstring textstring" ng-model="newLocation.address.postalCode" required />
+                            <input type="text" name="postalCode" id="postalCode" class="umb-editor umb-textstring textstring" ng-model="newLocation.postalCode" required />
                             <span class="help-inline" ng-show="isFieldInvalid(createForm.postalCode)"><localize key="general_required">Required</localize></span>
                         </div>
                     </div>
@@ -182,7 +182,7 @@
                         </label>
 
                         <div class="controls controls-row">
-                            <input type="text" name="textbox" id="latitude" class="umb-editor umb-textstring textstring" ng-model="newLocation.coordinates.latitude" />
+                            <input type="text" name="textbox" id="latitude" class="umb-editor umb-textstring textstring" ng-model="newLocation.latitude" />
                         </div>
                     </div>
 
@@ -193,7 +193,7 @@
                         </label>
 
                         <div class="controls controls-row">
-                            <input type="text" name="textbox" id="longitude" class="umb-editor umb-textstring textstring" ng-model="newLocation.coordinates.longitude" />
+                            <input type="text" name="textbox" id="longitude" class="umb-editor umb-textstring textstring" ng-model="newLocation.longitude" />
                         </div>
                     </div>
 
@@ -220,7 +220,7 @@
                             <a class="btn" href="#/uLocate/uLocate/locations/view"><localize key="general_cancel">Cancel</localize></a>
                         </div>
                         <div class="btn-group">
-                            <a class="btn btn-success" ng-click="createLocation(newLocation)"><localize key="buttons_save">Save</localize></a>
+                            <a class="btn btn-success" ng-click="processCreateLocationForm(newLocation)"><localize key="buttons_save">Save</localize></a>
                         </div>
                     </div>
                 </div>

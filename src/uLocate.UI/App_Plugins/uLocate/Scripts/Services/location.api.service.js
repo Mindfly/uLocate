@@ -17,7 +17,7 @@
 	        var config = { params: { locationName: name} };
 	        return $http.get('/umbraco/backoffice/uLocate/LocationApi/Create', config).then(function (response) {
 	            if (response.data) {
-	                var data = locationApiFactory.downCaseProperties(response.data);
+	                var data = response.data.split('"').join('');
 	                return data;
 	            } else {
 	                return false;
@@ -88,7 +88,6 @@
 		    return $http.get('/umbraco/backoffice/uLocate/LocationApi/GetAllPaged', config).then(function (response) {
 		        if (response.data) {
 		            var data = new uLocate.Models.LocationsPagedResponse(locationApiFactory.downCaseProperties(response.data));
-		            console.info(data);
 		            return data;
 		        } else {
 		            return false;
