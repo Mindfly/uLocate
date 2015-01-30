@@ -374,7 +374,7 @@
             var dto = converter.ToLocationDto(item);
 
             Repositories.ThisDb.Insert(dto);
-            item.Key = dto.Key;
+            //item.Key = dto.Key;
 
             LogHelper.Info(typeof(LocationRepository), Msg);
 

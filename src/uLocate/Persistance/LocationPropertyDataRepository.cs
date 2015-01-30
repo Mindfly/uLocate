@@ -211,9 +211,9 @@ namespace uLocate.Persistance
             var dto = converter.ToLocationPropertyDataDto(item);
 
             Repositories.ThisDb.Insert(dto);
-            item.Key = dto.Key;
+            //item.Key = dto.Key;
 
-            LogHelper.Info(typeof(LocationPropertyDataRepository), Msg);
+            //LogHelper.Info(typeof(LocationPropertyDataRepository), Msg);
         }
 
         protected override void PersistUpdatedItem(LocationPropertyData item)

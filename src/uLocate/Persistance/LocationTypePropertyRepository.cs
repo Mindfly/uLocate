@@ -253,7 +253,7 @@
             var dto = converter.ToLocationTypePropertyDto(item);
 
             Repositories.ThisDb.Insert(dto);
-            item.Key = dto.Key;
+            //item.Key = dto.Key;
 
             LogHelper.Info(typeof(LocationTypePropertyRepository), Msg);
         }
