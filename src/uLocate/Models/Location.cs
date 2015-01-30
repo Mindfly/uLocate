@@ -91,7 +91,12 @@
         /// <summary>
         /// Gets or sets the location type.
         /// </summary>
-        public LocationType LocationType { get; set; }
+        public LocationType LocationType {
+            get
+            {
+                return Repositories.LocationTypeRepo.GetByKey(this.LocationTypeKey);
+            }
+        }
 
         /// <summary>
         /// Gets the address.
@@ -332,7 +337,7 @@
             this.Key = Guid.NewGuid();
             this.Name = LocName;
             this.LocationTypeKey = LocTypeKey;
-            this.LocationType = Repositories.LocationTypeRepo.GetByKey(LocTypeKey);
+            //this.LocationType = Repositories.LocationTypeRepo.GetByKey(LocTypeKey);
             this.PropertyData = this.DefaultProperties(LocTypeKey).ToList();
         }
 

@@ -82,7 +82,7 @@
                         //this.AllPropertyData.Add(new JsonPropertyData(Prop));
                         break;
                 }
-             }
+            }
         }
 
         public Location ConvertToLocation()
@@ -98,86 +98,33 @@
                 Entity.Name = this.Name;
                 Entity.LocationTypeKey = this.LocationTypeKey;
 
-                Entity.Latitude = this.Latitude;
-                Entity.Longitude = this.Longitude;
-
-                //Deal with Address
-                //if (Entity.Address != null)
-                //{
-
-                //    Entity.Address.Address1 = this.Address1;
-                //    Entity.Address.Address2 = this.Address2;
-                //    Entity.Address.Locality = this.Locality;
-                //    Entity.Address.Region = this.Region;
-                //    Entity.Address.PostalCode = this.PostalCode;
-                //    Entity.Address.CountryCode = this.CountryCode;
-                //}
-                //else
-                //{
-                    //Add Address properties
-                    Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, this.Address1);
-                    Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Address2, this.Address2);
-                    Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Locality, this.Locality);
-                    Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Region, this.Region);
-                    Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.PostalCode, this.PostalCode);
-                    Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.CountryCode, this.CountryCode);
-                //}
-
-                //Deal with Properties    
-                Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Phone, this.Phone);
-                Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Email, this.Email);
-
-//                Entity.PropertyData = "x";
-  //              Entity.
-
-                //match up properties
-                //foreach (var JsonProp in this.Properties)
-                //{
-                //    //lookup existing property
-                //    var Prop = Entity.Properties.Where(p => p.Key == JsonProp.Key).FirstOrDefault();
-
-                //    if (Prop != null)
-                //    {
-                //        Prop.Alias = JsonProp.PropAlias;
-                //        Prop.Name = JsonProp.PropName;
-                //        Prop.DataTypeId = JsonProp.PropType;
-                //        //Repositories.LocationTypePropertyRepo.Update(Prop);
-                //    }
-                //    else
-                //    {
-                //        //Add new property
-                //        Entity.AddProperty(JsonProp.PropAlias, JsonProp.PropName, JsonProp.PropType);
-                //    }
-                //}
             }
             else
             {
                 //Create new entity
-                Entity = new Location()
-                {
-                    Name = this.Name,
-                    LocationTypeKey = this.LocationTypeKey,
+                Entity = new Location(Name = this.Name, LocationTypeKey = this.LocationTypeKey);
+            }
 
-                    Latitude = this.Latitude,
-                    Longitude = this.Longitude,
-                };
+            //Update lat/long
+            Entity.Latitude = this.Latitude;
+            Entity.Longitude = this.Longitude;
 
-                //Add Default properties
-                Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, this.Address1);
-                Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Address2, this.Address2);
-                Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Locality, this.Locality);
-                Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Region, this.Region);
-                Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.PostalCode, this.PostalCode);
-                Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.CountryCode, this.CountryCode);
-                Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Phone, this.Phone);
-                Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Email, this.Email);
-           
-        
-                //Add custom properties
-                foreach (var JsonProp in this.CustomPropertyData)
-                {
-                   Entity.AddPropertyData(JsonProp.PropAlias, JsonProp.PropData);
-                }
+            //Add Address properties
+            Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, this.Address1);
+            Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Address2, this.Address2);
+            Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Locality, this.Locality);
+            Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Region, this.Region);
+            Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.PostalCode, this.PostalCode);
+            Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.CountryCode, this.CountryCode);
+
+            //Deal with Properties    
+            Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Phone, this.Phone);
+            Entity.AddPropertyData(Constants.DefaultLocPropertyAlias.Email, this.Email);
+
+            //Add custom properties
+            foreach (var JsonProp in this.CustomPropertyData)
+            {
+                Entity.AddPropertyData(JsonProp.PropAlias, JsonProp.PropData);
             }
 
             return Entity;
