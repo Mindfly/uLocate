@@ -214,6 +214,10 @@
                     </div>
 
                     <!-- TODO: All items after this point would be custom items based on a custom location type -->
+                    <div class="control-group umb-control-group" ng-repeat="property in customPropertyList(newLocation)">
+                        <label class="control-label">{{property.propName}}</label>
+                        <div class="controls controls-row"></div>
+                    </div>
 
                     <div class="umb-tab-buttons">
                         <div class="btn-group">

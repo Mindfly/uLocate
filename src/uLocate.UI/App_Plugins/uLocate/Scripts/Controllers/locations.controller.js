@@ -525,6 +525,37 @@
         };
 
         /**
+         * @ngdoc method
+         * @name customPropertyList
+         * @function
+         * 
+         * @param {uLocate.Models.Location} location
+         * @description
+         */
+        $scope.customPropertyList = function (location) {
+            var results = [];
+            if (($location.search()).key) {
+                var key = ($location.search()).key;
+                if (location) {
+                    if (location.customPropertyData.length > 0) {
+                        results = location.customPropertyData;
+                    } else {
+                        if ($scope.locationTypes.length > 0) {
+                            _.each($scope.locationTypes, function (type) {
+                                if (type.key == key) {
+                                    results = _.map(type.properties, function (property) {
+                                        return property;
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+            return results;
+        };
+
+        /**
         * @ngdoc method
         * @name deleteLocation
         * @function
