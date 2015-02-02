@@ -306,6 +306,7 @@
     <Compile Include="Persistance\PagedRepositoryBase.cs" />
     <Compile Include="Persistance\Repositories.cs" />
     <Compile Include="Persistance\RepositoryBase.cs" />
+    <Compile Include="Providers\DatatypeCacheProvider.cs" />
     <Compile Include="StatusMessage.cs" />
     <Compile Include="Properties\AssemblyVisibility.cs" />
     <Compile Include="Helpers\GeographyHelper.cs" />

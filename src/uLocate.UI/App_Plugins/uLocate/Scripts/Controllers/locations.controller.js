@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateMapService, uLocateLocationApiService, uLocateLocationTypeApiService) {
+    controllers.LocationsController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateDataTypeApiService, uLocateMapService, uLocateLocationApiService, uLocateLocationTypeApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -188,6 +188,11 @@
                 };
                 $scope.mapStyles = uLocate.Constants.MAP_STYLES;
                 $scope.loadMap();
+            } else if ($scope.selectedView === 'create') {
+                $scope.getLocationTypes().then(function(locationTypes) {
+                    $scope.locationTypes = locationTypes;
+                    $scope.buildNewLocationEditors();
+                });
             }
         };
 
@@ -355,6 +360,14 @@
                 if ((lat == 0 & lng == 0) || lat == '' || lng == '') {
                     shouldGeocode = true;
                 }
+                _.each(location.editors, function (editor) {
+                    var newProperty = new uLocate.Models.LocationProperty({
+                        key: '00000000-0000-0000-0000-000000000000',
+                        propAlias: editor.propAlias,
+                        propData: editor.value
+                    });
+                    location.customPropertyData.push(newProperty);
+                });
                 $scope.createLocation(location, shouldGeocode, true);
             }
         };
@@ -526,33 +539,53 @@
 
         /**
          * @ngdoc method
-         * @name customPropertyList
+         * @name buildNewLocationEditors
          * @function
          * 
-         * @param {uLocate.Models.Location} location
-         * @description
+         * @description - Build a list of property editors for the new location being created.
          */
-        $scope.customPropertyList = function (location) {
-            var results = [];
+        $scope.buildNewLocationEditors = function () {
             if (($location.search()).key) {
-                var key = ($location.search()).key;
-                if (location) {
-                    if (location.customPropertyData.length > 0) {
-                        results = location.customPropertyData;
-                    } else {
-                        if ($scope.locationTypes.length > 0) {
-                            _.each($scope.locationTypes, function (type) {
-                                if (type.key == key) {
-                                    results = _.map(type.properties, function (property) {
-                                        return property;
+                var results = [];
+                var editors = [];
+                var dataTypePromise = uLocateDataTypeApiService.getAllDataTypes();
+                dataTypePromise.then(function (dataTypes) {
+                    _.each(dataTypes, function (dataType) {
+                        var getByNamePromise = uLocateDataTypeApiService.getByName(dataType.name);
+                        getByNamePromise.then(function (data) {
+                            editors.push({
+                                id: dataType.id,
+                                alias: data.propertyEditorAlias,
+                                label: dataType.name,
+                                view: data.view,
+                                config: data.config,
+                            });
+                            if (editors.length == dataTypes.length) {
+                                var key = ($location.search()).key;
+                                if ($scope.locationTypes.length > 0) {
+                                    _.each($scope.locationTypes, function(type) {
+                                        if (type.key == key) {
+                                            _.each(type.properties, function(property) {
+                                                _.each(editors, function(editor) {
+                                                    if (editor.id == property.propType) {
+                                                        var editorToReturn = editor;
+                                                        editorToReturn.label = property.propName;
+                                                        editorToReturn.propAlias = property.propAlias;
+                                                        results.push(editorToReturn);
+                                                    }
+                                                });
+                                            });
+                                        }
                                     });
                                 }
-                            });
-                        }
-                    }
-                }
+                                $scope.newLocation.editors = results;
+                            } else {
+                                $scope.newLocation.editors = [];
+                            }
+                        });
+                    });
+                });
             }
-            return results;
         };
 
         /**
@@ -613,7 +646,11 @@
                 $scope.totalPages = response.totalPages;
                 $scope.locationsLoaded = true;
                 $scope.addLocationMarkersToMap();
-                $scope.getLocationTypes();
+                if ($scope.locationTypes.length < 1) {
+                    $scope.getLocationTypes().then(function(locationTypes) {
+                        $scope.locationTypes = locationTypes;
+                    });
+                }
             });
         };
 
@@ -625,19 +662,15 @@
          * @description - Gets all location types from the API, if not already stored in constants.
          */
         $scope.getLocationTypes = function () {
-            if (uLocate.Constants.LOCATION_TYPES.length < 1) {
-                var promise = uLocateLocationTypeApiService.getAllLocationTypes();
-                promise.then(function (response) {
-                    $scope.locationTypes = _.map(response, function (locationType) {
-                        return new uLocate.Models.LocationType(locationType);
-                    });
-                    uLocate.Constants.LOCATION_TYPES = $scope.locationTypes;
-                    $scope.areLocationTypesLoaded = true;
+            var promise = uLocateLocationTypeApiService.getAllLocationTypes();
+            return promise.then(function (response) {
+                var locationTypes = _.map(response, function (locationType) {
+                    return new uLocate.Models.LocationType(locationType);
                 });
-            } else {
-                $scope.locationTypes = uLocate.Constants.LOCATION_TYPES;
+                uLocate.Constants.LOCATION_TYPES = locationTypes;
                 $scope.areLocationTypesLoaded = true;
-            }
+                return uLocate.Constants.LOCATION_TYPES;
+            });
         };
 
         /**
@@ -774,6 +807,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateMapService', 'uLocateLocationApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateDataTypeApiService', 'uLocateMapService', 'uLocateLocationApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

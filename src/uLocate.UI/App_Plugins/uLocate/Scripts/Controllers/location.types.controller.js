@@ -66,6 +66,7 @@
             if ($scope.selectedView == 'edit') {
                 var promise = uLocateDataTypeApiService.getAllDataTypes();
                 promise.then(function (response) {
+                    console.info(response);
                     _.each(response, function(dataType) {
                         $scope.options.type.push({
                             id: dataType.id,
