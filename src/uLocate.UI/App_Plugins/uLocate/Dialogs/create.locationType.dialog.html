@@ -1,4 +1,4 @@
-﻿<div class="umb-dialog-body uLocate" ng-controller="uLocate.Controllers.CreateLocationTypeDialogController">
+﻿<div class="umb-dialog-body uLocate with-footer" ng-controller="uLocate.Controllers.CreateLocationTypeDialogController">
     <div class="umb-pane">
         <div class="control-group umb-control-group">
             <div class="umb-el-wrap ">
@@ -21,4 +21,9 @@
             <input type="submit" value="Create" ng-click="confirm()" class="btn btn-primary">
         </div>
     </div>
+</div>
+<div class="umb-dialog-footer btn-toolbar umb-btn-toolbar">
+    <button class="btn" ng-click="nav.hideNavigation()">
+        <localize key="buttons_somethingElse">Do something else</localize>
+    </button>
 </div>

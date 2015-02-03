@@ -1,9 +1,22 @@
-﻿<div class="umb-dialog-body with-footer">
+﻿<div class="umb-dialog-body with-footer uLocate" ng-controller="uLocate.Controllers.CreateLocationDialogController">
     <div class="umb-pane">
         <h5><localize key="create_createUnder">Create an item under </localize> {{currentNode.name}}</h5>
+        <!-- div class="control-group umb-control-group">
+            <div class="umb-el-wrap ">
+                <label class="control-label">
+                    Location Name
+                    <small></small>
+                </label>
+                <div class="controls controls-row">
+                    <input type="text" ng-model="locationName" class="bigInput input-large-type input-block-level" placeholder="Location Name" />
+                    <div class="error" ng-show="showLocationError">Location name is required.</div>
+                </div>
+            </div>
+        </!--div -->
         <ul class="umb-actions umb-actions-child">
-            <li><!-- TODO: Should be a repeater displaying the default location type and all custom location types beneath it as options. -->
-                <a href="#/uLocate/uLocate/locations/create?key={{currentNode.defaultKey}}" ng-click="nav.hideNavigation()">
+            <li>
+                <!-- TODO: Should be a repeater displaying the default location type and all custom location types beneath it as options. -->
+                <a ng-click="confirm(locationName, defaultKey)">
                     <i class="large icon-pin-location"></i>
                     <span class="menu-label">
                         Default Location
@@ -11,8 +24,8 @@
                     </span>
                 </a>
             </li>
-            <li ng-repeat="type in currentNode.locationTypes" ng-hide="type.key == currentNode.defaultKey">
-                <a href="#/uLocate/uLocate/locations/create?key={{type.key}}" ng-click="nav.hideNavigation()">
+            <li ng-repeat="type in locationTypes" ng-hide="type.key == defaultKey">
+                <a ng-click="confirm(locationName, type.key)">
                     <i class="large {{type.icon}}"></i>
                     <span class="menu-label">
                         {{type.name}}

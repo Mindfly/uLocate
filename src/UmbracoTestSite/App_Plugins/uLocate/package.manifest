@@ -14,6 +14,7 @@
         "~/App_Plugins/uLocate/Scripts/Services/map.service.js",
         "~/App_Plugins/uLocate/Scripts/Services/localization.service.js",
         "~/App_Plugins/uLocate/Scripts/Directives/localize.js",
+        "~/App_Plugins/uLocate/Scripts/Controllers/create.location.dialog.controller.js",
         "~/App_Plugins/uLocate/Scripts/Controllers/create.location.type.dialog.controller.js",
         "~/App_Plugins/uLocate/Scripts/Controllers/delete.confirmation.dialog.controller.js",
         "~/App_Plugins/uLocate/Scripts/Controllers/edit.location.dialog.controller.js",

@@ -15,7 +15,7 @@
          */
         $scope.init = function () {
             $scope.selectedView = $routeParams.id;
-            if ($scope.selectedView === 'view' || $scope.selectedView === 'create') {
+            if ($scope.selectedView === 'view') {
                 $scope.addDeleteLocationListener();
                 $scope.loadGoogleMapAsset();
             } else {
@@ -140,11 +140,10 @@
             $scope.locations = [];
             $scope.locationsLoaded = false;
             $scope.locationTypes = uLocate.Constants.LOCATION_TYPES;
-            $scope.areLocationTypesLoaded = false;
-            if ($scope.locationTypes.length > 0) {
-                $scope.areLocationTypesLoaded = true;
-            }
             $scope.newLocation = new uLocate.Models.Location();
+            if (($location.search()).name) {
+                $scope.newLocation.name = ($location.search()).name;
+            }
             $scope.openMenu = false;
             $scope.options = {
                 countries: [{ name: 'Select a Country', provinceLabel: 'Province/State', provinces: [{ name: 'Select A Province/State', code: '' }] }],
@@ -189,10 +188,14 @@
                 $scope.mapStyles = uLocate.Constants.MAP_STYLES;
                 $scope.loadMap();
             } else if ($scope.selectedView === 'create') {
-                $scope.getLocationTypes().then(function(locationTypes) {
-                    $scope.locationTypes = locationTypes;
+                if ($scope.locationTypes.length < 1) {
+                    $scope.getLocationTypes().then(function(locationTypes) {
+                        $scope.locationTypes = locationTypes;
+                        $scope.buildNewLocationEditors();
+                    });
+                } else {
                     $scope.buildNewLocationEditors();
-                });
+                }
             }
         };
 
@@ -242,7 +245,6 @@
          */
         $scope.openCreateDialog = function () {
             var currentNode = $scope.currentNode;
-            currentNode.locationTypes = $scope.locationTypes;
             currentNode.defaultKey = uLocate.Constants.DEFAULT_LOCATION_TYPE_KEY;
             navigationService.showDialog({
                 node: $scope.currentNode,
@@ -646,11 +648,6 @@
                 $scope.totalPages = response.totalPages;
                 $scope.locationsLoaded = true;
                 $scope.addLocationMarkersToMap();
-                if ($scope.locationTypes.length < 1) {
-                    $scope.getLocationTypes().then(function(locationTypes) {
-                        $scope.locationTypes = locationTypes;
-                    });
-                }
             });
         };
 
@@ -668,7 +665,6 @@
                     return new uLocate.Models.LocationType(locationType);
                 });
                 uLocate.Constants.LOCATION_TYPES = locationTypes;
-                $scope.areLocationTypesLoaded = true;
                 return uLocate.Constants.LOCATION_TYPES;
             });
         };
