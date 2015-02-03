@@ -81,10 +81,10 @@
 		    if (!request.pageNum) {
 		        request.pageNum = 0;
 		    }
-		    if (!request.itemsPerPage) {
-		        request.itemsPerPage = 100;
+		    if (!request.perPage) {
+		        request.perPage = 100;
 		    }
-		    var config = { params: { pageNum: request.pageNum, itemsPerPage: request.itemsPerPage } };
+		    var config = { params: { pageNum: request.pageNum, itemsPerPage: request.perPage } };
 		    return $http.get('/umbraco/backoffice/uLocate/LocationApi/GetAllPaged', config).then(function (response) {
 		        if (response.data) {
 		            var data = new uLocate.Models.LocationsPagedResponse(locationApiFactory.downCaseProperties(response.data));

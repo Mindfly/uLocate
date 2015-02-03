@@ -150,11 +150,11 @@
                 perPage: [25, 50, 100]
             };
             $scope.page = 0;
-            $scope.perPage = 100;
+            $scope.perPage = 25;
             $scope.provinceLabel = 'Province/State';
             $scope.selected = {
                 country: $scope.options.countries[0],
-                perPage: $scope.options.perPage[2]
+                perPage: $scope.options.perPage[0]
             }
             $scope.selected.region = $scope.selected.country.provinces[0];
             $scope.sortBy = 'name';
@@ -405,7 +405,7 @@
          * @param {integer} perPage - The number of locations to show per page.
          * @description - Updates the amount of locations to show per page and triggers getLocations();
          */
-        $scope.updatePerPage = function(perPage) {
+        $scope.updatePerPage = function (perPage) {
             $scope.perPage = perPage;
             $scope.page = 0;
             $scope.getLocations();
@@ -444,7 +444,7 @@
 
         /**
          * @ngdoc method
-         * @name getLocations
+         * @name addLocationMarkersToMap
          * @function
          * 
          * @description - Acquires locations via API call, using the parameters defined by the user.
@@ -568,7 +568,6 @@
                                     _.each($scope.locationTypes, function(type) {
                                         if (type.key == key) {
                                             _.each(type.properties, function (property) {
-                                                console.info(property);
                                                 _.each(editors, function(editor) {
                                                     if (editor.id == property.propType) {
                                                         var editorToReturn = {
@@ -587,7 +586,6 @@
                                     });
                                 }
                                 $scope.newLocation.editors = results;
-                                console.info(results);
                             } else {
                                 $scope.newLocation.editors = [];
                             }
