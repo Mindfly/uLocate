@@ -28,7 +28,7 @@
             this.Description = ConvertedFromLocationType.Description;
             this.Icon = ConvertedFromLocationType.Icon;
             this.Properties = new List<JsonTypeProperty>();
-            foreach (var Prop in ConvertedFromLocationType.Properties)
+            foreach (var Prop in ConvertedFromLocationType.Properties.OrderBy(p => p.SortOrder))
             {
                 var JsonProp = new JsonTypeProperty();
 
@@ -37,6 +37,7 @@
                 JsonProp.PropType = Prop.DataTypeId;
                 JsonProp.IsDefaultProp = Prop.IsDefaultProp;
                 JsonProp.Key = Prop.Key;
+                JsonProp.SortOrder = Prop.SortOrder;
                 this.Properties.Add(JsonProp);
             }
         }
@@ -66,7 +67,7 @@
             Entity.Icon = this.Icon;
 
             //match up child properties
-            foreach (var JsonProp in this.Properties)
+            foreach (var JsonProp in this.Properties.OrderBy(p => p.SortOrder))
             {
                 //lookup existing property
                 var Prop = Entity.Properties.Where(p => p.Key == JsonProp.Key).FirstOrDefault();
@@ -76,6 +77,7 @@
                     Prop.Alias = JsonProp.PropAlias;
                     Prop.Name = JsonProp.PropName;
                     Prop.DataTypeId = JsonProp.PropType;
+                    Prop.SortOrder = JsonProp.SortOrder;
                     Repositories.LocationTypePropertyRepo.Update(Prop);
                 }
                 else
@@ -110,6 +112,7 @@
         public string PropAlias { get; set; }
         public int PropType { get; set; }
         public Boolean IsDefaultProp { get; set; }
+        public int SortOrder { get; set; }
 
         public LocationTypeProperty ConvertToLocationTypeProperty()
         {
@@ -134,6 +137,7 @@
             Entity.Alias = this.PropAlias;
             Entity.Name = this.PropName;
             Entity.DataTypeId = this.PropType;
+            Entity.SortOrder = this.SortOrder;
 
             return Entity;
         }
@@ -146,7 +150,8 @@
                 Key = this.Key,
                 Alias = this.PropAlias,
                 Name = this.PropName,
-                DataTypeId = this.PropType
+                DataTypeId = this.PropType,
+                SortOrder = this.SortOrder
             };
             return Entity;
         }
