@@ -48,12 +48,12 @@
          * @description - Open the Create Location view with the name and key provided.
          */
         $scope.confirm = function (name, key) {
-            //if (name !== '') {
+            if (name !== '') {
                 $scope.nav.hideNavigation();
-                window.location = '/umbraco/#/uLocate/uLocate/locations/create?&key=' + key;
-            //} else {
-            //    $scope.showLocationError = true;
-            //}
+                window.location = '/umbraco/#/uLocate/uLocate/locations/create?&name=' + name + '&key=' + key;
+            } else {
+                $scope.showLocationError = true;
+            }
         };
 
         /*-------------------------------------------------------------------
