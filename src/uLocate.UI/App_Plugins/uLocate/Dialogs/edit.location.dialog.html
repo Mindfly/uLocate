@@ -58,6 +58,11 @@
                 <input type="text" class="span12" ng-model="dialogData.location.phone" />
             </div>
             <!-- TODO: After the default location type data loads in, any created location type data associated with this location is loaded -->
+            <div class="control-group row-fluid" ng-repeat="editor in dialogData.location.editors">
+                <label>{{editor.label}}</label>
+                <umb-editor model="editor"></umb-editor>
+            </div>            
+
         </form>
     </div>
 

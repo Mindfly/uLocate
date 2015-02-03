@@ -1,6 +1,6 @@
 ﻿(function (controllers, undefined) {
 
-    controllers.EditLocationDialogController = function($scope, dialogService) {
+    controllers.EditLocationDialogController = function ($scope, dialogService, uLocateDataTypeApiService, uLocateLocationTypeApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -86,16 +86,18 @@
          */
         $scope.setVariables = function () {
             $scope.options = {
-                countries: [{ name: 'Select a Country', provinceLabel: 'Province/State', provinces: [{ name: 'Select A Province/State', code: '' }] }],
-                locationTypes: []
+                countries: [{ name: 'Select a Country', provinceLabel: 'Province/State', provinces: [{ name: 'Select A Province/State', code: '' }] }]
             };
             $scope.provinceLabel = 'Province/State';
             $scope.selected = {
-                country: $scope.options.countries[0],
-                locationTypes: [],
+                country: $scope.options.countries[0]
             };
             $scope.selected.region = $scope.selected.country.provinces[0];
             $scope.shouldHideCoordinatesEditor = true;
+            $scope.getLocationTypes().then(function (locationTypes) {
+                $scope.locationTypes = locationTypes;
+                $scope.buildNewLocationEditors();
+            });
         };
 
         /*-------------------------------------------------------------------
@@ -121,6 +123,25 @@
                     }
                 }
                 $scope.dialogData.generateLatLng = $scope.shouldHideCoordinatesEditor;
+
+                if ($scope.dialogData.location.customPropertyData.length > 0) {
+                    _.each($scope.dialogData.location.editors, function(editor) {
+                        _.each($scope.dialogData.location.customPropertyData, function(property) {
+                            if (property.propAlias == editor.propAlias) {
+                                property.propData = editor.value;
+                            }
+                        });
+                    });
+                } else {
+                    _.each($scope.dialogData.location.editors, function(editor) {
+                        var newProperty = new uLocate.Models.LocationProperty({
+                            key: '00000000-0000-0000-0000-000000000000',
+                            propAlias: editor.propAlias,
+                            propData: editor.value
+                        });
+                        $scope.dialogData.location.customPropertyData.push(newProperty);
+                    });
+                }
                 $scope.submit($scope.dialogData);
             }
         };
@@ -154,14 +175,71 @@
 
         /**
          * @ngdoc method
+         * @name buildNewLocationEditors
+         * @function
+         * 
+         * @description - Build a list of property editors for the new location being created.
+         */
+        $scope.buildNewLocationEditors = function () {
+            var results = [];
+            var editors = [];
+            var dataTypePromise = uLocateDataTypeApiService.getAllDataTypes();
+            dataTypePromise.then(function (dataTypes) {
+                _.each(dataTypes, function (dataType) {
+                    var getByNamePromise = uLocateDataTypeApiService.getByName(dataType.name);
+                    getByNamePromise.then(function (data) {
+                        editors.push({
+                            id: dataType.id,
+                            alias: data.propertyEditorAlias,
+                            label: dataType.name,
+                            view: data.view,
+                            config: data.config,
+                        });
+                        if (editors.length == dataTypes.length) {
+                            var key = $scope.dialogData.location.locationTypeKey;
+                            if ($scope.locationTypes.length > 0) {
+                                _.each($scope.locationTypes, function (type) {
+                                    if (type.key == key) {
+                                        _.each(type.properties, function (property) {
+                                            _.each(editors, function (editor) {
+                                                if (editor.id == property.propType) {
+                                                    var editorToReturn = editor;
+                                                    editorToReturn.label = property.propName;
+                                                    editorToReturn.propAlias = property.propAlias;
+                                                    results.push(editorToReturn);
+                                                }
+                                            });
+                                        });
+                                    }
+                                });
+                            }
+                            $scope.dialogData.location.editors = results;
+                        } else {
+                            $scope.dialogData.location.editors = [];
+                        }
+                    });
+                });
+            });
+        };
+
+        /**
+         * @ngdoc method
          * @name getLocationTypes
          * @function
          * 
-         * @description - Load a list of location types to populate to $scope.options.locationTypes;
+         * @description - Gets all location types from the API, if not already stored in constants.
          */
         $scope.getLocationTypes = function () {
-            // TODO: Wire in functionality to get a list of location types.    
-        }
+            var promise = uLocateLocationTypeApiService.getAllLocationTypes();
+            return promise.then(function (response) {
+                var locationTypes = _.map(response, function (locationType) {
+                    return new uLocate.Models.LocationType(locationType);
+                });
+                uLocate.Constants.LOCATION_TYPES = locationTypes;
+                $scope.areLocationTypesLoaded = true;
+                return uLocate.Constants.LOCATION_TYPES;
+            });
+        };
 
         /**
          * @ngdoc method
@@ -204,7 +282,7 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.EditLocationDialogController', ['$scope', 'dialogService', uLocate.Controllers.EditLocationDialogController]);
+    angular.module('umbraco').controller('uLocate.Controllers.EditLocationDialogController', ['$scope', 'dialogService', 'uLocateDataTypeApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.EditLocationDialogController]);
 
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

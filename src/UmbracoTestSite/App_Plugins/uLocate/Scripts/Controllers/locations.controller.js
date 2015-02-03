@@ -361,8 +361,6 @@
                     shouldGeocode = true;
                 }
                 _.each(location.editors, function (editor) {
-                    console.info(editor);
-                    console.info(editor.value);
                     var newProperty = new uLocate.Models.LocationProperty({
                         key: '00000000-0000-0000-0000-000000000000',
                         propAlias: editor.propAlias,
