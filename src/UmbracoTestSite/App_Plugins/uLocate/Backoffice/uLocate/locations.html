@@ -1,4 +1,4 @@
-﻿<div data-ng-controller="uLocate.Controllers.LocationsController" class="uLocate">
+﻿<div ng-controller="uLocate.Controllers.LocationsController" class="uLocate">
 
     <!-- The locations view route displays this panel -->
     <umb-panel ng-hide="selectedView != 'view'">
@@ -29,8 +29,12 @@
                 <div class="well" style="background-color: #2e8aea; color: white;" ng-show="isGeocoding">Geocoding the coordinates for the address. This may take a moment. Do not leave or reload page or your location might not save properly.</div>
                 <div class="map-wrapper span12">
                     <div class="map-bar top row-fluid">
+                        <!-- Loading Notification -->
+                        <div class="span8" ng-show="!locationsLoaded">
+                            Loading locations...
+                        </div>
                         <!-- Search -->
-                        <form class="span8 form-search">
+                        <form class="span8 form-search" ng-show="locationsLoaded">
                             <i class="icon-search"></i>
                             <input type="text" placeholder="Search uLocate addresses" class="span9" ng-model="filter" />
                             <a class="btn btn-primary" ng-click="changeFilter(filter)"><localize key="general_search">Search</localize></a>
@@ -57,6 +61,9 @@
                     </div>
                 </div>
                 <!-- Locations -->
+                <div ng-show="locationsLoaded && !hasLocations()">
+                    <p>No locations exist.</p>
+                </div>
                 <table class="table table-hover sortable" ng-show="hasLocations()">
                     <thead>
                         <tr>

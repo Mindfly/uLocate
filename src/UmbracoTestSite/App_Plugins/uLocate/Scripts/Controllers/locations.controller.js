@@ -168,10 +168,10 @@
                 $scope.map = null;
                 $scope.mapOptions = {
                     center: {
-                        latitude: 0,
-                        longitude: 0
+                        latitude: 47.609895,
+                        longitude: -122.330259
                     },
-                    zoom: 12,
+                    zoom: 3,
                     mapTypeControlOptions: {
                         position: google.maps.ControlPosition.LEFT_CENTER,
                         style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
@@ -622,6 +622,7 @@
          * @description - Acquires locations via API call, using the parameters defined by the user.
          */
         $scope.getLocations = function () {
+            $scope.locationsLoaded = false;
             uLocateMapService.deleteAllMarkers();
             $scope.locations = [];
             var request = new uLocate.Models.GetLocationsApiRequest({
