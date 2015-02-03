@@ -1,6 +1,6 @@
 ﻿(function (controllers, undefined) {
 
-    controllers.ImportController = function ($scope, notificationsService, uLocateFileApiService) {
+    controllers.ImportController = function ($scope, notificationsService, uLocateFileApiService, uLocateLocationTypeApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -15,6 +15,31 @@
          */
         $scope.init = function () {
             $scope.setVariables();
+            $scope.getLocationTypes();
+        };
+
+        /**
+         * @ngdoc method
+         * @name getLocationTypes
+         * @function
+         * 
+         * @description - Loads the location types via API.
+         */
+        $scope.getLocationTypes = function () {
+            if ($scope.locationTypes.length < 1) {
+                var promise = uLocateLocationTypeApiService.getAllLocationTypes();
+                promise.then(function(response) {
+                    $scope.locationTypes = _.map(response, function(locationType) {
+                        return new uLocate.Models.LocationType(locationType);
+                    });
+                    uLocate.Constants.LOCATION_TYPES = $scope.locationTypes;
+                    $scope.select = $scope.locationTypes[0];
+                    $scope.selectedLocationType = $scope.locationTypes[0];
+                });
+            } else {
+                $scope.select = $scope.locationTypes[0];
+                $scope.selectedLocationType = $scope.locationTypes[0];
+            }
         };
 
         /**
@@ -25,17 +50,11 @@
          * @description - Sets the initial state for $scope variables.
          */
         $scope.setVariables = function () {
+            $scope.locationTypes = uLocate.Constants.LOCATION_TYPES;
             $scope.mode = 'import';
-            $scope.options = {
-                locationType: [new uLocate.Models.LocationType({
-                    name: 'Default'
-                })]
-            }
-            $scope.selected = {
-                locationType: $scope.options.locationType[0]
-            };
+            $scope.select = null;
+            $scope.selectedLocationType = null;
             $scope.importResults = '';
-            $scope.locationType = $scope.options.locationType[0];
             $scope.file = false;
             $scope.isUploading = false;
         };
@@ -43,18 +62,6 @@
         /*-------------------------------------------------------------------
          * Event Handler Methods
          *-------------------------------------------------------------------*/
-
-        /**
-         * @ngdoc method
-         * @name locationTypeSelected
-         * @function
-         * 
-         * @param {uLocate.Models.LocationType} locationType - The selected location type.
-         * @description - Get the selected location type.
-         */
-        $scope.locationTypeSelected = function(locationType) {
-            $scope.locationType = locationType;
-        };
 
         /**
          * @ngdoc method
@@ -70,6 +77,10 @@
             }
         };
 
+        $scope.updateLocationType = function(locationType) {
+            $scope.selectedLocationType = locationType;
+        };
+
         /**
          * @ngdoc method
          * @name uploadFile
@@ -82,11 +93,12 @@
                 if ($scope.file) {
                     $scope.isUploading = true;
                     notificationsService.info("File import started. This may take a few moments.");
-                    var promise = uLocateFileApiService.uploadFileToServer($scope.file, $scope.locationType);
+                    var key = $scope.selectedLocationType.key;
+                    var promise = uLocateFileApiService.uploadFileToServer($scope.file);
                     promise.then(function(response) {
                         if (response) {
-                            var importPromise = uLocateFileApiService.importLocationsCsv(response);
-                            importPromise.then(function(importResponse) {
+                            var importPromise = uLocateFileApiService.importLocationsCsv(response, key);
+                            importPromise.then(function (importResponse) {
                                 notificationsService.success('File successfully imported. #h5yr!');
                                 $scope.importResults = importResponse.message;
                                 $scope.isUploading = false;
@@ -99,11 +111,11 @@
                         $scope.isUploading = false;
                     });
                 } else {
-                        notificationsService.error("Must select a file to import.");
-                        $scope.isUploading = false;
-                    }
+                    notificationsService.error("Must select a file to import.");
+                    $scope.isUploading = false;
+                }
                 
-    }
+            }
         };
 
         /*-------------------------------------------------------------------
@@ -118,6 +130,6 @@
 
     app.requires.push('angularFileUpload');
 
-    angular.module('umbraco').controller('uLocate.Controllers.ImportController', ['$scope', 'notificationsService', 'uLocateFileApiService', uLocate.Controllers.ImportController]);
+    angular.module('umbraco').controller('uLocate.Controllers.ImportController', ['$scope', 'notificationsService', 'uLocateFileApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.ImportController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

@@ -30,8 +30,22 @@
             }
         };
 
-        fileApiFactory.importLocationsCsv = function(name) {
-            return $http.get('/umbraco/backoffice/ulocate/ImportExportApi/ImportLocationsCSV?FileName=' + name).then(function (response) {
+        /**
+         * @ngdoc method
+         * @name importLocationsCsv
+         * @function
+         * 
+         * @param {string} name - name of uploaded file to use with importing locations.
+         * @param {string} key - The location type key of the type of locations to create.
+         * @returns 
+         * @description - Imports locations from a CSV file.
+         */
+        fileApiFactory.importLocationsCsv = function (name, key) {
+            var apiUrl = '/umbraco/backoffice/ulocate/ImportExportApi/ImportLocationsCSV?FileName=' + name;
+            if (key && key !== uLocate.Constants.DEFAULT_LOCATION_TYPE_KEY) {
+                apiUrl = '/umbraco/backoffice/ulocate/ImportExportApi/ImportLocationsCSV?FileName=' + name + '&LocationTypeKey=' + key;
+            }
+            return $http.get(apiUrl).then(function (response) {
                 if (response.data) {
                     return fileApiFactory.downCaseProperties(response.data);
                 } else {
@@ -71,7 +85,6 @@
                     fileName = fileName.split('\\\\').join('/');
                     fileName = fileName.split('\App_Data')[1];
                     fileName = '~/App_Data' + fileName;
-                    console.info(fileName);
                     return fileName;
                 } else {
                     return false;

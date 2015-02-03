@@ -567,12 +567,18 @@
                                 if ($scope.locationTypes.length > 0) {
                                     _.each($scope.locationTypes, function(type) {
                                         if (type.key == key) {
-                                            _.each(type.properties, function(property) {
+                                            _.each(type.properties, function (property) {
+                                                console.info(property);
                                                 _.each(editors, function(editor) {
                                                     if (editor.id == property.propType) {
-                                                        var editorToReturn = editor;
-                                                        editorToReturn.label = property.propName;
-                                                        editorToReturn.propAlias = property.propAlias;
+                                                        var editorToReturn = {
+                                                            id: editor.id,
+                                                            alias: editor.alias,
+                                                            label: property.propName,
+                                                            view: editor.view,
+                                                            config: editor.config,
+                                                            propAlias: property.propAlias
+                                                        };
                                                         results.push(editorToReturn);
                                                     }
                                                 });
@@ -581,6 +587,7 @@
                                     });
                                 }
                                 $scope.newLocation.editors = results;
+                                console.info(results);
                             } else {
                                 $scope.newLocation.editors = [];
                             }

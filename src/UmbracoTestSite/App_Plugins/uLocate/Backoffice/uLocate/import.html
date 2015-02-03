@@ -8,7 +8,7 @@
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <div class="btn-group">
                         <a class="btn btn-primary" ng-show="!isUploading" ng-click="uploadFile()" ng-disabled="isUploading"><localize key="general_import">Import</localize></a>
-                        <a class="btn btn-disabled" ng-show="isUploading" ng-disabled="isUploading">Importing File...</a>
+                        <a class="btn btn-disabled" ng-show="isUploading" ng-disabled="true">Importing File...</a>
                     </div>
                 </div>
             </div>
@@ -28,21 +28,21 @@
 
 
                     <div class="controls controls-row">
-                        <button ng-file-select ng-model="files" ng-file-change="fileSelected(files)" class="file button btn-primary" ng-multiple="false" accept="*.csv"><ulocate-localize key="chooseFile">Choose File</ulocate-localize></button> {{file.name}}
+                        <button ng-file-select ng-model="files" ng-file-change="fileSelected(files)" class="file button btn-primary" ng-multiple="false" accept="*.csv" ng-show="!isUploading"><ulocate-localize key="chooseFile">Choose File</ulocate-localize></button>
+                        <button type="button" class="btn btn-disabled" ng-show="isUploading">Importing File...</button> {{file.name}}
                     </div>
                 </div>
 
-                <!--TODO: Future version will permit different location types-->
-                <!--<div class="control-group umb-control-group">
+                <div class="control-group umb-control-group">
                     <label class="control-label" for="type">
                         <ulocate-localize key="locationType">Location Type</ulocate-localize>
                         <small><ulocate-localize key="locationTypeImportHelp">You can only import a single location type per upload.</ulocate-localize></small>
                     </label>
 
                     <div class="controls controls-row">
-                        <select id="type" name="type" ng-model="selected.locationType" ng-options="option.name for option in options.locationType" ng-change="locationTypeSelected(selected.locationType)"></select>
+                        <select id="type" name="type" ng-model="select" ng-options="option.name for option in locationTypes" ng-change="updateLocationType(select)"></select>
                     </div>
-                </div>-->
+                </div>
 
             </div>
 
