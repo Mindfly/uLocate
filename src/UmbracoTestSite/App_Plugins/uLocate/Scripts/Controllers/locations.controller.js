@@ -14,13 +14,13 @@
          * @description - Called when the $scope is initalized.
          */
         $scope.init = function () {
+            $scope.shouldLoadMap = false;
             $scope.selectedView = $routeParams.id;
             if ($scope.selectedView === 'view') {
+                $scope.shouldLoadMap = true;
                 $scope.addDeleteLocationListener();
-                $scope.loadGoogleMapAsset();
-            } else {
-                $scope.setVariables();
             }
+            $scope.loadGoogleMapAsset();
         };
 
         /**
@@ -352,6 +352,11 @@
                             location.countryCode = $scope.selected.country.countryCode;
                             isValid = true;
                         }
+                    }
+                } else {
+                    if ($scope.selected.country.name !== '' && $scope.selected.country.name !== $scope.options.countries[0].name) {
+                        location.countryCode = $scope.selected.country.countryCode;
+                        isValid = true;
                     }
                 }
             }

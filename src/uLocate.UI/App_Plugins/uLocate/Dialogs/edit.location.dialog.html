@@ -26,7 +26,7 @@
             </div>
             <div class="control-group row-fluid" ng-show="!hasProvinces()">
                 <label>{{provinceLabel}} <span class="validation-error" ng-class="{'show': isInvalidField(editLocationDialogForm.region) && !hasProvinces()}">- Required</span></label>
-                <input type="text" class="span12" name="region" ng-model="dialogData.location.region" ng-required="!hasProvinces()" />
+                <input type="text" class="span12" name="region" ng-model="dialogData.location.region" />
             </div>
             <div class="control-group row-fluid">
                 <label>Zip/Postal Code <span class="validation-error" ng-class="{'show': isInvalidField(editLocationDialogForm.postalCode)}">- Required</span></label>
@@ -68,8 +68,8 @@
 
     <div class="umb-panel-footer">
         <div class="btn-group pull-right">
-            <button type="button" class="btn btn-link" data-ng-click="close()">Cancel</button>
-            <button type="button" class="btn btn-primary" data-ng-click="save()">Save</button>
+            <button type="button" class="btn btn-link" ng-click="close()">Cancel</button>
+            <button type="button" class="btn btn-primary" ng-click="save()">Save</button>
         </div>
     </div>
 </div>
