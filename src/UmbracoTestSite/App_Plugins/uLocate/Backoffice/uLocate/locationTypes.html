@@ -40,8 +40,8 @@
                             <td><i class="{{type.icon}}"></i> {{type.name}}</td>
                             <td><span ng-repeat="property in type.properties"><span ng-show="$index != 0">, </span>{{property.propName}}</span></td>
                             <td class="btn-group text-right">
-                                <a class="btn btn-mini" href="#/uLocate/uLocate/locationTypes/edit?key={{type.key}}" data-ng-show="!isDefaultLocationType(type)"><i class="icon-edit"></i></a>
-                                <a class="btn btn-mini btn-danger" ng-click="openDeleteDialog(type)" data-ng-show="!isDefaultLocationType(type)"><i class="icon-trash"></i></a> 
+                                <a class="btn btn-mini" href="#/uLocate/uLocate/locationTypes/edit?key={{type.key}}" ng-show="!isDefaultLocationType(type)"><i class="icon-edit"></i></a>
+                                <a class="btn btn-mini btn-danger" ng-click="openDeleteDialog(type)" ng-show="!isDefaultLocationType(type)"><i class="icon-trash"></i></a> 
                             </td>
                         </tr>
                     </tbody>

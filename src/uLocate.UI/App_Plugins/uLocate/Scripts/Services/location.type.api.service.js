@@ -18,7 +18,6 @@
                 if (response.data) {
                     var guid = response.data;
                     guid = guid.replace(/['"]+/g, '');
-                    console.info(guid);
                     return guid;
                 } else {
                     return false;
