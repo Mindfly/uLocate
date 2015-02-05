@@ -39,7 +39,7 @@
             this.Key = ConvertedFromLocation.Key;
             this.Name = ConvertedFromLocation.Name;
             this.LocationTypeKey = ConvertedFromLocation.LocationTypeKey;
-            this.LocationTypeName = ConvertedFromLocation.LocationType.Name;
+            this.LocationTypeName = ConvertedFromLocation.LocationTypeName;
 
             this.Latitude = ConvertedFromLocation.Latitude;
             this.Longitude = ConvertedFromLocation.Longitude;
@@ -52,7 +52,6 @@
             this.PostalCode = ConvertedFromLocation.Address.PostalCode;
             this.CountryCode = ConvertedFromLocation.Address.CountryCode;
 
-            //this.AllPropertyData = new List<JsonPropertyData>();
             this.CustomPropertyData = new List<JsonPropertyData>();
             foreach (var Prop in ConvertedFromLocation.PropertyData)
             {
@@ -140,12 +139,15 @@
 
         public JsonPropertyData(LocationPropertyData Prop)
         {
-            this.Key = Prop.Key;
-            this.PropAlias = Prop.PropertyAlias;
-            this.PropData = Prop.Value.ValueObject;
+            if (Prop != null)
+            {
+                this.Key = Prop.Key;
+                this.PropAlias = Prop.PropertyAlias;
+                this.PropData = Prop.Value.ValueObject;
+            }
         }
 
-        public JsonPropertyData()
+        internal JsonPropertyData()
         {
         }
     }
