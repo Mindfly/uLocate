@@ -53,22 +53,22 @@
         {
             switch (PropertyData.DatabaseType)
             {
-                case LocationPropertyData.DbType.Date:
+                case CmsDataType.DbType.Date:
                     this._dataDate = PropertyData.dataDate;
                     _dataObject = PropertyData.dataDate;
                     this.Type = ValueType.Date;
                     break;
-                case LocationPropertyData.DbType.Integer:
+                case CmsDataType.DbType.Integer:
                     this._dataInt = PropertyData.dataInt;
                     _dataObject = PropertyData.dataInt;
                     this.Type = ValueType.Int;
                     break;
-                case LocationPropertyData.DbType.Ntext:
+                case CmsDataType.DbType.Ntext:
                     this._dataString = PropertyData.dataNtext;
                     _dataObject = PropertyData.dataNtext;
                     this.Type = ValueType.String;
                     break;
-                case LocationPropertyData.DbType.Nvarchar:
+                case CmsDataType.DbType.Nvarchar:
                     this._dataString = PropertyData.dataNvarchar;
                     _dataObject = PropertyData.dataNvarchar;
                     this.Type = ValueType.String;

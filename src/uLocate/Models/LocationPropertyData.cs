@@ -17,11 +17,11 @@
     /// <summary>
     /// Property data for a Location
     /// </summary>
-    [TableName("uLocate_LocationPropertyData")]
-    [PrimaryKey("Id")]
-    [ExplicitColumns]
     public class LocationPropertyData : EntityBase
     {
+
+        #region Constructors
+
         internal LocationPropertyData()
         {
             this.CreateNewPropData(Guid.Empty, Guid.Empty);
@@ -40,68 +40,61 @@
             this.CreateNewPropData(LocationKey, PropertyKey);
         }
 
-        private void CreateNewPropData(Guid LocationKey, Guid PropertyKey)
-        {
-            UpdateDate = DateTime.Now;
-            CreateDate = DateTime.Now;
-            this.Key = Guid.NewGuid();
-            this.LocationKey = LocationKey;
-            this.LocationTypePropertyKey = PropertyKey;
+        #endregion
 
-        }
+        #region Internal Properties
+
+        #endregion
+
+        #region Public Properties/Enums
+
+        //public enum DbType
+        //{
+        //    Ntext,
+        //    Nvarchar,
+        //    Integer,
+        //    Date,
+        //    Unknown
+        //}
 
         /// <summary>
         /// Gets or sets the id for the location property data
         /// </summary>
-        [Column("Key")]
-        [PrimaryKeyColumn(AutoIncrement = true)]
         public override Guid Key { get; internal set; }
 
         /// <summary>
         /// Gets or sets the related Location key
         /// </summary>
-        [Column("LocationKey")]
-        [ForeignKey(typeof(Location), Name = "FK_uLocateLocationPropertyData_uLocateLocation", Column = "Key")]
         public Guid LocationKey { get; set; }
 
         /// <summary>
         /// Gets or sets the related LocationTypeProperty
         /// </summary>
-        [Column("LocationTypePropertyKey")]
-        [ForeignKey(typeof(LocationTypeProperty), Name = "FK_uLocateLocationPropertyData_uLocateLocationTypeProperty", Column = "Key")]
         public Guid LocationTypePropertyKey { get; set; }
 
         /// <summary>
         /// Gets or sets int data for the location property
         /// </summary>
-        [Column("dataInt")]
-        public int dataInt { get; set; }
+        internal int dataInt { get; set; }
 
         /// <summary>
         /// Gets or sets date data for the location property
         /// </summary>
-        [Column("dataDate")]
-        public DateTime dataDate { get; set; }
+        internal DateTime dataDate { get; set; }
 
         /// <summary>
         /// Gets or sets nvarchar data for the location property
         /// </summary>
-        [Column("dataNvarchar")]
-        [Length(500)]
-        public string dataNvarchar { get; set; }
+        internal string dataNvarchar { get; set; }
 
         /// <summary>
         /// Gets or sets ntext data for the location property
         /// </summary>
-        [Column("dataNtext")]
-        [SpecialDbType(SpecialDbTypes.NTEXT)]
-        public string dataNtext { get; set; }
+        internal string dataNtext { get; set; }
 
         /// <summary>
         /// Gets or sets the update date.
         /// </summary>
-        [Column("UpdateDate")]
-        [Constraint(Default = "getdate()")]
         public DateTime UpdateDate { get; set; }
 
         /// <summary>
@@ -130,6 +123,14 @@
             }
         }
 
+        public CmsDataType.DbType DatabaseType
+        {
+            get
+            {
+                return this.PropertyAttributes.DataType.DatabaseType;
+            }
+        }
+
         /// <summary>
         /// Gets the value of the data
         /// </summary>
@@ -151,222 +152,117 @@
         /// <summary>
         /// Gets or sets the create date.
         /// </summary>
-        [Column("CreateDate")]
-        [Constraint(Default = "getdate()")]
         public DateTime CreateDate { get; set; }
 
+        #endregion
+
+        #region Internal/Public Methods
 
         internal void SetValue(string PropertyValue)
         {
-            switch (this.PropertyAttributes.DatabaseType)
+            switch (this.DatabaseType)
             {
-                case Constants.DbDate:
+                case CmsDataType.DbType.Date:
                     this.dataDate = DateTime.Parse(PropertyValue);
                     break;
-                case Constants.DbInteger:
+                case CmsDataType.DbType.Integer:
                     this.dataInt = Convert.ToInt32(PropertyValue);
                     break;
-                case Constants.DbNtext:
+                case CmsDataType.DbType.Ntext:
                     this.dataNtext = PropertyValue;
                     break;
-                case Constants.DbNvarchar:
+                case CmsDataType.DbType.Nvarchar:
                     this.dataNvarchar = PropertyValue;
                     break;
             }
+
+            Repositories.LocationPropertyDataRepo.Update(this);
         }
 
         internal void SetValue(int PropertyValue)
         {
-            switch (this.PropertyAttributes.DatabaseType)
+            switch (this.DatabaseType)
             {
-                case Constants.DbDate:
+                case CmsDataType.DbType.Date:
                     this.dataDate = DateTime.MinValue;
                     break;
-                case Constants.DbInteger:
+                case CmsDataType.DbType.Integer:
                     this.dataInt = PropertyValue;
                     break;
-                case Constants.DbNtext:
+                case CmsDataType.DbType.Ntext:
                     this.dataNtext = PropertyValue.ToString();
                     break;
-                case Constants.DbNvarchar:
+                case CmsDataType.DbType.Nvarchar:
                     this.dataNvarchar = PropertyValue.ToString();
                     break;
             }
+
+            Repositories.LocationPropertyDataRepo.Update(this);
         }
 
         internal void SetValue(DateTime PropertyValue)
         {
-            switch (this.PropertyAttributes.DatabaseType)
+            switch (this.DatabaseType)
             {
-                case Constants.DbDate:
+                case CmsDataType.DbType.Date:
                     this.dataDate = PropertyValue;
                     break;
-                case Constants.DbInteger:
+                case CmsDataType.DbType.Integer:
                     this.dataInt = 0;
                     break;
-                case Constants.DbNtext:
+                case CmsDataType.DbType.Ntext:
                     this.dataNtext = PropertyValue.ToShortDateString();
                     break;
-                case Constants.DbNvarchar:
+                case CmsDataType.DbType.Nvarchar:
                     this.dataNvarchar = PropertyValue.ToShortDateString();
                     break;
             }
-        }
-    }
 
-    /// <summary>
-    /// Handles returning the actual data in a strongly-typed format
-    /// </summary>
-    public class PropertyValue
-    {
-        #region Private Vars
-        /// <summary>
-        /// The _data string.
-        /// </summary>
-        private string _dataString;
-
-        /// <summary>
-        /// The _data int.
-        /// </summary>
-        private int _dataInt;
-
-        /// <summary>
-        /// The _data date.
-        /// </summary>
-        private DateTime _dataDate;
-
-        /// <summary>
-        /// The _data object.
-        /// </summary>
-        private object _dataObject;
-        #endregion
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyValue"/> class which is blank.
-        /// </summary>
-        public PropertyValue()
-        {
-            this.Type = ValueType.Null;
-            _dataObject = null;
-            // this.Value = null;
+            Repositories.LocationPropertyDataRepo.Update(this);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyValue"/> class using actual LocationPropertyData
-        /// </summary>
-        /// <param name="PropertyData">
-        /// The property data.
-        /// </param>
-        public PropertyValue(LocationPropertyData PropertyData)
+        internal void SetValue(object PropertyValue)
         {
-            switch (PropertyData.PropertyAttributes.DatabaseType)
+            switch (this.DatabaseType)
             {
-                case Constants.DbNtext:
-                    this._dataString = PropertyData.dataNtext;
-                    _dataObject = PropertyData.dataNtext;
-                    this.Type = ValueType.String;
+                case CmsDataType.DbType.Integer:
+                    this.dataInt = Convert.ToInt32(PropertyValue);
                     break;
-                case Constants.DbNvarchar:
-                    this._dataString = PropertyData.dataNvarchar;
-                    _dataObject = PropertyData.dataNvarchar;
-                    this.Type = ValueType.String;
+                case CmsDataType.DbType.Date:
+                    this.dataDate = Convert.ToDateTime(PropertyValue);
                     break;
-                case Constants.DbInteger:
-                    this._dataInt = PropertyData.dataInt;
-                    _dataObject = PropertyData.dataInt;
-                    this.Type = ValueType.Int;
+                case CmsDataType.DbType.Ntext:
+                    this.dataNtext = PropertyValue.ToString();
                     break;
-                case Constants.DbDate:
-                    this._dataDate = PropertyData.dataDate;
-                    _dataObject = PropertyData.dataDate;
-                    this.Type = ValueType.Date;
+                case CmsDataType.DbType.Nvarchar:
+                    this.dataNvarchar = PropertyValue.ToString();
                     break;
             }
+
+            Repositories.LocationPropertyDataRepo.Update(this);
         }
 
-        #region Public Props
-        /// <summary>
-        /// Value type options
-        /// </summary>
-        public enum ValueType
-        {
-            String,
-            Date,
-            Int,
-            Null
-        }
-
-        /// <summary>
-        /// Gets the type of the value
-        /// </summary>
-        public ValueType Type { get; internal set; }
-
-        public object ValueObject
-        {
-            get
-            {
-                return this._dataObject;
-            }
-        }
 
         #endregion
 
-        #region Public Methods
+        #region Private Methods
 
-        /// <summary>
-        /// Returns the Value as a string
-        /// </summary>
-        /// <returns>
-        /// The <see cref="string"/>.
-        /// </returns>
-        public override string ToString()
+
+        private void CreateNewPropData(Guid LocationKey, Guid PropertyKey)
         {
-            if (_dataObject == null)
-            {
-                return "";
-            }
-            else
-            {
-                return _dataObject.ToString();
-            }
+            UpdateDate = DateTime.Now;
+            CreateDate = DateTime.Now;
+            this.Key = Guid.NewGuid();
+            this.LocationKey = LocationKey;
+            this.LocationTypePropertyKey = PropertyKey;
+
         }
 
-        /// <summary>
-        /// Returns the Value as an int
-        /// </summary>
-        /// <returns>
-        /// The <see cref="int"/>.
-        /// </returns>
-        public int ToInt()
-        {
-            if (this.Type == ValueType.Int & _dataObject != null)
-            {
-                return _dataInt;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Returns the Value as a DateTime 
-        /// </summary>
-        /// <returns>
-        /// The <see cref="DateTime"/>.
-        /// </returns>
-        public DateTime ToDateTime()
-        {
-            if (this.Type == ValueType.Date)
-            {
-                return _dataDate;
-            }
-            else
-            {
-                return DateTime.MinValue;
-            }
-        }
+        
 
         #endregion
+
+
+   
     }
 }

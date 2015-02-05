@@ -319,28 +319,28 @@
 
         private void FillChildren()
         {
-            this.FillDataTypeInfo();
+            //this.FillDataTypeInfo();
         }
 
-        private void FillDataTypeInfo()
-        {
-            foreach (var Prop in CurrentCollection)
-            {
-                if (Prop != null)
-                {
-                    var PropDtId = Prop.DataTypeId;
-                    var MySql = new Sql();
-                    MySql.Select("*").From<cmsDataTypeDto>().Where<cmsDataTypeDto>(n => n.DataTypeId == PropDtId);
+        //private void FillDataTypeInfo()
+        //{
+        //    foreach (var Prop in CurrentCollection)
+        //    {
+        //        if (Prop != null)
+        //        {
+        //            var PropDtId = Prop.DataTypeId;
+        //            var MySql = new Sql();
+        //            MySql.Select("*").From<cmsDataTypeDto>().Where<cmsDataTypeDto>(n => n.DataTypeId == PropDtId);
 
-                    var MatchingDt = Repositories.ThisDb.Fetch<cmsDataTypeDto>(MySql).FirstOrDefault();
-                    if (MatchingDt != null)
-                    {
-                        Prop.DatabaseType = MatchingDt.DatabaseType;
-                        Prop.PropertyEditorAlias = MatchingDt.PropertyEditorAlias;
-                    }
-                }
-            }
-        }
+        //            var MatchingDt = Repositories.ThisDb.Fetch<cmsDataTypeDto>(MySql).FirstOrDefault();
+        //            if (MatchingDt != null)
+        //            {
+        //                Prop.DatabaseType = MatchingDt.DatabaseType;
+        //                Prop.PropertyEditorAlias = MatchingDt.PropertyEditorAlias;
+        //            }
+        //        }
+        //    }
+        //}
 
         #endregion
     }

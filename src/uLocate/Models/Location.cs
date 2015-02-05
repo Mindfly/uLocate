@@ -14,6 +14,14 @@
     /// </summary>
     public class Location : EntityBase
     {
+        #region Private Vars
+
+        private Lazy<LocationType> _RelatedLocationTypeObject = null;
+
+        //private Lazy<IEnumerable<LocationPropertyData>> _PropertyDataObjectsList = null;
+
+        #endregion
+
         #region Constructors
 
         /// <summary>
@@ -190,12 +198,11 @@
             {
                 //update existing
                 matchingPropData.SetValue(PropertyValue);
-                Repositories.LocationPropertyDataRepo.Update(matchingPropData);
             }
             else
             {
                 //Add new
-                var NewProp = CreateNewProp(PropertyAlias);
+                var NewProp = GetOrCreatePropertyData(PropertyAlias);
                 NewProp.SetValue(PropertyValue);
                 this.PropertyData.Add(NewProp);
             }
@@ -219,12 +226,11 @@
             {
                 //update existing
                 matchingPropData.SetValue(PropertyValue);
-                Repositories.LocationPropertyDataRepo.Update(matchingPropData);
             }
             else
             {
                 //Add new
-                var NewProp = CreateNewProp(PropertyAlias);
+                var NewProp = GetOrCreatePropertyData(PropertyAlias);
                 NewProp.SetValue(PropertyValue);
                 this.PropertyData.Add(NewProp);
             }
@@ -247,12 +253,11 @@
             {
                 //update existing
                 matchingPropData.SetValue(PropertyValue);
-                Repositories.LocationPropertyDataRepo.Update(matchingPropData);
             }
             else
             {
                 //Add new
-                var NewProp = CreateNewProp(PropertyAlias);
+                var NewProp = GetOrCreatePropertyData(PropertyAlias);
                 NewProp.SetValue(PropertyValue);
                 this.PropertyData.Add(NewProp);
             }
@@ -269,62 +274,21 @@
         /// </param>
         public void AddPropertyData(string PropertyAlias, object PropertyValue)
         {
-            Guid LocationKey = this.Key;
-            var thisProperty = Repositories.LocationTypePropertyRepo.GetByAlias(PropertyAlias);
+            var matchingPropData = this.PropertyData.Where(p => p.PropertyAlias == PropertyAlias).FirstOrDefault();
 
-            var existingPropertyData = Repositories.LocationPropertyDataRepo.GetByAlias(PropertyAlias, LocationKey);
-
-            if (existingPropertyData != null)
+            if (matchingPropData != null)
             {
                 //Update Prop
-                switch (thisProperty.DatabaseType)
-                {
-                    case Constants.DbNtext:
-                        existingPropertyData.dataNtext = PropertyValue.ToString();
-                        break;
-                    case Constants.DbNvarchar:
-                        existingPropertyData.dataNvarchar = PropertyValue.ToString();
-                        break;
-                    case Constants.DbInteger:
-                        existingPropertyData.dataInt = Convert.ToInt32(PropertyValue);
-                        break;
-                    case Constants.DbDate:
-                        existingPropertyData.dataDate = Convert.ToDateTime(PropertyValue);
-                        break;
-                }
-
-                Repositories.LocationPropertyDataRepo.Update(existingPropertyData);
-
+                matchingPropData.SetValue(PropertyValue); 
             }
             else
             {
                 //Add new prop
-                var NewPropData = CreateNewProp(PropertyAlias);
-
-                switch (thisProperty.DatabaseType)
-                {
-                    case Constants.DbNtext:
-                        NewPropData.dataNtext = PropertyValue.ToString();
-                        break;
-                    case Constants.DbNvarchar:
-                        NewPropData.dataNvarchar = PropertyValue.ToString();
-                        break;
-                    case Constants.DbInteger:
-                        NewPropData.dataInt = Convert.ToInt32(PropertyValue);
-                        break;
-                    case Constants.DbDate:
-                        NewPropData.dataDate = Convert.ToDateTime(PropertyValue);
-                        break;
-                }
-
+                var NewPropData = GetOrCreatePropertyData(PropertyAlias);
+                NewPropData.SetValue(PropertyValue);
                 this.PropertyData.Add(NewPropData);
             }
-
-
         }
-
-
-
 
         #endregion
 
@@ -338,54 +302,111 @@
             this.Name = LocName;
             this.LocationTypeKey = LocTypeKey;
             //this.LocationType = Repositories.LocationTypeRepo.GetByKey(LocTypeKey);
-            this.PropertyData = this.DefaultProperties(LocTypeKey).ToList();
+            this.PropertyData = this.GetPropertyData().ToList();
         }
 
-        private IEnumerable<LocationPropertyData> DefaultProperties()
+        private IEnumerable<LocationPropertyData> GetPropertyData()
         {
-            return DefaultProperties(Constants.DefaultLocationTypeKey);
-        }
+            var finalPropData = new List<LocationPropertyData>();
 
-        private IEnumerable<LocationPropertyData> DefaultProperties(Guid LocTypeKey)
-        {
-            List<LocationPropertyData> NewData = new List<LocationPropertyData>();
-            var DefaultProps = Repositories.LocationTypePropertyRepo.GetByLocationType(Constants.DefaultLocationTypeKey);
-            foreach (var typeProperty in DefaultProps)
-            {
-                var NewProp = new LocationPropertyData(this.Key, typeProperty.Key);
-                NewData.Add(NewProp);
-            }
+            //Get list of properties which should be represented
+            var propsList = GetLocTypeProperties();
 
-            //custom type props
-            if (LocTypeKey != Constants.DefaultLocationTypeKey)
+            //Get current properties
+            var currentPropData = Repositories.LocationPropertyDataRepo.GetByLocation(this.Key);
+
+            if (!currentPropData.Any())
             {
-                var CustomProps = Repositories.LocationTypePropertyRepo.GetByLocationType(LocTypeKey);
-                foreach (var typeProperty in CustomProps)
+                //no data, so add all loctype props
+                foreach (var locTypeProp in propsList)
                 {
-                    var NewProp = new LocationPropertyData(this.Key, typeProperty.Key);
-                    NewData.Add(NewProp);
+                    var newProp = new LocationPropertyData(this.Key, locTypeProp.Key);
+                    finalPropData.Add(newProp);
+                }
+        }
+            else
+        {
+                //compare lists of props
+                foreach (var locTypeProp in propsList)
+            {
+                    var prop = currentPropData.Where(p => p.LocationTypePropertyKey == locTypeProp.Key).FirstOrDefault();
+                    if (prop != null)
+                    {
+                        finalPropData.Add(prop);
+                    }
+                    else
+                    {
+                        var newProp = new LocationPropertyData(this.Key, locTypeProp.Key);
+                        finalPropData.Add(newProp);
+                    }
                 }
             }
 
-            return NewData;
-        }
+            return finalPropData;
+            }
 
-        private LocationPropertyData CreateNewProp(string PropertyAlias)
-        {
-            var locTypeProp = this.LocationType.Properties.FirstOrDefault(p => p.Alias == PropertyAlias);
+        //private IEnumerable<LocationTypeProperty> GetLocTypeProperties()
+        //{
+        //    return GetLocTypeProperties(Constants.DefaultLocationTypeKey);
+        //}
 
-            if (locTypeProp != null)
+        private IEnumerable<LocationTypeProperty> GetLocTypeProperties()
             {
-                var NewProp = new LocationPropertyData();
-                NewProp.LocationKey = this.Key;
-                NewProp.LocationTypePropertyKey = locTypeProp.Key;
-                return NewProp;
+            //Guid LocTypeKey
+            var propsList = new List<LocationTypeProperty>();
+
+            //add default props
+            var defaultProps = Repositories.LocationTypePropertyRepo.GetByLocationType(Constants.DefaultLocationTypeKey);
+
+            propsList.AddRange(defaultProps);
+            //foreach (var typeProperty in DefaultProps)
+            //{
+            //    var NewProp = new LocationPropertyData(this.Key, typeProperty.Key);
+            //    NewData.Add(NewProp);
+            //}
+
+            //add any custom type props
+            if (this.LocationTypeKey != Constants.DefaultLocationTypeKey)
+                {
+                var customProps = Repositories.LocationTypePropertyRepo.GetByLocationType(this.LocationTypeKey);
+                propsList.AddRange(customProps);
+
+                //foreach (var typeProperty in CustomProps)
+                //{
+                //    var NewProp = new LocationPropertyData(this.Key, typeProperty.Key);
+                //    NewData.Add(NewProp);
+                //}
+                }
+
+            return propsList;
+            }
+
+        private LocationPropertyData GetOrCreatePropertyData(string PropertyAlias)
+        {
+            //First, Lookup property type information
+            var locTypeProp = Repositories.LocationTypePropertyRepo.GetByAlias(PropertyAlias);
+
+            if (locTypeProp == null)
+            {
+                throw new Exception("Provided property alias does not match a valid property for this location type.");
+        }
+            else
+        {
+                //Now check for existing prop data
+                Guid LocationKey = this.Key;
+                var existingPropertyData = Repositories.LocationPropertyDataRepo.GetByAlias(PropertyAlias, LocationKey);
+
+                if (existingPropertyData != null)
+            {
+                    return existingPropertyData;
             }
             else
             {
-                throw new Exception("Provided property alias does not match a valid property for this location type.");
+                    return new LocationPropertyData(this.Key, locTypeProp.Key);
             }
         }
+        }
+
         #endregion
  
     }

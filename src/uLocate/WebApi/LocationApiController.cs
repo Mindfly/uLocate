@@ -78,7 +78,13 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public JsonLocation Update(JsonLocation UpdatedLocation)
         {
-            var Result = uLocate.Helpers.Persistence.UpdateLocation(UpdatedLocation.ConvertToLocation());
+            var key = UpdatedLocation.Key;
+
+            var entity = UpdatedLocation.ConvertToLocation();
+            Repositories.LocationRepo.Update(entity);
+
+            var Result = Repositories.LocationRepo.GetByKey(key);
+            //uLocate.Helpers.Persistence.UpdateLocation();
 
             return new JsonLocation(Result);
         }

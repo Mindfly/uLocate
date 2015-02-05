@@ -355,7 +355,8 @@
                 }
 
                 //Custom 'GetProperty()' Methods
-                string fhStringMethod = GenerateCustomStringMethods(CustomLtProps.Where(p => p.DatabaseType == Constants.DbNtext || p.DatabaseType == Constants.DbNvarchar));
+                string fhStringMethod = GenerateCustomStringMethods(
+                    CustomLtProps.Where(p => p.DataType.DatabaseType == CmsDataType.DbType.Ntext || p.DataType.DatabaseType == CmsDataType.DbType.Nvarchar));
                 classString.Append(fhStringMethod);
 
                 //TODO: Append Methods for INT and DATE
@@ -403,9 +404,9 @@
         {
             var classProp = new StringBuilder();
 
-            switch (CustomProperty.DatabaseType)
+            switch (CustomProperty.DataType.DatabaseType)
             {
-                case Constants.DbDate:
+                case CmsDataType.DbType.Date:
                     classProp.Append(
                         string.Format(
                         @"  [FieldConverter(ConverterKind.Date, ""MMddyyyy"")]
@@ -413,7 +414,7 @@
                         ",
                             CustomProperty.Alias));
                     break;
-                case Constants.DbInteger:
+                case CmsDataType.DbType.Integer:
                     classProp.Append(
                         string.Format(
                         @"  [FieldNullValue(typeof(int), ""0"")]

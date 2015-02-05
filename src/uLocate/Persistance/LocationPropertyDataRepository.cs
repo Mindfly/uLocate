@@ -140,10 +140,23 @@ namespace uLocate.Persistance
 
         public IEnumerable<LocationPropertyData> GetByLocation(Guid LocationKey)
         {
+            List<LocationPropertyData> Result = new List<LocationPropertyData>();
+            IEnumerable<LocationPropertyDataDto> dtoResults;
+
             CurrentCollection.Clear();
-            var MySql = new Sql();
-            MySql.Select("*").From<LocationPropertyData>().Where("LocationKey = @0", LocationKey);
-            CurrentCollection.AddRange(Repositories.ThisDb.Fetch<LocationPropertyData>(MySql).ToList());
+
+            var sql = new Sql();
+            sql.Select("*").From<LocationPropertyDataDto>().Where("LocationKey = @0", LocationKey);
+
+            dtoResults = Repositories.ThisDb.Fetch<LocationPropertyDataDto>(sql).ToList();
+
+            var converter = new DtoConverter();
+            foreach (var result in dtoResults)
+            {
+                Result.Add(converter.ToLocationPropertyDataEntity(result));
+            }
+
+            CurrentCollection.AddRange(Result);
             FillChildren();
 
             return CurrentCollection; 
@@ -267,28 +280,28 @@ namespace uLocate.Persistance
 
         private void FillChildren()
         {
-            this.FillDataTypeInfo();
+            //this.FillDataTypeInfo();
         }
 
-        private void FillDataTypeInfo()
-        {
-            foreach (var Prop in CurrentCollection)
-            {
-                var PropDtId = Prop.PropertyAttributes.DataTypeId;
-                var MySql = new Sql();
-                MySql
-                    .Select("*")
-                    .From<cmsDataTypeDto>()
-                    .Where<cmsDataTypeDto>(n => n.DataTypeId == PropDtId);
+        //private void FillDataTypeInfo()
+        //{
+        //    foreach (var Prop in CurrentCollection)
+        //    {
+        //        var PropDtId = Prop.PropertyAttributes.DataTypeId;
+        //        var MySql = new Sql();
+        //        MySql
+        //            .Select("*")
+        //            .From<cmsDataTypeDto>()
+        //            .Where<cmsDataTypeDto>(n => n.DataTypeId == PropDtId);
 
-                var MatchingDt = Repositories.ThisDb.Fetch<cmsDataTypeDto>(MySql).FirstOrDefault();
-                if (MatchingDt != null)
-                {
-                    Prop.PropertyAttributes.DatabaseType = MatchingDt.DatabaseType;
-                    Prop.PropertyAttributes.PropertyEditorAlias = MatchingDt.PropertyEditorAlias;
-                }
-            }
-        }
+        //        var MatchingDt = Repositories.ThisDb.Fetch<cmsDataTypeDto>(MySql).FirstOrDefault();
+        //        if (MatchingDt != null)
+        //        {
+        //            Prop.PropertyAttributes.DatabaseType = MatchingDt.DatabaseType;
+        //            Prop.PropertyAttributes.PropertyEditorAlias = MatchingDt.PropertyEditorAlias;
+        //        }
+        //    }
+        //}
 
         #endregion
 

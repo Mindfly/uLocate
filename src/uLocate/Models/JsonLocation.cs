@@ -39,7 +39,7 @@
             this.Key = ConvertedFromLocation.Key;
             this.Name = ConvertedFromLocation.Name;
             this.LocationTypeKey = ConvertedFromLocation.LocationTypeKey;
-            this.LocationTypeName = ConvertedFromLocation.LocationTypeName;
+            this.LocationTypeName = ConvertedFromLocation.LocationType.Name;
 
             this.Latitude = ConvertedFromLocation.Latitude;
             this.Longitude = ConvertedFromLocation.Longitude;
@@ -59,10 +59,10 @@
                 switch (Prop.PropertyAlias)
                 {
                     case Constants.DefaultLocPropertyAlias.Phone:
-                        this.Phone = Prop.dataNvarchar;
+                        this.Phone = Prop.Value.ToString();
                         break;
                     case Constants.DefaultLocPropertyAlias.Email:
-                        this.Email = Prop.dataNvarchar;
+                        this.Email = Prop.Value.ToString();
                         break;
                     case Constants.DefaultLocPropertyAlias.Address1:
                         break;

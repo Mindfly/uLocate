@@ -81,6 +81,7 @@
                 Alias = dto.Alias,
                 Name = dto.Name,
                 DataTypeId = dto.DataTypeId,
+                DataType = this.GetDataType(dto.DataTypeId),
                 LocationTypeKey = dto.LocationTypeKey,
                 SortOrder = dto.SortOrder,
                 UpdateDate = dto.UpdateDate,
@@ -89,6 +90,28 @@
             };
 
             return Entity;
+        }
+
+        private CmsDataType GetDataType(int DataTypeId)
+        {
+            var returnDt = new CmsDataType();
+            //var dataTypeId = this.DataTypeId;
+            var sql = new Sql();
+            sql
+                .Select("*")
+                .From<cmsDataTypeDto>()
+                .Where<cmsDataTypeDto>(n => n.DataTypeId == DataTypeId);
+
+            var MatchingDt = Repositories.ThisDb.Fetch<cmsDataTypeDto>(sql).FirstOrDefault();
+            if (MatchingDt != null)
+            {
+                returnDt.Key = MatchingDt.Key;
+                returnDt.DataTypeId = MatchingDt.DataTypeId;
+                returnDt.DatabaseTypeString = MatchingDt.DatabaseType;
+                returnDt.PropertyEditorAlias = MatchingDt.PropertyEditorAlias;
+            }
+
+            return returnDt;
         }
 
         public LocationTypePropertyDto ToLocationTypePropertyDto(LocationTypeProperty entity)

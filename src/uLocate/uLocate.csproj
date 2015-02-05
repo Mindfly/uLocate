@@ -270,6 +270,7 @@
     <Compile Include="IO\Import.cs" />
     <Compile Include="IO\LocationFlatModel.cs" />
     <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\CmsDataType.cs" />
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\CustomField.cs">
       <SubType>Code</SubType>
