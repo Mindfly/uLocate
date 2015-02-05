@@ -209,7 +209,7 @@
                                                         label: property.propName,
                                                         view: editor.view,
                                                         config: editor.config,
-                                                        propAlias: property.propAlias
+                                                        propAlias: property.propAlias,
                                                     };
                                                     results.push(editorToReturn);
                                                 }
@@ -218,6 +218,13 @@
                                     }
                                 });
                             }
+                            _.each(results, function (editor) {
+                                _.each($scope.dialogData.location.customPropertyData, function (property) {
+                                    if (property.propAlias == editor.propAlias) {
+                                        editor.value = property.propData;
+                                    }
+                                });
+                            });
                             $scope.dialogData.location.editors = results;
                         } else {
                             $scope.dialogData.location.editors = [];
