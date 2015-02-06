@@ -171,21 +171,35 @@
                 newLoc.AddPropertyData("PhoneNumber", locFlat.PhoneNumber);
                 newLoc.AddPropertyData("Email", locFlat.Email);
 
-                //TODO: Support additional custom properties
                 if (LocationTypeKey != Constants.DefaultLocationTypeKey)
                 {
                     var CustomLtProps = Repositories.LocationTypePropertyRepo.GetByLocationType(LocationTypeKey);
-                    List<string> aliasCollection = new List<string>();
+
+                    //We need to copy the properties into their own list 
+                    //to avoid the "Collection was modified; enumeration operation may not execute." error
+                    var propsCollection = new List<LocationTypeProperty>(); 
 
                     foreach (var customProp in CustomLtProps)
                     {
-                        aliasCollection.Add(customProp.Alias);
+                        propsCollection.Add(customProp);
                     }
 
-                    foreach (var alias in aliasCollection)
+                    foreach (var prop in propsCollection)
                     {
-                        var value = locFlat.GetProperty(alias);
-                        newLoc.AddPropertyData(alias, value);
+                        var importValue = locFlat.GetProperty(prop.Alias);
+
+                        if (prop.DataType.PropertyEditorAlias == "Umbraco.DropDown")
+                        {
+                            //convert to prevalue node Id
+                            var idValue = DataValuesHelper.GetPreValueId(prop.DataTypeId, importValue);
+                            newLoc.AddPropertyData(prop.Alias, idValue);
+                        } 
+                            ////TODO: Add conversion checks for Boolean values as well (Yes/No, True/False, data/Null) to convert to 1/0
+                        else
+                        {
+                            //Just import the data as-is
+                            newLoc.AddPropertyData(prop.Alias, importValue);
+                        }
                     }
                 }
 
@@ -355,11 +369,19 @@
                 }
 
                 //Custom 'GetProperty()' Methods
-                string fhStringMethod = GenerateCustomStringMethods(
-                    CustomLtProps.Where(p => p.DataType.DatabaseType == CmsDataType.DbType.Ntext || p.DataType.DatabaseType == CmsDataType.DbType.Nvarchar));
+                //string fhStringMethod = GenerateCustomStringMethods(
+                //    CustomLtProps.Where(p => p.DataType.DatabaseType == CmsDataType.DbType.Ntext || p.DataType.DatabaseType == CmsDataType.DbType.Nvarchar));
+                string fhStringMethod = GenerateCustomStringMethods(CustomLtProps);
+      
                 classString.Append(fhStringMethod);
 
-                //TODO: Append Methods for INT and DATE
+                //string fhIntegerMethod = GenerateCustomIntegerMethods(
+                //    CustomLtProps.Where(p => p.DataType.DatabaseType == CmsDataType.DbType.Integer));
+                //classString.Append(fhIntegerMethod);
+
+                //string fhDateMethod = GenerateCustomDateMethods(
+                //    CustomLtProps.Where(p => p.DataType.DatabaseType == CmsDataType.DbType.Date));
+                //classString.Append(fhDateMethod);
             }
 
             //Close the class
@@ -372,6 +394,7 @@
         {
             var classMethod = new StringBuilder();
 
+
             classMethod.Append(
             @" public string GetProperty(string Alias)
                 {
@@ -381,12 +404,37 @@
 
             foreach (var prop in CustomProps)
             {
-                classMethod.Append(string.Format(
-                @"
+                switch (prop.DataType.DatabaseType)
+                {
+                    case CmsDataType.DbType.Ntext:
+                        classMethod.Append(string.Format(@"
                             case ""{0}"":
                                 return this.{0};
                                 break;
-                ", prop.Alias));
+                                ", prop.Alias));
+                        break;
+                    case CmsDataType.DbType.Nvarchar:
+                        classMethod.Append(string.Format(@"
+                            case ""{0}"":
+                                return this.{0};
+                                break;
+                                ", prop.Alias));
+                        break;
+                    case CmsDataType.DbType.Integer:
+                        classMethod.Append(string.Format(@"
+                            case ""{0}"":
+                                return this.{0}.ToString();
+                                break;
+                                ", prop.Alias));
+                        break;
+                    case CmsDataType.DbType.Date:
+                        classMethod.Append(string.Format(@"
+                            case ""{0}"":
+                                return this.{0}.ToString();
+                                break;
+                                ", prop.Alias));
+                        break;
+                }
             }
 
             classMethod.Append(
@@ -399,6 +447,71 @@
 
             return classMethod.ToString();
         }
+
+//        private static string GenerateCustomDateMethods(IEnumerable<LocationTypeProperty> CustomProps)
+//        {
+//            var classMethod = new StringBuilder();
+
+//            classMethod.Append(
+//            @" public DateTime GetProperty(string Alias)
+//                {
+//                    switch (Alias)
+//                    {
+//            ");
+
+//            foreach (var prop in CustomProps)
+//            {
+//                classMethod.Append(string.Format(
+//                @"
+//                            case ""{0}"":
+//                                return this.{0};
+//                                break;
+//                ", prop.Alias));
+//            }
+
+//            classMethod.Append(
+//            @"
+//                        default:
+//                            return DateTime.MinValue;
+//                    }
+//                }
+//            ");
+
+//            return classMethod.ToString();
+            
+//        }
+
+//        private static string GenerateCustomIntegerMethods(IEnumerable<LocationTypeProperty> CustomProps)
+//        {
+//            var classMethod = new StringBuilder();
+
+//            classMethod.Append(
+//            @" public Integer GetProperty(string Alias)
+//                {
+//                    switch (Alias)
+//                    {
+//            ");
+
+//            foreach (var prop in CustomProps)
+//            {
+//                classMethod.Append(string.Format(
+//                @"
+//                            case ""{0}"":
+//                                return this.{0};
+//                                break;
+//                ", prop.Alias));
+//            }
+
+//            classMethod.Append(
+//            @"
+//                        default:
+//                            return 0;
+//                    }
+//                }
+//            ");
+
+//            return classMethod.ToString();
+//        }  
 
         private static string FormatCustomProperty(LocationTypeProperty CustomProperty)
         {

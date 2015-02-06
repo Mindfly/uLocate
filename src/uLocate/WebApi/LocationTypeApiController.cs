@@ -78,6 +78,8 @@
 
             var FullResult = Repositories.LocationTypeRepo.GetByKey(UpdatedLocationType.Key);
 
+            Repositories.LocationRepo.UpdateWithNewProps(FullResult.Key);
+
             var JsonResult = new JsonLocationType(FullResult);
 
             return JsonResult;

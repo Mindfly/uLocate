@@ -280,41 +280,6 @@
         public const string DbInteger = "Integer";
         public const string DbDate = "Date";
 
-        //public static class DatabaseTypes
-        //{
-        //    public static string Ntext
-        //    {
-        //        get
-        //        {
-        //            return DbNtext;
-        //        }
-        //    }
-
-        //    public static string Nvarchar
-        //    {
-        //        get
-        //        {
-        //            return DbNvarchar;
-        //        }
-        //    }
-
-        //    public static string Integer
-        //    {
-        //        get
-        //        {
-        //            return DbInteger;
-        //        }
-        //    }
-
-        //    public static string Date
-        //    {
-        //        get
-        //        {
-        //            return DbDate;
-        //        }
-        //    }
-
-        //}
         #endregion
 
         #region 'Default' Location Type

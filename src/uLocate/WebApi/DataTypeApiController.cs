@@ -49,7 +49,8 @@
         /// </param>
         /// <returns>
         /// The <see cref="DataTypeDisplay"/>.
-        /// </returns>       
+        /// </returns>      
+        [System.Web.Http.AcceptVerbs("GET")] 
         public object GetByName(string name)
         {
             var all = this.Services.DataTypeService.GetAllDataTypeDefinitions().ToList();
