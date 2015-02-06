@@ -14,6 +14,7 @@
     using uLocate.Persistance;
 
     using Umbraco.Core;
+    using Umbraco.Core.Persistence;
     using Umbraco.Web.WebApi;
 
     /// <summary>
@@ -30,6 +31,24 @@
         }
 
         /// <summary>
+        /// Updates Lat/Long coordinates for all Locations which require it.
+        /// /umbraco/backoffice/uLocate/MaintenanceApi/UpdateCoordinatesAsNeeded
+        /// </summary>
+        /// <returns>
+        /// The <see cref="StatusMessage"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public StatusMessage UpdateCoordinatesAsNeeded()
+        {
+            var Result = Repositories.LocationRepo.UpdateGeoForAllNeeded();
+
+            return Result;
+        }
+
+
+
+        #region Querying
+        /// <summary>
         /// Gets a list of all countries and their codes.
         /// /umbraco/backoffice/uLocate/MaintenanceApi/GetCountryCodes
         /// </summary>
@@ -41,6 +60,35 @@
         {
             return CountryHelper.GetAllCountries();
         }
+
+        /// <summary>
+        /// Gets information about which Locations need their geography updated
+        /// /umbraco/backoffice/uLocate/MaintenanceApi/GeographyNeedsUpdated
+        /// </summary>
+        /// <returns>
+        /// The <see cref="MaintenanceCollection"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public MaintenanceCollection GeographyNeedsUpdated()
+        {
+            Repositories.LocationRepo.SetMaintenanceFlags();
+
+            var maintColl = new MaintenanceCollection();
+            maintColl.Title = "Database 'Geography' Data Needs Updated";
+
+            var sql = new Sql();
+            sql.Select("*")
+                .From<LocationDto>()
+                .Where<LocationDto>(n => n.DbGeogNeedsUpdated == true);
+
+            maintColl.Locations = Repositories.LocationRepo.GetByCustomQuery(sql);
+            maintColl.ConvertToJsonLocationsOnly();
+
+            return maintColl;
+        }
+        
+        #endregion
+
 
 
     }

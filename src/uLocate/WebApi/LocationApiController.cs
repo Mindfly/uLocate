@@ -158,21 +158,7 @@
             return ResultMsg;
         }
 
-        /// <summary>
-        /// Updates Lat/Long coordinates for all Locations which require it.
-        /// /umbraco/backoffice/uLocate/LocationApi/UpdateCoordinatesAsNeeded
-        /// </summary>
-        /// <returns>
-        /// The <see cref="StatusMessage"/>.
-        /// </returns>
-        [System.Web.Http.AcceptVerbs("GET")]
-        public StatusMessage UpdateCoordinatesAsNeeded()
-        {
-            var Result = Repositories.LocationRepo.UpdateGeoForAllNeeded();
-
-            return Result;
-        }
-
+     
         #endregion
 
         #region Querying

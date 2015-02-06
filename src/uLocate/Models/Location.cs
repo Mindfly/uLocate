@@ -403,7 +403,7 @@
                 }
                 else
                 {
-                    var newPropData =  new LocationPropertyData(this.Key, locTypeProp.Key);
+                    var newPropData = new LocationPropertyData(this.Key, locTypeProp.Key);
                     Repositories.LocationPropertyDataRepo.Insert(newPropData);
                     return newPropData;
                 }

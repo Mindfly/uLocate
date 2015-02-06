@@ -37,7 +37,7 @@
         {
         }
 
-        #region Public Methods
+        #region Public & Internal Methods
 
         public void Insert(Location Entity)
         {
@@ -150,6 +150,20 @@
                 .Append(GeographyHelper.GetGeoSearchSql(SearchLat, SearchLong,  MilesDistance));
 
             var dtoResult = Repositories.ThisDb.Query<LocationDto>(sql).ToList();
+
+            var converter = new DtoConverter();
+            CurrentCollection.AddRange(converter.ToLocationEntity(dtoResult));
+
+            FillChildren();
+
+            return CurrentCollection;
+        }
+
+        internal IEnumerable<Location> GetByCustomQuery(Sql SqlQuery)
+        {
+            CurrentCollection.Clear();
+
+            var dtoResult = Repositories.ThisDb.Query<LocationDto>(SqlQuery).ToList();
 
             var converter = new DtoConverter();
             CurrentCollection.AddRange(converter.ToLocationEntity(dtoResult));
@@ -298,28 +312,59 @@
 
         private bool GeogIsValid(Location entity)
         {
+            //TODO: make this more accurate - check for lat/long numbers within a certain precision from each other.
+
             bool Result = false;
-            string Lat = entity.Latitude.ToString();
-            Lat = Lat.Contains("-") ? Lat.Remove(8): Lat.Remove(7);
-            string Long = entity.Longitude.ToString();
-            Long = Long.Contains("-") ? Long.Remove(8) : Long.Remove(7);
-            string ValidMatchString = string.Concat(Lat, ",", Long);
 
-            var sql = new Sql();
-            sql.Append("SELECT TOP 1 CONCAT( [GeogCoordinate].Lat, ',', [GeogCoordinate].Long)");
-            sql.Append("FROM [uLocate_Location]");
-            sql.Append(string.Format("WHERE  ([Key] = '{0}')", entity.Key));
-           
-            var DbGeogString = Repositories.ThisDb.Query<string>(sql).FirstOrDefault();
-
-            if (ValidMatchString == DbGeogString)
+            if (entity.Latitude == 0 || entity.Longitude == 0)
             {
-                Result = true;
+                return Result;
             }
+            else
+            {
+                 //trim or pad to a total of 7 chars + optional '-' sign
+                var Lat = DataValuesHelper.TrimToSize(entity.Latitude, 7, true , true);
+                var Long = DataValuesHelper.TrimToSize(entity.Longitude, 7, true, true);
 
-            return Result;
+                bool test = Long.StartsWith("-0.");
+                string ValidMatchString = string.Concat(Lat, ",", Long);
+
+                var sql = new Sql();
+                sql.Append("SELECT TOP 1 CONCAT( [GeogCoordinate].Lat, ',', [GeogCoordinate].Long)");
+                sql.Append("FROM [uLocate_Location]");
+                sql.Append(string.Format("WHERE  ([Key] = '{0}')", entity.Key));
+
+                var DbGeogString = Repositories.ThisDb.Query<string>(sql).FirstOrDefault();
+
+                if (ValidMatchString == DbGeogString)
+                {
+                    Result = true;
+                }
+
+                return Result;
+            }
         }
 
+        
+
+        internal void SetMaintenanceFlags()
+        {
+            var allLocations = this.GetAll();
+            foreach (var location in allLocations)
+            {
+                SetMaintenanceFlags(location);
+            }
+        }
+
+        internal void SetMaintenanceFlags(Location entity)
+        {
+            if (!this.GeogIsValid(entity))
+            {
+                entity.DbGeogNeedsUpdated = true;
+            }
+            
+            this.Update(entity);
+        }
 
         #endregion
 
@@ -557,6 +602,5 @@
         {
             throw new NotImplementedException();
         }
-
     }
 }
