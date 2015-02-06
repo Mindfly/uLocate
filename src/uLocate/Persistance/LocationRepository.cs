@@ -246,16 +246,20 @@
                     this.UpdateLatLong(location);
                     updateCounter++;
                 }
-                else if (location.DbGeogNeedsUpdated)
-                {
-                    this.UpdateDbGeography(location);
-                    dbCounter++;
-                }
-                else if (!this.GeogIsValid(location))
-                {
-                    this.UpdateDbGeography(location);
-                    dbCounter++;
-                }
+                //TODO: FIX THIS!!!!
+                //else if (location.DbGeogNeedsUpdated)
+                //{
+                //    this.UpdateDbGeography(location);
+                //    dbCounter++;
+                //}
+                //else if (!this.GeogIsValid(location))
+                //{
+                //    this.UpdateDbGeography(location);
+                //    dbCounter++;
+                //}
+
+                this.UpdateDbGeography(location);
+                dbCounter++;
 
                 checkedCounter++;
             }
@@ -454,6 +458,8 @@
                 var pDto = converter.ToLocationPropertyDataDto(prop);
                 Repositories.ThisDb.Update(pDto);
             }
+
+            this.UpdateDbGeography(item);
 
             LogHelper.Info(typeof(LocationRepository), Msg);
         }
