@@ -124,26 +124,28 @@
                 }
                 $scope.dialogData.generateLatLng = $scope.shouldHideCoordinatesEditor;
 
-                if ($scope.dialogData.location.customPropertyData.length > 0) {
-                    _.each($scope.dialogData.location.editors, function(editor) {
-                        _.each($scope.dialogData.location.customPropertyData, function(property) {
-                            if (property.propAlias == editor.propAlias) {
-                                property.propData = editor.value;
+                if ($scope.dialogData.location.locationTypeKey !== uLocate.Constants.DEFAULT_LOCATION_TYPE_KEY) {
+                    if ($scope.dialogData.location.customPropertyData.length > 0) {
+                        _.each($scope.dialogData.location.editors, function(editor) {
+                            _.each($scope.dialogData.location.customPropertyData, function(property) {
+                                if (property.propAlias == editor.propAlias) {
+                                    property.propData = editor.value;
+                                }
+                            });
+                        });
+                    } else {
+                        _.each($scope.dialogData.location.editors, function(editor) {
+                            var newProperty = new uLocate.Models.LocationProperty({
+                                key: '00000000-0000-0000-0000-000000000000',
+                                propAlias: editor.propAlias,
+                                propData: editor.value
+                            });
+                            if (typeof newProperty.propData === 'undefined') {
+                                newProperty.propData = '';
                             }
+                            $scope.dialogData.location.customPropertyData.push(newProperty);
                         });
-                    });
-                } else {
-                    _.each($scope.dialogData.location.editors, function(editor) {
-                        var newProperty = new uLocate.Models.LocationProperty({
-                            key: '00000000-0000-0000-0000-000000000000',
-                            propAlias: editor.propAlias,
-                            propData: editor.value
-                        });
-                        if (typeof newProperty.propData === 'undefined') {
-                            newProperty.propData = '';
-                        }
-                        $scope.dialogData.location.customPropertyData.push(newProperty);
-                    });
+                    }
                 }
                 $scope.submit($scope.dialogData);
             }
@@ -184,57 +186,59 @@
          * @description - Build a list of property editors for the new location being created.
          */
         $scope.buildNewLocationEditors = function () {
-            var results = [];
-            var editors = [];
-            var dataTypePromise = uLocateDataTypeApiService.getAllDataTypes();
-            dataTypePromise.then(function (dataTypes) {
-                _.each(dataTypes, function (dataType) {
-                    var getByNamePromise = uLocateDataTypeApiService.getByName(dataType.name);
-                    getByNamePromise.then(function (data) {
-                        editors.push({
-                            id: dataType.id,
-                            alias: data.propertyEditorAlias,
-                            label: dataType.name,
-                            view: data.view,
-                            config: data.config,
-                        });
-                        if (editors.length == dataTypes.length) {
-                            var key = $scope.dialogData.location.locationTypeKey;
-                            if ($scope.locationTypes.length > 0) {
-                                _.each($scope.locationTypes, function (type) {
-                                    if (type.key == key) {
-                                        _.each(type.properties, function (property) {
-                                            _.each(editors, function (editor) {
-                                                if (editor.id == property.propType) {
-                                                    var editorToReturn = {
-                                                        id: editor.id,
-                                                        alias: editor.alias,
-                                                        label: property.propName,
-                                                        view: editor.view,
-                                                        config: editor.config,
-                                                        propAlias: property.propAlias,
-                                                    };
-                                                    results.push(editorToReturn);
-                                                }
-                                            });
-                                        });
-                                    }
-                                });
-                            }
-                            _.each(results, function (editor) {
-                                _.each($scope.dialogData.location.customPropertyData, function (property) {
-                                    if (property.propAlias == editor.propAlias) {
-                                        editor.value = property.propData;
-                                    }
-                                });
+            if ($scope.dialogData.location.locationTypeKey !== uLocate.Constants.DEFAULT_LOCATION_TYPE_KEY) {
+                var results = [];
+                var editors = [];
+                var dataTypePromise = uLocateDataTypeApiService.getAllDataTypes();
+                dataTypePromise.then(function(dataTypes) {
+                    _.each(dataTypes, function(dataType) {
+                        var getByNamePromise = uLocateDataTypeApiService.getByName(dataType.name);
+                        getByNamePromise.then(function(data) {
+                            editors.push({
+                                id: dataType.id,
+                                alias: data.propertyEditorAlias,
+                                label: dataType.name,
+                                view: data.view,
+                                config: data.config,
                             });
-                            $scope.dialogData.location.editors = results;
-                        } else {
-                            $scope.dialogData.location.editors = [];
-                        }
+                            if (editors.length == dataTypes.length) {
+                                var key = $scope.dialogData.location.locationTypeKey;
+                                if ($scope.locationTypes.length > 0) {
+                                    _.each($scope.locationTypes, function(type) {
+                                        if (type.key == key) {
+                                            _.each(type.properties, function(property) {
+                                                _.each(editors, function(editor) {
+                                                    if (editor.id == property.propType) {
+                                                        var editorToReturn = {
+                                                            id: editor.id,
+                                                            alias: editor.alias,
+                                                            label: property.propName,
+                                                            view: editor.view,
+                                                            config: editor.config,
+                                                            propAlias: property.propAlias,
+                                                        };
+                                                        results.push(editorToReturn);
+                                                    }
+                                                });
+                                            });
+                                        }
+                                    });
+                                }
+                                _.each(results, function(editor) {
+                                    _.each($scope.dialogData.location.customPropertyData, function(property) {
+                                        if (property.propAlias == editor.propAlias) {
+                                            editor.value = property.propData;
+                                        }
+                                    });
+                                });
+                                $scope.dialogData.location.editors = results;
+                            } else {
+                                $scope.dialogData.location.editors = [];
+                            }
+                        });
                     });
                 });
-            });
+            }
         };
 
         /**

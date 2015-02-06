@@ -367,17 +367,19 @@
                 if ((lat == 0 & lng == 0) || lat == '' || lng == '') {
                     shouldGeocode = true;
                 }
-                _.each(location.editors, function (editor) {
-                    var newProperty = new uLocate.Models.LocationProperty({
-                        key: '00000000-0000-0000-0000-000000000000',
-                        propAlias: editor.propAlias,
-                        propData: editor.value
+                if (($location.search()).key !== uLocate.Constants.DEFAULT_LOCATION_TYPE_KEY) {
+                    _.each(location.editors, function(editor) {
+                        var newProperty = new uLocate.Models.LocationProperty({
+                            key: '00000000-0000-0000-0000-000000000000',
+                            propAlias: editor.propAlias,
+                            propData: editor.value
+                        });
+                        if (typeof newProperty.propData === 'undefined') {
+                            newProperty.propData = '';
+                        }
+                        location.customPropertyData.push(newProperty);
                     });
-                    if (typeof newProperty.propData === 'undefined') {
-                        newProperty.propData = '';
-                    }
-                    location.customPropertyData.push(newProperty);
-                });
+                }
                 $scope.createLocation(location, shouldGeocode, true);
             }
         };
@@ -551,7 +553,7 @@
          * @description - Build a list of property editors for the new location being created.
          */
         $scope.buildNewLocationEditors = function () {
-            if (($location.search()).key) {
+            if (($location.search()).key && ($location.search()).key !== uLocate.Constants.DEFAULT_LOCATION_TYPE_KEY) {
                 var results = [];
                 var editors = [];
                 var dataTypePromise = uLocateDataTypeApiService.getAllDataTypes();
