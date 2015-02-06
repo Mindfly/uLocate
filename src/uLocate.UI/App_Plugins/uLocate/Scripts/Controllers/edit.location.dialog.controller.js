@@ -139,6 +139,9 @@
                             propAlias: editor.propAlias,
                             propData: editor.value
                         });
+                        if (typeof newProperty.propData === 'undefined') {
+                            newProperty.propData = '';
+                        }
                         $scope.dialogData.location.customPropertyData.push(newProperty);
                     });
                 }

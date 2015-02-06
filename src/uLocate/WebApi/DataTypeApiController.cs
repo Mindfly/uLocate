@@ -52,10 +52,15 @@
         /// </returns>       
         public object GetByName(string name)
         {
-            var all = DataTypeCacheProvider.Current.GetOrExecute(() => this.Services.DataTypeService.GetAllDataTypeDefinitions().ToList());
+            var all = this.Services.DataTypeService.GetAllDataTypeDefinitions().ToList();
             var dataType = all.FirstOrDefault(x => x.Name == name);
             return this.FormatDataType(dataType);
         }
+
+        //public object GetByKey(string key)
+        //{
+            
+        //}
 
         /// <summary>
         /// The format data type.

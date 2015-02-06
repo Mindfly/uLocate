@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateDataTypeApiService, uLocateMapService, uLocateLocationApiService, uLocateLocationTypeApiService) {
+    controllers.LocationsController = function ($scope, $location, $q, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateDataTypeApiService, uLocateMapService, uLocateLocationApiService, uLocateLocationTypeApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -373,6 +373,9 @@
                         propAlias: editor.propAlias,
                         propData: editor.value
                     });
+                    if (typeof newProperty.propData === 'undefined') {
+                        newProperty.propData = '';
+                    }
                     location.customPropertyData.push(newProperty);
                 });
                 $scope.createLocation(location, shouldGeocode, true);
@@ -491,10 +494,12 @@
          * @function
          * 
          * @param {uLocate.Models.Location} location - The location to create.
-         * @description - Creates a location.
+         * @param {boolean} shouldGeocode - True if address needs to be geocoded.
+         * @param {boolean} shouldReloadLocations - True if locations should be updated after new location is created.
+         * @description - Creates a location, then triggers update for location.
          */
-        $scope.createLocation = function (location, shouldGeocode, shouldReloadPageView) {
-            var createPromise;
+        $scope.createLocation = function (location, shouldGeocode, shouldReloadLocations) {
+            location = new uLocate.Models.Location(location);
             location.locationTypeKey = uLocate.Constants.DEFAULT_LOCATION_TYPE_KEY;
             if (($location.search()).key) {
                 location.locationTypeKey = ($location.search()).key;
@@ -504,44 +509,38 @@
                     location.locationTypeName = type.name;
                 }
             });
-            if (shouldGeocode) {
-                var address = $scope.buildAddressString(location);
-                var geocodePromise = uLocateMapService.geocode(address);
-                $scope.isGeocoding = true;
-                notificationsService.info("Acquiring lat/lng for this address. This may take a moment. Do not leave or reload page until location is created.");
-                geocodePromise.then(function (geocodeResponse) {
-                    $scope.isGeocoding = false;
-                    if (geocodeResponse) {
-                        location.latitude = geocodeResponse[0];
-                        location.longitude = geocodeResponse[1];
-                    } else {
-                        notificationsService.error("Unable to get coordinates for provided location address.");
-                    }
-                    createPromise = uLocateLocationApiService.createLocation(location.name, location.locationTypeKey);
-                    createPromise.then(function (guid) {
-                        if (guid) {
-                            location.key = guid;
-                            $scope.updateLocation(location, false, shouldReloadPageView);
-                        } else {
-                            notificationsService.error("Attempt to create location '" + location.name + "' failed.", reason.message);
-                        }
-                    }, function (reason) {
-                        notificationsService.error("Attempt to create location '" + location.name + "' failed.", reason.message);
-                    });
-                });
-            } else {
-                createPromise = uLocateLocationApiService.createLocation(location);
-                createPromise.then(function (guid) {
-                    if (guid) {
-                        location.key = guid;
-                        $scope.updateLocation(location, false, shouldReloadPageView);
-                    } else {
-                        notificationsService.error("Attempt to create location '" + location.name + "' failed.", reason.message);
-                    }
-                }, function (reason) {
+            var createPromise = $scope.createLocationApiCall(location);
+            createPromise.then(function(guid) {
+                if (guid) {
+                    location.key = guid;
+                    $scope.updateLocation(location, shouldGeocode, shouldReloadLocations);
+                }
+            });
+        };
+
+        /**
+         * @ngdoc method
+         * @name createLocationApiCall
+         * @function
+         * 
+         * @param {uLocate.Models.Location} location - The location to create.
+         * @returns {string or false}
+         * @description - Creates a location with the API.
+         */
+        $scope.createLocationApiCall = function(location) {
+            var createPromise = uLocateLocationApiService.createLocation(location.name, location.locationTypeKey);
+            return createPromise.then(function (guid) {
+                var result = false;
+                if (guid) {
+                    result = guid;
+                } else {
                     notificationsService.error("Attempt to create location '" + location.name + "' failed.", reason.message);
-                });
-            }
+                }
+                return result;
+            }, function (reason) {
+                notificationsService.error("Attempt to create location '" + location.name + "' failed.", reason.message);
+                return false;
+            });
         };
 
         /**
@@ -621,6 +620,40 @@
                 }, function (reason) {
                     notificationsService.error("Attempt to delete location failed.", reason.message);
                 });
+            }
+        };
+
+        /**
+         * @ngdoc method
+         * @name geocodeLocationIfNeeded
+         * @function
+         * 
+         * @param {boolean} shouldGeocode - True if the location's address should be geocode.
+         * @param {uLocate.Models.Location} location - A location.
+         * @returns {[lat, lng] or false}
+         * @description - If required, geocode the location's address, then return the geocoded address.
+         */
+        $scope.geocodeLocationIfNeeded = function(shouldGeocode, location) {
+            if(shouldGeocode) {
+                $scope.isGeocoding = true;
+                var address = $scope.buildAddressString(location);
+                notificationsService.info("Acquiring lat/lng for this address. This may take a moment. Do not leave or reload page.");
+                var geocodePromise = uLocateMapService.geocode(address);
+                return geocodePromise.then(function (geocodeResponse) {
+                    var result;
+                    if (geocodeResponse) {
+                        result = [geocodeResponse[0], geocodeResponse[1]];
+                    } else {
+                        notificationsService.error("Unable to acquire lat/lng for this address.");
+                        result = false;
+                    }
+                    $scope.isGeocoding = false;
+                    return result;
+                });
+            } else {
+                var deferred = $q.defer();
+                deferred.resolve(false);
+                return deferred.promise;
             }
         };
 
@@ -718,6 +751,24 @@
 
         /**
         * @ngdoc method
+        * @name insertUpdatedLocationBackIntoListing
+        * @function
+        * 
+        * @param {uLocate.Models.Location} location - The location to insert into the listing.
+        * @description - Update listing with new version of location.
+        */
+        $scope.insertUpdatedLocationBackIntoListing = function (updatedLocation) {
+            if (updatedLocation) {
+                _.each($scope.locations, function(location, index) {
+                    if (location.key === updatedLocation.key) {
+                        $scope.locations[index] = new uLocate.Models.Location(updatedLocation);
+                    }
+                });
+            }
+        };
+
+        /**
+        * @ngdoc method
         * @name isFormInvalid
         * @function
         * 
@@ -758,53 +809,53 @@
          * 
          * @param {uLocate.Models.Location} location
          * @param {boolean} shouldGeocode - whether or not to geocode lat lng from address.
-         * @param {boolean} shouldReloadPageView - Whether or not to load the view of locations.
+         * @param {boolean} shouldReloadLocations - Whether or not to load the locations listing.
          * @description - Updates an existing location.
          */
-        $scope.updateLocation = function (location, shouldGeocode, shouldReloadPageView) {
-            var updatePromise;
-            if (shouldGeocode) {
-                $scope.isGeocoding = true;
-                var address = $scope.buildAddressString(location);
-                notificationsService.info("Acquiring lat/lng for this address. This may take a moment. Do not leave or reload page.");
-                var geocodePromise = uLocateMapService.geocode(address);
-                geocodePromise.then(function (geocodeResponse) {
-                    if (geocodeResponse) {
-                        location.latitude = geocodeResponse[0];
-                        location.longitude = geocodeResponse[1];
+        $scope.updateLocation = function (location, shouldGeocode, shouldReloadLocations) {
+            location = new uLocate.Models.Location(location);
+            var geocodePromise = $scope.geocodeLocationIfNeeded(shouldGeocode, location);
+            geocodePromise.then(function(coordinates) {
+                if (coordinates) {
+                    location.latitude = coordinates[0];
+                    location.longitude = coordinates[1];
+                }
+                var updatePromise = $scope.updateLocationApiCall(location);
+                updatePromise.then(function (updatedLocation) {
+                    if (updatedLocation) {
+                        $scope.insertUpdatedLocationBackIntoListing(location);
+                    }
+                    if (!shouldReloadLocations) {
+                        $scope.getLocations();
                     } else {
-                        notificationsService.error("Unable to acquire lat/lng for this address.");
+                        $scope.insertUpdatedLocationBackIntoListing(location);
+                        window.location = '/umbraco/#/uLocate/uLocate/locations/view';
                     }
-                    $scope.isGeocoding = false;
-                    updatePromise = uLocateLocationApiService.updateLocation(location);
-                    updatePromise.then(function (response) {
-                        if (response) {
-                            notificationsService.success("Location '" + location.name + "' successfully updated. #h5yr!");
-                            if (!shouldReloadPageView) {
-                                $scope.getLocations();
-                            } else {
-                                window.location = '/umbraco/#/uLocate/uLocate/locations/view';
-                            }
-                        }
-                    }, function (reason) {
-                        notificationsService.error("Attempt to update location '" + location.name + "' failed.", reason.message);
-                    });
                 });
-            } else {
-                updatePromise = uLocateLocationApiService.updateLocation(location);
-                updatePromise.then(function (response) {
-                    if (response) {
-                        notificationsService.success("Location '" + location.name + "' successfully updated. #h5yr!");
-                        if (!shouldReloadPageView) {
-                            $scope.getLocations();
-                        } else {
-                            window.location = '/umbraco/#/uLocate/uLocate/locations/view';
-                        }
-                    }
-                }, function (reason) {
+            });
+        };
+
+        /**
+         * @ngdoc method
+         * @name updateLocationApiCall
+         * @function
+         * 
+         * @param {uLocate.Models.Location} location
+         * @returns {uLocate.Models.Location or false} 
+         * @description - Makes an API call to update a location.
+         */
+        $scope.updateLocationApiCall = function(location) {
+            var updatePromise = uLocateLocationApiService.updateLocation(location);
+            return updatePromise.then(function(response) {
+                if (response) {
+                    var updatedLocation = new uLocate.Models.Location(response);
+                    notificationsService.success("Location '" + location.name + "' successfully updated. #h5yr!");
+                    return updatedLocation;
+                } else {
                     notificationsService.error("Attempt to update location '" + location.name + "' failed.", reason.message);
-                });
-            }
+                    return false;
+                }
+            });
         };
 
         /*-------------------------------------------------------------------*/
@@ -814,6 +865,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateDataTypeApiService', 'uLocateMapService', 'uLocateLocationApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$location', '$q', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateDataTypeApiService', 'uLocateMapService', 'uLocateLocationApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));
