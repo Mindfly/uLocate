@@ -298,7 +298,7 @@
             foreach (var prop in allLocTypeProps)
             {
                 var NewPropData = this.GetOrCreatePropertyData(prop.Alias);
-                this.PropertyData.Add(NewPropData);
+               // this.PropertyData.Add(NewPropData);
             }
         }
 
