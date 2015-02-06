@@ -285,6 +285,17 @@
             this.Update(Loc);
         }
 
+        public void UpdateWithNewProps(Guid LocationTypeKey)
+        {
+            var allLocations = this.GetByType(LocationTypeKey);
+
+            foreach (var location in allLocations)
+            {
+                location.SyncPropertiesWithType();
+                this.Update(location);
+            }
+        }
+
         private bool GeogIsValid(Location entity)
         {
             bool Result = false;

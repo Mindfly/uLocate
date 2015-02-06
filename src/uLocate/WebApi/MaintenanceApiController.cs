@@ -9,6 +9,7 @@
 
     using uLocate.Configuration;
     using uLocate.Data;
+    using uLocate.Helpers;
     using uLocate.Models;
     using uLocate.Persistance;
 
@@ -28,6 +29,18 @@
             return true;
         }
 
+        /// <summary>
+        /// Gets a list of all countries and their codes.
+        /// /umbraco/backoffice/uLocate/MaintenanceApi/GetCountryCodes
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IEnumerable"/> of <see cref="Country"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public IEnumerable<Country> GetCountryCodes()
+        {
+            return CountryHelper.GetAllCountries();
+        }
 
 
     }

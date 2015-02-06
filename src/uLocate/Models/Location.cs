@@ -99,7 +99,8 @@
         /// <summary>
         /// Gets or sets the location type.
         /// </summary>
-        public LocationType LocationType {
+        public LocationType LocationType
+        {
             get
             {
                 return Repositories.LocationTypeRepo.GetByKey(this.LocationTypeKey);
@@ -150,7 +151,7 @@
         /// <summary>
         /// Gets the custom fields data as a simple dictionary
         /// </summary>
-        public Dictionary<string, string> CustomProperties 
+        public Dictionary<string, string> CustomProperties
         {
             get
             {
@@ -172,7 +173,7 @@
         //{
         //    get
         //    {
-                
+
         //        return this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Email).Value.ToString();
         //    }
         //}
@@ -206,7 +207,7 @@
                 NewProp.SetValue(PropertyValue);
                 this.PropertyData.Add(NewProp);
             }
-            
+
         }
 
         /// <summary>
@@ -279,13 +280,24 @@
             if (matchingPropData != null)
             {
                 //Update Prop
-                matchingPropData.SetValue(PropertyValue); 
+                matchingPropData.SetValue(PropertyValue);
             }
             else
             {
                 //Add new prop
                 var NewPropData = GetOrCreatePropertyData(PropertyAlias);
                 NewPropData.SetValue(PropertyValue);
+                this.PropertyData.Add(NewPropData);
+            }
+        }
+
+        public void SyncPropertiesWithType()
+        {
+            var allLocTypeProps = this.GetLocTypeProperties();
+
+            foreach (var prop in allLocTypeProps)
+            {
+                var NewPropData = this.GetOrCreatePropertyData(prop.Alias);
                 this.PropertyData.Add(NewPropData);
             }
         }
@@ -323,12 +335,12 @@
                     var newProp = new LocationPropertyData(this.Key, locTypeProp.Key);
                     finalPropData.Add(newProp);
                 }
-        }
+            }
             else
-        {
+            {
                 //compare lists of props
                 foreach (var locTypeProp in propsList)
-            {
+                {
                     var prop = currentPropData.Where(p => p.LocationTypePropertyKey == locTypeProp.Key).FirstOrDefault();
                     if (prop != null)
                     {
@@ -343,7 +355,7 @@
             }
 
             return finalPropData;
-            }
+        }
 
         //private IEnumerable<LocationTypeProperty> GetLocTypeProperties()
         //{
@@ -351,7 +363,7 @@
         //}
 
         private IEnumerable<LocationTypeProperty> GetLocTypeProperties()
-            {
+        {
             //Guid LocTypeKey
             var propsList = new List<LocationTypeProperty>();
 
@@ -359,27 +371,16 @@
             var defaultProps = Repositories.LocationTypePropertyRepo.GetByLocationType(Constants.DefaultLocationTypeKey);
 
             propsList.AddRange(defaultProps);
-            //foreach (var typeProperty in DefaultProps)
-            //{
-            //    var NewProp = new LocationPropertyData(this.Key, typeProperty.Key);
-            //    NewData.Add(NewProp);
-            //}
 
             //add any custom type props
             if (this.LocationTypeKey != Constants.DefaultLocationTypeKey)
-                {
+            {
                 var customProps = Repositories.LocationTypePropertyRepo.GetByLocationType(this.LocationTypeKey);
                 propsList.AddRange(customProps);
-
-                //foreach (var typeProperty in CustomProps)
-                //{
-                //    var NewProp = new LocationPropertyData(this.Key, typeProperty.Key);
-                //    NewData.Add(NewProp);
-                //}
-                }
+            }
 
             return propsList;
-            }
+        }
 
         private LocationPropertyData GetOrCreatePropertyData(string PropertyAlias)
         {
@@ -389,26 +390,30 @@
             if (locTypeProp == null)
             {
                 throw new Exception("Provided property alias does not match a valid property for this location type.");
-        }
+            }
             else
-        {
+            {
                 //Now check for existing prop data
                 Guid LocationKey = this.Key;
                 var existingPropertyData = Repositories.LocationPropertyDataRepo.GetByAlias(PropertyAlias, LocationKey);
 
                 if (existingPropertyData != null)
-            {
+                {
                     return existingPropertyData;
+                }
+                else
+                {
+                    var newPropData =  new LocationPropertyData(this.Key, locTypeProp.Key);
+                    Repositories.LocationPropertyDataRepo.Insert(newPropData);
+                    return newPropData;
+                }
             }
-            else
-            {
-                    return new LocationPropertyData(this.Key, locTypeProp.Key);
-            }
-        }
         }
 
         #endregion
- 
+
+
+
     }
 
 }
