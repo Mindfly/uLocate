@@ -115,6 +115,7 @@
       <HintPath>..\packages\UmbracoCms.Core.7.2.1\lib\SQLCE4Umbraco.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -305,7 +306,6 @@
     <Content Include="App_Data\NuGetBackup\20141216-125935\CopyLogs\UmbracoBinBackup.log" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\uLocate\Config\uLocate.config" />
     <Content Include="App_Plugins\uLocate\Css\globals\_base.scss" />
     <Content Include="App_Plugins\uLocate\Css\globals\_settings.scss" />
     <Content Include="App_Plugins\uLocate\Css\modules\_dialogs.scss" />

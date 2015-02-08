@@ -13,12 +13,21 @@ namespace uLocate.UI.App_Plugins.uLocate.Installer {
     public partial class install {
         
         /// <summary>
-        /// lblResult control.
+        /// lblDbResult control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblResult;
+        protected global::System.Web.UI.WebControls.Label lblDbResult;
+        
+        /// <summary>
+        /// lblConfigResult control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblConfigResult;
     }
 }
