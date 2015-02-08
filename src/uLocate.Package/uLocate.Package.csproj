@@ -40,10 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="uLocateInstallerPackageAction.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="PackageActions\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\uLocate.Plugins.Geocode.GoogleMaps\uLocate.Plugins.Geocode.GoogleMaps.csproj">
       <Project>{dd0cc823-a767-4d53-b810-582bc349712c}</Project>

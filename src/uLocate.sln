@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uLocate", "uLocate\uLocate.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{C6FA8647-B696-42D8-8F70-92987D1CA5A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uLocate.UI", "uLocate.UI\uLocate.UI.csproj", "{505E187E-67BE-4C86-BBC5-EF941EBE4D91}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uLocate.Plugins.Geocode.GoogleMaps", "uLocate.Plugins.Geocode.GoogleMaps\uLocate.Plugins.Geocode.GoogleMaps.csproj", "{DD0CC823-A767-4D53-B810-582BC349712C}"
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "UmbracoTestSite", "http://localhost:60364", "{CC73B3B5-07AF-4ED2-90A9-5ECF216E41AA}"
@@ -32,10 +30,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "UmbracoTestSite", "http://l
 		SlnRelativePath = "UmbracoTestSite\"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uLocate.Package", "uLocate.Package\uLocate.Package.csproj", "{FA84BDB1-2BE9-4218-A987-20509BDB2E03}"
-	ProjectSection(ProjectDependencies) = postProject
-		{61985CB6-50E0-46AA-9E9C-57DBFD3DE66D} = {61985CB6-50E0-46AA-9E9C-57DBFD3DE66D}
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uLocate.UI", "uLocate.UI\uLocate.UI.csproj", "{8C1ED9C6-4EFA-454D-9BF0-8BB37790063F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +42,6 @@ Global
 		{61985CB6-50E0-46AA-9E9C-57DBFD3DE66D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61985CB6-50E0-46AA-9E9C-57DBFD3DE66D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61985CB6-50E0-46AA-9E9C-57DBFD3DE66D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{505E187E-67BE-4C86-BBC5-EF941EBE4D91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{505E187E-67BE-4C86-BBC5-EF941EBE4D91}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{505E187E-67BE-4C86-BBC5-EF941EBE4D91}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{505E187E-67BE-4C86-BBC5-EF941EBE4D91}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DD0CC823-A767-4D53-B810-582BC349712C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DD0CC823-A767-4D53-B810-582BC349712C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD0CC823-A767-4D53-B810-582BC349712C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -58,10 +49,10 @@ Global
 		{CC73B3B5-07AF-4ED2-90A9-5ECF216E41AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CC73B3B5-07AF-4ED2-90A9-5ECF216E41AA}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{CC73B3B5-07AF-4ED2-90A9-5ECF216E41AA}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{FA84BDB1-2BE9-4218-A987-20509BDB2E03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA84BDB1-2BE9-4218-A987-20509BDB2E03}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA84BDB1-2BE9-4218-A987-20509BDB2E03}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA84BDB1-2BE9-4218-A987-20509BDB2E03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C1ED9C6-4EFA-454D-9BF0-8BB37790063F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C1ED9C6-4EFA-454D-9BF0-8BB37790063F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C1ED9C6-4EFA-454D-9BF0-8BB37790063F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C1ED9C6-4EFA-454D-9BF0-8BB37790063F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

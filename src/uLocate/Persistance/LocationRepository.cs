@@ -16,6 +16,8 @@
     using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;
 
+    using umbraco.MacroEngines;
+
     /// <summary>
     /// Represents the <see cref="LocationRepository"/>.
     /// </summary>
@@ -44,12 +46,12 @@
             PersistNewItem(Entity);
         }
 
-        public void Insert(Location Entity, out Guid NewItemKey)
-        {
-            //TODO: might not be needed
-            PersistNewItem(Entity);
-            NewItemKey = Entity.Key;
-        }
+        //public void Insert(Location Entity, out Guid NewItemKey)
+        //{
+        //    //TODO: might not be needed
+        //    PersistNewItem(Entity);
+        //    NewItemKey = Entity.Key;
+        //}
 
         public StatusMessage Delete(Guid LocationKey)
         {
@@ -193,6 +195,24 @@
             return CurrentCollection;
         }
 
+        public IEnumerable<Location> GetAllMissingDbGeo()
+        {
+            var allLocations = this.GetAll();
+            CurrentCollection.Clear();
+
+            foreach (var location in allLocations)
+            {
+                var GeogIsValid = this.GeogIsValid(location);
+
+                if (!GeogIsValid)
+                {
+                    CurrentCollection.Add(location);
+                }
+            }
+
+            return CurrentCollection;
+        }
+
         public List<JsonLocation> GetPaged(long PageNumber, long ItemsPerPage, string WhereClause)
         {
             Sql sql = new Sql();
@@ -234,11 +254,12 @@
 
         public StatusMessage UpdateGeoForAllNeeded()
         {
-            var ReturnMsg = new StatusMessage();
+            var ReturnMsg = new StatusMessage();  
 
             var updateCounter = 0;
             var checkedCounter = 0;
             var dbCounter = 0;
+
             foreach (var location in this.GetAll())
             {
                 if (location.Latitude == 0 | location.Longitude == 0)
@@ -246,21 +267,15 @@
                     this.UpdateLatLong(location);
                     updateCounter++;
                 }
-                //TODO: FIX THIS!!!!
-                //else if (location.DbGeogNeedsUpdated)
-                //{
-                //    this.UpdateDbGeography(location);
-                //    dbCounter++;
-                //}
-                //else if (!this.GeogIsValid(location))
-                //{
-                //    this.UpdateDbGeography(location);
-                //    dbCounter++;
-                //}
 
-                this.UpdateDbGeography(location);
-                dbCounter++;
+                //Repositories.LocationRepo.SetMaintenanceFlags();
 
+                if (!this.GeogIsValid(location))
+                {
+                    this.UpdateDbGeography(location);
+                    dbCounter++;
+                }
+                
                 checkedCounter++;
             }
 
@@ -299,8 +314,8 @@
 
             Repositories.ThisDb.Execute(sql);
 
-            Loc.DbGeogNeedsUpdated = false;
-            this.Update(Loc);
+            //Loc.DbGeogNeedsUpdated = false;
+            //this.Update(Loc);
         }
 
         public void UpdateWithNewProps(Guid LocationTypeKey)
@@ -316,8 +331,6 @@
 
         private bool GeogIsValid(Location entity)
         {
-            //TODO: make this more accurate - check for lat/long numbers within a certain precision from each other.
-
             bool Result = false;
 
             if (entity.Latitude == 0 || entity.Longitude == 0)
@@ -326,49 +339,47 @@
             }
             else
             {
-                 //trim or pad to a total of 7 chars + optional '-' sign
-                var Lat = DataValuesHelper.TrimToSize(entity.Latitude, 7, true , true);
-                var Long = DataValuesHelper.TrimToSize(entity.Longitude, 7, true, true);
-
-                bool test = Long.StartsWith("-0.");
-                string ValidMatchString = string.Concat(Lat, ",", Long);
+                var Lat = Math.Round(entity.Latitude, 5);
+                var Long = Math.Round(entity.Longitude, 5);
 
                 var sql = new Sql();
-                sql.Append("SELECT TOP 1 CONCAT( [GeogCoordinate].Lat, ',', [GeogCoordinate].Long)");
+                sql.Append("SELECT TOP 1 [GeogCoordinate].Lat AS DbLat, [GeogCoordinate].Long AS DbLong");
                 sql.Append("FROM [uLocate_Location]");
                 sql.Append(string.Format("WHERE  ([Key] = '{0}')", entity.Key));
 
-                var DbGeogString = Repositories.ThisDb.Query<string>(sql).FirstOrDefault();
-
-                if (ValidMatchString == DbGeogString)
+                var DbGeogLatLong = Repositories.ThisDb.Query<dynamic>(sql).FirstOrDefault();
+                if (DbGeogLatLong != null)
                 {
-                    Result = true;
+                    var DbLat = Math.Round(DbGeogLatLong.DbLat, 5);
+                    var DbLong = Math.Round(DbGeogLatLong.DbLong, 5);
+
+                    if (Lat == DbLat & Long == DbLong)
+                    {
+                        Result = true;
+                    }
                 }
 
                 return Result;
             }
         }
 
-        
+        //internal void SetMaintenanceFlags()
+        //{
+        //    var allLocations = this.GetAll();
+        //    foreach (var location in allLocations)
+        //    {
+        //        SetMaintenanceFlags(location);
+        //    }
+        //}
 
-        internal void SetMaintenanceFlags()
-        {
-            var allLocations = this.GetAll();
-            foreach (var location in allLocations)
-            {
-                SetMaintenanceFlags(location);
-            }
-        }
+        //internal void SetMaintenanceFlags(Location entity)
+        //{
+        //    var GeogIsValid = this.GeogIsValid(entity);
 
-        internal void SetMaintenanceFlags(Location entity)
-        {
-            if (!this.GeogIsValid(entity))
-            {
-                entity.DbGeogNeedsUpdated = true;
-            }
+        //    entity.DbGeogNeedsUpdated = !GeogIsValid;
             
-            this.Update(entity);
-        }
+        //    this.Update(entity);
+        //}
 
         #endregion
 

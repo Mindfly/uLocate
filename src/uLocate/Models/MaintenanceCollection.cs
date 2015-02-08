@@ -10,6 +10,12 @@ namespace uLocate.Models
 
     public class MaintenanceCollection
     {
+        public MaintenanceCollection()
+        {
+            this.Locations = new List<Location>();
+            this.JsonLocations = new List<JsonLocation>();
+        }
+
         public string Title { get; set; }
 
         public IEnumerable<JsonLocation> JsonLocations { get; set; }
@@ -37,17 +43,20 @@ namespace uLocate.Models
 
         public void SyncLocationLists()
         {
-            if (this.Locations.Any())
+            if (this.Locations != null & this.Locations.Any())
             {
                 JsonLocations = Repositories.LocationRepo.ConvertToJsonLocations(this.Locations);
             }
-            else if (this.JsonLocations.Any())
+            else if (this.JsonLocations != null)
             {
-                var listLocs = new List<Location>();
-
-                foreach (var jsonLocation in JsonLocations)
+                if (this.JsonLocations.Any())
                 {
-                    listLocs.Add(jsonLocation.ConvertToLocation());
+                    var listLocs = new List<Location>();
+
+                    foreach (var jsonLocation in JsonLocations)
+                    {
+                        listLocs.Add(jsonLocation.ConvertToLocation());
+                    }
                 }
             }
         }

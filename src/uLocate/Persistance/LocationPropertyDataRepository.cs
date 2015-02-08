@@ -46,12 +46,12 @@ namespace uLocate.Persistance
             PersistNewItem(Entity);
         }
 
-        public void Insert(LocationPropertyData Entity, out Guid NewItemKey)
-        {
-            //TODO: might not be needed
-            PersistNewItem(Entity);
-            NewItemKey = Entity.Key;
-        }
+        //public void Insert(LocationPropertyData Entity, out Guid NewItemKey)
+        //{
+        //    //TODO: might not be needed
+        //    PersistNewItem(Entity);
+        //    NewItemKey = Entity.Key;
+        //}
 
         public void Delete(Guid PropertyKey)
         {
