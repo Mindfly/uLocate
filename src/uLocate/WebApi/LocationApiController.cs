@@ -213,12 +213,13 @@
         public PagedLocations GetAllPaged(long pageNum, long itemsPerPage)
         {
             var paged = Repositories.LocationRepo.GetPaged(pageNum + 1, itemsPerPage, string.Empty);
+            var totalCount = Repositories.LocationRepo.GetCount();
             var result = new PagedLocations() 
                             {
                                  Locations = paged,
                                  PageNum = pageNum,
                                  ItemsPerPage = itemsPerPage,
-                                 TotalItems = paged.Count
+                                 TotalItems = Convert.ToInt64(totalCount)
                              };
 
             return result;

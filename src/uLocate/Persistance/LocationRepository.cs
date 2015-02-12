@@ -400,6 +400,17 @@
             return CurrentCollection;
         }
 
+        public string GetCount()
+        {
+            var sql = new Sql();
+            sql.Append(
+                "SELECT SUM (row_count) FROM sys.dm_db_partition_stats WHERE object_id=OBJECT_ID('uLocate_Location') AND (index_id=0 or index_id=1);");
+
+            var result = Repositories.ThisDb.Fetch<string>(sql);
+
+            return result[0];
+        }
+
         public List<JsonLocation> GetPaged(long PageNumber, long ItemsPerPage, string WhereClause)
         {
             Sql sql = new Sql();
