@@ -78,13 +78,6 @@
             var maintColl = new MaintenanceCollection();
             maintColl.Title = "Database 'Geography' Data Needs Updated";
 
-
-
-            //var sql = new Sql();
-            //sql.Select("*")
-            //    .From<LocationDto>()
-            //    .Where<LocationDto>(n => n.DbGeogNeedsUpdated == true);
-
             maintColl.Locations = Repositories.LocationRepo.GetAllMissingDbGeo();
             maintColl.ConvertToJsonLocationsOnly();
 

@@ -118,7 +118,15 @@
             return Result;
         }
 
-        
+        public static string GetDtoTableName(Type DtoType)
+        {
+            string TableName = "";
+            var TableAttrib = (TableNameAttribute)Attribute.GetCustomAttribute(DtoType, typeof(TableNameAttribute));
+            TableName = TableAttrib.Value;
+
+            return TableName;
+        }
+
         public static Dictionary<int, string> GetAllAllowedDataTypes()
         {
             //uLocate.Constants includes the text-based list of allowed PropertyEditors
@@ -139,5 +147,6 @@
 
             return ReturnDict;
         }
+
     }
 }

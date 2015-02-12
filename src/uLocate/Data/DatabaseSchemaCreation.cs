@@ -39,9 +39,7 @@
             //For custom table fields which can't be covered by the Dto
             
             //Location Table
-            var TableType = typeof(LocationDto);              
-            var TableAttrib = (TableNameAttribute) Attribute.GetCustomAttribute(TableType, typeof(TableNameAttribute));
-            string TableName = TableAttrib.Value;
+            string TableName = Data.Helper.GetDtoTableName(typeof(LocationDto));
 
             if (_database.TableExist(TableName))
             {

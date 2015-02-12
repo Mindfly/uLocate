@@ -4,7 +4,9 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
 
+    using uLocate.Data;
     using uLocate.Models;
 
     using Umbraco.Core.Logging;
@@ -19,16 +21,37 @@
         const int EarthSID = 4326;
 
 
-        public static Sql GetGeoSearchSql(double SearchLat, double SearchLong, int MilesDistance)
+        public static Sql GetGeoSearchSql(double SearchLat, double SearchLong, int MilesDistance, Guid FilterByLocationTypeKey)
         {
             var point = GetSqlPoint(SearchLat, SearchLong);
-            var whereClause = string.Format(
-                "WHERE [GeogCoordinate].STDistance(geography::{0})/{1} <= {2}",
-                point,
-                MetricToMilesFactor,
-                MilesDistance);
 
-            var sql = new Sql(whereClause);
+            var sqlSB = new StringBuilder();
+            sqlSB.AppendLine(string.Format("WHERE [GeogCoordinate].STDistance(geography::{0})/{1} <= {2}", point, MetricToMilesFactor, MilesDistance));
+
+            if (FilterByLocationTypeKey != Guid.Empty)
+            {
+                sqlSB.AppendLine(string.Format("AND [LocationTypeKey] = '{0}'", FilterByLocationTypeKey));
+            }
+
+            var sql = new Sql(sqlSB.ToString());
+            return sql;
+        }
+
+        public static Sql GetGeoNearestSql(double SearchLat, double SearchLong, Guid FilterByLocationTypeKey)
+        {
+            var point = GetSqlPoint(SearchLat, SearchLong, true);
+
+            var sqlSB = new StringBuilder();
+            sqlSB.AppendLine(string.Format("WHERE [GeogCoordinate].STDistance('{0}') IS NOT NULL", point));
+
+            if (FilterByLocationTypeKey != Guid.Empty)
+            {
+                sqlSB.AppendLine(string.Format("AND [LocationTypeKey] = '{0}'", FilterByLocationTypeKey));
+            }
+
+            sqlSB.AppendLine(string.Format("ORDER BY [GeogCoordinate].STDistance('{0}');", point));
+
+            var sql = new Sql(sqlSB.ToString());
             return sql;
         }
 
@@ -59,9 +82,17 @@
         /// <returns>
         /// The <see cref="string"/>.
         /// </returns>
-        public static string GetSqlPoint(double Lat, double Long)
+        public static string GetSqlPoint(double Lat, double Long, bool ExcludeCommas = false)
         {
-            return string.Format("Point ({0}, {1}, {2})", Lat, Long, EarthSID);
+            if (ExcludeCommas)
+            {
+                return string.Format("Point ({0} {1} {2})", Lat, Long, EarthSID);
+            }
+            else
+            {
+                return string.Format("Point ({0}, {1}, {2})", Lat, Long, EarthSID);
+            }
+            
         }
 
 

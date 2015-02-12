@@ -41,6 +41,8 @@
 
         #region Public & Internal Methods
 
+        #region Operations
+
         public void Insert(Location Entity)
         {
             PersistNewItem(Entity);
@@ -92,11 +94,122 @@
             PersistDeletedItem(Entity, out ReturnMsg);
             StatusMsg = ReturnMsg;
         }
-        
+
         public void Update(Location Entity)
         {
             PersistUpdatedItem(Entity);
         }
+
+        //internal void SetMaintenanceFlags()
+        //{
+        //    var allLocations = this.GetAll();
+        //    foreach (var location in allLocations)
+        //    {
+        //        SetMaintenanceFlags(location);
+        //    }
+        //}
+
+        //internal void SetMaintenanceFlags(Location entity)
+        //{
+        //    var GeogIsValid = this.GeogIsValid(entity);
+
+        //    entity.DbGeogNeedsUpdated = !GeogIsValid;
+
+        //    this.Update(entity);
+        //}
+
+        public StatusMessage UpdateGeoForAllNeeded()
+        {
+            var ReturnMsg = new StatusMessage();
+
+            var updateCounter = 0;
+            var checkedCounter = 0;
+            var dbCounter = 0;
+
+            foreach (var location in this.GetAll())
+            {
+                if (location.Latitude == 0 | location.Longitude == 0)
+                {
+                    this.UpdateLatLong(location);
+                    updateCounter++;
+                }
+
+                //Repositories.LocationRepo.SetMaintenanceFlags();
+
+                if (!this.GeogIsValid(location))
+                {
+                    this.UpdateDbGeography(location);
+                    dbCounter++;
+                }
+
+                checkedCounter++;
+            }
+
+            ReturnMsg.Success = true;
+            ReturnMsg.Message =
+                string.Format(
+                    "{0} location(s) were checked for needing an update. {1} had their coordinates updated. Additionally, {2} had their database geography updated.",
+                    checkedCounter,
+                    updateCounter,
+                    dbCounter);
+
+            return ReturnMsg;
+
+        }
+
+        public void UpdateLatLong(Location Loc)
+        {
+            var coord = DoGeocoding.GetCoordinateForAddress(Loc.Address);
+            if (coord != null)
+            {
+                Loc.Coordinate = coord;
+                Loc.Latitude = coord.Latitude;
+                Loc.Longitude = coord.Longitude;
+                Loc.GeocodeStatus = GeocodeStatus.Ok;
+                this.Update(Loc);
+                this.UpdateDbGeography(Loc);
+            }
+        }
+
+        public void UpdateDbGeography(Location Loc)
+        {
+            var sql = new Sql();
+            sql.Append("UPDATE [uLocate_Location]");
+            sql.Append("SET [GeogCoordinate] = geography::Point([Latitude], [Longitude], 4326)");
+            sql.Append(string.Format("WHERE  ([Key] = '{0}')", Loc.Key));
+
+            Repositories.ThisDb.Execute(sql);
+
+            //Loc.DbGeogNeedsUpdated = false;
+            //this.Update(Loc);
+        }
+
+        public void UpdateWithNewProps(Guid LocationTypeKey)
+        {
+            var allLocations = this.GetByType(LocationTypeKey);
+
+            foreach (var location in allLocations)
+            {
+                location.SyncPropertiesWithType();
+                this.Update(location);
+            }
+        }
+
+        public IEnumerable<JsonLocation> ConvertToJsonLocations(IEnumerable<Location> Locations)
+        {
+            var ReturnList = new List<JsonLocation>();
+
+            foreach (var loc in Locations)
+            {
+                ReturnList.Add(new JsonLocation(loc));
+            }
+
+            return ReturnList;
+        }
+
+        #endregion
+
+        #region Querying
 
         public Location GetByKey(Guid Key)
         {
@@ -105,6 +218,15 @@
             FillChildren();
 
             return CurrentCollection[0];
+        }
+
+        public IEnumerable<Location> GetByKey(Guid[] Keys)
+        {
+            CurrentCollection.Clear();
+            CurrentCollection.AddRange(GetAll(Keys));
+            FillChildren();
+
+            return CurrentCollection;
         }
 
         public IEnumerable<Location> GetByName(string LocationName)
@@ -122,7 +244,7 @@
 
             FillChildren();
 
-            return CurrentCollection; 
+            return CurrentCollection;
         }
 
         internal IEnumerable<Location> GetByType(Guid LocationTypeKey)
@@ -140,17 +262,91 @@
 
             FillChildren();
 
-            return CurrentCollection; 
+            return CurrentCollection;
+        }
+
+        internal IEnumerable<Location> GetByCountry(string CountryCode)
+        {
+            return GetByCountry(CountryCode, Guid.Empty);
+        }
+
+        internal IEnumerable<Location> GetByCountry(string CountryCode, Guid FilterByLocationTypeKey)
+        {
+            CurrentCollection.Clear();
+
+            IEnumerable<Location> allLocs;
+            if (FilterByLocationTypeKey != Guid.Empty)
+            {
+                allLocs = this.GetByType(FilterByLocationTypeKey);
+            }
+            else
+            {
+                allLocs = this.GetAll();
+            }
+
+            var filteredLocs = allLocs.Where(l => l.Address.CountryCode == CountryCode);
+
+            CurrentCollection = filteredLocs.ToList();
+
+            //If this runs too slowly, perhaps change to an SQL query...
+            //var sql = new Sql();
+            //sql.Select("*")
+            //    .From<LocationDto>()
+            //    .Where<LocationDto>(l => l)
+
+                //Example SQL
+                //SELECT uLocate_Location.*
+                //FROM     uLocate_Location INNER JOIN
+                //                  uLocate_LocationPropertyData ON uLocate_Location.[Key] = uLocate_LocationPropertyData.LocationKey INNER JOIN
+                //                  uLocate_LocationTypeProperty ON uLocate_LocationPropertyData.LocationTypePropertyKey = uLocate_LocationTypeProperty.[Key]
+                //WHERE  (uLocate_Location.LocationTypeKey = 'E8AD5500-CB2B-4713-A616-4758D9F4AE72') AND (uLocate_LocationTypeProperty.Alias = N'CountryCode') AND (uLocate_LocationPropertyData.dataNvarchar = N'GB')
+
+            //var dtoResult = Repositories.ThisDb.Query<LocationDto>(sql).ToList();
+
+            //var converter = new DtoConverter();
+            //CurrentCollection.AddRange(converter.ToLocationEntity(dtoResult));
+
+            FillChildren();
+
+            return CurrentCollection;
         }
 
         internal IEnumerable<Location> GetByGeoSearch(double SearchLat, double SearchLong, int MilesDistance)
+        {
+            return GetByGeoSearch(SearchLat, SearchLong, MilesDistance, Guid.Empty);
+        }
+
+        internal IEnumerable<Location> GetByGeoSearch(double SearchLat, double SearchLong, int MilesDistance, Guid FilterByLocationTypeKey)
         {
             CurrentCollection.Clear();
             var sql = new Sql();
             sql.Select("*")
                 .From<LocationDto>()
-                .Append(GeographyHelper.GetGeoSearchSql(SearchLat, SearchLong,  MilesDistance));
+                .Append(GeographyHelper.GetGeoSearchSql(SearchLat, SearchLong, MilesDistance, FilterByLocationTypeKey));
 
+            var dtoResult = Repositories.ThisDb.Query<LocationDto>(sql).ToList();
+
+            var converter = new DtoConverter();
+            CurrentCollection.AddRange(converter.ToLocationEntity(dtoResult));
+
+            FillChildren();
+
+            return CurrentCollection;
+        }
+
+        internal IEnumerable<Location> GetNearestLocations(double SearchLat, double SearchLong, int QuantityReturned)
+        {
+            return GetNearestLocations(SearchLat, SearchLong, QuantityReturned, Guid.Empty);
+        }
+
+        internal IEnumerable<Location> GetNearestLocations(double SearchLat, double SearchLong, int QuantityReturned, Guid FilterByLocationTypeKey)
+        {
+            CurrentCollection.Clear();
+            var sql = new Sql();
+            sql.Select(string.Format("TOP({0}) *", QuantityReturned))
+                .From<LocationDto>()
+                .Append(GeographyHelper.GetGeoNearestSql(SearchLat, SearchLong, FilterByLocationTypeKey));
+          
             var dtoResult = Repositories.ThisDb.Query<LocationDto>(sql).ToList();
 
             var converter = new DtoConverter();
@@ -170,15 +366,6 @@
             var converter = new DtoConverter();
             CurrentCollection.AddRange(converter.ToLocationEntity(dtoResult));
 
-            FillChildren();
-
-            return CurrentCollection;
-        }
-
-        public IEnumerable<Location> GetByKey(Guid[] Keys)
-        {
-            CurrentCollection.Clear();
-            CurrentCollection.AddRange(GetAll(Keys));
             FillChildren();
 
             return CurrentCollection;
@@ -238,96 +425,12 @@
             }
 
             return ReturnList;
-        }
+        } 
 
-        public IEnumerable<JsonLocation> ConvertToJsonLocations(IEnumerable<Location> Locations)
-        {
-            var ReturnList = new List<JsonLocation>();
+        #endregion
 
-            foreach (var loc in Locations)
-            {
-                ReturnList.Add(new JsonLocation(loc));
-            }
 
-            return ReturnList;
-        }
-
-        public StatusMessage UpdateGeoForAllNeeded()
-        {
-            var ReturnMsg = new StatusMessage();  
-
-            var updateCounter = 0;
-            var checkedCounter = 0;
-            var dbCounter = 0;
-
-            foreach (var location in this.GetAll())
-            {
-                if (location.Latitude == 0 | location.Longitude == 0)
-                {
-                    this.UpdateLatLong(location);
-                    updateCounter++;
-                }
-
-                //Repositories.LocationRepo.SetMaintenanceFlags();
-
-                if (!this.GeogIsValid(location))
-                {
-                    this.UpdateDbGeography(location);
-                    dbCounter++;
-                }
-                
-                checkedCounter++;
-            }
-
-            ReturnMsg.Success = true;
-            ReturnMsg.Message =
-                string.Format(
-                    "{0} location(s) were checked for needing an update. {1} had their coordinates updated. Additionally, {2} had their database geography updated.",
-                    checkedCounter,
-                    updateCounter, 
-                    dbCounter);
-
-            return ReturnMsg;
-
-        }
-
-        public void UpdateLatLong(Location Loc)
-        {
-            var coord = DoGeocoding.GetCoordinateForAddress(Loc.Address);
-            if (coord != null)
-            {
-                Loc.Coordinate = coord;
-                Loc.Latitude = coord.Latitude;
-                Loc.Longitude = coord.Longitude;
-                Loc.GeocodeStatus = GeocodeStatus.Ok;
-                this.Update(Loc);
-                this.UpdateDbGeography(Loc);
-            }
-        }
-
-        public void UpdateDbGeography(Location Loc)
-        {
-            var sql = new Sql();
-            sql.Append("UPDATE [uLocate_Location]");
-            sql.Append("SET [GeogCoordinate] = geography::Point([Latitude], [Longitude], 4326)");
-            sql.Append(string.Format("WHERE  ([Key] = '{0}')", Loc.Key));
-
-            Repositories.ThisDb.Execute(sql);
-
-            //Loc.DbGeogNeedsUpdated = false;
-            //this.Update(Loc);
-        }
-
-        public void UpdateWithNewProps(Guid LocationTypeKey)
-        {
-            var allLocations = this.GetByType(LocationTypeKey);
-
-            foreach (var location in allLocations)
-            {
-                location.SyncPropertiesWithType();
-                this.Update(location);
-            }
-        }
+        #region Reusable Functions
 
         private bool GeogIsValid(Location entity)
         {
@@ -361,25 +464,9 @@
 
                 return Result;
             }
-        }
+        } 
 
-        //internal void SetMaintenanceFlags()
-        //{
-        //    var allLocations = this.GetAll();
-        //    foreach (var location in allLocations)
-        //    {
-        //        SetMaintenanceFlags(location);
-        //    }
-        //}
-
-        //internal void SetMaintenanceFlags(Location entity)
-        //{
-        //    var GeogIsValid = this.GeogIsValid(entity);
-
-        //    entity.DbGeogNeedsUpdated = !GeogIsValid;
-            
-        //    this.Update(entity);
-        //}
+        #endregion
 
         #endregion
 
@@ -619,5 +706,6 @@
         {
             throw new NotImplementedException();
         }
+
     }
 }
