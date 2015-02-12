@@ -78,13 +78,14 @@
          * @description - Get a paged list of locations.
          */
 		locationApiFactory.getAllLocationsPaged = function (request) {
-		    if (!request.pageNum) {
-		        request.pageNum = 0;
+		    request = new uLocate.Models.GetLocationsApiRequest(request);
+		    if (!request.page) {
+		        request.page = 0;
 		    }
 		    if (!request.perPage) {
 		        request.perPage = 100;
 		    }
-		    var config = { params: { pageNum: request.pageNum, itemsPerPage: request.perPage } };
+		    var config = { params: { pageNum: request.page, itemsPerPage: request.perPage } };
 		    return $http.get('/umbraco/backoffice/uLocate/LocationApi/GetAllPaged', config).then(function (response) {
 		        if (response.data) {
 		            var data = new uLocate.Models.LocationsPagedResponse(locationApiFactory.downCaseProperties(response.data));

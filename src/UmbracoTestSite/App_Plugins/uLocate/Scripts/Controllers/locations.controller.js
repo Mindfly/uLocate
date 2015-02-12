@@ -225,7 +225,7 @@
          * @param {integer} difference - The amount to change the current page by.
          * @description - changes the current page and triggers getLocations();
          */
-        $scope.changePage = function(difference) {
+        $scope.changePage = function (difference) {
             $scope.page = $scope.page + difference;
             if ($scope.page < 0) {
                 $scope.page = 0;
