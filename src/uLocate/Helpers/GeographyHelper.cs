@@ -86,11 +86,11 @@
         {
             if (ExcludeCommas)
             {
-                return string.Format("Point ({0} {1} {2})", Lat, Long, EarthSID);
+                return string.Format("POINT({1} {0} {2})", Lat, Long, EarthSID);
             }
             else
             {
-                return string.Format("Point ({0}, {1}, {2})", Lat, Long, EarthSID);
+                return string.Format("Point({0}, {1}, {2})", Lat, Long, EarthSID);
             }
             
         }
