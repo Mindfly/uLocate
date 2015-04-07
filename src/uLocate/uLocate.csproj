@@ -241,6 +241,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\DataValuesHelper.cs" />
+    <Compile Include="IO\DynamicLocationFlat.cs" />
+    <Compile Include="IO\Export.cs" />
     <Compile Include="Models\CmsDataTypePreValues.cs" />
     <Compile Include="Data\Dtos\cmsDataTypePreValuesDto.cs" />
     <Compile Include="Helpers\Persistence.cs" />

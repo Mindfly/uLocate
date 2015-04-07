@@ -317,7 +317,7 @@
             this.PropertyData = this.GetPropertyData().ToList();
         }
 
-        private IEnumerable<LocationPropertyData> GetPropertyData()
+        internal IEnumerable<LocationPropertyData> GetPropertyData()
         {
             var finalPropData = new List<LocationPropertyData>();
 

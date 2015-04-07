@@ -30,6 +30,8 @@
         //    return true;
         //}
 
+        #region Import Functions
+
         /// <summary>
         /// Function to import locations from a csv file
         /// /umbraco/backoffice/uLocate/ImportExportApi/ImportLocationsCSV
@@ -141,6 +143,30 @@
 
             return Request.CreateResponse(HttpStatusCode.OK, fileName);
         }
+        
+        #endregion
+
+        #region Export Functions
+
+        /// <summary> 
+        /// /umbraco/backoffice/uLocate/ImportExportApi/GetListofColumnHeaders?LocationTypeKey=xxx
+        /// </summary>
+        [AcceptVerbs("GET")]
+        public string GetListofColumnHeaders(Guid LocationTypeKey)
+        {
+            return uLocate.IO.Export.GetListofColumnHeaders(LocationTypeKey);
+        }
+
+        /// <summary> 
+        /// /umbraco/backoffice/uLocate/ImportExportApi/ExportAllLocations?LocationTypeKey=xxx
+        /// </summary>
+        [AcceptVerbs("GET")]
+        public StatusMessage ExportAllLocations(Guid LocationTypeKey)
+        {
+            return uLocate.IO.Export.ExportAllLocations(LocationTypeKey);
+        }
+
+        #endregion
 
     }
 }
