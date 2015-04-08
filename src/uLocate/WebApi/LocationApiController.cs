@@ -43,7 +43,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string LocationName)
         {
-            return uLocate.Helpers.Persistence.CreateLocation(LocationName);
+            return uLocate.Helpers.DataService.CreateLocation(LocationName);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string LocationName, Guid LocationTypeGuid)
         {
-            return uLocate.Helpers.Persistence.CreateLocation(LocationName, LocationTypeGuid);
+            return uLocate.Helpers.DataService.CreateLocation(LocationName, LocationTypeGuid);
         }
 
         /// <summary>

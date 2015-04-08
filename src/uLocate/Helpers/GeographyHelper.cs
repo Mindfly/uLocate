@@ -15,7 +15,7 @@
     /// <summary>
     /// The geography helper.
     /// </summary>
-    public class GeographyHelper
+    internal class GeographyHelper
     {
         const double MetricToMilesFactor = 1609.344;
         const int EarthSID = 4326;

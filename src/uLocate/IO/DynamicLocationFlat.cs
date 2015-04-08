@@ -61,10 +61,10 @@ namespace uLocate.IO
                         [FieldQuoted('""', QuoteMode.OptionalForBoth)]
                         public string Email;
 
-                        [FieldNullValue(typeof(double), ""0"")]
+                        [FieldNullValue(typeof(string), ""0"")]
                         public double Longitude;
 
-                        [FieldNullValue(typeof(double), ""0"")]
+                        [FieldNullValue(typeof(string), ""0"")]
                         public double Latitude;
 
 			");
@@ -187,11 +187,22 @@ namespace uLocate.IO
                                 ", prop.Alias));
                         break;
                     case CmsDataType.DbType.Integer:
-                        classMethod.Append(string.Format(@"
+                        if (prop.DataType.PropertyEditorAlias == "Umbraco.TrueFalse")
+                        {
+                            classMethod.Append(string.Format(@"
+                            case ""{0}"":
+                                this.{0} = System.Convert.ToBoolean(Data);
+                                break;
+                                ", prop.Alias));
+                        }
+                        else
+                        {
+                            classMethod.Append(string.Format(@"
                             case ""{0}"":
                                 this.{0} = System.Convert.ToInt32(Data);
                                 break;
                                 ", prop.Alias));
+                        }
                         break;
                     case CmsDataType.DbType.Date:
                         classMethod.Append(string.Format(@"
@@ -292,12 +303,25 @@ namespace uLocate.IO
                             CustomProperty.Alias));
                     break;
                 case CmsDataType.DbType.Integer:
-                    classProp.Append(
+                    if (CustomProperty.DataType.PropertyEditorAlias == "Umbraco.TrueFalse")
+                    {
+                        classProp.Append(
+                        string.Format(
+                        @"  [FieldNullValue(typeof(bool), ""False"")]
+                            [FieldConverter(ConverterKind.Boolean)]
+                                                public bool {0};
+                                            ",
+                            CustomProperty.Alias));
+                    }
+                    else
+                    {
+                        classProp.Append(
                         string.Format(
                         @"  [FieldNullValue(typeof(int), ""0"")]
-                            public int {0};
-                        ",
+                                                public int {0};
+                                            ",
                             CustomProperty.Alias));
+                    }
                     break;
                 default:
                     classProp.Append(

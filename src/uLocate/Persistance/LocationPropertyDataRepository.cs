@@ -111,9 +111,9 @@ namespace uLocate.Persistance
             var entity = converter.ToLocationPropertyDataEntity(dtoResult);
 
             return entity;
-            FillChildren();
+            //FillChildren();
 
-            return CurrentCollection[0];
+            //return CurrentCollection[0];
         }
 
         public IEnumerable<LocationPropertyData> GetAll()
@@ -157,7 +157,7 @@ namespace uLocate.Persistance
             }
 
             CurrentCollection.AddRange(Result);
-            FillChildren();
+            //FillChildren();
 
             return CurrentCollection; 
         }

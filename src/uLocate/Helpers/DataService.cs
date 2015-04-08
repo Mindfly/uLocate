@@ -10,11 +10,18 @@ namespace uLocate.Helpers
     using uLocate.Persistance;
 
     /// <summary>
-    /// Functions related to persisting data which can be called from Api Controllers etc.
+    /// Functions related to looking up and editing data which can be called from Api Controllers etc.
     /// </summary>
-    internal static class Persistence
+    public static class DataService
     {
         #region Location-Related
+
+        public static Location GetLocation(Guid LocationKey)
+        {
+            var Result = Repositories.LocationRepo.GetByKey(LocationKey);
+
+            return Result;
+        }
 
         public static Guid CreateLocation(string LocationName, bool UpdateIfFound = false)
         {
