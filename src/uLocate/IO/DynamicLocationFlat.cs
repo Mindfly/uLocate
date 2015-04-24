@@ -14,6 +14,9 @@ namespace uLocate.IO
 
         #region Custom Class Definition
 
+        
+
+
         internal static string GetDynamicClass(Guid LocationTypeKey)
         {
             var classString = new StringBuilder();

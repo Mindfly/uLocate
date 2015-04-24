@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
 
     using uLocate.Data;
+    using uLocate.Helpers;
     using uLocate.Persistance;
 
     using Umbraco.Core.Persistence;
@@ -166,13 +167,34 @@
                     this.dataDate = DateTime.Parse(PropertyValue);
                     break;
                 case CmsDataType.DbType.Integer:
-                    this.dataInt = Convert.ToInt32(PropertyValue);
+                    if (PropertyValue == null)
+                    {
+                        this.dataNvarchar = "";
+                    }
+                    else
+                    {
+                        this.dataInt = 0;
+                    }
                     break;
                 case CmsDataType.DbType.Ntext:
-                    this.dataNtext = PropertyValue;
+                    if (PropertyValue == null)
+                    {
+                        this.dataNtext = "";
+                    }
+                    else
+                    {
+                        this.dataNtext = PropertyValue;
+                    }
                     break;
                 case CmsDataType.DbType.Nvarchar:
-                    this.dataNvarchar = PropertyValue;
+                    if (PropertyValue == null)
+                    {
+                        this.dataNvarchar = "";
+                    }
+                    else
+                    {
+                        this.dataNvarchar = PropertyValue;
+                    }
                     break;
             }
 
@@ -226,16 +248,60 @@
             switch (this.DatabaseType)
             {
                 case CmsDataType.DbType.Integer:
-                    this.dataInt = Convert.ToInt32(PropertyValue);
+                    if (this.PropertyAttributes.DataType.PropertyEditorAlias == "Umbraco.TrueFalse")
+                    {
+                        this.dataInt = ConvertObjectToBoolInt(PropertyValue);
+                    }
+                    else if (this.PropertyAttributes.DataType.PropertyEditorAlias == "Umbraco.DropDown")
+                    {
+                        //convert to prevalue Id
+                        var idValue = DataValuesHelper.GetPreValueId(this.PropertyAttributes.DataType.DataTypeId, PropertyValue.ToString());
+                        this.dataInt = idValue;
+                    } 
+                    else
+                    {
+                        int convertedInt = 0;
+                        Int32.TryParse(PropertyValue.ToString(), out convertedInt);
+                        this.dataInt = convertedInt;
+                    }
                     break;
                 case CmsDataType.DbType.Date:
                     this.dataDate = Convert.ToDateTime(PropertyValue);
                     break;
                 case CmsDataType.DbType.Ntext:
-                    this.dataNtext = PropertyValue.ToString();
+                    if (PropertyValue == null)
+                    {
+                        this.dataNtext = "";
+                    }
+                    else
+                    {
+                        this.dataNtext = PropertyValue.ToString();
+                    }
                     break;
                 case CmsDataType.DbType.Nvarchar:
-                    this.dataNvarchar = PropertyValue.ToString();
+                    if (this.PropertyAttributes.DataType.PropertyEditorAlias == "Umbraco.DropDown")
+                    {
+                        //convert to prevalue Id
+                        var idValues = DataValuesHelper.GetPreValueIds(this.PropertyAttributes.DataType.DataTypeId, PropertyValue.ToString());
+                        this.dataNvarchar = idValues;
+                    }
+                    else if (this.PropertyAttributes.DataType.PropertyEditorAlias == "Umbraco.CheckBoxList")
+                    {
+                        //convert to prevalue Ids
+                        var idValues = DataValuesHelper.GetPreValueIds(this.PropertyAttributes.DataType.DataTypeId, PropertyValue.ToString());
+                        this.dataNvarchar = idValues;
+                    }
+                    else
+                    {
+                        if (PropertyValue == null)
+                        {
+                            this.dataNvarchar = "";
+                        }
+                        else
+                        {
+                            this.dataNvarchar = PropertyValue.ToString();
+                        }
+                    }
                     break;
             }
 
@@ -247,6 +313,50 @@
 
         #region Private Methods
 
+        private int ConvertObjectToBoolInt(object PropertyValue)
+        {
+            int returnInt = 0;
+
+            bool IsInt = Int32.TryParse(PropertyValue.ToString(), out returnInt);
+
+            if (IsInt)
+            {
+                return returnInt;
+            }
+            else
+            {
+                //must be a string value, test for known data, if no match, return FALSE 0
+                switch (PropertyValue.ToString())
+                {
+                    case "Yes":
+                        returnInt = 1;
+                        break;
+                    case "No":
+                        returnInt = 0;
+                        break;
+                    case "True":
+                        returnInt = 1;
+                        break;
+                    case "False":
+                        returnInt = 0;
+                        break;
+                    default:
+                        //no obvious match - call it TRUE if ANYTHING is in the field
+                        if (PropertyValue.ToString() != "")
+                        {
+                            returnInt = 1;
+                        }
+                        else
+                        {
+                            returnInt = 0;
+                        }
+                        break;
+                }
+
+                return returnInt;
+            }
+            
+        }
 
         private void CreateNewPropData(Guid LocationKey, Guid PropertyKey)
         {

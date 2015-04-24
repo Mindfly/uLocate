@@ -33,17 +33,36 @@
         #region Import Functions
 
         /// <summary>
-        /// Function to import locations from a csv file
+        /// Function to import locations from a csv file located at "~/uLocateLocationImport.csv"
         /// /umbraco/backoffice/uLocate/ImportExportApi/ImportLocationsCSV
         /// </summary>
         /// <returns>
-        /// The <see cref="StatusMessage"/>.
+        /// An object of type <see cref="StatusMessage"/>.
         /// </returns>
         [AcceptVerbs("GET")]
         public StatusMessage ImportLocationsCSV()
         {
             string file = "~/uLocateLocationImport.csv";
+            
             return uLocate.IO.Import.LocationsCSV(file);
+        }
+
+        /// <summary>
+        /// Function to import locations from a csv file located at "~/uLocateLocationImport.csv"
+        /// /umbraco/backoffice/uLocate/ImportExportApi/ImportLocationsCSV?LocationTypeKey=xxx
+        /// </summary>
+        /// <param name="LocationTypeKey">
+        /// The GUID key of the Location Type to import
+        /// </param>
+        /// <returns>
+        /// An object of type <see cref="StatusMessage"/>.
+        /// </returns>
+        [AcceptVerbs("GET")]
+        public StatusMessage ImportLocationsCSV(Guid LocationTypeKey)
+        {
+            string file = "~/uLocateLocationImport.csv";
+
+            return uLocate.IO.Import.LocationsCSV(file, LocationTypeKey);
         }
 
         /// <summary>

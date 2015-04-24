@@ -14,6 +14,17 @@ namespace uLocate.Helpers
     /// </summary>
     public static class DataService
     {
+        #region LocationType-Related
+
+        public static LocationType GetLocationType(Guid LocationTypeKey)
+        {
+            var Result = Repositories.LocationTypeRepo.GetByKey(LocationTypeKey);
+
+            return Result;
+        }
+
+        #endregion
+
         #region Location-Related
 
         public static Location GetLocation(Guid LocationKey)
@@ -75,4 +86,6 @@ namespace uLocate.Helpers
 
         #endregion
     }
+
+    
 }

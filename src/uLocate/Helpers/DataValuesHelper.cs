@@ -25,7 +25,67 @@ namespace uLocate.Helpers
         /// <returns>
         /// The <see cref="string"/>.
         /// </returns>
-        public static string GetPreValueId(int DataTypeId, string PrevalueText)
+        public static int GetPreValueId(int DataTypeId, string PrevalueText)
+        {
+            var allDataTypePrevals = GetAllPrevaluesForDataType(DataTypeId);
+
+            var match = allDataTypePrevals.Where(n => n.Value == PrevalueText).FirstOrDefault();
+            if (match != null)
+            {
+                return match.Id;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public static string GetPreValueIds(int DataTypeId, string PrevalueText)
+        {
+            var returnString =",";
+            var allDataTypePrevals = GetAllPrevaluesForDataType(DataTypeId);
+
+            var parsedValues = ParseMultiSelectValues(PrevalueText);
+
+            foreach (var val in parsedValues)
+            {
+                var match = allDataTypePrevals.Where(n => n.Value == val).FirstOrDefault();
+                if (match != null)
+                {
+                    returnString = string.Concat(returnString, ",", match.Id.ToString());
+                }
+            }
+
+            returnString = returnString.Replace(",,","");
+            returnString = string.Concat("[", returnString, "]");
+
+            return returnString;
+        }
+
+        internal static IEnumerable<string> ParseMultiSelectValues(string Values)
+        {
+            var returnValues = new List<string>();
+
+            var valuesCleaned = Values;
+            valuesCleaned = valuesCleaned.Replace("[", "");
+            valuesCleaned = valuesCleaned.Replace("]", "");
+            //valuesCleaned = valuesCleaned.Replace("\"", "");
+
+            var parsedValues = valuesCleaned.Split(',');
+
+            foreach (var val in parsedValues)
+            {
+                var valStripped = val.Trim();
+                valStripped = valStripped.TrimStart('\"');
+                valStripped = valStripped.TrimEnd('\"');
+          
+                returnValues.Add(valStripped);
+            }
+
+            return returnValues;
+        }
+
+        internal static List<cmsDataTypePreValuesDto> GetAllPrevaluesForDataType(int DataTypeId)
         {
             var sql = new Sql();
             sql
@@ -33,16 +93,7 @@ namespace uLocate.Helpers
                 .From<cmsDataTypePreValuesDto>()
                 .Where<cmsDataTypePreValuesDto>(n => n.DataTypeNodeId == DataTypeId);
 
-            var allDataTypePrevals = Repositories.ThisDb.Fetch<cmsDataTypePreValuesDto>(sql);
-            var match = allDataTypePrevals.Where(n => n.Value == PrevalueText).FirstOrDefault();
-            if (match != null)
-            {
-                return match.Id.ToString();
-            }
-            else
-            {
-                return "";
-            }
+            return Repositories.ThisDb.Fetch<cmsDataTypePreValuesDto>(sql);
         }
 
         /// <summary>
