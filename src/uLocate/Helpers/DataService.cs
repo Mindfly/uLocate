@@ -41,6 +41,13 @@ namespace uLocate.Helpers
             return Result;
         }
 
+        public static StatusMessage DeleteLocation(Guid LocationKey)
+        {
+            var Result = Repositories.LocationRepo.Delete(LocationKey);
+
+            return Result;
+        }
+
         public static Guid CreateLocation(string LocationName, bool UpdateIfFound = false)
         {
             var Result = CreateLocation(LocationName, uLocate.Constants.DefaultLocationTypeKey, UpdateIfFound);
