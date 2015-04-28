@@ -23,6 +23,13 @@ namespace uLocate.Helpers
             return Result;
         }
 
+        public static LocationType GetLocationTypeByName(string LocationTypeName)
+        {
+            var result = Repositories.LocationTypeRepo.GetByName(LocationTypeName).FirstOrDefault();
+
+            return result;
+        }
+
         #endregion
 
         #region Location-Related
@@ -82,6 +89,51 @@ namespace uLocate.Helpers
             var Result = Repositories.LocationRepo.GetByKey(UpdatedLocation.Key);
 
             return Result;
+        }
+
+        #endregion
+
+        #region Location Collections
+
+        public static IEnumerable<Location> GetLocations()
+        {
+            var result = Repositories.LocationRepo.GetAll();
+
+            return result;
+        }
+
+        public static IEnumerable<Location> GetLocations(Guid LocationTypeKey)
+        {
+            var result = Repositories.LocationRepo.GetByType(LocationTypeKey);
+
+            return result;
+        }
+
+        public static IEnumerable<Location> GetLocationsByPropertyValue(string PropertyAlias, string Value)
+        {
+            var AllLocations = Repositories.LocationRepo.GetAll();
+            
+            var result = AllLocations.Where(l => l.CustomProperties[PropertyAlias] == Value);
+
+            return result;
+        }
+
+        public static IEnumerable<Location> GetLocationsByPropertyValue(string PropertyAlias, int Value)
+        {
+            var AllLocations = Repositories.LocationRepo.GetAll();
+
+            var result = AllLocations.Where(l => l.CustomProperties[PropertyAlias] == Value.ToString());
+
+            return result;
+        }
+
+        public static IEnumerable<Location> GetLocationsByPropertyValue(string PropertyAlias, DateTime Value)
+        {
+            var AllLocations = Repositories.LocationRepo.GetAll();
+
+            var result = AllLocations.Where(l => l.CustomProperties[PropertyAlias] == Value.ToString());
+
+            return result;
         }
 
         #endregion

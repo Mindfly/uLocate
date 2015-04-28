@@ -57,7 +57,7 @@ namespace uLocate.Helpers
             }
 
             returnString = returnString.Replace(",,","");
-            returnString = string.Concat("[", returnString, "]");
+            //returnString = string.Concat("[", returnString, "]");
 
             return returnString;
         }
