@@ -214,10 +214,18 @@
         public Location GetByKey(Guid Key)
         {
             CurrentCollection.Clear();
-            CurrentCollection.Add((Location)Get(Key));
-            FillChildren();
+            var found = (Location)Get(Key);
 
-            return CurrentCollection[0];
+            if (found!= null)
+            {
+                CurrentCollection.Add(found);
+                FillChildren();
+                return CurrentCollection[0];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public IEnumerable<Location> GetByKey(Guid[] Keys)

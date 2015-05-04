@@ -11,6 +11,7 @@
     using uLocate.Data;
     using uLocate.Models;
     using uLocate.Persistance;
+    using uLocate.Services;
 
     using Umbraco.Core;
     using Umbraco.Web.WebApi;
@@ -43,7 +44,8 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string LocationName)
         {
-            return uLocate.Helpers.DataService.CreateLocation(LocationName);
+            var locationService = new LocationService();
+            return locationService.CreateLocation(LocationName);
         }
 
         /// <summary>
@@ -62,7 +64,8 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string LocationName, Guid LocationTypeGuid)
         {
-            return uLocate.Helpers.DataService.CreateLocation(LocationName, LocationTypeGuid);
+            var locationService = new LocationService();
+            return locationService.CreateLocation(LocationName, LocationTypeGuid);
         }
 
         /// <summary>

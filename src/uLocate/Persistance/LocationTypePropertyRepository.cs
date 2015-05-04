@@ -132,11 +132,12 @@
         public LocationTypeProperty GetByKey(Guid Key)
         {
             CurrentCollection.Clear();
-            CurrentCollection.Add((LocationTypeProperty)Get(Key));
-            FillChildren();
+            var found = (LocationTypeProperty)Get(Key);
 
-            if (CurrentCollection.Count != 0)
+            if (found != null)
             {
+                CurrentCollection.Add(found);
+                FillChildren();
                 return CurrentCollection[0];
             }
             else

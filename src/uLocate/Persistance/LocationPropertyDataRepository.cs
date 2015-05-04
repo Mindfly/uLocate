@@ -75,10 +75,19 @@ namespace uLocate.Persistance
         public LocationPropertyData GetByKey(Guid Key)
         {
             CurrentCollection.Clear();
-            CurrentCollection.Add(Get(Key));
-            FillChildren();
 
-            return CurrentCollection[0]; 
+            var found = Get(Key);
+
+            if (found != null)
+            {
+                CurrentCollection.Add(found);
+                FillChildren();
+                return CurrentCollection[0];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public IEnumerable<LocationPropertyData> GetByKey(Guid[] Keys)

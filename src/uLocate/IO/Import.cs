@@ -17,6 +17,7 @@
     using uLocate.Helpers;
     using uLocate.Models;
     using uLocate.Persistance;
+    using uLocate.Services;
 
     using umbraco.cms.businesslogic;
 
@@ -40,7 +41,8 @@
                 LocTypeKey = (Guid)LocationTypeKey;
             }
 
-            var locType = DataService.GetLocationType(LocTypeKey);
+            var locationTypeService = new LocationTypeService();
+            var locType = locationTypeService.GetLocationType(LocTypeKey);
 
             StatusMessage Msg = new StatusMessage();
             Msg.ObjectName = FilePath;
@@ -134,7 +136,8 @@
             try
             {
                 //Default Props
-                var defaultLocType = DataService.GetLocationType(Constants.DefaultLocationTypeKey);
+                var locationTypeService = new LocationTypeService();
+                var defaultLocType = locationTypeService.GetLocationType(Constants.DefaultLocationTypeKey);
                 foreach (var prop in defaultLocType.Properties)
                 {
                     string colName = prop.Alias;

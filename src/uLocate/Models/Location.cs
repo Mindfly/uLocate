@@ -124,6 +124,12 @@
                 return add;
             }
 
+            set
+            {
+                // don't allow set, changes must be made via the UpdateAddress() method
+                throw new NotSupportedException("You must use the 'UpdateAddress()' method to make changes to the Address Values.");
+            }
+
         }
 
         /// <summary>
@@ -135,6 +141,11 @@
             {
                 return this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Phone).Value.ToString();
             }
+
+            set
+            {
+                this.AddPropertyData(Constants.DefaultLocPropertyAlias.Phone, value);
+            }
         }
 
         /// <summary>
@@ -145,6 +156,11 @@
             get
             {
                 return this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Email).Value.ToString();
+            }
+
+            set
+            {
+                this.AddPropertyData(Constants.DefaultLocPropertyAlias.Email, value);
             }
         }
 
@@ -167,6 +183,11 @@
 
                 return PropData;
             }
+            set
+            {
+                // don't allow set, changes must be made via the AddPropertyData() method
+                throw new NotSupportedException("You must use the 'AddPropertyData()' method to make changes to the Custom Property Values.");
+            }
         }
 
         //public string DbGeog
@@ -181,6 +202,33 @@
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// Update the Address data
+        /// </summary>
+        /// <param name="UpdatedAddress">
+        /// The updated address.
+        /// </param>
+        /// <param name="InvalidateLatLong">
+        /// Should the Lat/Long values be reset as well?
+        /// </param>
+        public void UpdateAddress(Address UpdatedAddress, bool InvalidateLatLong)
+        {
+            this.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, UpdatedAddress.Address1);
+            this.AddPropertyData(Constants.DefaultLocPropertyAlias.Address2, UpdatedAddress.Address2);
+            this.AddPropertyData(Constants.DefaultLocPropertyAlias.CountryCode, UpdatedAddress.CountryCode);
+            this.AddPropertyData(Constants.DefaultLocPropertyAlias.Locality, UpdatedAddress.Locality);
+            this.AddPropertyData(Constants.DefaultLocPropertyAlias.PostalCode, UpdatedAddress.PostalCode);
+            this.AddPropertyData(Constants.DefaultLocPropertyAlias.Region, UpdatedAddress.Region);
+
+            if (InvalidateLatLong)
+            {
+                this.Latitude = 0;
+                this.Longitude = 0;
+                this.DbGeogNeedsUpdated = true;
+                this.Coordinate = new Coordinate(0, 0);
+            }
+        }
 
         /// <summary>
         /// Add  STRING property data to this location

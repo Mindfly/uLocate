@@ -1,63 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace uLocate.Helpers
+﻿namespace uLocate.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     using uLocate.Models;
     using uLocate.Persistance;
 
     /// <summary>
     /// Functions related to looking up and editing data which can be called from Api Controllers etc.
     /// </summary>
-    public static class DataService
+    public class LocationService
     {
-        #region LocationType-Related
-
-        public static LocationType GetLocationType(Guid LocationTypeKey)
-        {
-            var Result = Repositories.LocationTypeRepo.GetByKey(LocationTypeKey);
-
-            return Result;
-        }
-
-        public static LocationType GetLocationTypeByName(string LocationTypeName)
-        {
-            var result = Repositories.LocationTypeRepo.GetByName(LocationTypeName).FirstOrDefault();
-
-            return result;
-        }
-
-        #endregion
-
         #region Location-Related
 
-        public static Location GetLocation(Guid LocationKey)
+        public Location GetLocation(Guid LocationKey)
         {
             var Result = Repositories.LocationRepo.GetByKey(LocationKey);
 
             return Result;
         }
 
-        public static StatusMessage DeleteLocation(Guid LocationKey)
+        public StatusMessage DeleteLocation(Guid LocationKey)
         {
             var Result = Repositories.LocationRepo.Delete(LocationKey);
 
             return Result;
         }
 
-        public static Guid CreateLocation(string LocationName, bool UpdateIfFound = false)
+        public Guid CreateLocation(string LocationName, bool UpdateIfFound = false)
         {
             var Result = CreateLocation(LocationName, uLocate.Constants.DefaultLocationTypeKey, UpdateIfFound);
 
             return Result;
         }
 
-        public static Guid CreateLocation(string LocationName, Guid LocationTypeGuid, bool UpdateIfFound = false)
+        public Guid CreateLocation(string LocationName, Guid LocationTypeGuid, bool UpdateIfFound = false)
         {
-
             bool DoUpdate = false;
             Guid LocType;
 
@@ -89,7 +68,7 @@ namespace uLocate.Helpers
             return newLoc.Key;
         }
 
-        public static Location UpdateLocation(Location UpdatedLocation, bool UpdateIfFound = false)
+        public Location UpdateLocation(Location UpdatedLocation)
         {
             Repositories.LocationRepo.Update(UpdatedLocation);
 
@@ -98,25 +77,59 @@ namespace uLocate.Helpers
             return Result;
         }
 
+        public StatusMessage UpdateGeographyData(Location LocationToUpdate)
+        {
+            var returnMsg = new StatusMessage();
+
+            try
+            {
+                Repositories.LocationRepo.UpdateLatLong(LocationToUpdate);
+            }
+            catch (Exception exLatLong)
+            {
+                returnMsg.Success = false;
+                returnMsg.Code = "ErrorGeoCode";
+                returnMsg.Message = string.Format("{0} location was unable to be updated. Error while geo-coding.", LocationToUpdate.Name);
+                returnMsg.RelatedException = exLatLong;
+            }
+
+            try
+            {
+                Repositories.LocationRepo.UpdateDbGeography(LocationToUpdate);
+            }
+            catch (Exception eDb)
+            {
+                returnMsg.Success = false;
+                returnMsg.Code = "ErrorDbGeography";
+                returnMsg.Message = string.Format("{0} location was unable to be updated. Error while updating database geography.", LocationToUpdate.Name);
+                returnMsg.RelatedException = eDb;
+            }
+
+            returnMsg.Success = true;
+            returnMsg.Message = string.Format("{0} location was updated.", LocationToUpdate.Name);
+
+            return returnMsg;
+        }
+
         #endregion
 
         #region Location Collections
 
-        public static IEnumerable<Location> GetLocations()
+        public IEnumerable<Location> GetLocations()
         {
             var result = Repositories.LocationRepo.GetAll();
 
             return result;
         }
 
-        public static IEnumerable<Location> GetLocations(Guid LocationTypeKey)
+        public IEnumerable<Location> GetLocations(Guid LocationTypeKey)
         {
             var result = Repositories.LocationRepo.GetByType(LocationTypeKey);
 
             return result;
         }
 
-        public static IEnumerable<Location> GetLocationsByPropertyValue(string PropertyAlias, string Value)
+        public IEnumerable<Location> GetLocationsByPropertyValue(string PropertyAlias, string Value)
         {
             var AllLocations = Repositories.LocationRepo.GetAll();
             
@@ -125,7 +138,7 @@ namespace uLocate.Helpers
             return result;
         }
 
-        public static IEnumerable<Location> GetLocationsByPropertyValue(string PropertyAlias, int Value)
+        public IEnumerable<Location> GetLocationsByPropertyValue(string PropertyAlias, int Value)
         {
             var AllLocations = Repositories.LocationRepo.GetAll();
 
@@ -134,7 +147,7 @@ namespace uLocate.Helpers
             return result;
         }
 
-        public static IEnumerable<Location> GetLocationsByPropertyValue(string PropertyAlias, DateTime Value)
+        public IEnumerable<Location> GetLocationsByPropertyValue(string PropertyAlias, DateTime Value)
         {
             var AllLocations = Repositories.LocationRepo.GetAll();
 
@@ -145,6 +158,4 @@ namespace uLocate.Helpers
 
         #endregion
     }
-
-    
 }
