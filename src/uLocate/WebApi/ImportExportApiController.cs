@@ -99,8 +99,11 @@
         /// <param name="FileName">
         /// The file name.
         /// </param>
+        /// <param name="LocationTypeKey">
+        /// The location type key.
+        /// </param>
         /// <returns>
-        /// The <see cref="StatusMessage"/>.
+        /// A <see cref="StatusMessage"/>.
         /// </returns>
         [AcceptVerbs("GET")]
         public StatusMessage ImportLocationsCSV(string FileName, Guid LocationTypeKey)
@@ -130,6 +133,39 @@
             //            file);
             //    return new StatusMessage(false, msg) { Code = "WrongFileType", ObjectName = file, };
             //}
+        }
+
+        /// <summary>
+        /// Function to import locations from a csv file
+        /// /umbraco/backoffice/uLocate/ImportExportApi/ImportLocationsCSV?FileName=~/uLocateLocationImport.csv&LocationTypeKey=xxx&SkipGeocoding=true
+        /// </summary>
+        /// <param name="FileName">
+        /// The file name.
+        /// </param>
+        /// <param name="LocationTypeKey">
+        /// The location type key.
+        /// </param>
+        /// <param name="SkipGeocoding">
+        /// Should geocoding be skipped?
+        /// </param>
+        /// <returns>
+        /// A <see cref="StatusMessage"/>.
+        /// </returns>
+        [AcceptVerbs("GET")]
+        public StatusMessage ImportLocationsCSV(string FileName, Guid LocationTypeKey, bool SkipGeocoding)
+        {
+            string file;
+
+            if (FileName == string.Empty)
+            {
+                file = "~/uLocateLocationImport.csv";
+            }
+            else
+            {
+                file = FileName;
+            }
+
+            return uLocate.IO.Import.LocationsCSV(file, LocationTypeKey, SkipGeocoding);
         }
 
         /// <summary>

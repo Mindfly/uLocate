@@ -28,8 +28,10 @@
 
     public static class Import
     {
+        const int MAX_GEOCODE = 400;
+
         #region CSV Importing
-        public static StatusMessage LocationsCSV(string FilePath, Guid? LocationTypeKey = null)
+        public static StatusMessage LocationsCSV(string FilePath, Guid? LocationTypeKey = null, bool SkipGeocoding = false )
         {
             Guid LocTypeKey;
             if (LocationTypeKey == null)
@@ -59,6 +61,11 @@
             int RowsFailure = 0;
             int GeocodeCount = 0;
             bool NeedsMaintenance = false;
+
+            if (SkipGeocoding)
+            {
+                GeocodeCount = MAX_GEOCODE + 1;
+            }
 
             foreach (DataRow row in tableCSV.Rows)
             {
@@ -203,7 +210,7 @@
                 if (newLoc.Latitude == 0 && newLoc.Longitude == 0)
                 {
                     //TODO: make dynamic based on provider limit
-                    if (GeocodeCount >= 400)
+                    if (GeocodeCount >= MAX_GEOCODE)
                     {
                         ReturnMsg.Success = true;
                         ReturnMsg.Code = "GeocodingProblem";

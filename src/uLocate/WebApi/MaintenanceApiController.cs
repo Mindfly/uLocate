@@ -30,7 +30,44 @@
             return true;
         }
 
-        #region Operations
+        #region Querying
+        /// <summary>
+        /// Gets a list of all countries and their codes.
+        /// /umbraco/backoffice/uLocate/MaintenanceApi/GetCountryCodes
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IEnumerable"/> of <see cref="Country"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public IEnumerable<Country> GetCountryCodes()
+        {
+            return CountryHelper.GetAllCountries();
+        }
+
+        /// <summary>
+        /// Gets information about which Locations need their geography updated
+        /// /umbraco/backoffice/uLocate/MaintenanceApi/GeographyNeedsUpdated
+        /// </summary>
+        /// <returns>
+        /// The <see cref="MaintenanceCollection"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public MaintenanceCollection GeographyNeedsUpdated()
+        {
+            //Repositories.LocationRepo.SetMaintenanceFlags();
+
+            var maintColl = new MaintenanceCollection();
+            maintColl.Title = "Database 'Geography' Data Needs Updated";
+
+            maintColl.Locations = Repositories.LocationRepo.GetAllMissingDbGeo();
+            maintColl.ConvertToJsonLocationsOnly();
+
+            return maintColl;
+        }
+
+        #endregion
+
+        #region Updates
 
         /// <summary>
         /// Updates Lat/Long coordinates for all Locations which require it.
@@ -46,6 +83,10 @@
 
             return Result;
         }
+        
+        #endregion
+
+        #region Deletes
 
         /// <summary>
         /// Delete all locations with a matching name
@@ -82,43 +123,94 @@
             return Msg;
         }
 
-        #endregion
-
-        #region Querying
         /// <summary>
-        /// Gets a list of all countries and their codes.
-        /// /umbraco/backoffice/uLocate/MaintenanceApi/GetCountryCodes
+        /// Delete all locations of the specified type
+        /// /umbraco/backoffice/uLocate/MaintenanceApi/DeleteAllLocationsOfType?LocationTypeKey=xxx
         /// </summary>
+        /// <param name="LocationTypeKey">
+        /// The Location Type Key.
+        /// </param>
         /// <returns>
-        /// An <see cref="IEnumerable"/> of <see cref="Country"/>.
+        /// The <see cref="StatusMessage"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public IEnumerable<Country> GetCountryCodes()
+        public StatusMessage DeleteAllLocationsOfType(Guid LocationTypeKey)
         {
-            return CountryHelper.GetAllCountries();
+            var Msg = new StatusMessage();
+            var locTypeName = Repositories.LocationTypeRepo.GetByKey(LocationTypeKey).Name;
+            Msg.ObjectName = locTypeName;
+
+            var matchingLocations = Repositories.LocationRepo.GetByType(LocationTypeKey);
+            if (matchingLocations.Any())
+            {
+                foreach (var loc in matchingLocations)
+                {
+                    Repositories.LocationRepo.Delete(loc);
+                }
+
+                Msg.Message = string.Format("{0} location(s) of type '{1}' were found and deleted.", matchingLocations.Count(), locTypeName);
+            }
+            else
+            {
+                Msg.Message = string.Format("No locations of type '{0}' were found.", locTypeName);
+            }
+
+            Msg.Success = true;
+            return Msg;
         }
+
 
         /// <summary>
-        /// Gets information about which Locations need their geography updated
-        /// /umbraco/backoffice/uLocate/MaintenanceApi/GeographyNeedsUpdated
+        /// Delete all locations.
+        /// /umbraco/backoffice/uLocate/MaintenanceApi/DeleteAllLocations?Confirm=true
         /// </summary>
+        /// <param name="Confirm">
+        /// The confirmation (must be TRUE to run)
+        /// </param>
         /// <returns>
-        /// The <see cref="MaintenanceCollection"/>.
+        /// The <see cref="StatusMessage"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public MaintenanceCollection GeographyNeedsUpdated()
+        public StatusMessage DeleteAllLocations(bool Confirm)
         {
-            //Repositories.LocationRepo.SetMaintenanceFlags();
+            var ResultMsg = new StatusMessage();
 
-            var maintColl = new MaintenanceCollection();
-            maintColl.Title = "Database 'Geography' Data Needs Updated";
+            if (Confirm)
+            {
+                int delCounter = 0;
+                List<Guid> allKeys = new List<Guid>();
 
-            maintColl.Locations = Repositories.LocationRepo.GetAllMissingDbGeo();
-            maintColl.ConvertToJsonLocationsOnly();
+                var allLocations = Repositories.LocationRepo.GetAll();
+                var totCounter = allLocations.Count();
 
-            return maintColl;
+                foreach (var loc in allLocations)
+                {
+                    allKeys.Add(loc.Key);
+                }
+
+                foreach (var key in allKeys)
+                {
+                    var stat = Repositories.LocationRepo.Delete(key);
+                    ResultMsg.InnerStatuses.Add(stat);
+                    if (stat.Success)
+                    {
+                        delCounter++;
+                    }
+                }
+
+                ResultMsg.Message = string.Format("{0} Location(s) deleted out of a total of {1} Location(s)", delCounter, totCounter);
+                ResultMsg.Success = true;
+            }
+            else
+            {
+                ResultMsg.Success = false;
+                ResultMsg.Code = "NotConfirmed";
+                ResultMsg.Message = "The operation was not confirmed, and thus did not run.";
+            }
+
+            return ResultMsg;
         }
-        
+
         #endregion
 
     }

@@ -353,8 +353,8 @@
   <PropertyGroup>
     <PostBuildEvent>XCOPY "$(TargetDir)$(TargetName).*" "$(SolutionDir)UmbracoTestSite\bin\" /Y
 XCOPY "$(TargetDir)*.dll" "$(SolutionDir)UmbracoTestSite\bin\" /Y
-XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\SRSM - Umbraco\source code - 2015\src\UmbracoCms\bin" /Y
-XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\SRSM - Umbraco\source code - 2015\src\SrSmith.Web\Dependencies" /Y</PostBuildEvent>
+XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\KEND - Umbraco\source code\src\UmbracoCms\bin" /Y
+XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\KEND - Umbraco\source code\src\KendaTires.Web\Dependencies" /Y</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
