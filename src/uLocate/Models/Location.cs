@@ -115,12 +115,13 @@
             get
             {
                 var add = new Address();
-                add.Address1 = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Address1).Value.ToString();
-                add.Address2 = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Address2).Value.ToString();
-                add.CountryCode = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.CountryCode).Value.ToString();
-                add.Locality = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Locality).Value.ToString();
-                add.PostalCode = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.PostalCode).Value.ToString();
-                add.Region = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Region).Value.ToString();
+
+                add.Address1 = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Address1) != null ? this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Address1).Value.ToString() : "";
+                add.Address2 = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Address2) !=null ? this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Address2).Value.ToString() : "";
+                add.CountryCode = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.CountryCode) !=null ? this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.CountryCode).Value.ToString() : "";
+                add.Locality = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Locality) !=null ? this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Locality).Value.ToString() : "";
+                add.PostalCode = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.PostalCode) !=null ? this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.PostalCode).Value.ToString() : "";
+                add.Region = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Region) != null ? this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Region).Value.ToString() : "";
                 return add;
             }
 

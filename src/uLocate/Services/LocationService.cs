@@ -3,6 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Security.Cryptography;
+
+    using ClientDependency.Core;
 
     using uLocate.Models;
     using uLocate.Persistance;
@@ -12,6 +15,8 @@
     /// </summary>
     public class LocationService
     {
+        private LocationTypeService locTypeService = new LocationTypeService(); 
+
         #region Location-Related
 
         public Location GetLocation(Guid LocationKey)
@@ -111,6 +116,59 @@
             return returnMsg;
         }
 
+        #endregion
+
+        #region Location Info
+
+        public StatusMessage CountLocations<TKey>(Guid LocationTypeKey, Func<Location, TKey> GroupingProperty)
+        {
+            var locTypeName = locTypeService.GetLocationType(LocationTypeKey).Name;
+
+            var allLocations = this.GetLocations(LocationTypeKey);
+
+            var query = (from loc in allLocations select loc).GroupBy(GroupingProperty);
+
+            //var groups = new List<BicycleProdSpecGroup>();
+
+            var iTotal = 0;
+            var msg = new StatusMessage();
+            
+
+            foreach (var nameGroup in query)
+            {
+                var thisGroupMsg = new StatusMessage();
+                var iGroupCount = 0;
+                //if (nameGroup.Key.ToString().Contains("{"))
+                //{
+                //    //multiple keys
+                //    thisGroupMsg.ObjectName = nameGroup.Key.ToString(); //.ToDictionary();
+                //}
+                //else
+                //{
+                //    //single key
+                //    thisGroupMsg.ObjectName = new Dictionary<string, object>();
+                //    thisGroupMsg.ObjectName.Add("Key", nameGroup.Key);
+                //}
+
+               // var items = new List<BicycleProdSpec>();
+
+                foreach (var loc in nameGroup)
+                {
+                    iGroupCount++;
+                    iTotal++;
+                    //items.Add(spec);
+                }
+
+                thisGroupMsg.Message = string.Format("{0} locations in the group {1}", iGroupCount, nameGroup.Key);
+                
+
+                msg.InnerStatuses.Add(thisGroupMsg);
+            }
+
+            msg.Message = string.Format("Total of {0} locations of type '{1}'", iTotal, locTypeName);
+            return msg;
+        }
+        
         #endregion
 
         #region Location Collections

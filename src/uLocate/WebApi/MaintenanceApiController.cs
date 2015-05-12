@@ -12,6 +12,7 @@
     using uLocate.Helpers;
     using uLocate.Models;
     using uLocate.Persistance;
+    using uLocate.Services;
 
     using Umbraco.Core;
     using Umbraco.Core.Persistence;
@@ -23,6 +24,9 @@
     [Umbraco.Web.Mvc.PluginController("uLocate")]
     public class MaintenanceApiController : UmbracoAuthorizedApiController
     {
+        private LocationTypeService locTypeService = new LocationTypeService();
+        private LocationService locService = new LocationService(); 
+
         /// /umbraco/backoffice/uLocate/MaintenanceApi/Test
         [System.Web.Http.AcceptVerbs("GET")]
         public bool Test()
@@ -64,6 +68,51 @@
 
             return maintColl;
         }
+
+        /// <summary>
+        /// Count locations by region
+        /// /umbraco/backoffice/uLocate/MaintenanceApi/CountLocationsByRegion?LocTypeKey=xxx
+        /// </summary>
+        /// <param name="LocationTypeKey">
+        /// The location type key.
+        /// </param>
+        /// <returns>
+        /// A <see cref="StatusMessage"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public StatusMessage CountLocationsByRegion(Guid LocTypeKey)
+        {
+            return locService.CountLocations(LocTypeKey, n => n.Address.Region);
+        }
+
+        /// <summary>
+        /// Gets information about which Locations have missing Lat/Long values (thus might be invalid addresses)
+        /// /umbraco/backoffice/uLocate/MaintenanceApi/GetLocsWithMissingCoordinates
+        /// </summary>
+        /// <returns>
+        /// A <see cref="MaintenanceCollection"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public MaintenanceCollection GetLocsWithMissingCoordinates()
+        {
+            //Repositories.LocationRepo.SetMaintenanceFlags();
+
+            var maintColl = new MaintenanceCollection();
+            maintColl.Title = "Addresses missing coordinates";
+
+            var locMissing = new List<Location>();
+            var locMissingLat = locService.GetLocationsByPropertyValue("Latitude", 0);
+            var locMissingLong = locService.GetLocationsByPropertyValue("Longitude", 0);
+
+            locMissing.AddRange(locMissingLat);
+            locMissing.AddRange(locMissingLong);
+
+            maintColl.Locations = locMissing;
+            maintColl.ConvertToJsonLocationsOnly();
+
+            return maintColl;
+        }
+
 
         #endregion
 

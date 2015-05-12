@@ -110,9 +110,6 @@
             return Result;
         }
 
-       
-
-     
         #endregion
 
         #region Querying
@@ -215,8 +212,7 @@
             return Result;
         }
 
-
-         #endregion
+        #endregion
 
     }
 }
