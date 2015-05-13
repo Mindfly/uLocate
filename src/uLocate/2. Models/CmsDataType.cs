@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace uLocate.Models
+﻿namespace uLocate.Models
 {
-    using umbraco.presentation.webservices;
-
     public class CmsDataType
     {
         public enum DbType

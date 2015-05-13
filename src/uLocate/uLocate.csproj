@@ -241,114 +241,109 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\DataValuesHelper.cs" />
-    <Compile Include="IO\DynamicLocationFlat.cs" />
-    <Compile Include="IO\Export.cs" />
-    <Compile Include="Models\CmsDataTypePreValues.cs" />
-    <Compile Include="Data\Dtos\cmsDataTypePreValuesDto.cs" />
-    <Compile Include="Services\PropertyService.cs" />
-    <Compile Include="Services\LocationTypeService.cs" />
-    <Compile Include="Services\LocationService.cs" />
-    <Compile Include="Caching\CacheKeys.cs" />
-    <Compile Include="Caching\NullCacheProvider.cs" />
-    <Compile Include="Configuration\ProviderCollection.cs" />
-    <Compile Include="Configuration\ProviderElement.cs" />
-    <Compile Include="Configuration\SettingElement.cs" />
-    <Compile Include="Configuration\SettingsCollection.cs" />
-    <Compile Include="Configuration\uLocateSection.cs" />
+    <Compile Include="3. BizLogic\Helpers\DataValuesHelper.cs" />
+    <Compile Include="4. Services\IO\DynamicLocationFlat.cs" />
+    <Compile Include="4. Services\IO\Export.cs" />
+    <Compile Include="2. Models\CmsDataTypePreValues.cs" />
+    <Compile Include="1.Data\Dtos\cmsDataTypePreValuesDto.cs" />
+    <Compile Include="4. Services\PropertyService.cs" />
+    <Compile Include="4. Services\LocationTypeService.cs" />
+    <Compile Include="4. Services\LocationService.cs" />
+    <Compile Include="1.Data\Caching\CacheKeys.cs" />
+    <Compile Include="1.Data\Caching\NullCacheProvider.cs" />
+    <Compile Include="3. BizLogic\Configuration\ProviderCollection.cs" />
+    <Compile Include="3. BizLogic\Configuration\ProviderElement.cs" />
+    <Compile Include="3. BizLogic\Configuration\SettingElement.cs" />
+    <Compile Include="3. BizLogic\Configuration\SettingsCollection.cs" />
+    <Compile Include="3. BizLogic\Configuration\uLocateSection.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Data\DtoConverter.cs" />
-    <Compile Include="Data\Dtos\cmsDataTypeDto.cs" />
-    <Compile Include="Data\Data.Helper.cs" />
-    <Compile Include="Data\DatabaseDefaultDataInsert.cs" />
-    <Compile Include="Data\Dtos\LocationDto.cs" />
-    <Compile Include="Data\Dtos\LocationPropertyDataDto.cs">
+    <Compile Include="1.Data\DtoConverter.cs" />
+    <Compile Include="1.Data\Dtos\cmsDataTypeDto.cs" />
+    <Compile Include="1.Data\Data.Helper.cs" />
+    <Compile Include="1.Data\DatabaseDefaultDataInsert.cs" />
+    <Compile Include="1.Data\Dtos\LocationDto.cs" />
+    <Compile Include="1.Data\Dtos\LocationPropertyDataDto.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Data\Dtos\LocationTypeDto.cs">
+    <Compile Include="1.Data\Dtos\LocationTypeDto.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Data\Dtos\LocationTypePropertyDto.cs">
+    <Compile Include="1.Data\Dtos\LocationTypePropertyDto.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Helpers\CountryHelper.cs" />
-    <Compile Include="Helpers\DoGeocoding.cs" />
-    <Compile Include="Helpers\GoogleMapsGeocodeProvider.cs" />
-    <Compile Include="Helpers\GoogleResponseXDocumentExtensions.cs" />
-    <Compile Include="IO\Import.cs" />
-    <Compile Include="IO\LocationFlatModel.cs" />
-    <Compile Include="Models\Address.cs" />
-    <Compile Include="Models\CmsDataType.cs" />
-    <Compile Include="Models\Country.cs" />
-    <Compile Include="Models\CustomField.cs">
+    <Compile Include="3. BizLogic\Helpers\CountryHelper.cs" />
+    <Compile Include="3. BizLogic\Helpers\DoGeocoding.cs" />
+    <Compile Include="3. BizLogic\Helpers\GoogleMapsGeocodeProvider.cs" />
+    <Compile Include="3. BizLogic\Helpers\GoogleResponseXDocumentExtensions.cs" />
+    <Compile Include="4. Services\IO\Import.cs" />
+    <Compile Include="4. Services\IO\LocationFlatModel.cs" />
+    <Compile Include="2. Models\Address.cs" />
+    <Compile Include="2. Models\CmsDataType.cs" />
+    <Compile Include="2. Models\Country.cs" />
+    <Compile Include="2. Models\Interfaces\IAddress.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\Interfaces\IAddress.cs">
+    <Compile Include="2. Models\Interfaces\ICoordinate.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\Interfaces\ICoordinate.cs">
+    <Compile Include="2. Models\Interfaces\IEntity.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\Interfaces\IEntity.cs">
+    <Compile Include="2. Models\Interfaces\IGeocode.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\Interfaces\IGeocode.cs">
+    <Compile Include="2. Models\Interfaces\IGeocodeProviderResponse.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\Interfaces\IGeocodeProviderResponse.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Models\JsonLocation.cs" />
-    <Compile Include="Models\JsonLocationType.cs" />
-    <Compile Include="Models\Location.cs" />
-    <Compile Include="Models\Coordinate.cs" />
-    <Compile Include="Models\LocationPropertyData.cs" />
-    <Compile Include="Models\LocationType.cs" />
-    <Compile Include="Models\LocationTypeProperty.cs" />
-    <Compile Include="Data\DatabaseSchemaCreation.cs" />
-    <Compile Include="Models\MaintenanceCollection.cs" />
-    <Compile Include="Models\PropertyValue.cs" />
-    <Compile Include="Models\Statistics.cs" />
-    <Compile Include="Models\PagedLocations.cs" />
-    <Compile Include="Persistance\LocationRepository.cs" />
-    <Compile Include="Persistance\LocationPropertyDataRepository.cs" />
-    <Compile Include="Persistance\LocationTypePropertyRepository.cs" />
-    <Compile Include="Persistance\LocationTypeRepository.cs" />
-    <Compile Include="Persistance\PagedRepositoryBase.cs" />
-    <Compile Include="Persistance\Repositories.cs" />
-    <Compile Include="Persistance\RepositoryBase.cs" />
-    <Compile Include="Providers\DatatypeCacheProvider.cs" />
+    <Compile Include="2. Models\JsonLocation.cs" />
+    <Compile Include="2. Models\JsonLocationType.cs" />
+    <Compile Include="2. Models\Location.cs" />
+    <Compile Include="2. Models\Coordinate.cs" />
+    <Compile Include="2. Models\LocationPropertyData.cs" />
+    <Compile Include="2. Models\LocationType.cs" />
+    <Compile Include="2. Models\LocationTypeProperty.cs" />
+    <Compile Include="1.Data\DatabaseSchemaCreation.cs" />
+    <Compile Include="2. Models\MaintenanceCollection.cs" />
+    <Compile Include="2. Models\PropertyValue.cs" />
+    <Compile Include="2. Models\Statistics.cs" />
+    <Compile Include="2. Models\PagedLocations.cs" />
+    <Compile Include="1.Data\Persistance\LocationRepository.cs" />
+    <Compile Include="1.Data\Persistance\LocationPropertyDataRepository.cs" />
+    <Compile Include="1.Data\Persistance\LocationTypePropertyRepository.cs" />
+    <Compile Include="1.Data\Persistance\LocationTypeRepository.cs" />
+    <Compile Include="1.Data\Persistance\PagedRepositoryBase.cs" />
+    <Compile Include="1.Data\Persistance\Repositories.cs" />
+    <Compile Include="1.Data\Persistance\RepositoryBase.cs" />
+    <Compile Include="3. BizLogic\Providers\DatatypeCacheProvider.cs" />
     <Compile Include="StatusMessage.cs" />
     <Compile Include="Properties\AssemblyVisibility.cs" />
-    <Compile Include="Helpers\GeographyHelper.cs" />
-    <Compile Include="Helpers\UtilityExtensions.cs" />
-    <Compile Include="Models\EntityBase.cs" />
-    <Compile Include="Models\Geocode.cs" />
-    <Compile Include="Models\GeocodeProviderResponse.cs" />
-    <Compile Include="Models\GeocodeQuality.cs" />
-    <Compile Include="Models\GeocodeStatus.cs" />
-    <Compile Include="Models\Viewport.cs" />
+    <Compile Include="3. BizLogic\Helpers\GeographyHelper.cs" />
+    <Compile Include="3. BizLogic\Helpers\UtilityExtensions.cs" />
+    <Compile Include="2. Models\EntityBase.cs" />
+    <Compile Include="2. Models\Geocode.cs" />
+    <Compile Include="2. Models\GeocodeProviderResponse.cs" />
+    <Compile Include="2. Models\GeocodeQuality.cs" />
+    <Compile Include="2. Models\GeocodeStatus.cs" />
+    <Compile Include="2. Models\Viewport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\GeocodeProviderAttribute.cs" />
-    <Compile Include="Providers\GeocodeProviderBase.cs" />
-    <Compile Include="Providers\GeocodeProviderSettings.cs" />
-    <Compile Include="Providers\IGeocodeProvider.cs" />
-    <Compile Include="WebApi\DataTypeApiController.cs" />
-    <Compile Include="WebApi\MaintenanceApiController.cs" />
-    <Compile Include="WebApi\LocationSearchApiController.cs" />
-    <Compile Include="WebApi\LocationTypeApiController.cs" />
-    <Compile Include="WebApi\ImportExportApiController.cs" />
-    <Compile Include="WebApi\TestApiController.cs" />
-    <Compile Include="WebApi\InitializationApiController.cs" />
-    <Compile Include="WebApi\LocationApiController.cs" />
+    <Compile Include="3. BizLogic\Providers\GeocodeProviderAttribute.cs" />
+    <Compile Include="3. BizLogic\Providers\GeocodeProviderBase.cs" />
+    <Compile Include="3. BizLogic\Providers\GeocodeProviderSettings.cs" />
+    <Compile Include="3. BizLogic\Providers\IGeocodeProvider.cs" />
+    <Compile Include="5. WebApi\DataTypeApiController.cs" />
+    <Compile Include="5. WebApi\MaintenanceApiController.cs" />
+    <Compile Include="5. WebApi\LocationSearchApiController.cs" />
+    <Compile Include="5. WebApi\LocationTypeApiController.cs" />
+    <Compile Include="5. WebApi\ImportExportApiController.cs" />
+    <Compile Include="5. WebApi\TestApiController.cs" />
+    <Compile Include="5. WebApi\InitializationApiController.cs" />
+    <Compile Include="5. WebApi\LocationApiController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Persistance\Interfaces\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>XCOPY "$(TargetDir)$(TargetName).*" "$(SolutionDir)UmbracoTestSite\bin\" /Y

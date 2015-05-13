@@ -1,6 +1,5 @@
 ﻿namespace uLocate.Models
 {
-    using System;
     using System.Collections.Generic;
 
     /// <summary>
