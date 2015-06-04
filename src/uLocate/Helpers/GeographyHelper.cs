@@ -23,7 +23,7 @@
 
         public static Sql GetGeoSearchSql(double SearchLat, double SearchLong, int MilesDistance, Guid FilterByLocationTypeKey)
         {
-            var point = GetSqlPoint(SearchLat, SearchLong);
+            var point = GetSqlPoint(SearchLat, SearchLong, false);
 
             var sqlSB = new StringBuilder();
             sqlSB.AppendLine(string.Format("WHERE [GeogCoordinate].STDistance(geography::{0})/{1} <= {2}", point, MetricToMilesFactor, MilesDistance));
@@ -32,6 +32,8 @@
             {
                 sqlSB.AppendLine(string.Format("AND [LocationTypeKey] = '{0}'", FilterByLocationTypeKey));
             }
+
+            sqlSB.AppendLine(string.Format("ORDER BY [GeogCoordinate].STDistance(geography::{0});", point));
 
             var sql = new Sql(sqlSB.ToString());
             return sql;
@@ -50,6 +52,7 @@
             }
 
             sqlSB.AppendLine(string.Format("ORDER BY [GeogCoordinate].STDistance('{0}');", point));
+
 
             var sql = new Sql(sqlSB.ToString());
             return sql;

@@ -73,7 +73,8 @@
             var entity = PerformGet(Key);
             if (entity != null)
             {
-                _cache.GetCacheItem(GetCacheKey(Key), () => entity);
+                _cache.InsertCacheItem(GetCacheKey(Key), () => entity);
+                //_cache.GetCacheItem(GetCacheKey(Key), () => entity);
             }
 
             return entity;
