@@ -30,18 +30,39 @@
         //    return true;
         //}
 
+        #region Import Functions
+
         /// <summary>
-        /// Function to import locations from a csv file
+        /// Function to import locations from a csv file located at "~/uLocateLocationImport.csv"
         /// /umbraco/backoffice/uLocate/ImportExportApi/ImportLocationsCSV
         /// </summary>
         /// <returns>
-        /// The <see cref="StatusMessage"/>.
+        /// An object of type <see cref="StatusMessage"/>.
         /// </returns>
         [AcceptVerbs("GET")]
         public StatusMessage ImportLocationsCSV()
         {
             string file = "~/uLocateLocationImport.csv";
+            
             return uLocate.IO.Import.LocationsCSV(file);
+        }
+
+        /// <summary>
+        /// Function to import locations from a csv file located at "~/uLocateLocationImport.csv"
+        /// /umbraco/backoffice/uLocate/ImportExportApi/ImportLocationsCSV?LocationTypeKey=xxx
+        /// </summary>
+        /// <param name="LocationTypeKey">
+        /// The GUID key of the Location Type to import
+        /// </param>
+        /// <returns>
+        /// An object of type <see cref="StatusMessage"/>.
+        /// </returns>
+        [AcceptVerbs("GET")]
+        public StatusMessage ImportLocationsCSV(Guid LocationTypeKey)
+        {
+            string file = "~/uLocateLocationImport.csv";
+
+            return uLocate.IO.Import.LocationsCSV(file, LocationTypeKey);
         }
 
         /// <summary>
@@ -78,8 +99,11 @@
         /// <param name="FileName">
         /// The file name.
         /// </param>
+        /// <param name="LocationTypeKey">
+        /// The location type key.
+        /// </param>
         /// <returns>
-        /// The <see cref="StatusMessage"/>.
+        /// A <see cref="StatusMessage"/>.
         /// </returns>
         [AcceptVerbs("GET")]
         public StatusMessage ImportLocationsCSV(string FileName, Guid LocationTypeKey)
@@ -112,6 +136,39 @@
         }
 
         /// <summary>
+        /// Function to import locations from a csv file
+        /// /umbraco/backoffice/uLocate/ImportExportApi/ImportLocationsCSV?FileName=~/uLocateLocationImport.csv&LocationTypeKey=xxx&SkipGeocoding=true
+        /// </summary>
+        /// <param name="FileName">
+        /// The file name.
+        /// </param>
+        /// <param name="LocationTypeKey">
+        /// The location type key.
+        /// </param>
+        /// <param name="SkipGeocoding">
+        /// Should geocoding be skipped?
+        /// </param>
+        /// <returns>
+        /// A <see cref="StatusMessage"/>.
+        /// </returns>
+        [AcceptVerbs("GET")]
+        public StatusMessage ImportLocationsCSV(string FileName, Guid LocationTypeKey, bool SkipGeocoding)
+        {
+            string file;
+
+            if (FileName == string.Empty)
+            {
+                file = "~/uLocateLocationImport.csv";
+            }
+            else
+            {
+                file = FileName;
+            }
+
+            return uLocate.IO.Import.LocationsCSV(file, LocationTypeKey, SkipGeocoding);
+        }
+
+        /// <summary>
         /// The Upload File To Server function.
         /// </summary>
         /// <returns>
@@ -141,6 +198,30 @@
 
             return Request.CreateResponse(HttpStatusCode.OK, fileName);
         }
+        
+        #endregion
+
+        #region Export Functions
+
+        /// <summary> 
+        /// /umbraco/backoffice/uLocate/ImportExportApi/GetListofColumnHeaders?LocationTypeKey=xxx
+        /// </summary>
+        [AcceptVerbs("GET")]
+        public string GetListofColumnHeaders(Guid LocationTypeKey)
+        {
+            return uLocate.IO.Export.GetListofColumnHeaders(LocationTypeKey);
+        }
+
+        /// <summary> 
+        /// /umbraco/backoffice/uLocate/ImportExportApi/ExportAllLocations?LocationTypeKey=xxx
+        /// </summary>
+        [AcceptVerbs("GET")]
+        public StatusMessage ExportAllLocations(Guid LocationTypeKey)
+        {
+            return uLocate.IO.Export.ExportAllLocations(LocationTypeKey);
+        }
+
+        #endregion
 
     }
 }

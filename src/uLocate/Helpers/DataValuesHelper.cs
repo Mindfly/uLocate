@@ -9,6 +9,7 @@ namespace uLocate.Helpers
     using uLocate.Data;
     using uLocate.Persistance;
 
+    using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;
 
     internal static class DataValuesHelper
@@ -25,7 +26,95 @@ namespace uLocate.Helpers
         /// <returns>
         /// The <see cref="string"/>.
         /// </returns>
-        public static string GetPreValueId(int DataTypeId, string PrevalueText)
+        public static int GetPreValueId(int DataTypeId, string PrevalueText)
+        {
+            var allDataTypePrevals = GetAllPrevaluesForDataType(DataTypeId);
+
+            var match = allDataTypePrevals.Where(n => n.Value == PrevalueText).FirstOrDefault();
+            if (match != null)
+            {
+                return match.Id;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public static string GetPreValueIds(int DataTypeId, string PrevalueText)
+        {
+            var returnString =",";
+            var allDataTypePrevals = GetAllPrevaluesForDataType(DataTypeId);
+
+            var parsedValues = ParseMultiSelectValues(PrevalueText);
+
+            foreach (var val in parsedValues)
+            {
+                //Test for ID match first
+                var valInt = 0;
+                if (Int32.TryParse(val, out valInt))
+                {
+                    var matchId = allDataTypePrevals.Where(n => n.Id == valInt).FirstOrDefault();
+                    if (matchId != null)
+                    {
+                        //ID match found
+                        returnString = string.Concat(returnString, ",", matchId.Id.ToString());
+                    }
+                }
+                else
+                {
+                    //Test for Text match
+                    var match = allDataTypePrevals.Where(n => n.Value == val).FirstOrDefault();
+                    if (match != null)
+                    {
+                        //Text match found
+                        returnString = string.Concat(returnString, ",", match.Id.ToString());
+                    }
+                    else
+                    {
+                        //no match found.
+                        var msg = string.Format("uLocate.DataValuesHelper.GetPreValueIds - Unable to locate matching PreValue matching '{0}' for DataType with Id '{1}', discarding data", val, DataTypeId);
+                        LogHelper.Warn<string>(msg);
+                    }
+                }
+            }
+
+            if (returnString == ",")
+            {
+                returnString = "";
+            }
+            else
+            {
+                returnString = returnString.Replace(",,", "");
+            }
+
+            return returnString;
+        }
+
+        internal static IEnumerable<string> ParseMultiSelectValues(string Values)
+        {
+            var returnValues = new List<string>();
+
+            var valuesCleaned = Values;
+            valuesCleaned = valuesCleaned.Replace("[", "");
+            valuesCleaned = valuesCleaned.Replace("]", "");
+            //valuesCleaned = valuesCleaned.Replace("\"", "");
+
+            var parsedValues = valuesCleaned.Split(',');
+
+            foreach (var val in parsedValues)
+            {
+                var valStripped = val.Trim();
+                valStripped = valStripped.TrimStart('\"');
+                valStripped = valStripped.TrimEnd('\"');
+          
+                returnValues.Add(valStripped);
+            }
+
+            return returnValues;
+        }
+
+        internal static List<cmsDataTypePreValuesDto> GetAllPrevaluesForDataType(int DataTypeId)
         {
             var sql = new Sql();
             sql
@@ -33,16 +122,7 @@ namespace uLocate.Helpers
                 .From<cmsDataTypePreValuesDto>()
                 .Where<cmsDataTypePreValuesDto>(n => n.DataTypeNodeId == DataTypeId);
 
-            var allDataTypePrevals = Repositories.ThisDb.Fetch<cmsDataTypePreValuesDto>(sql);
-            var match = allDataTypePrevals.Where(n => n.Value == PrevalueText).FirstOrDefault();
-            if (match != null)
-            {
-                return match.Id.ToString();
-            }
-            else
-            {
-                return "";
-            }
+            return Repositories.ThisDb.Fetch<cmsDataTypePreValuesDto>(sql);
         }
 
         /// <summary>

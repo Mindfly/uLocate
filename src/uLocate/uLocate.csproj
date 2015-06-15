@@ -111,6 +111,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\UmbracoCms.Core.7.2.1\lib\Microsoft.ApplicationBlocks.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\UmbracoCms.Core.7.2.1\lib\Microsoft.Web.Helpers.dll</HintPath>
@@ -242,9 +243,13 @@
   <ItemGroup>
     <Compile Include="Data\Dtos\postalCodeCounterDto.cs" />
     <Compile Include="Helpers\DataValuesHelper.cs" />
+    <Compile Include="IO\DynamicLocationFlat.cs" />
+    <Compile Include="IO\Export.cs" />
     <Compile Include="Models\CmsDataTypePreValues.cs" />
     <Compile Include="Data\Dtos\cmsDataTypePreValuesDto.cs" />
-    <Compile Include="Helpers\Persistence.cs" />
+    <Compile Include="Services\PropertyService.cs" />
+    <Compile Include="Services\LocationTypeService.cs" />
+    <Compile Include="Services\LocationService.cs" />
     <Compile Include="Caching\CacheKeys.cs" />
     <Compile Include="Caching\NullCacheProvider.cs" />
     <Compile Include="Configuration\ProviderCollection.cs" />
@@ -348,7 +353,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>XCOPY "$(TargetDir)$(TargetName).*" "$(SolutionDir)UmbracoTestSite\bin\" /Y
-XCOPY "$(TargetDir)*.dll" "$(SolutionDir)UmbracoTestSite\bin\" /Y</PostBuildEvent>
+XCOPY "$(TargetDir)*.dll" "$(SolutionDir)UmbracoTestSite\bin\" /Y
+XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\KEND - Umbraco\source code\src\UmbracoCms\bin" /Y
+XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\KEND - Umbraco\source code\src\KendaTires.Web\Dependencies" /Y</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

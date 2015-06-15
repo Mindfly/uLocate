@@ -140,10 +140,12 @@
         public LocationType GetByKey(Guid Key)
         {
             CurrentCollection.Clear();
-            CurrentCollection.Add((LocationType)Get(Key));
-            FillChildren();
-            if (CurrentCollection.Count != 0)
+            var found = (LocationType)Get(Key);
+
+            if (found != null)
             {
+                CurrentCollection.Add(found);
+                FillChildren();
                 return CurrentCollection[0];
             }
             else

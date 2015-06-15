@@ -11,6 +11,7 @@
     using uLocate.Data;
     using uLocate.Models;
     using uLocate.Persistance;
+    using uLocate.Services;
 
     using Umbraco.Core;
     using Umbraco.Web.WebApi;
@@ -43,7 +44,8 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string LocationName)
         {
-            return uLocate.Helpers.Persistence.CreateLocation(LocationName);
+            var locationService = new LocationService();
+            return locationService.CreateLocation(LocationName);
         }
 
         /// <summary>
@@ -62,7 +64,8 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string LocationName, Guid LocationTypeGuid)
         {
-            return uLocate.Helpers.Persistence.CreateLocation(LocationName, LocationTypeGuid);
+            var locationService = new LocationService();
+            return locationService.CreateLocation(LocationName, LocationTypeGuid);
         }
 
         /// <summary>
@@ -107,58 +110,6 @@
             return Result;
         }
 
-        /// <summary>
-        /// Delete all locations.
-        /// /umbraco/backoffice/uLocate/LocationApi/DeleteAllLocations?Confirm=true
-        /// </summary>
-        /// <param name="Confirm">
-        /// The confirmation (must be TRUE to run)
-        /// </param>
-        /// <returns>
-        /// The <see cref="StatusMessage"/>.
-        /// </returns>
-        [System.Web.Http.AcceptVerbs("GET")]
-        public StatusMessage DeleteAllLocations(bool Confirm)
-        {
-            var ResultMsg = new StatusMessage();
-
-            if (Confirm)
-            {
-                int delCounter = 0;
-                List<Guid> allKeys = new List<Guid>();
-
-                var allLocations = Repositories.LocationRepo.GetAll();
-                var totCounter = allLocations.Count();
-                
-                foreach (var loc in allLocations)
-                {
-                    allKeys.Add(loc.Key);
-                }
-
-                foreach (var key in allKeys)
-                {
-                    var stat = Repositories.LocationRepo.Delete(key);
-                    ResultMsg.InnerStatuses.Add(stat);
-                    if (stat.Success)
-                    {
-                        delCounter++;
-                    }
-                }
-
-                ResultMsg.Message = string.Format("{0} Location(s) deleted out of a total of {1} Location(s)", delCounter, totCounter);
-                ResultMsg.Success = true;
-            }
-            else
-            {
-                ResultMsg.Success = false;
-                ResultMsg.Code = "NotConfirmed";
-                ResultMsg.Message = "The operation was not confirmed, and thus did not run.";
-            }
-
-            return ResultMsg;
-        }
-
-     
         #endregion
 
         #region Querying
@@ -261,8 +212,7 @@
             return Result;
         }
 
-
-         #endregion
+        #endregion
 
     }
 }

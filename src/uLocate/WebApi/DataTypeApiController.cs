@@ -28,13 +28,24 @@
         //    return true;
         //}
 
+        /// <summary>
+        /// Gets all the DataTypes in this umbraco install.
+        /// /umbraco/backoffice/uLocate/DataTypeApi/GetAllDataTypesWithGuids
+        /// </summary>
+        /// <returns>IEnumerable of GUID & DataType Name</returns>
         public object GetAllDataTypesWithGuids()
         {
             var dataTypes = Services.DataTypeService.GetAllDataTypeDefinitions();
             return dataTypes.Select(t => new { guid = t.Key, name = t.Name });
         }
 
+        /// <summary>
+        /// Get all uLocate Allowed DataTypes in this Umbraco install (based on the uLocate configuration)
         /// /umbraco/backoffice/uLocate/DataTypeApi/GetAllAvailable
+        /// </summary>
+        /// <returns>
+        /// A <see cref="Dictionary"/> of DataTyp.
+        /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
         public Dictionary<int, string> GetAllAvailable()
         {
@@ -42,13 +53,14 @@
         }
 
         /// <summary>
-        /// The get by name.
+        /// Get information about a DatatYpe by its name.
+        /// /umbraco/backoffice/uLocate/DataTypeApi/GetByName?name=xxx
         /// </summary>
         /// <param name="name">
-        /// The name.
+        /// The name to lookup
         /// </param>
         /// <returns>
-        /// The <see cref="DataTypeDisplay"/>.
+        /// An object of type <see cref="DataTypeDisplay"/> or an error. 
         /// </returns>      
         [System.Web.Http.AcceptVerbs("GET")] 
         public object GetByName(string name)

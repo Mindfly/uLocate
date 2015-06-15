@@ -86,6 +86,24 @@
         }
 
         /// <summary>
+        /// Delete a location type
+        /// /umbraco/backoffice/uLocate/LocationTypeApi/Delete
+        /// </summary>
+        /// <param name="Key">
+        /// The key.
+        /// </param>
+        /// <returns>
+        /// The <see cref="StatusMessage"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public StatusMessage Delete(Guid Key)
+        {
+            var Result = Repositories.LocationTypeRepo.Delete(Key, true);
+
+            return Result;
+        }
+
+        /// <summary>
         /// Gets an empty json location type.
         /// /umbraco/backoffice/uLocate/LocationTypeApi/GetEmptyJsonLocationType
         /// </summary>
@@ -121,24 +139,7 @@
 
             return result;
         }
-
-        /// <summary>
-        /// Delete a location type
-        /// /umbraco/backoffice/uLocate/LocationTypeApi/Delete
-        /// </summary>
-        /// <param name="Key">
-        /// The key.
-        /// </param>
-        /// <returns>
-        /// The <see cref="StatusMessage"/>.
-        /// </returns>
-        [System.Web.Http.AcceptVerbs("GET")]
-        public StatusMessage Delete(Guid Key)
-        {
-            var Result = Repositories.LocationTypeRepo.Delete(Key, true);
-
-            return Result;
-        }
+        
 
         /// <summary>
         /// Get all LocationTypes in the system as a List
