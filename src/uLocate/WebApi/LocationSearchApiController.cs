@@ -8,6 +8,9 @@
     using uLocate.Models;
     using uLocate.Persistance;
 
+    using umbraco.cms.businesslogic.packager;
+
+    using Umbraco.Core.Media;
     using Umbraco.Web.WebApi;
 
     public class LocationSearchApiController : UmbracoApiController
@@ -23,6 +26,29 @@
         public bool Test()
         {
             return true;
+        }
+
+        [AcceptVerbs("GET", "POST")]
+        public IEnumerable<KeyValuePair<string, string>> GetAllPropertyDataByAlias(string Alias)
+        {
+            var locatonPropertyData = Repositories.LocationPropertyDataRepo.GetAll().ToList();
+            var propertyData = new List<KeyValuePair<string, string>>();
+            foreach (var prop in locatonPropertyData)
+            {
+                if (prop.PropertyAlias == Alias)
+                {
+                    propertyData.Add(new KeyValuePair<string, string>(prop.Value.ToString(), prop.LocationKey.ToString()));
+                }
+            }
+            return propertyData;
+        }
+
+        [System.Web.Http.AcceptVerbs("GET")]
+        public JsonLocation GetByKey(Guid Key)
+        {
+            var Result = Repositories.LocationRepo.GetByKey(Key);
+
+            return new JsonLocation(Result);
         }
 
         #region Search by Miles
@@ -86,6 +112,23 @@
                     Repositories.LocationRepo.GetByGeoSearch(Lat, Long, Miles, LocType));
 
             return Result;
+        }
+
+        /// <summary>
+        /// The search.
+        /// </summary>
+        /// <param name="postalCode">
+        /// The postal code.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IEnumerable"/>.
+        /// </returns>
+        [AcceptVerbs("GET", "POST")]
+        public IEnumerable<JsonLocation> Search(string postalCode)
+        {
+            var result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetByPostalCode(postalCode));
+
+            return result;            
         }
 
         #endregion

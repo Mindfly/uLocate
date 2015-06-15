@@ -311,6 +311,34 @@
             return CurrentCollection;
         }
 
+        internal IEnumerable<Location> GetByPostalCode(string PostalCode)
+        {
+            return GetByPostalCode(PostalCode, Guid.Empty);
+        }
+
+        internal IEnumerable<Location> GetByPostalCode(string PostalCode, Guid FilterByLocationTypeKey)
+        {
+            CurrentCollection.Clear();
+
+            IEnumerable<Location> allLocs;
+            if (FilterByLocationTypeKey != Guid.Empty)
+            {
+                allLocs = this.GetByType(FilterByLocationTypeKey);
+            }
+            else
+            {
+                allLocs = this.GetAll();
+            }
+
+            var filteredLocs = allLocs.Where(l => l.Address.PostalCode == PostalCode);
+
+            CurrentCollection = filteredLocs.ToList();
+
+            FillChildren();
+
+            return CurrentCollection;
+        }
+
         internal IEnumerable<Location> GetByGeoSearch(double SearchLat, double SearchLong, int MilesDistance)
         {
             return GetByGeoSearch(SearchLat, SearchLong, MilesDistance, Guid.Empty);
@@ -410,6 +438,24 @@
 
             return result[0];
         }
+
+        //public string GetCountByZip()
+        //{
+
+        //    var getPostalCodeKeySql = new Sql();
+        //    getPostalCodeKeySql.Append("SELECT [Key] FROM uLocate_LocationTypeProperty WHERE Alias = 'PostalCode'");
+        //    var result = Repositories.ThisDb.Fetch<PostalCodeAlias>(getPostalCodeKeySql);
+        //    var key = result[0].Key;
+
+
+        //    var sql = new Sql();
+        //    sql.Append("SELECT dataNvarchar as postalCode, count (dataNvarchar) as locationCount FROM uLocate_LocationPropertyData WHERE LocationTypePropertyKey = '" + key + "' GROUP BY dataNvarchar");
+
+
+        //    var finalResult = Repositories.ThisDb.Fetch<string>(sql).ToString();
+
+        //    return finalResult;
+        //}
 
         public List<JsonLocation> GetPaged(long PageNumber, long ItemsPerPage, string WhereClause)
         {
