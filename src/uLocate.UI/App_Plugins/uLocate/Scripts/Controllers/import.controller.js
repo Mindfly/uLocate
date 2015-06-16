@@ -1,6 +1,6 @@
 ﻿(function (controllers, undefined) {
 
-    controllers.ImportController = function ($scope, notificationsService, uLocateFileApiService, uLocateLocationTypeApiService) {
+    controllers.ImportController = function ($scope, notificationsService, uLocateFileApiService, uLocateInitializationApiService, uLocateLocationTypeApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -14,8 +14,10 @@
          * @description - Called when the $scope is initalized.
          */
         $scope.init = function () {
-            $scope.setVariables();
-            $scope.getLocationTypes();
+            uLocateInitializationApiService.initDatabaseIfNeeded().then(function() {
+                $scope.setVariables();
+                $scope.getLocationTypes();
+            });
         };
 
         /**
@@ -130,6 +132,6 @@
 
     app.requires.push('angularFileUpload');
 
-    angular.module('umbraco').controller('uLocate.Controllers.ImportController', ['$scope', 'notificationsService', 'uLocateFileApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.ImportController]);
+    angular.module('umbraco').controller('uLocate.Controllers.ImportController', ['$scope', 'notificationsService', 'uLocateFileApiService', 'uLocateInitializationApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.ImportController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationTypesController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateDataTypeApiService, uLocateLocationTypeApiService) {
+    controllers.LocationTypesController = function ($scope, $location, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateDataTypeApiService, uLocateInitializationApiService, uLocateLocationTypeApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -15,12 +15,14 @@
          */
         $scope.init = function () {
             $scope.selectedView = $routeParams.id;
-            if ($scope.selectedView === 'view') {
-                $scope.addDeleteLocationTypeListener();
-            }
-            $scope.setVariables();
-            $scope.getLocationTypesIfNeeded();
-            $scope.getDataTypesIfNeeded();
+            uLocateInitializationApiService.initDatabaseIfNeeded().then(function() {
+                if ($scope.selectedView === 'view') {
+                    $scope.addDeleteLocationTypeListener();
+                }
+                $scope.setVariables();
+                $scope.getLocationTypesIfNeeded();
+                $scope.getDataTypesIfNeeded();
+            });
         };
 
         /**
@@ -428,6 +430,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationTypesController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateDataTypeApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationTypesController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationTypesController', ['$scope', '$location', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateDataTypeApiService', 'uLocateInitializationApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationTypesController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

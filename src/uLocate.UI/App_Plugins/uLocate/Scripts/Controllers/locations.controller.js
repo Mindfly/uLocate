@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function ($scope, $location, $q, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateDataTypeApiService, uLocateMapService, uLocateLocationApiService, uLocateLocationTypeApiService) {
+    controllers.LocationsController = function ($scope, $location, $q, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateDataTypeApiService, uLocateInitializationApiService, uLocateMapService, uLocateLocationApiService, uLocateLocationTypeApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -16,11 +16,13 @@
         $scope.init = function () {
             $scope.shouldLoadMap = false;
             $scope.selectedView = $routeParams.id;
-            if ($scope.selectedView === 'view') {
-                $scope.shouldLoadMap = true;
-                $scope.addDeleteLocationListener();
-            }
-            $scope.loadGoogleMapAsset();
+            uLocateInitializationApiService.initDatabaseIfNeeded().then(function () {
+                if ($scope.selectedView === 'view') {
+                    $scope.shouldLoadMap = true;
+                    $scope.addDeleteLocationListener();
+                }
+                $scope.loadGoogleMapAsset();
+            });
         };
 
         /**
@@ -867,6 +869,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$location', '$q', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateDataTypeApiService', 'uLocateMapService', 'uLocateLocationApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$location', '$q', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateDataTypeApiService', 'uLocateInitializationApiService', 'uLocateMapService', 'uLocateLocationApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));

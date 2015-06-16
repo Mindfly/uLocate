@@ -1,6 +1,6 @@
 ﻿(function(uLocateServices) {
 
-	uLocateServices.LocationApiService = function ($http, $q) {
+	uLocateServices.LocationApiService = function ($http) {
 
 	    var locationApiFactory = {};
 
@@ -36,7 +36,6 @@
          */
 		locationApiFactory.deleteLocation = function (key) {
 		    var config = { params: { key: key } };
-	        // TODO: Change out the url in this line for the live one below when not using mocks.
 		    return $http.get('/umbraco/backoffice/uLocate/LocationApi/Delete', config).then(function (response) {
 	            if (response.data) {
 	                var data = locationApiFactory.downCaseProperties(response.data);
@@ -167,6 +166,6 @@
 
 	};
 
-	angular.module('umbraco.resources').factory('uLocateLocationApiService', ['$http', '$q', uLocate.Services.LocationApiService]);
+	angular.module('umbraco.resources').factory('uLocateLocationApiService', ['$http', uLocate.Services.LocationApiService]);
 
 }(window.uLocate.Services = window.uLocate.Services || {}));
