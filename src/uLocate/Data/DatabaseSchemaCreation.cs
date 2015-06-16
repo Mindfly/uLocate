@@ -19,7 +19,7 @@
         /// <summary>
         /// The database.
         /// </summary>
-        private readonly Database _database;
+        private Database _database;
 
         /// <summary>
         /// Collection of tables to be added to the database
@@ -64,6 +64,28 @@
             _database = database;
         }
 
+        /// <summary>
+        /// Tests that all uLocate DB tables exist
+        /// </summary>
+        /// <returns>
+        /// A <see cref="bool"/> indicating whether all tables exist or not
+        /// </returns>
+        public bool TablesInitialized()
+        {
+            foreach (var item in OrderedTables.OrderBy(x => x.Key))
+            {
+                var TableType = item.Value;              
+                var TableAttrib = (TableNameAttribute) Attribute.GetCustomAttribute(TableType, typeof(TableNameAttribute));
+                string TableName = TableAttrib.Value;
+
+                if (!_database.TableExist(TableName))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// Creates the database tables
