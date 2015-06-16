@@ -38,6 +38,20 @@
             }
         }
 
+        public static bool AllTablesInitialized()
+        {
+            try
+            {
+               var DbSchema = new DatabaseSchemaCreation(Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database);
+               return DbSchema.TablesInitialized();
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
         /// <summary>
         /// Static method to create the uLocate database tables and insert default data
         /// </summary>

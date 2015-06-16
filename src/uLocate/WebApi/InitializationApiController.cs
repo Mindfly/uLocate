@@ -60,5 +60,25 @@
 
             return Result;
         }
+
+        /// <summary>
+        /// Checks that the uLocate Database tables exist in the current db and Initializes them if missing
+        /// /umbraco/backoffice/uLocate/InitializationApi/DbTestInit
+        /// </summary>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        [AcceptVerbs("GET")]
+        public bool DbTestInit()
+        {
+            bool Result = uLocate.Data.Helper.AllTablesInitialized();
+
+            if (!Result)
+            {
+                Result = uLocate.Data.Helper.InitializeDatabase();
+            }
+
+            return Result;
+        }
     }
 }
