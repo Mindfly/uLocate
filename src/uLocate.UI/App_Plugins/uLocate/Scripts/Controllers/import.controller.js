@@ -73,12 +73,20 @@
          * @param {array of file} files - One or more files selected by the HTML5 File Upload API.
          * @description - Get the file selected and store it in scope.
          */
-        $scope.fileSelected = function(files) {
+        $scope.fileSelected = function (files) {
             if (files.length > 0) {
                 $scope.file = files[0];
             }
         };
 
+        /**
+         * @ngdoc method
+         * @name updateLocationType
+         * @function
+         * 
+         * @param locationType
+         * @description - Updates $scope.selectedLocationType with the passed in location type.
+         */
         $scope.updateLocationType = function(locationType) {
             $scope.selectedLocationType = locationType;
         };
@@ -101,22 +109,27 @@
                         if (response) {
                             var importPromise = uLocateFileApiService.importLocationsCsv(response, key);
                             importPromise.then(function (importResponse) {
-                                notificationsService.success('File successfully imported. #h5yr!');
-                                $scope.importResults = importResponse.message;
-                                $scope.isUploading = false;
+                                if (importResponse.success) {
+                                    notificationsService.success('File successfully imported. #h5yr!');
+                                    $scope.importResults = importResponse.message;
+                                    $scope.isUploading = false;
+                                } else {
+                                    notificationsService.error("File import failed. ", importResponse.exceptionMessage);
+                                    $scope.isUploading = false;
+                                }
                             });
                         } else {
                             notificationsService.error("File import failed.");
+                            $scope.isUploading = false;
                         }
                     }, function(reason) {
-                        notificationsService.error("File import failed.", reason.message);
+                        notificationsService.error("File import failed. " + reason.message, reason.message);
                         $scope.isUploading = false;
                     });
                 } else {
                     notificationsService.error("Must select a file to import.");
                     $scope.isUploading = false;
                 }
-                
             }
         };
 

@@ -51,6 +51,9 @@
                 } else {
                     return false;
                 }
+            }, function (reason) {
+                reason.data.success = false;
+                return fileApiFactory.downCaseProperties(reason.data);
             });
         };
 
