@@ -7,7 +7,7 @@
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <div class="btn-group">
-                        <a class="btn btn-primary" ng-show="!isUploading" ng-click="uploadFile()" ng-disabled="isUploading"><localize key="general_import">Import</localize></a>
+                        <a class="btn btn-primary" ng-show="!isUploading" ng-click="uploadFile()" ng-disabled="isUploading || !isValidFileType"><localize key="general_import">Import</localize></a>
                         <a class="btn btn-disabled" ng-show="isUploading" ng-disabled="true">Importing File...</a>
                     </div>
                 </div>
@@ -29,7 +29,9 @@
 
                     <div class="controls controls-row">
                         <button ng-file-select ng-model="files" ng-file-change="fileSelected(files)" class="file button btn-primary" ng-multiple="false" accept="*.csv" ng-show="!isUploading"><ulocate-localize key="chooseFile">Choose File</ulocate-localize></button>
-                        <button type="button" class="btn btn-disabled" ng-show="isUploading">Importing File...</button> {{file.name}}
+                        <button type="button" class="btn btn-disabled" ng-show="isUploading">Importing File...</button>
+                        <span ng-show="isValidFileType">{{file.name}}</span> 
+                        <span class="error" style="color: red;" ng-show="!isValidFileType">You can only import .CSV files.</span>
                     </div>
                 </div>
 

@@ -59,6 +59,7 @@
             $scope.importResults = '';
             $scope.file = false;
             $scope.isUploading = false;
+            $scope.isValidFileType = true;
         };
 
         /*-------------------------------------------------------------------
@@ -76,7 +77,26 @@
         $scope.fileSelected = function (files) {
             if (files.length > 0) {
                 $scope.file = files[0];
+                $scope.isValidFileType = $scope.isFileTypeValid($scope.file.name);
             }
+        };
+
+        /**
+         * @ngdoc method
+         * @name updateLocationType
+         * @function
+         * 
+         * @param locationType
+         * @description - Updates $scope.selectedLocationType with the passed in location type.
+         */
+        $scope.isFileTypeValid = function(fileName) {
+            var result = false;
+            var extension = fileName.substr(fileName.length - 4).toUpperCase();
+            // TODO: Permit XML when future version of uLocate can process such.
+            if (extension == ".CSV") {
+                result = true;
+            }
+            return result;
         };
 
         /**
