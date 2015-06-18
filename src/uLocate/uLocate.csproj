@@ -247,6 +247,7 @@
     <Compile Include="IO\Export.cs" />
     <Compile Include="Models\CmsDataTypePreValues.cs" />
     <Compile Include="Data\Dtos\cmsDataTypePreValuesDto.cs" />
+    <Compile Include="Models\PagingCollection.cs" />
     <Compile Include="Services\PropertyService.cs" />
     <Compile Include="Services\LocationTypeService.cs" />
     <Compile Include="Services\LocationService.cs" />

@@ -8,14 +8,26 @@ namespace uLocate.Models
 {
     public class PagedLocations
     {
+        public long ItemsPerPage { get; set; }
 
-        public IEnumerable<JsonLocation> Locations { get; set; }
+        public long TotalItems { get; set; }
 
+        public long TotalPages { get; set; }
+
+        public IEnumerable<PageOfLocations> Pages { get; set; }
+
+    }
+
+    public class PageOfLocations
+    {
         public long PageNum { get; set; }
 
         public long ItemsPerPage { get; set; }
 
         public long TotalItems { get; set; }
 
+        public long TotalPages { get; set; }
+
+        public IEnumerable<JsonLocation> Locations { get; set; }
     }
 }

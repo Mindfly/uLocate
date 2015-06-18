@@ -14,6 +14,7 @@
     using uLocate.Services;
 
     using Umbraco.Core;
+    using Umbraco.Core.Cache;
     using Umbraco.Web.WebApi;
 
     /// <summary>
@@ -22,6 +23,8 @@
     [Umbraco.Web.Mvc.PluginController("uLocate")]
     public class LocationApiController : UmbracoAuthorizedApiController
     {
+        private ICacheProvider _requestCache = ApplicationContext.Current.ApplicationCache.RequestCache;
+
         ///// /umbraco/backoffice/uLocate/LocationApi/Test
         //[System.Web.Http.AcceptVerbs("GET")]
         //public bool Test()
@@ -161,17 +164,149 @@
         /// The <see cref="List"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public PagedLocations GetAllPaged(long pageNum, long itemsPerPage)
+        public PageOfLocations GetAllPaged(long PageNum, long ItemsPerPage)
         {
-            var paged = Repositories.LocationRepo.GetPaged(pageNum + 1, itemsPerPage, string.Empty);
+            var paged = Repositories.LocationRepo.GetPaged(PageNum + 1, ItemsPerPage, string.Empty);
             var totalCount = Repositories.LocationRepo.GetCount();
-            var result = new PagedLocations() 
+            var result = new PageOfLocations() 
                             {
                                  Locations = paged,
-                                 PageNum = pageNum,
-                                 ItemsPerPage = itemsPerPage,
+                                 PageNum = PageNum,
+                                 ItemsPerPage = ItemsPerPage,
                                  TotalItems = Convert.ToInt64(totalCount)
                              };
+
+            return result;
+        }
+
+        //umbraco/backoffice/uLocate/LocationApi/GetAllPaged?PageNum=1&ItemsPerPage=5&OrderBy=LocationType
+
+        /// <summary>
+        /// Get all locations as a paged list
+        /// /umbraco/backoffice/uLocate/LocationApi/GetAllPaged?PageNum=1&amp;ItemsPerPage=5&amp;OrderBy=LocationType
+        /// </summary>
+        /// <param name="PageNum">
+        /// Current page for results
+        /// </param>
+        /// <param name="ItemsPerPage">
+        /// Items per Page.
+        /// </param>
+        /// <param name="OrderBy">
+        /// options are: "Name" or "LocationType" (case insensitive)
+        /// </param>
+        /// <returns>
+        /// An object of type <see cref="PagedLocations"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public PageOfLocations GetAllPaged(int PageNum, int ItemsPerPage, string OrderBy)
+        {
+            var locService = new LocationService();
+
+            var allPages = (PagingCollection<JsonLocation>)_requestCache.GetCacheItem("paged-locations", () => locService.GetAllPages(ItemsPerPage, OrderBy, string.Empty));
+
+            //var allPages = locService.GetAllPages(ItemsPerPage, OrderBy, string.Empty);
+           // var allPages = Repositories.LocationRepo.GetPaged(ItemsPerPage, OrderBy, string.Empty);
+
+            var result = new PageOfLocations()
+            {
+                Locations = allPages.GetData(PageNum),
+                PageNum = PageNum,
+                ItemsPerPage = ItemsPerPage,
+                TotalItems = allPages.TotalCount
+            };
+
+            return result;
+        }
+
+        //umbraco/backoffice/uLocate/LocationApi/GetAllPaged?PageNum=1&ItemsPerPage=5&OrderBy=LocationType&SearchTerm=test
+
+        /// <summary>
+        /// Get all locations as a paged list
+        /// /umbraco/backoffice/uLocate/LocationApi/GetAllPaged?PageNum=1&amp;ItemsPerPage=5&amp;OrderBy=LocationType&amp;SearchTerm=test
+        /// </summary>
+        /// <param name="PageNum">
+        /// Current page for results
+        /// </param>
+        /// <param name="ItemsPerPage">
+        /// Items per Page.
+        /// </param>
+        /// <param name="OrderBy">
+        /// options are: "Name" or "LocationType" (case insensitive)
+        /// </param>
+        /// <param name="SearchTerm">
+        /// The Search Term.
+        /// </param>
+        /// <returns>
+        /// An object of type <see cref="PagedLocations"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public PageOfLocations GetAllPaged(int PageNum, int ItemsPerPage, string OrderBy, string SearchTerm)
+        {
+            var locService = new LocationService();
+
+            var allPages = (PagingCollection<JsonLocation>)_requestCache.GetCacheItem("paged-locations-search", () => locService.GetAllPages(ItemsPerPage, OrderBy, SearchTerm));
+            
+            //var allPages = locService.GetAllPages(ItemsPerPage, OrderBy, SearchTerm);
+
+            var result = new PageOfLocations()
+            {
+                Locations = allPages.GetData(PageNum),
+                PageNum = PageNum,
+                ItemsPerPage = ItemsPerPage,
+                TotalItems = allPages.TotalCount,
+                TotalPages = allPages.PagesCount
+            };
+
+            return result;
+        }
+
+        //umbraco/backoffice/uLocate/LocationApi/GetAllPages?ItemsPerPage=5&OrderBy=LocationType&SearchTerm=test
+
+        /// <summary>
+        /// Get all locations as a paged list
+        /// /umbraco/backoffice/uLocate/LocationApi/GetAllPages?ItemsPerPage=5&amp;OrderBy=LocationType&amp;SearchTerm=test
+        /// </summary>
+        /// <param name="ItemsPerPage">
+        /// Items per Page.
+        /// </param>
+        /// <param name="OrderBy">
+        /// options are: "Name" or "LocationType" (case insensitive)
+        /// </param>
+        /// <param name="SearchTerm">
+        /// The Search Term.
+        /// </param>
+        /// <returns>
+        /// An object of type <see cref="PagingCollection<JsonLocation>"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public PagedLocations GetAllPages(int ItemsPerPage, string OrderBy, string SearchTerm)
+        {
+            var locService = new LocationService();
+
+            var allPages = (PagingCollection<JsonLocation>)_requestCache.GetCacheItem("paged-locations-search-pages", () => locService.GetAllPages(ItemsPerPage, OrderBy, SearchTerm));
+
+            var result = new PagedLocations()
+            {
+                ItemsPerPage = ItemsPerPage,
+                TotalItems = allPages.TotalCount,
+                TotalPages = allPages.PagesCount
+            };
+
+            var listOfPages = new List<PageOfLocations>();
+            for (int i = 0; i < allPages.PagesCount; i++)
+            {
+                var page = new PageOfLocations()
+                               {
+                                   Locations = allPages.GetData(i+1),
+                                   PageNum = i+1,
+                                   ItemsPerPage = allPages.GetCount(i+1),
+                                   TotalItems = allPages.TotalCount,
+                                   TotalPages = allPages.PagesCount
+                               };
+
+                listOfPages.Add(page);
+            }
+            result.Pages = listOfPages;
 
             return result;
         }
