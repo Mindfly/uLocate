@@ -213,12 +213,12 @@
             return result;
         }
 
-        public PagingCollection<JsonLocation> GetAllPages(int ItemsPerPage, string OrderBy, string SearchTerm)
+        public PagingCollection<JsonLocation> GetAllPages(int ItemsPerPage, string OrderBy, string SearchTerm, string SortOrder = "ASC")
         {
             var allLocations = this.GetAllLocations();
             List<Location> workingCollection = new List<Location>();
             
-            //WHERE?
+            // WHERE?
             if (SearchTerm != string.Empty)
             {
                 workingCollection.AddRange(allLocations.Where(n => 
@@ -230,37 +230,37 @@
                 || n.Address.PostalCode.Contains(SearchTerm)
                 || n.Address.CountryCode.Contains(SearchTerm)));
 
-                //workingCollection.AddRange(allLocations.Where(n => n.Name.Contains(SearchTerm)));
-                //workingCollection.AddRange(allLocations.Where(n => n.Address.Address1.Contains(SearchTerm)));
-                //workingCollection.AddRange(allLocations.Where(n => n.Address.Address2.Contains(SearchTerm)));
-                //workingCollection.AddRange(allLocations.Where(n => n.Address.Locality.Contains(SearchTerm)));
-                //workingCollection.AddRange(allLocations.Where(n => n.Address.Region.Contains(SearchTerm)));
-                //workingCollection.AddRange(allLocations.Where(n => n.Address.PostalCode.Contains(SearchTerm)));
-                //workingCollection.AddRange(allLocations.Where(n => n.Address.CountryCode.Contains(SearchTerm)));
+                // workingCollection.AddRange(allLocations.Where(n => n.Name.Contains(SearchTerm)));
+                // workingCollection.AddRange(allLocations.Where(n => n.Address.Address1.Contains(SearchTerm)));
+                // workingCollection.AddRange(allLocations.Where(n => n.Address.Address2.Contains(SearchTerm)));
+                // workingCollection.AddRange(allLocations.Where(n => n.Address.Locality.Contains(SearchTerm)));
+                // workingCollection.AddRange(allLocations.Where(n => n.Address.Region.Contains(SearchTerm)));
+                // workingCollection.AddRange(allLocations.Where(n => n.Address.PostalCode.Contains(SearchTerm)));
+                // workingCollection.AddRange(allLocations.Where(n => n.Address.CountryCode.Contains(SearchTerm)));
             }
             else
             {
                 workingCollection = allLocations.ToList();
             }
 
-            //ORDER?
-           // orderedColl = new IOrderedEnumerable<Location>();
+            // ORDER?
+            // orderedColl = new IOrderedEnumerable<Location>();
             if (OrderBy != string.Empty)
             {
                 switch (OrderBy.ToLower())
                 {
-                    case "name":
-                        workingCollection = workingCollection.OrderBy(n => n.Name).ToList();
-                        break;
+                        case "name":
+                            workingCollection = SortOrder == "ASC" ? workingCollection.OrderBy(n => n.Name).ToList() : workingCollection.OrderByDescending(n => n.Name).ToList();
+                            break;
 
-                    case "locationtype":
-                         workingCollection = workingCollection.OrderBy(n => n.LocationType.Name).ToList();
+                        case "locationtype":
+                        workingCollection = SortOrder == "ASC" ? workingCollection.OrderBy(n => n.LocationType.Name).ToList() : workingCollection.OrderByDescending(n => n.LocationType.Name).ToList();
                         break;
                 }
             }
             else
             {
-                workingCollection = workingCollection.OrderBy(n => n.Name).ToList();
+                workingCollection = SortOrder == "ASC" ? workingCollection.OrderBy(n => n.Name).ToList() : workingCollection.OrderByDescending(n => n.Name).ToList();
             }
             
             // create paging collection
