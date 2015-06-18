@@ -254,8 +254,8 @@
                             break;
 
                         case "locationtype":
-                        workingCollection = SortOrder == "ASC" ? workingCollection.OrderBy(n => n.LocationType.Name).ToList() : workingCollection.OrderByDescending(n => n.LocationType.Name).ToList();
-                        break;
+                            workingCollection = SortOrder == "ASC" ? workingCollection.OrderBy(n => n.LocationType.Name).ToList() : workingCollection.OrderByDescending(n => n.LocationType.Name).ToList();
+                            break;
                 }
             }
             else

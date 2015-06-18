@@ -77,6 +77,7 @@
          * @description - Get a paged list of locations.
          */
 		locationApiFactory.getAllLocationsPaged = function (request) {
+		    console.info("bing!");
 		    request = new uLocate.Models.GetLocationsApiRequest(request);
 		    if (!request.page) {
 		        request.page = 0;
@@ -84,7 +85,24 @@
 		    if (!request.perPage) {
 		        request.perPage = 100;
 		    }
-		    var config = { params: { pageNum: request.page, itemsPerPage: request.perPage } };
+		    var params = { pageNum: request.page, itemsPerPage: request.perPage };
+		    console.info(request);
+            if (request.sortBy || request.filter) {
+                if (!request.sortBy) {
+                    request.sortBy = "name";
+                }
+                if (!request.sortOrder) {
+                    request.sortOrder = "ASC";
+                }
+                params.orderBy = request.sortBy;
+                if (request.filter) {
+                    params.searchTerm = request.filter;
+                }
+                params.sortOrder = request.sortOrder;
+            }
+		    console.info(params);
+		    var config = { params: params };
+
 		    return $http.get('/umbraco/backoffice/uLocate/LocationApi/GetAllPaged', config).then(function (response) {
 		        if (response.data) {
 		            var data = new uLocate.Models.LocationsPagedResponse(locationApiFactory.downCaseProperties(response.data));
