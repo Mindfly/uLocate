@@ -48,6 +48,84 @@
 
 	    /**
          * @ngdoc method
+         * @name getAllPages
+         * @function
+         * 
+         * @param {uLocate.Models.GetLocationsApiRequest} request
+         * @returns {uLocate.Models.LocationsPagedResponse} - Locations retrieved.
+         * @description - Get a list of pages of locations.
+         */
+	    locationApiFactory.getAllPages = function(request) {
+	        request = new uLocate.Models.GetLocationsApiRequest(request);
+	        if (!request.perPage) {
+	            request.perPage = 100;
+	        }
+            if (!request.sortBy) {
+                request.sortBy = "name";
+            }
+            if (!request.sortOrder) {
+                request.sortOrder = "ASC";
+            }
+	        var params = { itemsPerPage: request.perPage, orderBy: request.sortBy, sortOrder: request.sortOrder };
+	        if (request.filter) {
+	            params.searchTerm = request.filter;
+	        }
+	        var config = { params: params };
+	        return $http.get('/umbraco/backoffice/uLocate/LocationApi/GetAllPages', config).then(function (response) {
+	            if (response.data) {
+	                var data = locationApiFactory.downCaseProperties(response.data);
+	                var pagedLocations = new uLocate.Models.PagedLocations(data);
+	                return pagedLocations;
+	            } else {
+	                return false;
+	            }
+	        });
+	    };
+
+	    /**
+         * @ngdoc method
+         * @name getAllLocationsPaged
+         * @function
+         * 
+         * @param {uLocate.Models.GetLocationsApiRequest} request
+         * @returns {array of uLocate.Models.Location} - Locations retrieved.
+         * @description - Get a paged list of locations.
+         */
+		locationApiFactory.getAllLocationsPaged = function (request) {
+		    request = new uLocate.Models.GetLocationsApiRequest(request);
+		    if (!request.page) {
+		        request.page = 0;
+		    }
+		    if (!request.perPage) {
+		        request.perPage = 100;
+		    }
+		    var params = { pageNum: request.page, itemsPerPage: request.perPage };
+		    if (request.sortBy || request.filter) {
+		        if (!request.sortBy) {
+		            request.sortBy = "name";
+		        }
+		        if (!request.sortOrder) {
+		            request.sortOrder = "ASC";
+		        }
+		        params.orderBy = request.sortBy;
+		        if (request.filter) {
+		            params.searchTerm = request.filter;
+		        }
+		        params.sortOrder = request.sortOrder;
+		    }
+		    var config = { params: params };
+		    return $http.get('/umbraco/backoffice/uLocate/LocationApi/GetAllPaged', config).then(function (response) {
+		        if (response.data) {
+		            var data = new uLocate.Models.LocationsPagedResponse(locationApiFactory.downCaseProperties(response.data));
+		            return data;
+		        } else {
+		            return false;
+		        }
+		    });
+		};
+
+	    /**
+         * @ngdoc method
          * @name getLocation
          * @function
          * 
@@ -60,52 +138,6 @@
 		            var data = _.map(response.data, function (location) {
 		                return new uLocate.Models.Location(locationApiFactory.downCaseProperties(location));
 		            });
-		            return data;
-		        } else {
-		            return false;
-		        }
-		    });
-		};
-
-	    /**
-         * @ngdoc method
-         * @name getAllLocationsPaged
-         * @function
-         * 
-         * @param {uLocate.Models.GetLocationsApiRequest} request
-         * @returns {array of uLocate.Models.Location} - Locations retrieved.
-         * @description - Get a paged list of locations.
-         */
-		locationApiFactory.getAllLocationsPaged = function (request) {
-		    console.info("bing!");
-		    request = new uLocate.Models.GetLocationsApiRequest(request);
-		    if (!request.page) {
-		        request.page = 0;
-		    }
-		    if (!request.perPage) {
-		        request.perPage = 100;
-		    }
-		    var params = { pageNum: request.page, itemsPerPage: request.perPage };
-		    console.info(request);
-            if (request.sortBy || request.filter) {
-                if (!request.sortBy) {
-                    request.sortBy = "name";
-                }
-                if (!request.sortOrder) {
-                    request.sortOrder = "ASC";
-                }
-                params.orderBy = request.sortBy;
-                if (request.filter) {
-                    params.searchTerm = request.filter;
-                }
-                params.sortOrder = request.sortOrder;
-            }
-		    console.info(params);
-		    var config = { params: params };
-
-		    return $http.get('/umbraco/backoffice/uLocate/LocationApi/GetAllPaged', config).then(function (response) {
-		        if (response.data) {
-		            var data = new uLocate.Models.LocationsPagedResponse(locationApiFactory.downCaseProperties(response.data));
 		            return data;
 		        } else {
 		            return false;
@@ -147,8 +179,9 @@
 		locationApiFactory.updateLocation = function (location) {
 	        var request = new uLocate.Models.Location(location);
 	        return $http.post('/umbraco/backoffice/uLocate/LocationApi/Update', request).then(function (response) {
+	            console.info(response.data);
 	            if (response.data) {
-	                var data = locationApiFactory.downCaseProperties(response.data);
+	                var data = new uLocate.Models.PagedLocations(locationApiFactory.downCaseProperties(response.data));
 	                return data;
 	            } else {
 	                return false;

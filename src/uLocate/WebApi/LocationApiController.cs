@@ -2,14 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.SqlClient;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Web.Http;
 
-    using uLocate.Configuration;
-    using uLocate.Data;
     using uLocate.Models;
     using uLocate.Persistance;
     using uLocate.Services;
@@ -276,7 +269,7 @@
                 var page = new PageOfLocations()
                                {
                                    Locations = allPages.GetData(i + 1),
-                                   PageNum = i + 1,
+                                   PageNum = i,
                                    ItemsPerPage = allPages.GetCount(i + 1),
                                    TotalItems = allPages.TotalCount,
                                    TotalPages = allPages.PagesCount

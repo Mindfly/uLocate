@@ -68,13 +68,13 @@
                     <thead>
                         <tr>
                             <!-- TODO: Should be able to sort by name, address, phone, lat/long, and type -->
-                            <!--th><input type="checkbox" /></th--> <!-- TODO: The only bulk action that should be available is delete. See Janae about the best way to do this? -->
-                            <th><localize key="general_name">Name</localize></th>
+                            <!--th><input type="checkbox" /></th--> <!-- TODO: The only bulk action that should be available is delete. -->
+                            <th><a ng-click="toggleSortOrder('name')"><localize key="general_name">Name</localize> <i ng-show="isSortingByName()" ng-class="{'icon-navigation-up': isSortAscending(), 'icon-navigation-down': !isSortAscending()}"></i></a></th>
                             <th><ulocate-localize key="address">Address</ulocate-localize></th>
                             <th><localize key="general_email">Email</localize></th>
                             <th><ulocate-localize key="phone">Phone</ulocate-localize></th>
                             <th class="latlong"><ulocate-localize key="latLong">Lat/Long</ulocate-localize></th>
-                            <th><localize key="general_type">Type</localize></th>
+                            <th><a ng-click="toggleSortOrder('locationType')"><localize key="general_type">Type</localize> <i ng-show="!isSortingByName()" ng-class="{'icon-navigation-up': isSortAscending(), 'icon-navigation-down': !isSortAscending()}"></i></a></a></th>
                             <th></th>
                         </tr>
                     </thead>

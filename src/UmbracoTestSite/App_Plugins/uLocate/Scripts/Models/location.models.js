@@ -83,7 +83,7 @@
         }
     };
 
-    models.LocationProperty = function (data) {
+    models.LocationProperty = function(data) {
         var self = this;
         if (data === undefined) {
             self.key = '00000000-0000-0000-0000-000000000000';
@@ -95,6 +95,19 @@
             self.propData = data.propData;
 
         }
-    }
+    };
+
+    models.PagedLocations = function(data) {
+        var self = this;
+        if (data === undefined) {
+            self.itemsPerPage = 0;
+            self.pages = []; // array of uLocate.Models.LocationsPagedResponse();
+        } else {
+            self.itemsPerPage = data.itemsPerPage;
+            self.pages = _.map(data.pages, function(page) {
+                return new uLocate.Models.LocationsPagedResponse(page);
+            });
+        }
+    };
 
 }(window.uLocate.Models = window.uLocate.Models || {}));

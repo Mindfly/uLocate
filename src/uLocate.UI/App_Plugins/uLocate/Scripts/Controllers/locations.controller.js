@@ -98,6 +98,32 @@
 
         /**
          * @ngdoc method
+         * @name loadAllLocations
+         * @function
+         * 
+         * @description - Load all of the pages of all the locations.
+         */
+        $scope.loadAllLocations = function() {
+            var request = new uLocate.Models.GetLocationsApiRequest({
+                filter: $scope.filter,
+                page: $scope.page,
+                perPage: $scope.perPage,
+                sortBy: $scope.sortBy,
+                sortOrder: $scope.sortOrder
+            });
+            return uLocateLocationApiService.getAllPages(request).then(function (response) {
+                if (response.pages) {
+                    $scope.pages = _.map(response.pages, function(page) {
+                        return new uLocate.Models.LocationsPagedResponse(page);
+                    });
+                    $scope.perPage = response.itemsPerPage;
+                    $scope.totalPages = $scope.pages[0].totalPages;
+                }
+            });
+        };
+
+        /**
+         * @ngdoc method
          * @name loadGoogleMapAsset
          * @function
          * 
@@ -123,7 +149,9 @@
             var options = $scope.mapOptions;
             $scope.map = uLocateMapService.loadMap('#location-map', options);
             $scope.map.setOptions({ styles: $scope.mapStyles });
-            $scope.getLocations();
+            $scope.loadAllLocations().then(function() {
+                $scope.getLocations();
+            });
         };
 
         /**
@@ -152,6 +180,7 @@
                 perPage: [25, 50, 100]
             };
             $scope.page = 0;
+            $scope.pages = [];
             $scope.perPage = 25;
             $scope.provinceLabel = 'Province/State';
             $scope.selected = {
@@ -160,7 +189,7 @@
             }
             $scope.selected.region = $scope.selected.country.provinces[0];
             $scope.sortBy = 'name';
-            $scope.sortOrder = 'ascending';
+            $scope.sortOrder = "ASC";
             $scope.totalPages = 0;
             $scope.wasFormSubmitted = false;
             $scope.buildCountriesList();
@@ -384,6 +413,27 @@
                 }
                 $scope.createLocation(location, shouldGeocode, true);
             }
+        };
+
+        /**
+         * @ngdoc method
+         * @name toggleSortOrder
+         * @function
+         * 
+         * @param {string} orderBy - "name" or "locationType"
+         * @description - Check if the form is valid, and if so, create a new location.
+         */
+        $scope.toggleSortOrder = function(orderBy) {
+            if ($scope.sortBy == orderBy) {
+                if ($scope.sortOrder === "ASC") {
+                    $scope.sortOrder = "DESC";
+                } else {
+                    $scope.sortOrder = "ASC";
+                }
+            } else {
+                $scope.sortBy = orderBy;
+            }
+            $scope.getLocations();
         };
 
         /**
@@ -666,37 +716,86 @@
          * @name getLocations
          * @function
          * 
-         * @description - Acquires locations via API call, using the parameters defined by the user.
+         * @description - Modify the list of locations by current sort orders and paging options.
          */
         $scope.getLocations = function () {
             $scope.locationsLoaded = false;
             uLocateMapService.deleteAllMarkers();
-            $scope.locations = [];
-            var request = new uLocate.Models.GetLocationsApiRequest({
-                filter: $scope.filter,
-                page: $scope.page,
-                perPage: $scope.perPage,
-                sortBy: $scope.sortBy,
-                sortOrder: $scope.sortOrder
-            });
-            var promise = uLocateLocationApiService.getAllLocationsPaged(request);
-            promise.then(function (response) {
-                if (response.locations) {
-                    $scope.locations = _.map(response.locations, function(location) {
-                        return new uLocate.Models.Location(location);
-                    });
-                }
-                $scope.page = response.pageNum;
-                $scope.perPage = response.itemsPerPage;
-                _.each($scope.options.perPage, function(option, index) {
-                    if (option == response.perPage) {
-                        $scope.selected.perPage = $scope.options.perPage[index];
-                    }
+            var locations = [];
+            // Build list of locations that exist.
+            _.each($scope.pages, function (page) {
+                _.each(page.locations, function(location) {
+                    locations.push(new uLocate.Models.Location(location));
                 });
-                $scope.totalPages = response.totalPages;
-                $scope.locationsLoaded = true;
-                $scope.addLocationMarkersToMap();
             });
+            // Filter, if needed, by search term.
+            if ($scope.filter !== "") {
+                locations = _.filter(locations, function (location) {
+                    var result = false;
+                    if (location.name.toLowerCase().indexOf($scope.filter.toLowerCase()) > -1) {
+                        result = true;
+                    }
+                    return result;
+                });
+            }
+
+            // sort the locations 
+            function alphabeticalSort(a, b) {
+                if ($scope.sortBy.toLowerCase() == "name") {
+                    if ($scope.sortOrder == "ASC") {
+                        if (a.name < b.name) {
+                            return -1;
+                        }
+                        if (a.name > b.name) {
+                            return 1;
+                        }
+                    } else {
+                        if (a.name > b.name) {
+                            return -1;
+                        }
+                        if (a.name < b.name) {
+                            return 1;
+                        }
+                    }
+                    return 0;
+                } else {
+                    if ($scope.sortOrder == "ASC") {
+                        if (a.locationTypeName < b.locationTypeName) {
+                            return -1;
+                        }
+                        if (a.locationTypeName > b.locationTypeName) {
+                            return 1;
+                        }
+                    } else {
+                        if (a.locationTypeName > b.locationTypeName) {
+                            return -1;
+                        }
+                        if (a.locationTypeName < b.locationTypeName) {
+                            return 1;
+                        }
+                    }
+                    return 0;
+                }
+            };
+            locations.sort(alphabeticalSort);
+
+
+            // Get total pages for existing filter
+            $scope.totalPages = Math.ceil(locations.length / $scope.perPage);
+
+            if ($scope.page >= $scope.totalPages) {
+                $scope.page = $scope.totalPages - 1;
+            }
+
+            // Get the current page of locations
+            $scope.locations = [];
+            for (var i = ($scope.page * $scope.perPage) ; i <= ($scope.page * $scope.perPage) + $scope.perPage; i++) {
+                if (locations[i]) {
+                    $scope.locations.push(new uLocate.Models.Location(locations[i]));
+                }
+            }
+            $scope.locationsLoaded = true;
+            $scope.addLocationMarkersToMap();
         };
 
         /**
@@ -784,6 +883,42 @@
             var result = false;
             if ($scope.wasFormSubmitted) {
                 if (field.$invalid) {
+                    result = true;
+                }
+            }
+            return result;
+        };
+
+        /**
+        * @ngdoc method
+        * @name isSortAscending
+        * @function
+        * 
+        * @returns {boolean}
+        * @description - Returns true if the sortOrder is set to "ASC".
+        */
+        $scope.isSortAscending = function() {
+            var result = false;
+            if ($scope.sortOrder) {
+                if ($scope.sortOrder.toLowerCase() === "asc") {
+                    result = true;
+                }
+            }
+            return result;
+        };
+
+        /**
+        * @ngdoc method
+        * @name isSortingByName
+        * @function
+        * 
+        * @returns {boolean}
+        * @description - Returns true if the sortBy is set to "name"
+        */
+        $scope.isSortingByName = function() {
+            var result = false;
+            if ($scope.sortBy) {
+                if ($scope.sortBy.toLowerCase() === "name") {
                     result = true;
                 }
             }
