@@ -84,14 +84,14 @@
 
 	    /**
          * @ngdoc method
-         * @name getAllLocationsPaged
+         * @name getAllPaged
          * @function
          * 
          * @param {uLocate.Models.GetLocationsApiRequest} request
          * @returns {array of uLocate.Models.Location} - Locations retrieved.
          * @description - Get a paged list of locations.
          */
-		locationApiFactory.getAllLocationsPaged = function (request) {
+		locationApiFactory.getAllPaged = function (request) {
 		    request = new uLocate.Models.GetLocationsApiRequest(request);
 		    if (!request.page) {
 		        request.page = 0;
