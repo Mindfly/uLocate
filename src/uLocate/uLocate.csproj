@@ -354,7 +354,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>XCOPY "$(TargetDir)$(TargetName).*" "$(SolutionDir)UmbracoTestSite\bin\" /Y
-XCOPY "$(TargetDir)*.dll" "$(SolutionDir)UmbracoTestSite\bin\" /Y
+XCOPY "$(SolutionDir)\Dependencies\*.dll" "$(SolutionDir)UmbracoTestSite\bin\" /Y
+XCOPY "$(TargetDir)$(TargetName).*" "$(SolutionDir)..\build\bin\" /Y
+XCOPY "$(SolutionDir)\Dependencies\*.dll" "$(SolutionDir)..\build\bin\" /Y
 REM XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\KEND - Umbraco\source code\src\UmbracoCms\bin" /Y
 REM XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\KEND - Umbraco\source code\src\KendaTires.Web\Dependencies" /Y</PostBuildEvent>
   </PropertyGroup>
