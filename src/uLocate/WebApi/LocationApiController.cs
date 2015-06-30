@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using uLocate.Models;
     using uLocate.Persistance;
@@ -140,6 +141,25 @@
         }
 
         //// /umbraco/backoffice/uLocate/LocationApi/GetAll
+
+        /// <summary>
+        /// Get all locations with a matching name
+        /// /umbraco/backoffice/uLocate/LocationApi/GetByName?LocName=xxx
+        /// </summary>
+        /// <param name="LocName">
+        /// The loc name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="StatusMessage"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public IEnumerable<JsonLocation> GetByName(string LocName)
+        {
+            var matchingLocations = Repositories.LocationRepo.GetByName(LocName);
+            var result = Repositories.LocationRepo.ConvertToJsonLocations(matchingLocations);
+
+            return result;
+        }
 
         /// <summary>
         /// Get all locations as a list
