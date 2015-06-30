@@ -54,6 +54,7 @@ src/UmbracoTestSite/media/*
 Cached/
 
 # Build results
+build/
 [Dd]ebug/
 [Rr]elease/
 x64/
