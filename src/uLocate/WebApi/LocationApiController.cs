@@ -23,6 +23,8 @@
         /// </summary>
         private ICacheProvider _requestCache = ApplicationContext.Current.ApplicationCache.RequestCache;
 
+        private LocationService locationService = new LocationService();
+
         ///// /umbraco/backoffice/uLocate/LocationApi/Test
         ////[System.Web.Http.AcceptVerbs("GET")]
         ////public bool Test()
@@ -47,7 +49,6 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string locationName)
         {
-            var locationService = new LocationService();
             return locationService.CreateLocation(locationName);
         }
 
@@ -68,7 +69,6 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string locationName, Guid locationTypeGuid)
         {
-            var locationService = new LocationService();
             return locationService.CreateLocation(locationName, locationTypeGuid);
         }
 
@@ -156,7 +156,7 @@
         public IEnumerable<JsonLocation> GetByName(string LocName)
         {
             var matchingLocations = Repositories.LocationRepo.GetByName(LocName);
-            var result = Repositories.LocationRepo.ConvertToJsonLocations(matchingLocations);
+            var result = uLocate.Helpers.Convert.LocationsToJsonLocations(matchingLocations);
 
             return result;
         }
@@ -170,7 +170,10 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public IEnumerable<JsonLocation> GetAll()
         {
-            var result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetAll());
+            //OLD
+            //var result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetAll());
+
+            var result = locationService.GetAllJsonLocations();
 
             return result;
         }
@@ -231,9 +234,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public PageOfLocations GetAllPaged(int pageNum, int itemsPerPage, string orderBy, string searchTerm = "", string sortOrder = "ASC")
         {
-            var locService = new LocationService();
-
-            var allPages = (PagingCollection<JsonLocation>)_requestCache.GetCacheItem("paged-locations-search", () => locService.GetAllPages(itemsPerPage, orderBy, searchTerm, sortOrder.ToUpper()));
+            var allPages = (PagingCollection<JsonLocation>)_requestCache.GetCacheItem("paged-locations-search", () => locationService.GetAllPages(itemsPerPage, orderBy, searchTerm, sortOrder.ToUpper()));
             
             ////var allPages = locService.GetAllPages(ItemsPerPage, OrderBy, SearchTerm);
 
@@ -272,9 +273,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public PagedLocations GetAllPages(int itemsPerPage, string orderBy = "", string searchTerm = "", string sortOrder = "ASC")
         {
-            var locService = new LocationService();
-
-            var allPages = (PagingCollection<JsonLocation>)_requestCache.GetCacheItem("paged-locations-search-pages", () => locService.GetAllPages(itemsPerPage, orderBy, searchTerm, sortOrder.ToUpper()));
+            var allPages = (PagingCollection<JsonLocation>)_requestCache.GetCacheItem("paged-locations-search-pages", () => locationService.GetAllPages(itemsPerPage, orderBy, searchTerm, sortOrder.ToUpper()));
 
             var result = new PagedLocations()
             {
@@ -336,7 +335,7 @@
         public IEnumerable<JsonLocation> GetByLocationType(Guid locTypeKey)
         {
             var filteredLocs = Repositories.LocationRepo.GetByType(locTypeKey);
-            var result = Repositories.LocationRepo.ConvertToJsonLocations(filteredLocs);
+            var result = uLocate.Helpers.Convert.LocationsToJsonLocations(filteredLocs);
 
             return result;
         }

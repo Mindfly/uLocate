@@ -67,7 +67,7 @@
         public IEnumerable<JsonLocation> Search(double Lat, double Long, int Miles)
         {
             var Result =
-                Repositories.LocationRepo.ConvertToJsonLocations(
+                uLocate.Helpers.Convert.LocationsToJsonLocations(
                     Repositories.LocationRepo.GetByGeoSearch(Lat, Long, Miles));
 
             return Result;
@@ -87,7 +87,7 @@
         public IEnumerable<JsonLocation> Search(double Lat, double Long, int Miles, Guid LocType)
         {
             var Result =
-                Repositories.LocationRepo.ConvertToJsonLocations(
+                uLocate.Helpers.Convert.LocationsToJsonLocations(
                     Repositories.LocationRepo.GetByGeoSearch(Lat, Long, Miles, LocType));
 
             return Result;
@@ -108,7 +108,7 @@
         {
             var LocType = Repositories.LocationTypeRepo.GetByName(LocTypeAlias).FirstOrDefault().Key;
             var Result =
-                Repositories.LocationRepo.ConvertToJsonLocations(
+                uLocate.Helpers.Convert.LocationsToJsonLocations(
                     Repositories.LocationRepo.GetByGeoSearch(Lat, Long, Miles, LocType));
 
             return Result;
@@ -126,7 +126,7 @@
         [AcceptVerbs("GET", "POST")]
         public IEnumerable<JsonLocation> Search(string postalCode)
         {
-            var result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetByPostalCode(postalCode));
+            var result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetByPostalCode(postalCode));
 
             return result;            
         }
@@ -147,7 +147,7 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public IEnumerable<JsonLocation> GetNearestLocations(double Lat, double Long, int Qty)
         {
-            var Result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty));
+            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty));
 
             return Result;
         }
@@ -166,7 +166,7 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public IEnumerable<JsonLocation> GetNearestLocations(double Lat, double Long, int Qty, Guid LocType)
         {
-            var Result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty, LocType));
+            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty, LocType));
 
             return Result;
         }
@@ -187,7 +187,7 @@
         public IEnumerable<JsonLocation> GetNearestLocations(double Lat, double Long, int Qty, string LocTypeAlias)
         {
             var LocType = Repositories.LocationTypeRepo.GetByName(LocTypeAlias).FirstOrDefault().Key;
-            var Result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty, LocType));
+            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty, LocType));
 
             return Result;
         } 
@@ -206,7 +206,7 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public IEnumerable<JsonLocation> GetByCountry(string CountryCode)
         {
-            var Result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetByCountry(CountryCode));
+            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetByCountry(CountryCode));
 
             return Result;
         }
@@ -223,7 +223,7 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public IEnumerable<JsonLocation> GetByCountry(string CountryCode, Guid LocType)
         {
-            var Result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetByCountry(CountryCode, LocType));
+            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetByCountry(CountryCode, LocType));
 
             return Result;
         }
@@ -241,7 +241,7 @@
         public IEnumerable<JsonLocation> GetByCountry(string CountryCode, string LocTypeAlias)
         {
             var LocType = Repositories.LocationTypeRepo.GetByName(LocTypeAlias).FirstOrDefault().Key;
-            var Result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetByCountry(CountryCode, LocType));
+            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetByCountry(CountryCode, LocType));
 
             return Result;
         }

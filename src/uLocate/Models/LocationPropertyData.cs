@@ -266,7 +266,7 @@
                     }
                     break;
                 case CmsDataType.DbType.Date:
-                    this.dataDate = Convert.ToDateTime(PropertyValue);
+                    this.dataDate = System.Convert.ToDateTime(PropertyValue);
                     break;
                 case CmsDataType.DbType.Ntext:
                     if (PropertyValue == null)

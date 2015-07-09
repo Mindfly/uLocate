@@ -45,7 +45,7 @@ namespace uLocate.Models
         {
             if (this.Locations != null & this.Locations.Any())
             {
-                JsonLocations = Repositories.LocationRepo.ConvertToJsonLocations(this.Locations);
+                JsonLocations = uLocate.Helpers.Convert.LocationsToJsonLocations(this.Locations);
             }
             else if (this.JsonLocations != null)
             {

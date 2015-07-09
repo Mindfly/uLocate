@@ -7,11 +7,15 @@
 
     using ClientDependency.Core;
 
+    using Examine;
+
     using uLocate.Models;
     using uLocate.Persistance;
 
     using Umbraco.Core;
     using Umbraco.Core.Cache;
+
+    using UmbracoExamine;
 
     /// <summary>
     /// Functions related to looking up and editing data which can be called from Api Controllers etc.
@@ -21,6 +25,9 @@
         private ICacheProvider _requestCache = ApplicationContext.Current.ApplicationCache.RequestCache;
 
         private LocationTypeService locTypeService = new LocationTypeService();
+
+        private string SearcherName = "uLocateLocationSearcher";
+        private string IndexNodeTypeName = "ulocatelocationdata";
 
         //public LocationService()
         //{
@@ -164,11 +171,34 @@
             return msg;
         }
 
-        public IEnumerable<Location> GetAllLocations()
+        public IEnumerable<JsonLocation> GetAllJsonLocations()
         {
-            var result = (IEnumerable<Location>)_requestCache.GetCacheItem("all-locations", () => Repositories.LocationRepo.GetAll());
+            //var result = (IEnumerable<Location>)_requestCache.GetCacheItem("all-locations", () => Repositories.LocationRepo.GetAll());
             //var result = Repositories.LocationRepo.GetAll();
 
+            var searcher = ExamineManager.Instance.SearchProviderCollection[SearcherName];
+            var searchCriteria = searcher.CreateSearchCriteria("*");
+            var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
+
+            var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
+
+            var result = searchedLocations.Select(n => n.JsonLocation);
+            return result;
+        }
+
+        public IEnumerable<Location> GetAllLocations()
+        {
+            //var result = (IEnumerable<Location>)_requestCache.GetCacheItem("all-locations", () => Repositories.LocationRepo.GetAll());
+            //var result = Repositories.LocationRepo.GetAll();
+
+            var searcher = ExamineManager.Instance.SearchProviderCollection[SearcherName];
+            var searchCriteria = searcher.CreateSearchCriteria("*");
+            var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
+
+            var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
+
+            var jsonLocations = searchedLocations.Select(n => n.JsonLocation);
+            var result = uLocate.Helpers.Convert.JsonLocationsToLocations(jsonLocations);
             return result;
         }
 
@@ -264,7 +294,7 @@
             }
             
             // create paging collection
-            PagingCollection<JsonLocation> pagingColl = new PagingCollection<JsonLocation>(Repositories.LocationRepo.ConvertToJsonLocations(workingCollection));
+            PagingCollection<JsonLocation> pagingColl = new PagingCollection<JsonLocation>(uLocate.Helpers.Convert.LocationsToJsonLocations(workingCollection));
             pagingColl.PageSize = ItemsPerPage;
 
             return pagingColl;

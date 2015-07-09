@@ -196,17 +196,18 @@
             }
         }
 
-        public IEnumerable<JsonLocation> ConvertToJsonLocations(IEnumerable<Location> Locations)
-        {
-            var ReturnList = new List<JsonLocation>();
+        //Moved to 'uLocate.Helpers.Convert.LocationsToJsonLocations'
+        //public IEnumerable<JsonLocation> ConvertToJsonLocations(IEnumerable<Location> Locations)
+        //{
+        //    var ReturnList = new List<JsonLocation>();
 
-            foreach (var loc in Locations)
-            {
-                ReturnList.Add(new JsonLocation(loc));
-            }
+        //    foreach (var loc in Locations)
+        //    {
+        //        ReturnList.Add(new JsonLocation(loc));
+        //    }
 
-            return ReturnList;
-        }
+        //    return ReturnList;
+        //}
 
         #endregion
 

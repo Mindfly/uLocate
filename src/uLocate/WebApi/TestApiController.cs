@@ -21,6 +21,7 @@
     [Umbraco.Web.Mvc.PluginController("uLocate")]
     public class TestApiController : UmbracoAuthorizedApiController
     {
+        private LocationService locationService = new LocationService();
 
         /// <summary>
         /// Used for testing
@@ -145,7 +146,6 @@
             string Msg = "";
 
             //TEST Add "Mindfly Office" location 
-            var locationService = new LocationService();
             var NewItem1Key = locationService.CreateLocation("Mindfly Office", true);
             var NewItem1 = Repositories.LocationRepo.GetByKey(NewItem1Key);
             NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, "114 W. Magnolia St");
@@ -174,7 +174,7 @@
             Msg += string.Format("Location '{0}' added. ", NewItem2.Name);
 
             //TEST: Return all Location Types
-            var Result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetAll());
+            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetAll());
 
             return Result;
         }
