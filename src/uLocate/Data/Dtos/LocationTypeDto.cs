@@ -22,7 +22,7 @@
         public Guid Key { get; set; }
 
         /// <summary>
-        /// Gets or sets the Location name.
+        /// Gets or sets the EditableLocation name.
         /// </summary>
         [Column("Name")]
         [Length(150)]

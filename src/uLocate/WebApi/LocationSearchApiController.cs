@@ -44,11 +44,11 @@
         }
 
         [System.Web.Http.AcceptVerbs("GET")]
-        public JsonLocation GetByKey(Guid Key)
+        public IndexedLocation GetByKey(Guid Key)
         {
             var Result = Repositories.LocationRepo.GetByKey(Key);
 
-            return new JsonLocation(Result);
+            return new IndexedLocation(Result);
         }
 
         #region Search by Miles
@@ -61,13 +61,13 @@
         /// <param name="Long">Longitude of search point</param>
         /// <param name="Miles">Maximum distance away in miles</param>
         /// <returns>
-        /// An <see cref="IEnumerable"/> of <see cref="JsonLocation"/>.
+        /// An <see cref="IEnumerable"/> of <see cref="IndexedLocation"/>.
         /// </returns>
         [AcceptVerbs("GET", "POST")]
-        public IEnumerable<JsonLocation> Search(double Lat, double Long, int Miles)
+        public IEnumerable<IndexedLocation> Search(double Lat, double Long, int Miles)
         {
             var Result =
-                uLocate.Helpers.Convert.LocationsToJsonLocations(
+                uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(
                     Repositories.LocationRepo.GetByGeoSearch(Lat, Long, Miles));
 
             return Result;
@@ -81,13 +81,13 @@
         /// <param name="Long">Longitude of search point</param>
         /// <param name="Miles">Maximum distance away in miles</param>
         /// <returns>
-        /// An <see cref="IEnumerable"/> of <see cref="JsonLocation"/>.
+        /// An <see cref="IEnumerable"/> of <see cref="IndexedLocation"/>.
         /// </returns>
         [AcceptVerbs("GET", "POST")]
-        public IEnumerable<JsonLocation> Search(double Lat, double Long, int Miles, Guid LocType)
+        public IEnumerable<IndexedLocation> Search(double Lat, double Long, int Miles, Guid LocType)
         {
             var Result =
-                uLocate.Helpers.Convert.LocationsToJsonLocations(
+                uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(
                     Repositories.LocationRepo.GetByGeoSearch(Lat, Long, Miles, LocType));
 
             return Result;
@@ -101,14 +101,14 @@
         /// <param name="Long">Longitude of search point</param>
         /// <param name="Miles">Maximum distance away in miles</param>
         /// <returns>
-        /// An <see cref="IEnumerable"/> of <see cref="JsonLocation"/>.
+        /// An <see cref="IEnumerable"/> of <see cref="IndexedLocation"/>.
         /// </returns>
         [AcceptVerbs("GET", "POST")]
-        public IEnumerable<JsonLocation> Search(double Lat, double Long, int Miles, string LocTypeAlias)
+        public IEnumerable<IndexedLocation> Search(double Lat, double Long, int Miles, string LocTypeAlias)
         {
             var LocType = Repositories.LocationTypeRepo.GetByName(LocTypeAlias).FirstOrDefault().Key;
             var Result =
-                uLocate.Helpers.Convert.LocationsToJsonLocations(
+                uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(
                     Repositories.LocationRepo.GetByGeoSearch(Lat, Long, Miles, LocType));
 
             return Result;
@@ -124,9 +124,9 @@
         /// The <see cref="IEnumerable"/>.
         /// </returns>
         [AcceptVerbs("GET", "POST")]
-        public IEnumerable<JsonLocation> Search(string postalCode)
+        public IEnumerable<IndexedLocation> Search(string postalCode)
         {
-            var result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetByPostalCode(postalCode));
+            var result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetByPostalCode(postalCode));
 
             return result;            
         }
@@ -142,12 +142,12 @@
         /// <param name="Long">Longitude of search point</param>
         /// <param name="Qty"> Quantity of locations to return</param>
         /// <returns>
-        /// An <see cref="IEnumerable"/> of <see cref="JsonLocation"/>.
+        /// An <see cref="IEnumerable"/> of <see cref="IndexedLocation"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET", "POST")]
-        public IEnumerable<JsonLocation> GetNearestLocations(double Lat, double Long, int Qty)
+        public IEnumerable<IndexedLocation> GetNearestLocations(double Lat, double Long, int Qty)
         {
-            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty));
+            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty));
 
             return Result;
         }
@@ -161,12 +161,12 @@
         /// <param name="Qty">Quantity of locations to return</param>
         /// <param name="LocType">Location Type Key to filter by</param>
         /// <returns>
-        /// An <see cref="IEnumerable"/> of <see cref="JsonLocation"/>.
+        /// An <see cref="IEnumerable"/> of <see cref="IndexedLocation"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET", "POST")]
-        public IEnumerable<JsonLocation> GetNearestLocations(double Lat, double Long, int Qty, Guid LocType)
+        public IEnumerable<IndexedLocation> GetNearestLocations(double Lat, double Long, int Qty, Guid LocType)
         {
-            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty, LocType));
+            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty, LocType));
 
             return Result;
         }
@@ -181,13 +181,13 @@
         /// <param name="Qty">Quantity of locations to return</param>
         /// <param name="LocTypeAlias">Location Type Alias to filter by</param>
         /// <returns>
-        /// An <see cref="IEnumerable"/> of <see cref="JsonLocation"/>.
+        /// An <see cref="IEnumerable"/> of <see cref="IndexedLocation"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET", "POST")]
-        public IEnumerable<JsonLocation> GetNearestLocations(double Lat, double Long, int Qty, string LocTypeAlias)
+        public IEnumerable<IndexedLocation> GetNearestLocations(double Lat, double Long, int Qty, string LocTypeAlias)
         {
             var LocType = Repositories.LocationTypeRepo.GetByName(LocTypeAlias).FirstOrDefault().Key;
-            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty, LocType));
+            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty, LocType));
 
             return Result;
         } 
@@ -201,12 +201,12 @@
         /// </summary>
         /// <param name="CountryCode">A 2-character Country Code</param>
         /// <returns>
-        /// An <see cref="IEnumerable"/> of <see cref="JsonLocation"/>.
+        /// An <see cref="IEnumerable"/> of <see cref="IndexedLocation"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET", "POST")]
-        public IEnumerable<JsonLocation> GetByCountry(string CountryCode)
+        public IEnumerable<IndexedLocation> GetByCountry(string CountryCode)
         {
-            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetByCountry(CountryCode));
+            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetByCountry(CountryCode));
 
             return Result;
         }
@@ -218,12 +218,12 @@
         /// <param name="CountryCode">A 2-character Country Code</param>
         /// <param name="LocType">Location Type Key to filter by</param>
         /// <returns>
-        /// An <see cref="IEnumerable"/> of <see cref="JsonLocation"/>.
+        /// An <see cref="IEnumerable"/> of <see cref="IndexedLocation"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET", "POST")]
-        public IEnumerable<JsonLocation> GetByCountry(string CountryCode, Guid LocType)
+        public IEnumerable<IndexedLocation> GetByCountry(string CountryCode, Guid LocType)
         {
-            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetByCountry(CountryCode, LocType));
+            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetByCountry(CountryCode, LocType));
 
             return Result;
         }
@@ -235,13 +235,13 @@
         /// <param name="CountryCode">A 2-character Country Code</param>
         /// <param name="LocTypeAlias">Location Type Alias to filter by</param>
         /// <returns>
-        /// An <see cref="IEnumerable"/> of <see cref="JsonLocation"/>.
+        /// An <see cref="IEnumerable"/> of <see cref="IndexedLocation"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET", "POST")]
-        public IEnumerable<JsonLocation> GetByCountry(string CountryCode, string LocTypeAlias)
+        public IEnumerable<IndexedLocation> GetByCountry(string CountryCode, string LocTypeAlias)
         {
             var LocType = Repositories.LocationTypeRepo.GetByName(LocTypeAlias).FirstOrDefault().Key;
-            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetByCountry(CountryCode, LocType));
+            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetByCountry(CountryCode, LocType));
 
             return Result;
         }

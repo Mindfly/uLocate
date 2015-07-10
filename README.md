@@ -8,7 +8,7 @@ uLocate is a collaborative Umbraco package which aims to provide Geography data 
 *If you are looking for uLocate v.1 for Umbraco 4/6, see [bitbucket.org/rustyswayne/ulocate](https://bitbucket.org/rustyswayne/ulocate)
 
 ## Project Status
-UNDER ACTIVE DEVELOPMENT - EARLY STAGES
+UNDER ACTIVE DEVELOPMENT
 
 ## Requirements
 Supports umbraco 7.x websites.
@@ -19,6 +19,15 @@ In order to use uLocate in your umbraco site, you will need to be using a full S
 ## Contributing
 
 If you would like to contribute to uLocate, we would love your help! This package has been thoroughly wireframed (for release and future updates), so please follow the patterns and intent displayed in them: [uLocate Moqups](https://moqups.com/mindfly/9TFhrBLu)
+
+## A Note About Names & New Architecture
+In July 2015 we were able to dramatically improve performance on querying of Location data by implementing an Examine Index. Similar to how older versions of Umbraco had both a "read-only" "Node" object as well as an editable "Document" object, there are now two sorts of "location" objects in the code:
+* **IndexedLocation** is the "read-only" version of a Location - generally this is pulled from the Examine Index and constructed into a strongly-typed object for usage convenience (formerly named "JsonLocation"). Pulling lists of locations using this object type is much faster now.
+* **EditableLocation** is the version which is used for creating, deleting, and updating locations. It is actively persisted to the database. (formerly named just "Location") *NOTE: There is a lot of room for improvement in code related to EditableLocation.*
+
+The term "Location" now refers to the concept of a location generically, and in implementation might utilize either or both of the "location" code objects.
+
+Generally, all interaction with locations from outside of uLocate internals should utilize the "LocationService" and the WebApi (which should also be utilizing the "LocationService" for it's various endpoints.) It might take a while for the code to be fully moved over to this architecture, however.
 
 ## Solution Contents
 

@@ -56,7 +56,7 @@
         public int DataTypeId { get; set; }
 
         /// <summary>
-        /// Gets or sets the related Location Type for the property
+        /// Gets or sets the related EditableLocation Type for the property
         /// </summary>
         [Column("LocationTypeKey")]
         [ForeignKey(typeof(LocationTypeDto), Name = "FK_uLocateLocationTypeProperty_uLocateLocationType", Column = "Key")]

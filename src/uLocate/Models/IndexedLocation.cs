@@ -2,13 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Web.Helpers;
 
     using uLocate.Persistance;
 
-    public class JsonLocation
+    /// <summary>
+    /// Represents a read-only Location object - generally pulled from the Examine Index
+    /// Note: This was previously named "JsonLocation" and was changed 2015-07-10 to "IndexedLocation"
+    /// </summary>
+    public class IndexedLocation
     {
         public Guid Key { get; set; }
         public Guid LocationTypeKey { get; set; }
@@ -24,36 +25,35 @@
         public string CountryCode { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        //public List<JsonPropertyData> AllPropertyData { get; set; }
-        public List<JsonPropertyData> CustomPropertyData { get; set; }
+        public List<IndexedPropertyData> CustomPropertyData { get; set; }
+        public Dictionary<string,string> AllPropertiesDictionary { get; set; }
 
-        public JsonLocation()
+        public IndexedLocation()
         {
-            //this.AllPropertyData = new List<JsonPropertyData>();
-            this.CustomPropertyData = new List<JsonPropertyData>();
+            this.CustomPropertyData = new List<IndexedPropertyData>();
         }
 
-        public JsonLocation(Location ConvertedFromLocation)
+        public IndexedLocation(EditableLocation ConvertedFromEditableLocation)
         {
             //Basic Location properties 
-            this.Key = ConvertedFromLocation.Key;
-            this.Name = ConvertedFromLocation.Name;
-            this.LocationTypeKey = ConvertedFromLocation.LocationTypeKey;
-            this.LocationTypeName = ConvertedFromLocation.LocationType.Name;
+            this.Key = ConvertedFromEditableLocation.Key;
+            this.Name = ConvertedFromEditableLocation.Name;
+            this.LocationTypeKey = ConvertedFromEditableLocation.LocationTypeKey;
+            this.LocationTypeName = ConvertedFromEditableLocation.LocationType.Name;
 
-            this.Latitude = ConvertedFromLocation.Latitude;
-            this.Longitude = ConvertedFromLocation.Longitude;
+            this.Latitude = ConvertedFromEditableLocation.Latitude;
+            this.Longitude = ConvertedFromEditableLocation.Longitude;
 
             //Address
-            this.Address1 = ConvertedFromLocation.Address.Address1;
-            this.Address2 = ConvertedFromLocation.Address.Address2;
-            this.Locality = ConvertedFromLocation.Address.Locality;
-            this.Region = ConvertedFromLocation.Address.Region;
-            this.PostalCode = ConvertedFromLocation.Address.PostalCode;
-            this.CountryCode = ConvertedFromLocation.Address.CountryCode;
+            this.Address1 = ConvertedFromEditableLocation.Address.Address1;
+            this.Address2 = ConvertedFromEditableLocation.Address.Address2;
+            this.Locality = ConvertedFromEditableLocation.Address.Locality;
+            this.Region = ConvertedFromEditableLocation.Address.Region;
+            this.PostalCode = ConvertedFromEditableLocation.Address.PostalCode;
+            this.CountryCode = ConvertedFromEditableLocation.Address.CountryCode;
 
-            this.CustomPropertyData = new List<JsonPropertyData>();
-            foreach (var Prop in ConvertedFromLocation.PropertyData)
+            this.CustomPropertyData = new List<IndexedPropertyData>();
+            foreach (var Prop in ConvertedFromEditableLocation.PropertyData)
             {
                 //Check for special props
                 switch (Prop.PropertyAlias)
@@ -77,16 +77,16 @@
                     case Constants.DefaultLocPropertyAlias.CountryCode:
                         break;
                     default:
-                        this.CustomPropertyData.Add(new JsonPropertyData(Prop));
-                        //this.AllPropertyData.Add(new JsonPropertyData(Prop));
+                        this.CustomPropertyData.Add(new IndexedPropertyData(Prop));
+                        //this.AllPropertyData.Add(new IndexedPropertyData(Prop));
                         break;
                 }
             }
         }
 
-        public Location ConvertToLocation()
+        public EditableLocation ConvertToLocation()
         {
-            Location Entity;
+            EditableLocation Entity;
 
             if (this.Key != Guid.Empty)
             {
@@ -101,7 +101,7 @@
             else
             {
                 //Create new entity
-                Entity = new Location(Name = this.Name, LocationTypeKey = this.LocationTypeKey);
+                Entity = new EditableLocation(Name = this.Name, LocationTypeKey = this.LocationTypeKey);
             }
 
             //Update lat/long
@@ -131,13 +131,13 @@
 
     }
 
-    public class JsonPropertyData
+    public class IndexedPropertyData
     {
         public Guid Key { get; set; }
         public string PropAlias { get; set; }
         public object PropData { get; set; }
 
-        public JsonPropertyData(LocationPropertyData Prop)
+        internal IndexedPropertyData(LocationPropertyData Prop)
         {
             if (Prop != null)
             {
@@ -147,7 +147,7 @@
             }
         }
 
-        internal JsonPropertyData()
+        internal IndexedPropertyData()
         {
         }
     }

@@ -12,27 +12,27 @@ namespace uLocate.Models
     {
         public MaintenanceCollection()
         {
-            this.Locations = new List<Location>();
-            this.JsonLocations = new List<JsonLocation>();
+            this.EditableLocations = new List<EditableLocation>();
+            this.IndexedLocations = new List<IndexedLocation>();
         }
 
         public string Title { get; set; }
 
-        public IEnumerable<JsonLocation> JsonLocations { get; set; }
+        public IEnumerable<IndexedLocation> IndexedLocations { get; set; }
 
-        public IEnumerable<Location> Locations { get; set; }
+        public IEnumerable<EditableLocation> EditableLocations { get; set; }
 
         public int Count
         {
             get
             {
-                if (this.JsonLocations.Any())
+                if (this.IndexedLocations.Any())
                 {
-                    return JsonLocations.Count();
+                    return IndexedLocations.Count();
                 }
-                else if (this.Locations.Any())
+                else if (this.EditableLocations.Any())
                 {
-                    return Locations.Count();
+                    return EditableLocations.Count();
                 }
                 else
                 {
@@ -43,17 +43,17 @@ namespace uLocate.Models
 
         public void SyncLocationLists()
         {
-            if (this.Locations != null & this.Locations.Any())
+            if (this.EditableLocations != null & this.EditableLocations.Any())
             {
-                JsonLocations = uLocate.Helpers.Convert.LocationsToJsonLocations(this.Locations);
+                IndexedLocations = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(this.EditableLocations);
             }
-            else if (this.JsonLocations != null)
+            else if (this.IndexedLocations != null)
             {
-                if (this.JsonLocations.Any())
+                if (this.IndexedLocations.Any())
                 {
-                    var listLocs = new List<Location>();
+                    var listLocs = new List<EditableLocation>();
 
-                    foreach (var jsonLocation in JsonLocations)
+                    foreach (var jsonLocation in IndexedLocations)
                     {
                         listLocs.Add(jsonLocation.ConvertToLocation());
                     }
@@ -65,7 +65,7 @@ namespace uLocate.Models
         {
             this.SyncLocationLists();
             //clear Locations
-            this.Locations = new List<Location>();
+            this.EditableLocations = new List<EditableLocation>();
         }
     }
 }

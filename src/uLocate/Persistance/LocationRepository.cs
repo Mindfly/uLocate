@@ -22,9 +22,9 @@
     /// <summary>
     /// Represents the <see cref="LocationRepository"/>.
     /// </summary>
-    internal class LocationRepository : PagedRepositoryBase<Location> //, ILocationRespository
+    internal class LocationRepository : PagedRepositoryBase<EditableLocation> //, ILocationRespository
     {
-        private List<Location> CurrentCollection = new List<Location>();
+        private List<EditableLocation> CurrentCollection = new List<EditableLocation>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationRepository"/> class.
@@ -44,12 +44,12 @@
 
         #region Operations
 
-        public void Insert(Location Entity)
+        public void Insert(EditableLocation Entity)
         {
             PersistNewItem(Entity);
         }
 
-        //public void Insert(Location Entity, out Guid NewItemKey)
+        //public void Insert(EditableLocation Entity, out Guid NewItemKey)
         //{
         //    //TODO: might not be needed
         //    PersistNewItem(Entity);
@@ -60,7 +60,7 @@
         {
             StatusMessage ReturnMsg = new StatusMessage();
 
-            Location ThisLoc = this.GetByKey(LocationKey);
+            EditableLocation ThisLoc = this.GetByKey(LocationKey);
 
             if (ThisLoc != null)
             {
@@ -77,7 +77,7 @@
             return ReturnMsg;
         }
 
-        public StatusMessage Delete(Location Entity)
+        public StatusMessage Delete(EditableLocation Entity)
         {
             StatusMessage ReturnMsg = new StatusMessage();
             this.DeleteLocation(Entity, out ReturnMsg);
@@ -85,7 +85,7 @@
             return ReturnMsg;
         }
 
-        private void DeleteLocation(Location Entity, out StatusMessage StatusMsg)
+        private void DeleteLocation(EditableLocation Entity, out StatusMessage StatusMsg)
         {
             StatusMessage ReturnMsg = new StatusMessage();
             ReturnMsg.ObjectName = Entity.Name;
@@ -96,7 +96,7 @@
             StatusMsg = ReturnMsg;
         }
 
-        public void Update(Location Entity)
+        public void Update(EditableLocation Entity)
         {
             PersistUpdatedItem(Entity);
         }
@@ -110,7 +110,7 @@
         //    }
         //}
 
-        //internal void SetMaintenanceFlags(Location entity)
+        //internal void SetMaintenanceFlags(EditableLocation entity)
         //{
         //    var GeogIsValid = this.GeogIsValid(entity);
 
@@ -158,7 +158,7 @@
 
         }
 
-        public void UpdateLatLong(Location Loc)
+        public void UpdateLatLong(EditableLocation Loc)
         {
             var coord = DoGeocoding.GetCoordinateForAddress(Loc.Address);
             if (coord != null)
@@ -172,7 +172,7 @@
             }
         }
 
-        public void UpdateDbGeography(Location Loc)
+        public void UpdateDbGeography(EditableLocation Loc)
         {
             var sql = new Sql();
             sql.Append("UPDATE [uLocate_Location]");
@@ -197,13 +197,13 @@
         }
 
         //Moved to 'uLocate.Helpers.Convert.LocationsToJsonLocations'
-        //public IEnumerable<JsonLocation> ConvertToJsonLocations(IEnumerable<Location> Locations)
+        //public IEnumerable<IndexedLocation> ConvertToJsonLocations(IEnumerable<EditableLocation> Locations)
         //{
-        //    var ReturnList = new List<JsonLocation>();
+        //    var ReturnList = new List<IndexedLocation>();
 
         //    foreach (var loc in Locations)
         //    {
-        //        ReturnList.Add(new JsonLocation(loc));
+        //        ReturnList.Add(new IndexedLocation(loc));
         //    }
 
         //    return ReturnList;
@@ -213,10 +213,10 @@
 
         #region Querying
 
-        public Location GetByKey(Guid Key)
+        public EditableLocation GetByKey(Guid Key)
         {
             CurrentCollection.Clear();
-            var found = (Location)Get(Key);
+            var found = (EditableLocation)Get(Key);
 
             if (found!= null)
             {
@@ -230,7 +230,7 @@
             }
         }
 
-        public IEnumerable<Location> GetByKey(Guid[] Keys)
+        public IEnumerable<EditableLocation> GetByKey(Guid[] Keys)
         {
             CurrentCollection.Clear();
             CurrentCollection.AddRange(GetAll(Keys));
@@ -239,7 +239,7 @@
             return CurrentCollection;
         }
 
-        public IEnumerable<Location> GetByName(string LocationName)
+        public IEnumerable<EditableLocation> GetByName(string LocationName)
         {
             CurrentCollection.Clear();
             var sql = new Sql();
@@ -257,7 +257,7 @@
             return CurrentCollection;
         }
 
-        internal IEnumerable<Location> GetByType(Guid LocationTypeKey)
+        internal IEnumerable<EditableLocation> GetByType(Guid LocationTypeKey)
         {
             CurrentCollection.Clear();
             var sql = new Sql();
@@ -275,16 +275,16 @@
             return CurrentCollection;
         }
 
-        internal IEnumerable<Location> GetByCountry(string CountryCode)
+        internal IEnumerable<EditableLocation> GetByCountry(string CountryCode)
         {
             return GetByCountry(CountryCode, Guid.Empty);
         }
 
-        internal IEnumerable<Location> GetByCountry(string CountryCode, Guid FilterByLocationTypeKey)
+        internal IEnumerable<EditableLocation> GetByCountry(string CountryCode, Guid FilterByLocationTypeKey)
         {
             CurrentCollection.Clear();
 
-            IEnumerable<Location> allLocs;
+            IEnumerable<EditableLocation> allLocs;
             if (FilterByLocationTypeKey != Guid.Empty)
             {
                 allLocs = this.GetByType(FilterByLocationTypeKey);
@@ -321,16 +321,16 @@
             return CurrentCollection;
         }
 
-        internal IEnumerable<Location> GetByPostalCode(string PostalCode)
+        internal IEnumerable<EditableLocation> GetByPostalCode(string PostalCode)
         {
             return GetByPostalCode(PostalCode, Guid.Empty);
         }
 
-        internal IEnumerable<Location> GetByPostalCode(string PostalCode, Guid FilterByLocationTypeKey)
+        internal IEnumerable<EditableLocation> GetByPostalCode(string PostalCode, Guid FilterByLocationTypeKey)
         {
             CurrentCollection.Clear();
 
-            IEnumerable<Location> allLocs;
+            IEnumerable<EditableLocation> allLocs;
             if (FilterByLocationTypeKey != Guid.Empty)
             {
                 allLocs = this.GetByType(FilterByLocationTypeKey);
@@ -349,12 +349,12 @@
             return CurrentCollection;
         }
 
-        internal IEnumerable<Location> GetByGeoSearch(double SearchLat, double SearchLong, int MilesDistance)
+        internal IEnumerable<EditableLocation> GetByGeoSearch(double SearchLat, double SearchLong, int MilesDistance)
         {
             return GetByGeoSearch(SearchLat, SearchLong, MilesDistance, Guid.Empty);
         }
 
-        internal IEnumerable<Location> GetByGeoSearch(double SearchLat, double SearchLong, int MilesDistance, Guid FilterByLocationTypeKey)
+        internal IEnumerable<EditableLocation> GetByGeoSearch(double SearchLat, double SearchLong, int MilesDistance, Guid FilterByLocationTypeKey)
         {
             CurrentCollection.Clear();
             var sql = new Sql();
@@ -372,12 +372,12 @@
             return CurrentCollection;
         }
 
-        internal IEnumerable<Location> GetNearestLocations(double SearchLat, double SearchLong, int QuantityReturned)
+        internal IEnumerable<EditableLocation> GetNearestLocations(double SearchLat, double SearchLong, int QuantityReturned)
         {
             return GetNearestLocations(SearchLat, SearchLong, QuantityReturned, Guid.Empty);
         }
 
-        internal IEnumerable<Location> GetNearestLocations(double SearchLat, double SearchLong, int QuantityReturned, Guid FilterByLocationTypeKey)
+        internal IEnumerable<EditableLocation> GetNearestLocations(double SearchLat, double SearchLong, int QuantityReturned, Guid FilterByLocationTypeKey)
         {
             CurrentCollection.Clear();
             var sql = new Sql();
@@ -395,7 +395,7 @@
             return CurrentCollection;
         }
 
-        internal IEnumerable<Location> GetByCustomQuery(Sql SqlQuery)
+        internal IEnumerable<EditableLocation> GetByCustomQuery(Sql SqlQuery)
         {
             CurrentCollection.Clear();
 
@@ -409,7 +409,7 @@
             return CurrentCollection;
         }
 
-        public IEnumerable<Location> GetAll()
+        public IEnumerable<EditableLocation> GetAll()
         {
             var EmptyParams = new Guid[] { };
 
@@ -420,7 +420,7 @@
             return CurrentCollection;
         }
 
-        public IEnumerable<Location> GetAllMissingDbGeo()
+        public IEnumerable<EditableLocation> GetAllMissingDbGeo()
         {
             var allLocations = this.GetAll();
             CurrentCollection.Clear();
@@ -467,7 +467,7 @@
         //    return finalResult;
         //}
 
-        public List<JsonLocation> GetPaged(long PageNumber, long ItemsPerPage, string WhereClause)
+        public List<IndexedLocation> GetPaged(long PageNumber, long ItemsPerPage, string WhereClause)
         {
             Sql sql = new Sql();
             sql.Append(
@@ -484,11 +484,11 @@
             CurrentCollection.AddRange(converter.ToLocationEntity(dtoResult));
 
             FillChildren();
-            var ReturnList = new List<JsonLocation>();
+            var ReturnList = new List<IndexedLocation>();
 
             foreach (var loc in CurrentCollection)
             {
-                ReturnList.Add(new JsonLocation(loc));
+                ReturnList.Add(new IndexedLocation(loc));
             }
 
             return ReturnList;
@@ -501,7 +501,7 @@
 
         #region Reusable Functions
 
-        private bool GeogIsValid(Location entity)
+        private bool GeogIsValid(EditableLocation entity)
         {
             bool Result = false;
 
@@ -541,10 +541,10 @@
 
         #region Protected Methods
 
-        protected override IEnumerable<Location> PerformGetAll(params Guid[] Keys)
+        protected override IEnumerable<EditableLocation> PerformGetAll(params Guid[] Keys)
         {
             //TODO: Fix this - use cache + Dto
-            List<Location> Result = new List<Location>();
+            List<EditableLocation> Result = new List<EditableLocation>();
             IEnumerable<LocationDto> dtoResults;
 
             if (Keys.Any())
@@ -571,7 +571,7 @@
             return Result;
         }
 
-        protected override Location PerformGet(Guid Key)
+        protected override EditableLocation PerformGet(Guid Key)
         {
             var sql = new Sql();
             sql
@@ -590,7 +590,7 @@
             return entity;
         }
 
-        protected override void PersistNewItem(Location item)
+        protected override void PersistNewItem(EditableLocation item)
         {
             string Msg = string.Format("Location '{0}' has been saved.", item.Name);
 
@@ -608,7 +608,7 @@
             PersistChildren(item);
         }
 
-        protected override void PersistUpdatedItem(Location item)
+        protected override void PersistUpdatedItem(EditableLocation item)
         {
             string Msg = string.Format("Location '{0}' has been updated.", item.Name);
 
@@ -631,7 +631,7 @@
             LogHelper.Info(typeof(LocationRepository), Msg);
         }
 
-        protected override void PersistDeletedItem(Location item, out StatusMessage StatusMsg)
+        protected override void PersistDeletedItem(EditableLocation item, out StatusMessage StatusMsg)
         {
             StatusMessage ReturnMsg = new StatusMessage();
             ReturnMsg.ObjectName = item.Name;
@@ -692,12 +692,12 @@
             
         }
 
-        private void PersistChildren(Location item)
+        private void PersistChildren(EditableLocation item)
         {
             this.PersistProperties(item);
         }
 
-        private void DeleteChildren(Location item)
+        private void DeleteChildren(EditableLocation item)
         {
             this.DeleteProperties(item);
         }
@@ -713,7 +713,7 @@
             }
         }
 
-        private void PersistProperties(Location item)
+        private void PersistProperties(EditableLocation item)
         {
             this.SyncProperties(item);
             var Repo = Repositories.LocationPropertyDataRepo;
@@ -728,7 +728,7 @@
             }
         }
 
-        private void DeleteProperties(Location item)
+        private void DeleteProperties(EditableLocation item)
         {
             var Repo = new LocationPropertyDataRepository(Repositories.ThisDb, Helper.ThisCache);
             var MatchingProps = Repo.GetByLocation(item.Key);
@@ -739,7 +739,7 @@
             }
         }
 
-        private void SyncProperties(Location item)
+        private void SyncProperties(EditableLocation item)
         {
             //Get location type properties
             var AllTypeProperties = Repositories.LocationTypePropertyRepo.GetByLocationType(item.LocationTypeKey);
@@ -771,7 +771,7 @@
 
         #endregion
 
-        public override Page<Location> Page(long page, long itemsPerPage, Sql sql)
+        public override Page<EditableLocation> Page(long page, long itemsPerPage, Sql sql)
         {
             throw new NotImplementedException();
         }

@@ -24,7 +24,7 @@
         public Guid Key { get; set; }
 
         /// <summary>
-        /// Gets or sets the related Location key
+        /// Gets or sets the related EditableLocation key
         /// </summary>
         [Column("LocationKey")]
         [ForeignKey(typeof(LocationDto), Name = "FK_uLocateLocationPropertyData_uLocateLocation", Column = "Key")]

@@ -67,7 +67,7 @@
                 ReturnMsg.Success = false;
                 ReturnMsg.Code = "NotFound";
                 ReturnMsg.ObjectName = LocationTypeKey.ToString();
-                ReturnMsg.Message = string.Format("Location Type with key '{0}' was not found and can not be deleted.", ReturnMsg.ObjectName);
+                ReturnMsg.Message = string.Format("EditableLocation Type with key '{0}' was not found and can not be deleted.", ReturnMsg.ObjectName);
             }
 
             return ReturnMsg;

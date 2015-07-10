@@ -81,7 +81,7 @@
 
             var allLocationsOfType = Repositories.LocationRepo.GetByType(LocTypeKey);
 
-            foreach (Location loc in allLocationsOfType)
+            foreach (EditableLocation loc in allLocationsOfType)
             {
                 dynamic dynLoc = new[] { DynamicLocation };
 

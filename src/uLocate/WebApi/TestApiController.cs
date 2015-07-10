@@ -141,7 +141,7 @@
         /// The <see cref="List"/>.
         /// </returns>
         [AcceptVerbs("GET")]
-        public IEnumerable<JsonLocation> TestPopulateSomeLocations()
+        public IEnumerable<IndexedLocation> TestPopulateSomeLocations()
         {
             string Msg = "";
 
@@ -174,7 +174,7 @@
             Msg += string.Format("Location '{0}' added. ", NewItem2.Name);
 
             //TEST: Return all Location Types
-            var Result = uLocate.Helpers.Convert.LocationsToJsonLocations(Repositories.LocationRepo.GetAll());
+            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetAll());
 
             return Result;
         }
@@ -204,13 +204,13 @@
         /// The <see cref="List"/>.
         /// </returns>
         [AcceptVerbs("GET")]
-        public Location Test()
+        public EditableLocation Test()
         {
             int NewItemId = 0;
             string Msg = "";
 
             //TEST: Add a new Location 
-            var newLoc = new Location("Test Location");
+            var newLoc = new EditableLocation("Test Location");
             Repositories.LocationRepo.Insert(newLoc);
 
             var Result = Repositories.LocationRepo.GetByKey(newLoc.Key);

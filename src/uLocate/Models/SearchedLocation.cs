@@ -10,7 +10,7 @@ namespace uLocate.Models
     {
         public int ExamineNodeId { get; set; }
         public float SearchScore { get; set; }
-        public JsonLocation JsonLocation { get; set; }
+        public IndexedLocation IndexedLocation { get; set; }
     }
     
 }

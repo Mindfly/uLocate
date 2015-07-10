@@ -28,6 +28,6 @@ namespace uLocate.Models
 
         public long TotalPages { get; set; }
 
-        public IEnumerable<JsonLocation> Locations { get; set; }
+        public IEnumerable<IndexedLocation> Locations { get; set; }
     }
 }

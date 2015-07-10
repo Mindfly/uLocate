@@ -63,7 +63,7 @@
             var maintColl = new MaintenanceCollection();
             maintColl.Title = "Database 'Geography' Data Needs Updated";
 
-            maintColl.Locations = Repositories.LocationRepo.GetAllMissingDbGeo();
+            maintColl.EditableLocations = Repositories.LocationRepo.GetAllMissingDbGeo();
             maintColl.ConvertToJsonLocationsOnly();
 
             return maintColl;
@@ -82,7 +82,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public StatusMessage CountLocationsByRegion(Guid LocTypeKey)
         {
-            return locService.CountLocations(LocTypeKey, n => n.Address.Region);
+            return locService.CountLocations(LocTypeKey, n => n.Region);
         }
 
         /// <summary>
@@ -100,15 +100,15 @@
             var maintColl = new MaintenanceCollection();
             maintColl.Title = "Addresses missing coordinates";
 
-            var locMissing = new List<Location>();
+            var locMissing = new List<IndexedLocation>();
             var locMissingLat = locService.GetLocationsByPropertyValue("Latitude", 0);
             var locMissingLong = locService.GetLocationsByPropertyValue("Longitude", 0);
 
             locMissing.AddRange(locMissingLat);
             locMissing.AddRange(locMissingLong);
 
-            maintColl.Locations = locMissing;
-            maintColl.ConvertToJsonLocationsOnly();
+            maintColl.IndexedLocations = locMissing;
+            maintColl.SyncLocationLists();
 
             return maintColl;
         }

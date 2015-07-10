@@ -10,9 +10,10 @@
     using umbraco.presentation.webservices;
 
     /// <summary>
-    /// Represents a Location
+    /// Represents an Editable Location object - supports many internal business rules to manage persistence.
+    /// Note: This was previously named "Location" and was changed 2015-07-10 to "EditableLocation"
     /// </summary>
-    public class Location : EntityBase
+    public class EditableLocation : EntityBase
     {
         #region Private Vars
 
@@ -25,19 +26,19 @@
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Location"/> class.
+        /// Initializes a new instance of the <see cref="EditableLocation"/> class.
         /// </summary>
-        public Location()
+        public EditableLocation()
         {
             this.CreateNewLocation(string.Empty, Constants.DefaultLocationTypeKey);
         }
 
-        public Location(string LocName)
+        public EditableLocation(string LocName)
         {
             this.CreateNewLocation(LocName, Constants.DefaultLocationTypeKey);
         }
 
-        public Location(string LocName, Guid LocTypeKey)
+        public EditableLocation(string LocName, Guid LocTypeKey)
         {
             this.CreateNewLocation(LocName, LocTypeKey);
         }

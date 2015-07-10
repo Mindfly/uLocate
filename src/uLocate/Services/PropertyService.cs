@@ -51,7 +51,7 @@
 
         //#region Location-Related
 
-        //public Location GetLocation(Guid LocationKey)
+        //public EditableLocation GetLocation(Guid LocationKey)
         //{
         //    var Result = Repositories.LocationRepo.GetByKey(LocationKey);
 
@@ -92,7 +92,7 @@
         //        var matchingLocations = Repositories.LocationRepo.GetByName(LocationName);
         //        if (matchingLocations.Any())
         //        {
-        //            Location lookupLoc = matchingLocations.FirstOrDefault();
+        //            EditableLocation lookupLoc = matchingLocations.FirstOrDefault();
         //            lookupLoc.Name = LocationName;
         //            lookupLoc.LocationTypeKey = LocType;
         //            Repositories.LocationRepo.Update(lookupLoc);
@@ -100,12 +100,12 @@
         //        }
         //    }
 
-        //    Location newLoc = new Location(LocationName, LocType);
+        //    EditableLocation newLoc = new EditableLocation(LocationName, LocType);
         //    Repositories.LocationRepo.Insert(newLoc);
         //    return newLoc.Key;
         //}
 
-        //public Location UpdateLocation(Location UpdatedLocation, bool UpdateIfFound = false)
+        //public EditableLocation UpdateLocation(EditableLocation UpdatedLocation, bool UpdateIfFound = false)
         //{
         //    Repositories.LocationRepo.Update(UpdatedLocation);
 
@@ -118,21 +118,21 @@
 
         //#region Location Collections
 
-        //public IEnumerable<Location> GetLocations()
+        //public IEnumerable<EditableLocation> GetLocations()
         //{
         //    var result = Repositories.LocationRepo.GetAll();
 
         //    return result;
         //}
 
-        //public IEnumerable<Location> GetLocations(Guid LocationTypeKey)
+        //public IEnumerable<EditableLocation> GetLocations(Guid LocationTypeKey)
         //{
         //    var result = Repositories.LocationRepo.GetByType(LocationTypeKey);
 
         //    return result;
         //}
 
-        //public IEnumerable<Location> GetLocationsByPropertyValue(string PropertyAlias, string Value)
+        //public IEnumerable<EditableLocation> GetLocationsByPropertyValue(string PropertyAlias, string Value)
         //{
         //    var AllLocations = Repositories.LocationRepo.GetAll();
             
@@ -141,7 +141,7 @@
         //    return result;
         //}
 
-        //public IEnumerable<Location> GetLocationsByPropertyValue(string PropertyAlias, int Value)
+        //public IEnumerable<EditableLocation> GetLocationsByPropertyValue(string PropertyAlias, int Value)
         //{
         //    var AllLocations = Repositories.LocationRepo.GetAll();
 
@@ -150,7 +150,7 @@
         //    return result;
         //}
 
-        //public IEnumerable<Location> GetLocationsByPropertyValue(string PropertyAlias, DateTime Value)
+        //public IEnumerable<EditableLocation> GetLocationsByPropertyValue(string PropertyAlias, DateTime Value)
         //{
         //    var AllLocations = Repositories.LocationRepo.GetAll();
 

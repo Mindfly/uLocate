@@ -158,11 +158,11 @@
 
         #endregion
 
-        #region Location
+        #region EditableLocation
 
-        public Location ToLocationEntity(LocationDto dto)
+        public EditableLocation ToLocationEntity(LocationDto dto)
         {
-            var Entity = new Location()
+            var Entity = new EditableLocation()
             {
                 Key = dto.Key,
                 Name = dto.Name,
@@ -180,7 +180,7 @@
             return Entity;
         }
 
-        public LocationDto ToLocationDto(Location entity)
+        public LocationDto ToLocationDto(EditableLocation entity)
         {
             var dto = new LocationDto()
             {
@@ -201,9 +201,9 @@
 
        
 
-        public IEnumerable<Location> ToLocationEntity(IEnumerable<LocationDto> DtoCollection)
+        public IEnumerable<EditableLocation> ToLocationEntity(IEnumerable<LocationDto> DtoCollection)
         {
-            List<Location> Result = new List<Location>();
+            List<EditableLocation> Result = new List<EditableLocation>();
 
             foreach (var item in DtoCollection)
             {
@@ -213,7 +213,7 @@
             return Result;
         }
 
-        public IEnumerable<LocationDto> ToLocationDto(IEnumerable<Location> EntityCollection)
+        public IEnumerable<LocationDto> ToLocationDto(IEnumerable<EditableLocation> EntityCollection)
         {
             List<LocationDto> Result = new List<LocationDto>();
 

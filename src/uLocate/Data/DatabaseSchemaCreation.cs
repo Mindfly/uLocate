@@ -38,7 +38,7 @@
         {
             //For custom table fields which can't be covered by the Dto
             
-            //Location Table
+            //EditableLocation Table
             string TableName = Data.Helper.GetDtoTableName(typeof(LocationDto));
 
             if (_database.TableExist(TableName))

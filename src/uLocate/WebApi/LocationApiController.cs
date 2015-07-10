@@ -10,6 +10,7 @@
 
     using Umbraco.Core;
     using Umbraco.Core.Cache;
+    using Umbraco.Core.Logging;
     using Umbraco.Web.WebApi;
 
     /// <summary>
@@ -84,7 +85,7 @@
         /// The <see cref="LocationType"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET", "POST")]
-        public JsonLocation Update(JsonLocation updatedLocation)
+        public IndexedLocation Update(IndexedLocation updatedLocation)
         {
             var key = updatedLocation.Key;
 
@@ -94,7 +95,7 @@
             var result = Repositories.LocationRepo.GetByKey(key);
             ////uLocate.Helpers.Persistence.UpdateLocation();
 
-            return new JsonLocation(result);
+            return new IndexedLocation(result);
         }
 
         //// /umbraco/backoffice/uLocate/LocationApi/Delete
@@ -130,14 +131,14 @@
         /// The key.
         /// </param>
         /// <returns>
-        /// The <see cref="Location"/>.
+        /// The <see cref="EditableLocation"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public JsonLocation GetByKey(Guid key)
+        public IndexedLocation GetByKey(Guid key)
         {
             var result = Repositories.LocationRepo.GetByKey(key);
 
-            return new JsonLocation(result);
+            return new IndexedLocation(result);
         }
 
         //// /umbraco/backoffice/uLocate/LocationApi/GetAll
@@ -153,10 +154,10 @@
         /// The <see cref="StatusMessage"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public IEnumerable<JsonLocation> GetByName(string LocName)
+        public IEnumerable<IndexedLocation> GetByName(string LocName)
         {
             var matchingLocations = Repositories.LocationRepo.GetByName(LocName);
-            var result = uLocate.Helpers.Convert.LocationsToJsonLocations(matchingLocations);
+            var result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(matchingLocations);
 
             return result;
         }
@@ -168,12 +169,46 @@
         /// The <see cref="List"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public IEnumerable<JsonLocation> GetAll()
+        public IEnumerable<IndexedLocation> GetAll()
         {
             //OLD
             //var result = Repositories.LocationRepo.ConvertToJsonLocations(Repositories.LocationRepo.GetAll());
 
-            var result = locationService.GetAllJsonLocations();
+            var result = locationService.GetLocations();
+
+            return result;
+        }
+
+
+        //// /umbraco/backoffice/uLocate/LocationApi/GetByLocationType?LocTypeKey=xxx
+
+        /// <summary>
+        /// Get all locations of a specified type
+        /// </summary>
+        /// <param name="locTypeKey">
+        /// The Location Type Key
+        /// </param>
+        /// <param name="LogInfo">
+        /// Log info about this request?
+        /// </param>
+        /// <returns>
+        /// An <see cref="IEnumerable"/> of <see cref="IndexedLocation"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public IEnumerable<IndexedLocation> GetByLocationType(Guid locTypeKey, bool LogInfo = false)
+        {
+            //OLD
+            //var filteredLocs = Repositories.LocationRepo.GetByType(locTypeKey);
+            //var result = uLocate.Helpers.Convert.LocationsToJsonLocations(filteredLocs);
+
+            var allLocations = locationService.GetLocations();
+            var result = allLocations.Where(l => l.LocationTypeKey == locTypeKey);
+
+            if (LogInfo)
+            {
+                var msg = string.Format("GetByLocationType [{0}]: Total={1}", locTypeKey.ToString(), result.Count());
+                LogHelper.Info<LocationApiController>(msg);
+            }
 
             return result;
         }
@@ -234,9 +269,9 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public PageOfLocations GetAllPaged(int pageNum, int itemsPerPage, string orderBy, string searchTerm = "", string sortOrder = "ASC")
         {
-            var allPages = (PagingCollection<JsonLocation>)_requestCache.GetCacheItem("paged-locations-search", () => locationService.GetAllPages(itemsPerPage, orderBy, searchTerm, sortOrder.ToUpper()));
-            
-            ////var allPages = locService.GetAllPages(ItemsPerPage, OrderBy, SearchTerm);
+            //var allPages = (PagingCollection<IndexedLocation>)_requestCache.GetCacheItem("paged-locations-search", () => locationService.GetAllPages(itemsPerPage, orderBy, searchTerm, sortOrder.ToUpper()));
+
+            var allPages = locationService.GetAllPages(itemsPerPage, orderBy, searchTerm, sortOrder.ToUpper());
 
             var result = new PageOfLocations()
             {
@@ -273,7 +308,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public PagedLocations GetAllPages(int itemsPerPage, string orderBy = "", string searchTerm = "", string sortOrder = "ASC")
         {
-            var allPages = (PagingCollection<JsonLocation>)_requestCache.GetCacheItem("paged-locations-search-pages", () => locationService.GetAllPages(itemsPerPage, orderBy, searchTerm, sortOrder.ToUpper()));
+            var allPages = (PagingCollection<IndexedLocation>)_requestCache.GetCacheItem("paged-locations-search-pages", () => locationService.GetAllPages(itemsPerPage, orderBy, searchTerm, sortOrder.ToUpper()));
 
             var result = new PagedLocations()
             {
@@ -307,38 +342,20 @@
         /// Gets an empty JSON location.
         /// </summary>
         /// <returns>
-        /// An empty <see cref="JsonLocation"/>.
+        /// An empty <see cref="IndexedLocation"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
-        public JsonLocation GetEmptyJsonLocation()
+        public IndexedLocation GetEmptyJsonLocation()
         {
-            var result = new JsonLocation();
-            var emptyProp = new JsonPropertyData();
+            var result = new IndexedLocation();
+            var emptyProp = new IndexedPropertyData();
             result.CustomPropertyData.Add(emptyProp);
 
             return result;
         }
 
 
-        //// /umbraco/backoffice/uLocate/LocationApi/GetByLocationType?LocTypeKey=xxx
 
-        /// <summary>
-        /// Get all locations of a specified type
-        /// </summary>
-        /// <param name="locTypeKey">
-        /// The Location Type Key
-        /// </param>
-        /// <returns>
-        /// An <see cref="IEnumerable"/> of <see cref="JsonLocation"/>.
-        /// </returns>
-        [System.Web.Http.AcceptVerbs("GET")]
-        public IEnumerable<JsonLocation> GetByLocationType(Guid locTypeKey)
-        {
-            var filteredLocs = Repositories.LocationRepo.GetByType(locTypeKey);
-            var result = uLocate.Helpers.Convert.LocationsToJsonLocations(filteredLocs);
-
-            return result;
-        }
 
         #endregion
     }

@@ -136,8 +136,8 @@
             var Msg = new StringBuilder();
             var geocodeCountNew = GeocodeCount;
 
-            //Create new Location for row
-            var newLoc = new Location(locName, LocType.Key);
+            //Create new EditableLocation for row
+            var newLoc = new EditableLocation(locName, LocType.Key);
             Repositories.LocationRepo.Insert(newLoc);
 
             try
@@ -514,8 +514,8 @@
 
         //    try
         //    {
-        //        //Create new Location
-        //        var newLoc = new Location(locFlat.LocationName, LocationTypeKey);
+        //        //Create new EditableLocation
+        //        var newLoc = new EditableLocation(locFlat.LocationName, LocationTypeKey);
 
         //        //var newKey = newLoc.Key;
         //        Repositories.LocationRepo.Insert(newLoc);
