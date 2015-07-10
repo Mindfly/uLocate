@@ -51,11 +51,18 @@
                 //We will add each custom property to the index, 
                 //but in addition, all the custom data will be added in a blob - in case the <IndexUserFields> in ExamineIndex.config hasn't been updated with every custom property
                 var allCustomPropData = new StringBuilder();
-                
-                foreach (var prop in location.CustomProperties)
+
+                foreach (var prop in location.PropertyData)
                 {
-                    sds.RowData.Add(prop.Key, prop.Value.ToString());
-                    allCustomPropData.AppendFormat("{0}={1}|", prop.Key, prop.Value.ToString());
+                    if (prop.PropertyAttributes.IsDefaultProp == false)
+                    {
+                        sds.RowData.Add(prop.PropertyAlias, prop.Value.ToString());
+                        allCustomPropData.AppendFormat(
+                            "{0}={1}={2}|",
+                            prop.Key,
+                            prop.PropertyAlias,
+                            prop.Value.ToString());
+                    }
                 }
 
                 sds.RowData.Add("CustomPropertyData", allCustomPropData.ToString());

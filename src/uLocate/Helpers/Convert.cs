@@ -67,7 +67,15 @@
                     location.Email = result.Fields.ContainsKey("Email") ? result.Fields["Email"] : string.Empty;
                     location.Phone = result.Fields.ContainsKey("Phone") ? result.Fields["Phone"] : string.Empty;
 
-                    location.CustomPropertyData = result.Fields.ContainsKey("CustomProperties") ? ExamineCustomPropsToJsonProps(result.Fields["CustomProperties"]) : new List<JsonPropertyData>();
+                    if (result.Fields.ContainsKey("CustomPropertyData"))
+                    {
+                        var props = ExamineCustomPropsToJsonProps(result.Fields["CustomPropertyData"]);
+                        location.CustomPropertyData = props;
+                    }
+                    else
+                    {
+                        location.CustomPropertyData = new List<JsonPropertyData>();
+                    }
 
                     // add the location to SL
                     sl.JsonLocation = location;
@@ -84,13 +92,22 @@
         {
             var returnList = new List<JsonPropertyData>();
 
-            var dict = ParseCustomPropsToDict(PropsString);
+            //var dict = ParseCustomPropsToDict(PropsString);
 
-            foreach (var kv in dict)
+            var pairs = PropsString.Trim().Split('|');
+
+            foreach (var pair in pairs)
             {
-                var jsonProp = new JsonPropertyData();
-                jsonProp.PropAlias = kv.Key;
-                jsonProp.PropData = kv.Value;
+                if (pair != "")
+                {
+                    var kav = pair.Split('=');
+
+                    var jsonProp = new JsonPropertyData();
+                    jsonProp.Key = new Guid(kav[0]);
+                    jsonProp.PropAlias = kav[1];
+                    jsonProp.PropData = kav[2];
+                    returnList.Add(jsonProp);
+                }
             }
 
             return returnList;
@@ -100,12 +117,15 @@
         {
             var returnDict = new Dictionary<string, string>();
 
-            var pairs = PropsString.Split('|');
+            var pairs = PropsString.Trim().Split('|');
 
             foreach (var pair in pairs)
             {
-                var kv = pair.Split('=');
-                returnDict.Add(kv[0], kv[1]);
+                if (pair != "")
+                {
+                    var kv = pair.Split('=');
+                    returnDict.Add(kv[0], kv[1]);
+                }
             }
 
             return returnDict;
