@@ -51,6 +51,7 @@
                     sl.SearchScore = result.Score;
 
                     var location = new IndexedLocation();
+                    location.IndexNodeId = result.Id;
                     location.Key = result.Fields.ContainsKey("Key") ? new Guid(result.Fields["Key"]) : Guid.Empty;
                     location.Name = result.Fields.ContainsKey("Name") ? result.Fields["Name"] : string.Empty;
                     location.LocationTypeKey = result.Fields.ContainsKey("LocationTypeKey") ? new Guid(result.Fields["LocationTypeKey"]) : Guid.Empty;

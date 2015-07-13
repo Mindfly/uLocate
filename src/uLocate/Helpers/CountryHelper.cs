@@ -10,10 +10,10 @@
     /// <summary>
     /// The country helper.
     /// </summary>
-    internal class CountryHelper
+    public class CountryHelper
     {
         /// <summary>
-        /// The get all countries.
+        /// Get all possible countries from CultureInfo
         /// </summary>
         /// <returns>
         /// The <see cref="IEnumerable{ICountry}"/>.

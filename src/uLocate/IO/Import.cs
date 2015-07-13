@@ -31,7 +31,7 @@
         const int MAX_GEOCODE = 400;
 
         #region CSV Importing
-        public static StatusMessage LocationsCSV(string FilePath, Guid? LocationTypeKey = null, bool SkipGeocoding = false )
+        internal static StatusMessage LocationsCSV(string FilePath, Guid? LocationTypeKey = null, bool SkipGeocoding = false )
         {
             Guid LocTypeKey;
             if (LocationTypeKey == null)
@@ -293,7 +293,7 @@
             return ReturnMsg;
         }
 
-        public static DataTable ConvertCSVtoDataTable(string path, bool hasHeader)
+        internal static DataTable ConvertCSVtoDataTable(string path, bool hasHeader)
         {
             DataTable dt = new DataTable();
 

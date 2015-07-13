@@ -11,6 +11,7 @@
     /// </summary>
     public class IndexedLocation
     {
+        public int IndexNodeId { get; set; }
         public Guid Key { get; set; }
         public Guid LocationTypeKey { get; set; }
         public string LocationTypeName { get; set; }
@@ -33,8 +34,11 @@
             this.CustomPropertyData = new List<IndexedPropertyData>();
         }
 
-        public IndexedLocation(EditableLocation ConvertedFromEditableLocation)
+        public IndexedLocation(EditableLocation ConvertedFromEditableLocation, int IndexNodeId = 0)
         {
+            //Index Property
+            this.IndexNodeId = IndexNodeId;
+
             //Basic Location properties 
             this.Key = ConvertedFromEditableLocation.Key;
             this.Name = ConvertedFromEditableLocation.Name;

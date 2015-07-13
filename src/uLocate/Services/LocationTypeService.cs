@@ -12,7 +12,30 @@
     /// </summary>
     public class LocationTypeService
     {
-        #region LocationType-Related
+        #region CUD
+
+        public LocationType Update(LocationType UpdatedLocationType)
+        {
+            Repositories.LocationTypeRepo.Update(UpdatedLocationType);
+
+            var result = Repositories.LocationTypeRepo.GetByKey(UpdatedLocationType.Key);
+
+            Repositories.LocationRepo.UpdateWithNewProps(result.Key);
+
+            return result;
+        }
+
+
+        public StatusMessage Delete(Guid LocationTypeKey)
+        {
+            var result = Repositories.LocationTypeRepo.Delete(LocationTypeKey, true);
+
+            return result;
+        }
+
+        #endregion
+
+        #region Querying
 
         public LocationType GetLocationType(Guid LocationTypeKey)
         {
@@ -21,15 +44,32 @@
             return Result;
         }
 
-        public LocationType GetLocationTypeByName(string LocationTypeName)
+        public LocationType GetLocationType(string LocationTypeName)
         {
             var result = Repositories.LocationTypeRepo.GetByName(LocationTypeName).FirstOrDefault();
 
             return result;
         }
 
-        #endregion
+        public List<LocationType> GetLocationTypes()
+        {
+            var locationTypes = Repositories.LocationTypeRepo.GetAll().ToList();
 
+            return locationTypes;
+        }
+
+        public LocationTypeProperty GetProperty(Guid PropertyKey)
+        {
+           return Repositories.LocationTypePropertyRepo.GetByKey(PropertyKey);
+        }
+
+        public List<LocationTypeProperty> GetProperties()
+        {
+            return Repositories.LocationTypePropertyRepo.GetAll().ToList();
+        }
+
+
+        #endregion
     }
 
 

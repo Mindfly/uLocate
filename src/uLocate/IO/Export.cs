@@ -39,7 +39,6 @@
             return fhEngine.GetFileHeader();
         }
 
-
         //TODO: Heather - Fix this!
         internal static StatusMessage ExportAllLocations(Guid? LocationTypeKey)
         {

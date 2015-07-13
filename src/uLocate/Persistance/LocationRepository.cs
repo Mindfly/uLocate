@@ -409,7 +409,7 @@
             return CurrentCollection;
         }
 
-        public IEnumerable<EditableLocation> GetAll()
+        internal IEnumerable<EditableLocation> GetAll()
         {
             var EmptyParams = new Guid[] { };
 
@@ -420,7 +420,7 @@
             return CurrentCollection;
         }
 
-        public IEnumerable<EditableLocation> GetAllMissingDbGeo()
+        internal IEnumerable<EditableLocation> GetAllMissingDbGeo()
         {
             var allLocations = this.GetAll();
             CurrentCollection.Clear();
@@ -438,7 +438,7 @@
             return CurrentCollection;
         }
 
-        public string GetCount()
+        internal string GetCount()
         {
             var sql = new Sql();
             sql.Append(
@@ -449,7 +449,7 @@
             return result[0];
         }
 
-        //public string GetCountByZip()
+        //internal string GetCountByZip()
         //{
 
         //    var getPostalCodeKeySql = new Sql();
@@ -467,7 +467,7 @@
         //    return finalResult;
         //}
 
-        public List<IndexedLocation> GetPaged(long PageNumber, long ItemsPerPage, string WhereClause)
+        internal List<IndexedLocation> GetPaged(long PageNumber, long ItemsPerPage, string WhereClause)
         {
             Sql sql = new Sql();
             sql.Append(
