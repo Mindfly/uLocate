@@ -1,6 +1,5 @@
-﻿namespace uLocate.WebApi
+﻿namespace uLocate.UI.WebApi
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
@@ -8,12 +7,7 @@
 
     using AutoMapper;
 
-    using uLocate.Data;
-    using uLocate.Persistance;
-    using uLocate.Providers;
-
     using Umbraco.Core.Models;
-    using Umbraco.Core.Persistence;
     using Umbraco.Core.PropertyEditors;
     using Umbraco.Web.Models.ContentEditing;
     using Umbraco.Web.WebApi;
@@ -21,6 +15,9 @@
     [Umbraco.Web.Mvc.PluginController("uLocate")]
     public class DataTypeApiController : UmbracoAuthorizedApiController
     {
+        //private LocationService locationService = new LocationService();
+        //private LocationTypeService locationTypeService = new LocationTypeService();
+
         ///// /umbraco/backoffice/uLocate/DataTypeApi/Test
         //[System.Web.Http.AcceptVerbs("GET")]
         //public bool Test()
@@ -35,7 +32,7 @@
         /// <returns>IEnumerable of GUID & DataType Name</returns>
         public object GetAllDataTypesWithGuids()
         {
-            var dataTypes = Services.DataTypeService.GetAllDataTypeDefinitions();
+            var dataTypes = this.Services.DataTypeService.GetAllDataTypeDefinitions();
             return dataTypes.Select(t => new { guid = t.Key, name = t.Name });
         }
 

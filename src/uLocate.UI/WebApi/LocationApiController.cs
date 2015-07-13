@@ -1,15 +1,12 @@
-﻿namespace uLocate.WebApi
+﻿namespace uLocate.UI.WebApi
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
     using uLocate.Models;
-    using uLocate.Persistance;
     using uLocate.Services;
 
-    using Umbraco.Core;
-    using Umbraco.Core.Cache;
     using Umbraco.Core.Logging;
     using Umbraco.Web.WebApi;
 
@@ -22,9 +19,10 @@
         /// <summary>
         /// The _request cache.
         /// </summary>
-        private ICacheProvider _requestCache = ApplicationContext.Current.ApplicationCache.RequestCache;
+        //private ICacheProvider _requestCache = ApplicationContext.Current.ApplicationCache.RequestCache;
 
         private LocationService locationService = new LocationService();
+        private LocationTypeService locationTypeService = new LocationTypeService();
 
         ///// /umbraco/backoffice/uLocate/LocationApi/Test
         ////[System.Web.Http.AcceptVerbs("GET")]
@@ -87,15 +85,15 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public IndexedLocation Update(IndexedLocation updatedLocation)
         {
-            var key = updatedLocation.Key;
+            //OLD
+            //var key = updatedLocation.Key;
+            //var entity = updatedLocation.ConvertToLocation();
+            //Repositories.LocationRepo.Update(entity);
+            //var result = Repositories.LocationRepo.GetByKey(key);
 
-            var entity = updatedLocation.ConvertToLocation();
-            Repositories.LocationRepo.Update(entity);
+            var result = locationService.UpdateLocation(updatedLocation);
 
-            var result = Repositories.LocationRepo.GetByKey(key);
-            ////uLocate.Helpers.Persistence.UpdateLocation();
-
-            return new IndexedLocation(result);
+            return result;
         }
 
         //// /umbraco/backoffice/uLocate/LocationApi/Delete
@@ -112,7 +110,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public StatusMessage Delete(Guid key)
         {
-            var result = Repositories.LocationRepo.Delete(key);
+            var result = locationService.DeleteLocation(key);
 
             return result;
         }
@@ -136,9 +134,9 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public IndexedLocation GetByKey(Guid key)
         {
-            var result = Repositories.LocationRepo.GetByKey(key);
+            var result = locationService.GetLocation(key);
 
-            return new IndexedLocation(result);
+            return result;
         }
 
         //// /umbraco/backoffice/uLocate/LocationApi/GetAll
@@ -156,8 +154,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public IEnumerable<IndexedLocation> GetByName(string LocName)
         {
-            var matchingLocations = Repositories.LocationRepo.GetByName(LocName);
-            var result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(matchingLocations);
+            var result = locationService.GetLocations(LocName);
 
             return result;
         }
@@ -197,12 +194,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public IEnumerable<IndexedLocation> GetByLocationType(Guid locTypeKey, bool LogInfo = false)
         {
-            //OLD
-            //var filteredLocs = Repositories.LocationRepo.GetByType(locTypeKey);
-            //var result = uLocate.Helpers.Convert.LocationsToJsonLocations(filteredLocs);
-
-            var allLocations = locationService.GetLocations();
-            var result = allLocations.Where(l => l.LocationTypeKey == locTypeKey);
+            var result = this.locationService.GetLocations(locTypeKey);
 
             if (LogInfo)
             {
@@ -219,7 +211,7 @@
         /// Get all locations as a paged list
         /// </summary>
         /// <param name="pageNum">
-        /// The page number.
+        /// The page number. (0-based index assumed)
         /// </param>
         /// <param name="itemsPerPage">
         /// The items per page.
@@ -230,15 +222,16 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public PageOfLocations GetAllPaged(long pageNum, long itemsPerPage)
         {
-            var paged = Repositories.LocationRepo.GetPaged(pageNum + 1, itemsPerPage, string.Empty);
-            var totalCount = Repositories.LocationRepo.GetCount();
-            var result = new PageOfLocations() 
-                            {
-                                 Locations = paged,
-                                 PageNum = pageNum,
-                                 ItemsPerPage = itemsPerPage,
-                                 TotalItems = Convert.ToInt64(totalCount)
-                             };
+            var allPages = locationService.GetAllPages(Convert.ToInt32(itemsPerPage),"", "");
+
+            var result = new PageOfLocations()
+            {
+                Locations = allPages.GetData(Convert.ToInt32(pageNum + 1)),
+                PageNum = pageNum,
+                ItemsPerPage = itemsPerPage,
+                TotalItems = allPages.TotalCount,
+                TotalPages = allPages.PagesCount
+            };
             return result;
         }
 
@@ -249,7 +242,7 @@
         /// Get all locations as a paged list
         /// </summary>
         /// <param name="pageNum">
-        /// Current page for results
+        /// Current page for results (0-based index assumed)
         /// </param>
         /// <param name="itemsPerPage">
         /// Items per Page.
@@ -264,7 +257,7 @@
         /// The sort Order.
         /// </param>
         /// <returns>
-        /// An object of type <see cref="PagedLocations"/>.
+        /// An object of type <see cref="PageOfLocations"/>.
         /// </returns>
         [System.Web.Http.AcceptVerbs("GET")]
         public PageOfLocations GetAllPaged(int pageNum, int itemsPerPage, string orderBy, string searchTerm = "", string sortOrder = "ASC")
@@ -275,7 +268,7 @@
 
             var result = new PageOfLocations()
             {
-                Locations = allPages.GetData(pageNum),
+                Locations = allPages.GetData(Convert.ToInt32(pageNum + 1)),
                 PageNum = pageNum,
                 ItemsPerPage = itemsPerPage,
                 TotalItems = allPages.TotalCount,
@@ -308,7 +301,9 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public PagedLocations GetAllPages(int itemsPerPage, string orderBy = "", string searchTerm = "", string sortOrder = "ASC")
         {
-            var allPages = (PagingCollection<IndexedLocation>)_requestCache.GetCacheItem("paged-locations-search-pages", () => locationService.GetAllPages(itemsPerPage, orderBy, searchTerm, sortOrder.ToUpper()));
+            //var allPages = (PagingCollection<IndexedLocation>)_requestCache.GetCacheItem("paged-locations-search-pages", () => locationService.GetAllPages(itemsPerPage, orderBy, searchTerm, sortOrder.ToUpper()));
+
+            var allPages = locationService.GetAllPages(itemsPerPage, orderBy, searchTerm, sortOrder.ToUpper());
 
             var result = new PagedLocations()
             {
@@ -344,15 +339,15 @@
         /// <returns>
         /// An empty <see cref="IndexedLocation"/>.
         /// </returns>
-        [System.Web.Http.AcceptVerbs("GET")]
-        public IndexedLocation GetEmptyJsonLocation()
-        {
-            var result = new IndexedLocation();
-            var emptyProp = new IndexedPropertyData();
-            result.CustomPropertyData.Add(emptyProp);
+        //[System.Web.Http.AcceptVerbs("GET")]
+        //public IndexedLocation GetEmptyJsonLocation()
+        //{
+        //    var result = new IndexedLocation();
+        //    var emptyProp = new IndexedPropertyData();
+        //    result.CustomPropertyData.Add(emptyProp);
 
-            return result;
-        }
+        //    return result;
+        //}
 
 
 

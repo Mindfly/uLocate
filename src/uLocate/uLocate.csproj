@@ -244,6 +244,7 @@
     <Compile Include="Data\Dtos\postalCodeCounterDto.cs" />
     <Compile Include="Helpers\Convert.cs" />
     <Compile Include="Helpers\DataValuesHelper.cs" />
+    <Compile Include="Indexer\LocationIndexManager.cs" />
     <Compile Include="Indexer\LocationIndexer.cs" />
     <Compile Include="IO\DynamicLocationFlat.cs" />
     <Compile Include="IO\Export.cs" />
@@ -251,6 +252,7 @@
     <Compile Include="Data\Dtos\cmsDataTypePreValuesDto.cs" />
     <Compile Include="Models\PagingCollection.cs" />
     <Compile Include="Models\SearchedLocation.cs" />
+    <Compile Include="Services\ImportExportService.cs" />
     <Compile Include="Services\PropertyService.cs" />
     <Compile Include="Services\LocationTypeService.cs" />
     <Compile Include="Services\LocationService.cs" />
@@ -323,7 +325,7 @@
     <Compile Include="Persistance\Repositories.cs" />
     <Compile Include="Persistance\RepositoryBase.cs" />
     <Compile Include="Providers\DatatypeCacheProvider.cs" />
-    <Compile Include="StatusMessage.cs" />
+    <Compile Include="Models\StatusMessage.cs" />
     <Compile Include="Properties\AssemblyVisibility.cs" />
     <Compile Include="Helpers\GeographyHelper.cs" />
     <Compile Include="Helpers\UtilityExtensions.cs" />
@@ -338,14 +340,7 @@
     <Compile Include="Providers\GeocodeProviderBase.cs" />
     <Compile Include="Providers\GeocodeProviderSettings.cs" />
     <Compile Include="Providers\IGeocodeProvider.cs" />
-    <Compile Include="WebApi\DataTypeApiController.cs" />
-    <Compile Include="WebApi\MaintenanceApiController.cs" />
-    <Compile Include="WebApi\LocationSearchApiController.cs" />
-    <Compile Include="WebApi\LocationTypeApiController.cs" />
-    <Compile Include="WebApi\ImportExportApiController.cs" />
-    <Compile Include="WebApi\TestApiController.cs" />
-    <Compile Include="WebApi\InitializationApiController.cs" />
-    <Compile Include="WebApi\LocationApiController.cs" />
+    <Compile Include="TestApiController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

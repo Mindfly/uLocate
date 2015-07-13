@@ -1,4 +1,4 @@
-﻿namespace uLocate.WebApi
+﻿namespace uLocate.UI.WebApi
 {
  
     using System.Web.Http;

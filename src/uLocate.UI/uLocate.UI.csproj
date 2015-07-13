@@ -211,6 +211,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="uLocateSection.cs" />
     <Compile Include="uLocateTreeController.cs" />
+    <Compile Include="WebApi\DataTypeApiController.cs" />
+    <Compile Include="WebApi\ImportExportApiController.cs" />
+    <Compile Include="WebApi\InitializationApiController.cs" />
+    <Compile Include="WebApi\LocationApiController.cs" />
+    <Compile Include="WebApi\LocationSearchApiController.cs" />
+    <Compile Include="WebApi\LocationTypeApiController.cs" />
+    <Compile Include="WebApi\MaintenanceApiController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\NuGetBackup\20141124-184056\bin\Debug\" />

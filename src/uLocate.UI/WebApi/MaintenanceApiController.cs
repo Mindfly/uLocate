@@ -1,21 +1,13 @@
-﻿namespace uLocate.WebApi
+﻿namespace uLocate.UI.WebApi
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Web.Http;
 
-    using uLocate.Configuration;
-    using uLocate.Data;
     using uLocate.Helpers;
     using uLocate.Models;
-    using uLocate.Persistance;
     using uLocate.Services;
 
-    using Umbraco.Core;
-    using Umbraco.Core.Persistence;
     using Umbraco.Web.WebApi;
 
     /// <summary>
@@ -63,8 +55,8 @@
             var maintColl = new MaintenanceCollection();
             maintColl.Title = "Database 'Geography' Data Needs Updated";
 
-            maintColl.EditableLocations = Repositories.LocationRepo.GetAllMissingDbGeo();
-            maintColl.ConvertToJsonLocationsOnly();
+            maintColl.IndexedLocations = locService.GetAllMissingDbGeo();
+            //maintColl.ConvertToJsonLocationsOnly();
 
             return maintColl;
         }
@@ -128,7 +120,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public StatusMessage UpdateCoordinatesAsNeeded()
         {
-            var Result = Repositories.LocationRepo.UpdateGeoForAllNeeded();
+            var Result = locService.UpdateCoordinatesAsNeeded();
 
             return Result;
         }
@@ -153,13 +145,12 @@
             var Msg = new StatusMessage();
             Msg.ObjectName = LocName;
             
-
-            var matchingLocations = Repositories.LocationRepo.GetByName(LocName);
+            var matchingLocations = locService.GetLocations(LocName);
             if (matchingLocations.Any())
             {
                 foreach (var loc in matchingLocations)
                 {
-                    Repositories.LocationRepo.Delete(loc);
+                   locService.DeleteLocation(loc.Key);
                 }
 
                 Msg.Message = string.Format("{0} location(s) named '{1}' were found and deleted.", matchingLocations.Count(), LocName);
@@ -186,15 +177,15 @@
         public StatusMessage DeleteAllLocationsOfType(Guid LocationTypeKey)
         {
             var Msg = new StatusMessage();
-            var locTypeName = Repositories.LocationTypeRepo.GetByKey(LocationTypeKey).Name;
+            var locTypeName = locTypeService.GetLocationType(LocationTypeKey).Name;
             Msg.ObjectName = locTypeName;
 
-            var matchingLocations = Repositories.LocationRepo.GetByType(LocationTypeKey);
+            var matchingLocations = locService.GetLocations(LocationTypeKey);
             if (matchingLocations.Any())
             {
                 foreach (var loc in matchingLocations)
                 {
-                    Repositories.LocationRepo.Delete(loc);
+                  locService.DeleteLocation(loc.Key);
                 }
 
                 Msg.Message = string.Format("{0} location(s) of type '{1}' were found and deleted.", matchingLocations.Count(), locTypeName);
@@ -229,7 +220,7 @@
                 int delCounter = 0;
                 List<Guid> allKeys = new List<Guid>();
 
-                var allLocations = Repositories.LocationRepo.GetAll();
+                var allLocations = locService.GetLocations();
                 var totCounter = allLocations.Count();
 
                 foreach (var loc in allLocations)
@@ -239,7 +230,7 @@
 
                 foreach (var key in allKeys)
                 {
-                    var stat = Repositories.LocationRepo.Delete(key);
+                    var stat = locService.DeleteLocation(key);
                     ResultMsg.InnerStatuses.Add(stat);
                     if (stat.Success)
                     {

@@ -1,20 +1,19 @@
-﻿namespace uLocate.WebApi
+﻿namespace uLocate.UI.WebApi
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Web.Http;
 
     using uLocate.Models;
-    using uLocate.Persistance;
+    using uLocate.Services;
 
-    using umbraco.cms.businesslogic.packager;
-
-    using Umbraco.Core.Media;
     using Umbraco.Web.WebApi;
 
     public class LocationSearchApiController : UmbracoApiController
     {
+        private LocationService locationService = new LocationService();
+        private LocationTypeService locationTypeService = new LocationTypeService();
+
         /// <summary>
         /// Used for testing
         /// /umbraco/api/LocationSearchApi/Test
@@ -31,9 +30,11 @@
         [AcceptVerbs("GET", "POST")]
         public IEnumerable<KeyValuePair<string, string>> GetAllPropertyDataByAlias(string Alias)
         {
-            var locatonPropertyData = Repositories.LocationPropertyDataRepo.GetAll().ToList();
+            //TODO: Check if we need this at all
+
+            var locationPropertyData = this.locationService.GetAllPropertyData();
             var propertyData = new List<KeyValuePair<string, string>>();
-            foreach (var prop in locatonPropertyData)
+            foreach (var prop in locationPropertyData)
             {
                 if (prop.PropertyAlias == Alias)
                 {
@@ -46,9 +47,9 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public IndexedLocation GetByKey(Guid Key)
         {
-            var Result = Repositories.LocationRepo.GetByKey(Key);
+            var result = this.locationService.GetLocation(Key);
 
-            return new IndexedLocation(Result);
+            return result;
         }
 
         #region Search by Miles
@@ -66,11 +67,9 @@
         [AcceptVerbs("GET", "POST")]
         public IEnumerable<IndexedLocation> Search(double Lat, double Long, int Miles)
         {
-            var Result =
-                uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(
-                    Repositories.LocationRepo.GetByGeoSearch(Lat, Long, Miles));
+            var result =this.locationService.GetByGeoSearch(Lat, Long, Miles);
 
-            return Result;
+            return result;
         }
 
         // /umbraco/api/LocationSearchApi/Search?Lat=40.7762965&Long=-73.950718&Miles=20&LocType=xxx
@@ -86,11 +85,9 @@
         [AcceptVerbs("GET", "POST")]
         public IEnumerable<IndexedLocation> Search(double Lat, double Long, int Miles, Guid LocType)
         {
-            var Result =
-                uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(
-                    Repositories.LocationRepo.GetByGeoSearch(Lat, Long, Miles, LocType));
-
-            return Result;
+            var result = this.locationService.GetByGeoSearch(Lat, Long, Miles, LocType);
+               
+            return result;
         }
 
         // /umbraco/api/LocationSearchApi/Search?Lat=40.7762965&Long=-73.950718&Miles=20&LocTypeAlias=Business
@@ -106,12 +103,10 @@
         [AcceptVerbs("GET", "POST")]
         public IEnumerable<IndexedLocation> Search(double Lat, double Long, int Miles, string LocTypeAlias)
         {
-            var LocType = Repositories.LocationTypeRepo.GetByName(LocTypeAlias).FirstOrDefault().Key;
-            var Result =
-                uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(
-                    Repositories.LocationRepo.GetByGeoSearch(Lat, Long, Miles, LocType));
+            var locTypeKey = this.locationTypeService.GetLocationType(LocTypeAlias).Key;
+            var result = this.locationService.GetByGeoSearch(Lat, Long, Miles, locTypeKey); 
 
-            return Result;
+            return result;
         }
 
         /// <summary>
@@ -126,7 +121,7 @@
         [AcceptVerbs("GET", "POST")]
         public IEnumerable<IndexedLocation> Search(string postalCode)
         {
-            var result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetByPostalCode(postalCode));
+            var result = this.locationService.GetLocationsByPostalCode(postalCode);
 
             return result;            
         }
@@ -147,9 +142,9 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public IEnumerable<IndexedLocation> GetNearestLocations(double Lat, double Long, int Qty)
         {
-            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty));
+            var result = this.locationService.GetNearestLocations(Lat, Long, Qty);
 
-            return Result;
+            return result;
         }
 
         // /umbraco/api/LocationSearchApi/GetNearestLocations?Lat=40.7762965&Long=-73.950718&Qty=10&LocType=xxx
@@ -166,9 +161,9 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public IEnumerable<IndexedLocation> GetNearestLocations(double Lat, double Long, int Qty, Guid LocType)
         {
-            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty, LocType));
+            var result = this.locationService.GetNearestLocations(Lat, Long, Qty, LocType);
 
-            return Result;
+            return result;
         }
 
         // /umbraco/api/LocationSearchApi/GetNearestLocations?Lat=40.7762965&Long=-73.950718&Qty=10&LocTypeAlias=Business
@@ -186,16 +181,20 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public IEnumerable<IndexedLocation> GetNearestLocations(double Lat, double Long, int Qty, string LocTypeAlias)
         {
-            var LocType = Repositories.LocationTypeRepo.GetByName(LocTypeAlias).FirstOrDefault().Key;
-            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetNearestLocations(Lat, Long, Qty, LocType));
+            var locTypeKey = locationTypeService.GetLocationType(LocTypeAlias).Key;
 
+            var Result = locationService.GetNearestLocations(Lat, Long, Qty, locTypeKey);
+              
             return Result;
         } 
+
+
         #endregion
 
         #region Get by Country Code
 
         // /umbraco/api/LocationSearchApi/GetByCountry?CountryCode=GB
+
         /// <summary>
         /// Get the locations with a matching Country Code.
         /// </summary>
@@ -206,12 +205,13 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public IEnumerable<IndexedLocation> GetByCountry(string CountryCode)
         {
-            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetByCountry(CountryCode));
+            var Result = locationService.GetLocationsByCountry(CountryCode);
 
             return Result;
         }
 
         // /umbraco/api/LocationSearchApi/GetNearestLocations?CountryCode=GB&LocType=xxx
+
         /// <summary>
         /// Get the locations with a matching Country Code.
         /// </summary>
@@ -223,9 +223,9 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public IEnumerable<IndexedLocation> GetByCountry(string CountryCode, Guid LocType)
         {
-            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetByCountry(CountryCode, LocType));
+            var result = locationService.GetLocationsByCountry(CountryCode, LocType);
 
-            return Result;
+            return result;
         }
 
         // /umbraco/api/LocationSearchApi/GetNearestLocations?CountryCode=GB&LocTypeAlias=Business
@@ -240,10 +240,10 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public IEnumerable<IndexedLocation> GetByCountry(string CountryCode, string LocTypeAlias)
         {
-            var LocType = Repositories.LocationTypeRepo.GetByName(LocTypeAlias).FirstOrDefault().Key;
-            var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetByCountry(CountryCode, LocType));
+            var locTypeKey = locationTypeService.GetLocationType(LocTypeAlias).Key;
+            var result = locationService.GetLocationsByCountry(CountryCode, locTypeKey);
 
-            return Result;
+            return result;
         }
         #endregion
     }

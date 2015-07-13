@@ -1,17 +1,11 @@
-﻿namespace uLocate.WebApi
+﻿namespace uLocate.UI.WebApi
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Web.Http;
 
-    using uLocate.Data;
     using uLocate.Models;
-    using uLocate.Persistance;
+    using uLocate.Services;
 
-    using Umbraco.Core;
     using Umbraco.Web.WebApi;
 
     /// <summary>
@@ -20,12 +14,15 @@
     [Umbraco.Web.Mvc.PluginController("uLocate")]
     public class LocationTypeApiController : UmbracoAuthorizedApiController
     {
+        private LocationService locationService = new LocationService();
+        private LocationTypeService locationTypeService = new LocationTypeService();
+
         /// /umbraco/backoffice/uLocate/LocationTypeApi/Test
-        [System.Web.Http.AcceptVerbs("GET")]
-        public bool Test()
-        {
-            return true;
-        }
+        //[System.Web.Http.AcceptVerbs("GET")]
+        //public bool Test()
+        //{
+        //    return true;
+        //}
 
         #region Location Types
 
@@ -42,14 +39,15 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string LocationTypeName)
         {
-            LocationType newLocType = new LocationType();
-            newLocType.Name = LocationTypeName;
-            Repositories.LocationTypeRepo.Insert(newLocType);
+            //OLD
+            //LocationType newLocType = new LocationType();
+            //newLocType.Name = LocationTypeName;
+            //Repositories.LocationTypeRepo.Insert(newLocType);
 
             //var Result = Repositories.LocationTypeRepo.GetByKey(newLocType.Key);
-            var Result = newLocType.Key;
+            var result = locationService.CreateLocation(LocationTypeName);
 
-            return Result;
+            return result;
         }
 
         /// <summary>
@@ -65,24 +63,13 @@
         [System.Web.Http.AcceptVerbs("GET", "POST")]
         public JsonLocationType Update(JsonLocationType UpdatedLocationTypeJson)
         {
-            ////First, do properties
-            //foreach (var jsonProp in UpdatedLocationTypeJson.Properties)
-            //{
-            //    LocationTypeProperty UpdatedProp = jsonProp.ConvertToLocationTypeProperty();
-            //}
+            LocationType updatedLocationType = UpdatedLocationTypeJson.ConvertToLocationType();
 
-            //then do LT
-            LocationType UpdatedLocationType = UpdatedLocationTypeJson.ConvertToLocationType();
+            var fullResult = locationTypeService.Update(updatedLocationType);
 
-            Repositories.LocationTypeRepo.Update(UpdatedLocationType);
+            var jsonResult = new JsonLocationType(fullResult);
 
-            var FullResult = Repositories.LocationTypeRepo.GetByKey(UpdatedLocationType.Key);
-
-            Repositories.LocationRepo.UpdateWithNewProps(FullResult.Key);
-
-            var JsonResult = new JsonLocationType(FullResult);
-
-            return JsonResult;
+            return jsonResult;
         }
 
         /// <summary>
@@ -98,9 +85,9 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public StatusMessage Delete(Guid Key)
         {
-            var Result = Repositories.LocationTypeRepo.Delete(Key, true);
+            var result = locationTypeService.Delete(Key);
 
-            return Result;
+            return result;
         }
 
         /// <summary>
@@ -133,7 +120,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public JsonLocationType GetByKey(Guid Key)
         {
-            var loc = Repositories.LocationTypeRepo.GetByKey(Key);
+            var loc = locationTypeService.GetLocationType(Key);
 
             var result = new JsonLocationType(loc);
 
@@ -151,7 +138,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public List<JsonLocationType> GetAll()
         {
-            var locationTypes = Repositories.LocationTypeRepo.GetAll().ToList();
+            var locationTypes = locationTypeService.GetLocationTypes();
 
             var returnList = new List<JsonLocationType>();
 
@@ -180,9 +167,9 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public LocationTypeProperty GetPropertyByKey(Guid Key)
         {
-            var Result = Repositories.LocationTypePropertyRepo.GetByKey(Key);
+            var result = locationTypeService.GetProperty(Key);
 
-            return Result;
+            return result;
         }
 
         /// <summary>
@@ -195,14 +182,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public List<LocationTypeProperty> GetAllProperties()
         {
-            var props = Repositories.LocationTypePropertyRepo.GetAll().ToList();
-
-            //var returnList = new List<JsonLocationType>();
-
-            //foreach (var loc in locationTypes)
-            //{
-            //    returnList.Add(new JsonLocationType(loc));
-            //}
+            var props = locationTypeService.GetProperties();
 
             return props;
         } 

@@ -1,20 +1,15 @@
-﻿namespace uLocate.WebApi
+﻿namespace uLocate.UI.WebApi
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
-    using System.Web;
     using System.Web.Http;
 
-    using uLocate.Data;
     using uLocate.Models;
-    using uLocate.Persistance;
+    using uLocate.Services;
 
-    using Umbraco.Core;
     using Umbraco.Web.WebApi;
 
     /// <summary>
@@ -23,6 +18,9 @@
     [Umbraco.Web.Mvc.PluginController("uLocate")]
     public class ImportExportApiController : UmbracoAuthorizedApiController
     {
+        uLocate.Services.ImportExportService importExportService = new ImportExportService();
+
+
         /// /umbraco/backoffice/uLocate/ImportExportApi/Test
         //[AcceptVerbs("GET")]
         //public bool Test()
@@ -43,8 +41,8 @@
         public StatusMessage ImportLocationsCSV()
         {
             string file = "~/uLocateLocationImport.csv";
-            
-            return uLocate.IO.Import.LocationsCSV(file);
+
+            return importExportService.ImportLocationsCSV(file);
         }
 
         /// <summary>
@@ -62,7 +60,7 @@
         {
             string file = "~/uLocateLocationImport.csv";
 
-            return uLocate.IO.Import.LocationsCSV(file, LocationTypeKey);
+            return importExportService.ImportLocationsCSV(file, LocationTypeKey);
         }
 
         /// <summary>
@@ -89,7 +87,7 @@
                 file = FileName;
             }
 
-            return uLocate.IO.Import.LocationsCSV(file);
+            return importExportService.ImportLocationsCSV(file);
         }
 
         /// <summary>
@@ -119,7 +117,7 @@
                 file = FileName;
             }
 
-            return uLocate.IO.Import.LocationsCSV(file, LocationTypeKey);
+            return importExportService.ImportLocationsCSV(file, LocationTypeKey);
 
             //if (file.EndsWith(".csv"))
             //{
@@ -165,7 +163,7 @@
                 file = FileName;
             }
 
-            return uLocate.IO.Import.LocationsCSV(file, LocationTypeKey, SkipGeocoding);
+            return importExportService.ImportLocationsCSV(file, LocationTypeKey, SkipGeocoding);
         }
 
         /// <summary>
@@ -184,7 +182,7 @@
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
 
-            var root = HttpContext.Current.Server.MapPath("~/App_Data/Temp/FileUploads");
+            var root = System.Web.HttpContext.Current.Server.MapPath("~/App_Data/Temp/FileUploads");
             Directory.CreateDirectory(root);
             var provider = new MultipartFormDataStreamProvider(root);
             var result = await Request.Content.ReadAsMultipartAsync(provider);
@@ -209,7 +207,7 @@
         [AcceptVerbs("GET")]
         public string GetListofColumnHeaders(Guid LocationTypeKey)
         {
-            return uLocate.IO.Export.GetListofColumnHeaders(LocationTypeKey);
+            return importExportService.GetListofColumnHeaders(LocationTypeKey);
         }
 
         /// <summary> 
@@ -218,7 +216,7 @@
         [AcceptVerbs("GET")]
         public StatusMessage ExportAllLocations(Guid LocationTypeKey)
         {
-            return uLocate.IO.Export.ExportAllLocations(LocationTypeKey);
+            return importExportService.ExportAllLocations(LocationTypeKey);
         }
 
         #endregion
