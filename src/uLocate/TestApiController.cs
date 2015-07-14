@@ -27,6 +27,14 @@
             return this.locationIndexManager.RemoveLocation(LocationKey);
         }
 
+        /// /umbraco/backoffice/uLocate/TestApi/ReIndex
+
+        [AcceptVerbs("GET")]
+        public StatusMessage ReIndex()
+        {
+            return this.locationIndexManager.IndexAllLocations();
+        }
+
 
         /// <summary>
         /// Used for testing

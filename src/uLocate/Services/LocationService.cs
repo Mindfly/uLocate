@@ -29,10 +29,9 @@
 
         private LocationTypeService locTypeService = new LocationTypeService();
 
-        //private string SearcherName = "uLocateLocationSearcher";
         private LocationIndexManager locationIndexManager = new LocationIndexManager();
 
-        private string IndexNodeTypeName = "ulocatelocationdata";
+        //private string IndexNodeTypeName = locationIndexManager.IndexTypeName;
 
         //public LocationService()
         //{
@@ -245,7 +244,7 @@
             //var result = (IEnumerable<EditableLocation>)_requestCache.GetCacheItem("all-locations", () => Repositories.LocationRepo.GetAll());
             //var result = Repositories.LocationRepo.GetAll();
 
-            var searcher = locationIndexManager.uLocateLocationSearcher;
+            var searcher = locationIndexManager.uLocateLocationSearcher();
             var searchCriteria = searcher.CreateSearchCriteria("*");
             var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
 
@@ -472,7 +471,7 @@
             //var result = (IEnumerable<EditableLocation>)_requestCache.GetCacheItem("all-locations", () => Repositories.LocationRepo.GetAll());
             //var result = Repositories.LocationRepo.GetAll();
 
-            var searcher = locationIndexManager.uLocateLocationSearcher;
+            var searcher = locationIndexManager.uLocateLocationSearcher();
             var searchCriteria = searcher.CreateSearchCriteria("*");
             var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
 
