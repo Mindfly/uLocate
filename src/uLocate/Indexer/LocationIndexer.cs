@@ -1,22 +1,21 @@
 ﻿namespace uLocate.Indexer
 {
     using System.Collections.Generic;
-    using System.Text;
 
     using Examine;
     using Examine.LuceneEngine;
 
-    using uLocate.Models;
     using uLocate.Persistance;
 
-    public class LocationIndexer : Examine.LuceneEngine.ISimpleDataService
-    {
-        //private string IndexNodeTypeName = "ulocatelocationdata";
+    using Umbraco.Core.Logging;
 
-        private LocationIndexManager locationIndexManager = new LocationIndexManager();
-        
+    public class LocationIndexer : Examine.LuceneEngine.ISimpleDataService
+    {       
         public IEnumerable<SimpleDataSet> GetAllData(string indexType)
         {
+            LogHelper.Debug<LocationIndexer>("GetAllData STARTED");
+            LocationIndexManager locationIndexManager = new LocationIndexManager();
+
             var uLocateLocationIndexer = ExamineManager.Instance.IndexProviderCollection[locationIndexManager.IndexerName];
 
             var counterId = locationIndexManager.GetMaxId(indexType) + 1;
@@ -35,6 +34,8 @@
 
                 //yield return sds;
             }
+
+            LogHelper.Debug<LocationIndexer>("GetAllData COMPLETE");
 
             return indexData;
           }

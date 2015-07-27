@@ -4,20 +4,25 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Xml.Linq;
 
     using Examine;
     using Examine.LuceneEngine;
     using Examine.Providers;
 
     using uLocate.Models;
+    using uLocate.Services;
 
     using Umbraco.Core;
+    using Umbraco.Core.Logging;
 
     internal class LocationIndexManager
     {
         public string IndexTypeName = "location";
         public string SearcherName = "uLocateLocationSearcher";
         public string IndexerName = "uLocateLocationIndexer";
+
+        private LocationService locationService = new LocationService();
 
         //private BaseIndexProvider uLocateLocationIndexer = ExamineManager.Instance.IndexProviderCollection[IndexerName];
 
@@ -73,7 +78,7 @@
             return sds;
         } 
 
-        internal StatusMessage RemoveLocation(Guid LocationKey)
+        internal StatusMessage RemoveLocation(Guid LocationKey, bool ReIndexIfNecessary = true)
         {
             var uLocateLocationIndexer = this.uLocateLocationIndexer(); //ExamineManager.Instance.IndexProviderCollection[this.IndexerName];
             var uLocateLocationSearcher = this.uLocateLocationSearcher(); //ExamineManager.Instance.SearchProviderCollection[this.SearcherName];
@@ -93,20 +98,29 @@
             if (countMatches == 0)
             {
                 //No matches
-                statusMsg.Success = false;
+                statusMsg.Success = true;
                 statusMsg.Code = "NoMatch";
-                statusMsg.Message = "No matching Location found in the index.";
+                statusMsg.Message = "No matching Location found in the index. Nothing to remove.";
             }
             else if (countMatches > 1)
             {
                 //more than 1 match
-                statusMsg.Success = false;
-                statusMsg.Code = "DuplicateMatches";
-                statusMsg.Message = string.Format("{0} matching Locations were found in the index.", countMatches);
+
+                if (ReIndexIfNecessary)
+                {
+                    this.IndexAllLocations();
+                    statusMsg = this.RemoveLocation(LocationKey, false);
+                }
+                else
+                {
+                    statusMsg.Success = false;
+                    statusMsg.Code = "DuplicateMatches";
+                    statusMsg.Message = string.Format("{0} matching Locations were found in the index.", countMatches);
+                }
             }
             else
             {
-                //Exactly 1 match
+                //Exactly 1 match - Remove it
                 var location = searchedLocations.Select(n => n.IndexedLocation).FirstOrDefault();
             
                 statusMsg.ObjectName = location.Name;
@@ -114,25 +128,38 @@
                 var examineId = location.IndexNodeId;
                 if (examineId != 0)
                 {
-                    statusMsg.Success = true;
-                    statusMsg.Code = "MatchFoundAndDeleted";
                     ExamineManager.Instance.DeleteFromIndex(examineId.ToString(), this.uLocateLocationIndexer().AsEnumerableOfOne());
 
+                    statusMsg.Success = true;
+                    statusMsg.Code = "MatchFoundAndDeleted";
                     statusMsg.Message = string.Format("The Location named '{0}' has been removed from the index. [Index #{1}]", location.Name, examineId);
                 }
                 else
                 {
-                    statusMsg.Success = false;
-                    statusMsg.Code = "MatchFoundNotDeleted";
-
-                    statusMsg.Message = string.Format("{0} Location was found, but has an id of {1} and has not been removed from the index.", location.Name, examineId);
+                    if (ReIndexIfNecessary)
+                    {
+                        this.IndexAllLocations();
+                        statusMsg = this.RemoveLocation(LocationKey, false);
+                    }
+                    else
+                    {
+                        statusMsg.Success = false;
+                        statusMsg.Code = "MatchFoundNotDeleted";
+                        statusMsg.Message =
+                            string.Format(
+                                "{0} Location was found, but has an id of {1} and has not been removed from the index.",
+                                location.Name,
+                                examineId);
+                    }
                 }
             }
+
+            LogHelper.Info<LocationIndexManager>(statusMsg.Message);
 
             return statusMsg;
         }
 
-        internal StatusMessage UpdateLocation(Guid LocationKey)
+        internal StatusMessage UpdateLocation(Guid LocationKey, bool ReIndexIfNecessary = true)
         {
             var uLocateLocationIndexer = this.uLocateLocationIndexer(); //ExamineManager.Instance.IndexProviderCollection[this.IndexerName];
             var uLocateLocationSearcher = this.uLocateLocationSearcher(); //ExamineManager.Instance.SearchProviderCollection[this.SearcherName];
@@ -152,42 +179,118 @@
             if (countMatches == 0)
             {
                 //No matches
-                //Add to index
-                statusMsg.Success = false;
-                statusMsg.Code = "NoMatch";
-                statusMsg.Message = "No matching Location found in the index.";
+
+                if (ReIndexIfNecessary)
+                {
+                    this.IndexAllLocations();
+                    statusMsg = this.UpdateLocation(LocationKey, false);
+                }
+                else
+                {
+                    //Add to index
+                    var editableLocation = locationService.GetLocation(LocationKey).ConvertToEditableLocation();
+
+                    statusMsg.ObjectName = editableLocation.Name;
+
+                    var examineId = this.GetMaxId(this.IndexTypeName) + 1;
+                    var sds = this.IndexLocation(editableLocation, this.IndexTypeName, examineId);
+                    var examineNode = sds.RowData.ToExamineXml(examineId, this.IndexTypeName);
+                    ExamineManager.Instance.ReIndexNode(
+                        examineNode,
+                        this.IndexTypeName,
+                        this.uLocateLocationIndexer().AsEnumerableOfOne());
+
+                    statusMsg.Success = true;
+                    statusMsg.Code = "AddedToIndex";
+                    statusMsg.Message = "No matching Location found in the index, added.";
+                }
             }
             else if (countMatches > 1)
             {
                 //more than 1 match
-                statusMsg.Success = false;
-                statusMsg.Code = "DuplicateMatches";
-                statusMsg.Message = string.Format("{0} matching Locations were found in the index.", countMatches);
+
+                if (ReIndexIfNecessary)
+                {
+                    this.IndexAllLocations();
+                    statusMsg = this.UpdateLocation(LocationKey, false);
+
+                    //Reindex all to clean up
+                    //var childMsg = this.IndexAllLocations();
+                    //statusMsg.Success = childMsg.Success;
+                    //statusMsg.InnerStatuses.Add(childMsg);
+                    //statusMsg.Code = "DuplicateMatches";
+                    //if (childMsg.Success)
+                    //{
+                    //    statusMsg.Message = string.Format("{0} matching Locations were found in the index. All have been re-indexed.", countMatches);
+                    //}
+                    //else
+                    //{
+                    //    statusMsg.Message = string.Format("{0} matching Locations were found in the index. There was a problem re-indexing.", countMatches);
+                    //}
+                }
+                else
+                {
+                    statusMsg.Code = "DuplicateMatches";
+                    statusMsg.Message = string.Format("{0} matching Locations were found in the index. There was a problem re-indexing.", countMatches);
+                }  
             }
             else
             {
                 //Exactly 1 match
-                var location = searchedLocations.Select(n => n.IndexedLocation).FirstOrDefault();
+                var indexedLocation = searchedLocations.Select(n => n.IndexedLocation).FirstOrDefault();
+                var editableLocation = indexedLocation.ConvertToEditableLocation();
 
-                statusMsg.ObjectName = location.Name;
+                statusMsg.ObjectName = indexedLocation.Name;
 
-                var examineId = location.IndexNodeId;
+                var examineId = indexedLocation.IndexNodeId;
                 if (examineId != 0)
                 {
-                    statusMsg.Success = true;
-                    statusMsg.Code = "MatchFoundAndDeleted";
                     ExamineManager.Instance.DeleteFromIndex(examineId.ToString(), this.uLocateLocationIndexer().AsEnumerableOfOne());
 
-                    statusMsg.Message = string.Format("The Location named '{0}' has been removed from the index. [Index #{1}]", location.Name, examineId);
+                    var sds = this.IndexLocation(editableLocation, this.IndexTypeName, examineId);
+                    var examineNode = sds.RowData.ToExamineXml(examineId, this.IndexTypeName);
+                    ExamineManager.Instance.ReIndexNode(examineNode, this.IndexTypeName, this.uLocateLocationIndexer().AsEnumerableOfOne());
+
+                    statusMsg.Success = true;
+                    statusMsg.Code = "MatchFoundAndUpdated";
+                    statusMsg.Message = string.Format("The Location named '{0}' has been removed from the index and re-added. [Index #{1}]", indexedLocation.Name, examineId);
                 }
                 else
                 {
-                    statusMsg.Success = false;
-                    statusMsg.Code = "MatchFoundNotDeleted";
-
-                    statusMsg.Message = string.Format("{0} Location was found, but has an id of {1} and has not been removed from the index.", location.Name, examineId);
+                    if (ReIndexIfNecessary)
+                    {
+                        this.IndexAllLocations();
+                        statusMsg = this.UpdateLocation(LocationKey, false);
+                    }
+                    else
+                    {
+                        //Reindex all to clean up
+                        var childMsg = this.IndexAllLocations();
+                        statusMsg.Success = childMsg.Success;
+                        statusMsg.InnerStatuses.Add(childMsg);
+                        statusMsg.Code = "MatchFoundDifferentId";
+                        if (childMsg.Success)
+                        {
+                            statusMsg.Message =
+                                string.Format(
+                                    "{0} Location was found, but has an id of {1}. All locations have been re-indexed.",
+                                    indexedLocation.Name,
+                                    examineId);
+                        }
+                        else
+                        {
+                            statusMsg.Message =
+                                string.Format(
+                                    "{0} Location was found, but has an id of {1}. There was a problem re-indexing.",
+                                    indexedLocation.Name,
+                                    examineId);
+                        }
+                    }
                 }
             }
+
+            var secondaryMsg = statusMsg.InnerStatuses.Any() ? statusMsg.InnerStatuses[0].Message : "no inner message";
+            LogHelper.Info<LocationIndexManager>(string.Format("{0} [{1}]", statusMsg.Message, secondaryMsg));
 
             return statusMsg;
         }
@@ -200,6 +303,8 @@
 
             statusMsg.Success = true;
             statusMsg.Message = "All Locations Indexed.";
+
+            LogHelper.Info<LocationIndexManager>(statusMsg.Message);
 
             return statusMsg;
         }

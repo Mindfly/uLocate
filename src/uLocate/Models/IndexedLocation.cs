@@ -88,7 +88,7 @@
             }
         }
 
-        public EditableLocation ConvertToLocation()
+        public EditableLocation ConvertToEditableLocation()
         {
             EditableLocation Entity;
 

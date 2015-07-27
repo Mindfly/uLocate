@@ -48,7 +48,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string locationName)
         {
-            return locationService.CreateLocation(locationName);
+            return locationService.CreateLocation(locationName).Key;
         }
 
         //// /umbraco/backoffice/uLocate/LocationApi/Create?LocationName=xxx&LocationTypeGuid=xxx
@@ -68,7 +68,7 @@
         [System.Web.Http.AcceptVerbs("GET")]
         public Guid Create(string locationName, Guid locationTypeGuid)
         {
-            return locationService.CreateLocation(locationName, locationTypeGuid);
+            return locationService.CreateLocation(locationName, locationTypeGuid).Key;
         }
 
         //// /umbraco/backoffice/uLocate/LocationApi/Update
@@ -87,7 +87,7 @@
         {
             //OLD
             //var key = updatedLocation.Key;
-            //var entity = updatedLocation.ConvertToLocation();
+            //var entity = updatedLocation.ConvertToEditableLocation();
             //Repositories.LocationRepo.Update(entity);
             //var result = Repositories.LocationRepo.GetByKey(key);
 
@@ -348,9 +348,6 @@
 
         //    return result;
         //}
-
-
-
 
         #endregion
     }

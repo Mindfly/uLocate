@@ -1,12 +1,15 @@
 ﻿namespace uLocate.WebApi
 {
     using System;
+    using System.Collections.Generic;
     using System.Web.Http;
 
     using uLocate.Indexer;
     using uLocate.Models;
+    using uLocate.Persistance;
     using uLocate.Services;
 
+    using Umbraco.Core.Logging;
     using Umbraco.Web.WebApi;
 
     /// <summary>
@@ -19,11 +22,14 @@
         private LocationTypeService locationTypeService = new LocationTypeService();
         private uLocate.Indexer.LocationIndexManager locationIndexManager = new LocationIndexManager();
 
+
+        #region Indexing
         /// /umbraco/backoffice/uLocate/TestApi/RemoveFromIndex?LocationKey=xxx
 
         [AcceptVerbs("GET")]
         public StatusMessage RemoveFromIndex(Guid LocationKey)
         {
+            LogHelper.Info<TestApiController>("RemoveFromIndex STARTED/ENDED");
             return this.locationIndexManager.RemoveLocation(LocationKey);
         }
 
@@ -32,10 +38,56 @@
         [AcceptVerbs("GET")]
         public StatusMessage ReIndex()
         {
+            LogHelper.Info<TestApiController>("ReIndex STARTED/ENDED");
             return this.locationIndexManager.IndexAllLocations();
         }
 
+        #endregion
 
+        #region Locations
+
+        /// <summary>
+        /// Add two default-type locations, with addresses
+        /// /umbraco/backoffice/uLocate/TestApi/TestCreateALocation?LocationName=xxx
+        /// </summary>
+        /// <returns>
+        /// The <see cref="List{T}"/>.
+        /// </returns>
+        [AcceptVerbs("GET")]
+        public IEnumerable<IndexedLocation> TestCreateALocation(string LocationName)
+        {
+            LogHelper.Info<TestApiController>("TestCreateALocation STARTED");
+            string Msg = "";
+
+            //TEST Add location 
+            var newItem = locationService.CreateLocation(LocationName);
+
+            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, "114 W. Magnolia St");
+            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Address2, "Suite 300");
+            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Locality, "Bellingham");
+            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Region, "WA");
+            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.PostalCode, "98225");
+            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.CountryCode, "USA");
+            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Phone, "360-647-7470");
+            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Email, "hello@mindfly.com");
+
+            locationService.UpdateLocation(newItem);
+
+            Msg += string.Format("Location '{0}' added. ", newItem.Name);
+
+            LogHelper.Info<TestApiController>(Msg);
+
+            //TEST: Return all Locations with that name
+            var result = locationService.GetLocations(LocationName);
+            //var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetAll());
+
+            LogHelper.Info<TestApiController>("TestCreateALocation FINISHED");
+            return result;
+        }
+
+        #endregion
+
+        #region LocationTypes
         /// <summary>
         /// Used for testing
         /// /umbraco/backoffice/uLocate/TestApi/TestPopulateSomeLocationTypes
@@ -146,53 +198,9 @@
         //}
 
 
+        #endregion
 
-        /// <summary>
-        /// Add two default-type locations, with addresses
-        /// /umbraco/backoffice/uLocate/TestApi/TestPopulateSomeLocations
-        /// </summary>
-        /// <returns>
-        /// The <see cref="List"/>.
-        /// </returns>
-        //[AcceptVerbs("GET")]
-        //public IEnumerable<IndexedLocation> TestPopulateSomeLocations()
-        //{
-        //    string Msg = "";
-
-        //    //TEST Add "Mindfly Office" location 
-        //    var NewItem1Key = locationService.CreateLocation("Mindfly Office", true);
-        //    var NewItem1 = Repositories.LocationRepo.GetByKey(NewItem1Key);
-        //    NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, "114 W. Magnolia St");
-        //    NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Address2, "Suite 300");
-        //    NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Locality, "Bellingham");
-        //    NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Region, "WA");
-        //    NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.PostalCode, "98225");
-        //    NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.CountryCode, "USA");
-        //    NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Phone, "360-647-7470");
-        //    NewItem1.AddPropertyData(Constants.DefaultLocPropertyAlias.Email, "hello@mindfly.com");
-        //    locationService.UpdateLocation(NewItem1);
-
-        //    Msg += string.Format("Location '{0}' added. ", NewItem1.Name);
-
-        //    //TEST Add "Heather's House" location 
-        //    var NewItem2Key = locationService.CreateLocation("Heather's House", true);
-        //    var NewItem2 = Repositories.LocationRepo.GetByKey(NewItem2Key);
-        //    NewItem2.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, "1820 Madison Avenue");
-        //    NewItem2.AddPropertyData(Constants.DefaultLocPropertyAlias.Address2, "8C");
-        //    NewItem2.AddPropertyData(Constants.DefaultLocPropertyAlias.Locality, "New York");
-        //    NewItem2.AddPropertyData(Constants.DefaultLocPropertyAlias.Region, "NY");
-        //    NewItem2.AddPropertyData(Constants.DefaultLocPropertyAlias.PostalCode, "10035");
-        //    NewItem2.AddPropertyData(Constants.DefaultLocPropertyAlias.CountryCode, "USA");
-        //    locationService.UpdateLocation(NewItem2);
-
-        //    Msg += string.Format("Location '{0}' added. ", NewItem2.Name);
-
-        //    //TEST: Return all Location Types
-        //    var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetAll());
-
-        //    return Result;
-        //}
-
+        #region Other
 
         /// <summary>
         /// Used for testing
@@ -232,8 +240,6 @@
         //    return Result;
         //}
 
-
-
-
+        #endregion
     }
 }

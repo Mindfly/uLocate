@@ -55,7 +55,7 @@ namespace uLocate.Models
 
                     foreach (var jsonLocation in IndexedLocations)
                     {
-                        listLocs.Add(jsonLocation.ConvertToLocation());
+                        listLocs.Add(jsonLocation.ConvertToEditableLocation());
                     }
                 }
             }

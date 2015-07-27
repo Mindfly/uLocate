@@ -45,7 +45,7 @@
             //Repositories.LocationTypeRepo.Insert(newLocType);
 
             //var Result = Repositories.LocationTypeRepo.GetByKey(newLocType.Key);
-            var result = locationService.CreateLocation(LocationTypeName);
+            var result = locationService.CreateLocation(LocationTypeName).Key;
 
             return result;
         }

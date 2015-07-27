@@ -40,25 +40,25 @@
 
         #region CUD Operations
 
-        public Guid CreateLocation(string LocationName, bool UpdateIfFound = false)
+        public EditableLocation CreateLocation(string LocationName, bool UpdateIfFound = false)
         {
-            var Result = CreateLocation(LocationName, uLocate.Constants.DefaultLocationTypeKey, UpdateIfFound);
+            var result = CreateLocation(LocationName, uLocate.Constants.DefaultLocationTypeKey, UpdateIfFound);
 
-            return Result;
+            return result;
         }
 
-        public Guid CreateLocation(string LocationName, Guid LocationTypeGuid, bool UpdateIfFound = false)
+        public EditableLocation CreateLocation(string LocationName, Guid LocationTypeGuid, bool UpdateIfFound = false)
         {
             bool DoUpdate = false;
-            Guid LocType;
+            Guid locTypeKey;
 
             if (LocationTypeGuid != Guid.Empty)
             {
-                LocType = LocationTypeGuid;
+                locTypeKey = LocationTypeGuid;
             }
             else
             {
-                LocType = uLocate.Constants.DefaultLocationTypeKey;
+                locTypeKey = uLocate.Constants.DefaultLocationTypeKey;
             }
 
             if (UpdateIfFound)
@@ -69,15 +69,17 @@
                 {
                     EditableLocation lookupLoc = matchingLocations.FirstOrDefault();
                     lookupLoc.Name = LocationName;
-                    lookupLoc.LocationTypeKey = LocType;
+                    lookupLoc.LocationTypeKey = locTypeKey;
                     Repositories.LocationRepo.Update(lookupLoc);
-                    return lookupLoc.Key;
+                    locationIndexManager.UpdateLocation(lookupLoc.Key);
+                    return lookupLoc;
                 }
             }
 
-            EditableLocation newLoc = new EditableLocation(LocationName, LocType);
+            EditableLocation newLoc = new EditableLocation(LocationName, locTypeKey);
             Repositories.LocationRepo.Insert(newLoc);
-            return newLoc.Key;
+            locationIndexManager.UpdateLocation(newLoc.Key);
+            return newLoc;
         }
 
 
@@ -85,7 +87,7 @@
         {
             var key = UpdatedIndexedLocation.Key;
 
-            var entity = UpdatedIndexedLocation.ConvertToLocation();
+            var entity = UpdatedIndexedLocation.ConvertToEditableLocation();
             Repositories.LocationRepo.Update(entity);
 
             var result = Repositories.LocationRepo.GetByKey(key);

@@ -24,13 +24,18 @@
             return ReturnList;
         }
 
+        internal static IndexedLocation EditableLocationToIndexedLocation(EditableLocation Location)
+        {
+            return new IndexedLocation(Location);
+        }
+
         internal static IEnumerable<EditableLocation> IndexedLocationsToEditableLocations(IEnumerable<IndexedLocation> JsonLocations)
         {
             var ReturnList = new List<EditableLocation>();
 
             foreach (var loc in JsonLocations)
             {
-                ReturnList.Add(loc.ConvertToLocation());
+                ReturnList.Add(loc.ConvertToEditableLocation());
             }
 
             return ReturnList;
@@ -93,6 +98,9 @@
 
             return returnList;
         }
+
+
+        #region Private
 
         private static Dictionary<string, string> AllPropertiesToDictionary(IDictionary<string, string> ResultFields, List<IndexedPropertyData> CustomProperties)
         {
@@ -228,5 +236,6 @@
             return returnDict;
         }
 
+        #endregion
     }
 }
