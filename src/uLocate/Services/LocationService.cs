@@ -8,6 +8,8 @@
     using ClientDependency.Core;
 
     using Examine;
+    using Examine.LuceneEngine.SearchCriteria;
+    using Examine.SearchCriteria;
 
     using Excel;
 
@@ -311,35 +313,48 @@
         }
 
 
-        public IEnumerable<IndexedLocation> GetLocationsByPostalCode(string PostalCode)
+        public IEnumerable<IndexedLocation> GetLocationsByPostalCode(string PostalCode, bool ExactMatch = true)
         {
             //OLD
             //Repositories.LocationRepo.GetByPostalCode(postalCode)
 
+            var postalCode = string.Format("'{0}'", PostalCode);
+
             //Search for the PostalCode
             var searcher = locationIndexManager.uLocateLocationSearcher();
-            var searchCriteria = searcher.CreateSearchCriteria();
-            var query = searchCriteria.Field("PostalCode", PostalCode);
-            var searchResults = searcher.Search(query.Compile());
+            var searchCriteria = searcher.CreateSearchCriteria(BooleanOperation.Or);
+            var query = searchCriteria.Field("PostalCode", postalCode.Fuzzy(0.3f)).Compile();
+
+            var rawQueryText = query.ToRawLuceneQuery();
+            var searchResults = searcher.Search(searcher.CreateSearchCriteria().RawQuery(rawQueryText));
+            //var searchResults = searcher.Search(query);
 
             var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
 
             var result = searchedLocations.Select(n => n.IndexedLocation);
 
-            return result;
+            if (ExactMatch)
+            {
+                return result.Where(n => n.PostalCode == PostalCode);
+            }
+            else
+            {
+                return result;
+            }
+            
         }
 
         public IEnumerable<IndexedLocation> GetLocationsByCountry(string CountryCode, Guid LocTypeKey)
         {
             //Search by Country and LocationTypeKey
             var searcher = locationIndexManager.uLocateLocationSearcher();
-            var searchCriteria = searcher.CreateSearchCriteria();
-            var query = searchCriteria.Field("CountryCode", CountryCode).And().Field("LocationTypeKey", LocTypeKey.ToString());
-            var searchResults = searcher.Search(query.Compile());
+            var searchCriteria = searcher.CreateSearchCriteria(BooleanOperation.Or);
+            var query = searchCriteria.Field("CountryCode", CountryCode.Fuzzy(0.1f)).Compile();
+            var searchResults = searcher.Search(query);
 
             var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
 
-            var result = searchedLocations.Select(n => n.IndexedLocation);
+            var result = searchedLocations.Select(n => n.IndexedLocation).Where(n => n.LocationTypeKey == LocTypeKey);
 
             //var locsByCountry = this.GetLocations().Where(l => l.CountryCode == CountryCode);
             //var result = locsByCountry.Where(l => l.LocationTypeKey == LocTypeKey);
@@ -354,9 +369,9 @@
 
             //Search by Country
             var searcher = locationIndexManager.uLocateLocationSearcher();
-            var searchCriteria = searcher.CreateSearchCriteria();
-            var query = searchCriteria.Field("CountryCode", CountryCode);
-            var searchResults = searcher.Search(query.Compile());
+            var searchCriteria = searcher.CreateSearchCriteria(BooleanOperation.Or);
+            var query = searchCriteria.Field("CountryCode", CountryCode.Fuzzy(0.3f)).Compile();
+            var searchResults = searcher.Search(query);
 
             var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
 

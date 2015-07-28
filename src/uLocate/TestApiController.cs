@@ -94,6 +94,40 @@
             return result;
         }
 
+
+        /// /umbraco/backoffice/uLocate/TestApi/Search?Keyword=xxx
+
+        [AcceptVerbs("GET")]
+        public Examine.ISearchResults Search(string Keyword)
+        {
+            var searchParams = new uLocate.Search.SearchParameters();
+            searchParams.SearchTerm = Keyword;
+
+            var locationSearch = new uLocate.Search.ExamineSearch(searchParams);
+            var results = locationSearch.ResultsMultiRelevance();
+            //.Search(queryType, searchTerms, titleProperties, bodyProperties, rootNodes, titleLinkProperties, summaryProperties, contextHighlighting, summaryLength, pageNumber, pageLength, fuzzyness, useWildcards);
+            //IEnumerable<IndexedLocation> 
+
+            return results;
+        }
+
+        /// /umbraco/backoffice/uLocate/TestApi/SearchByService?Keyword1=xxx&Keyword2=
+
+        [AcceptVerbs("GET")]
+        public IEnumerable<IndexedLocation> SearchByService(string Keyword1, string Keyword2)
+        {
+            bool Option = true;
+            if (Keyword2 == "false")
+            {
+                Option = false;
+            }
+            var results = locationService.GetLocationsByPostalCode(Keyword1, Option);
+            //.Search(queryType, searchTerms, titleProperties, bodyProperties, rootNodes, titleLinkProperties, summaryProperties, contextHighlighting, summaryLength, pageNumber, pageLength, fuzzyness, useWildcards);
+            //IEnumerable<IndexedLocation> 
+
+            return results;
+        }
+
         #endregion
 
         #region LocationTypes

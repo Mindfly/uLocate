@@ -252,6 +252,10 @@
     <Compile Include="Data\Dtos\cmsDataTypePreValuesDto.cs" />
     <Compile Include="Models\PagingCollection.cs" />
     <Compile Include="Models\SearchedLocation.cs" />
+    <Compile Include="Search\Search.cs" />
+    <Compile Include="Search\SearchParameters.cs" />
+    <Compile Include="Search\SearchUtilities.cs" />
+    <Compile Include="Search\SearchProperty.cs" />
     <Compile Include="Services\ImportExportService.cs" />
     <Compile Include="Services\PropertyService.cs" />
     <Compile Include="Services\LocationTypeService.cs" />

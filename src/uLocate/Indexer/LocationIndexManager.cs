@@ -21,6 +21,7 @@
         public string IndexTypeName = "location";
         public string SearcherName = "uLocateLocationSearcher";
         public string IndexerName = "uLocateLocationIndexer";
+        public string AllDataFieldName = "AllData";
 
         //private LocationService locationService = new LocationService(); < --- Cannot call this here - creates an infinite loop
 
@@ -85,7 +86,7 @@
                 allData.AppendFormat("{0} | ", field.Value.ToString());
             }
 
-            sds.RowData.Add("AllData", allData.ToString());
+            sds.RowData.Add(this.AllDataFieldName, allData.ToString());
 
             //LogHelper.Info<LocationIndexManager>(string.Format("DATA: {0}", sds.RowData.ToExamineXml(IndexNodeId, IndexType)));
             //LogHelper.Info<LocationIndexManager>(string.Format("IndexLocation for {0} (#{1}) COMPLETED", Location.Name, IndexNodeId));

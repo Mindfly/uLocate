@@ -16,7 +16,7 @@
             LogHelper.Debug<LocationIndexer>("GetAllData STARTED");
             LocationIndexManager locationIndexManager = new LocationIndexManager();
 
-            var uLocateLocationIndexer = ExamineManager.Instance.IndexProviderCollection[locationIndexManager.IndexerName];
+            //var uLocateLocationIndexer = ExamineManager.Instance.IndexProviderCollection[locationIndexManager.IndexerName];
 
             var counterId = locationIndexManager.GetMaxId(indexType) + 1;
 

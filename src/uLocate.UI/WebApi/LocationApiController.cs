@@ -159,6 +159,8 @@
             return result;
         }
 
+        //// /umbraco/backoffice/uLocate/LocationApi/GetAll
+
         /// <summary>
         /// Get all locations as a list
         /// </summary>

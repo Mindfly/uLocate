@@ -2,6 +2,8 @@
 {
     using System.Linq;
 
+    using Examine.SearchCriteria;
+
     /// <summary>
     /// Utility extension methods
     /// </summary>
@@ -107,5 +109,14 @@
 
         #endregion
 
+        #region ISearchCriteria
+
+        public static string ToRawLuceneQuery(this ISearchCriteria SearchCritQuery)
+        {
+            var rawQueryText = SearchCritQuery.ToString().Split(',')[1].Replace("LuceneQuery: ", "").Replace("}", "").Trim();
+            return rawQueryText;
+        }
+
+        #endregion
     }
 }
