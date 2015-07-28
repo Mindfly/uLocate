@@ -22,7 +22,7 @@
         public string SearcherName = "uLocateLocationSearcher";
         public string IndexerName = "uLocateLocationIndexer";
 
-        private LocationService locationService = new LocationService();
+        //private LocationService locationService = new LocationService(); < --- Cannot call this here - creates an infinite loop
 
         //private BaseIndexProvider uLocateLocationIndexer = ExamineManager.Instance.IndexProviderCollection[IndexerName];
 
@@ -38,34 +38,35 @@
             return ExamineManager.Instance.IndexProviderCollection[IndexerName];
         }
 
-        internal SimpleDataSet IndexLocation(EditableLocation location, string IndexType, int IndexNodeId)
+        internal SimpleDataSet IndexLocation(EditableLocation Location, string IndexType, int IndexNodeId)
         {
+            //LogHelper.Info<LocationIndexManager>(string.Format("IndexLocation for {0} (#{1}) STARTED", Location.Name, IndexNodeId));
             // create the node definition, ensure that it is the same type as referenced in the config
             var sds = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
             sds.NodeDefinition.NodeId = IndexNodeId;
             sds.NodeDefinition.Type = IndexType;
 
             // add the data to the row (These are all listed in the ExamineIndex.config file)
-            sds.RowData.Add("Key", location.Key.ToString());
-            sds.RowData.Add("Name", location.Name);
-            sds.RowData.Add("LocationTypeName", location.LocationType.Name);
-            sds.RowData.Add("LocationTypeKey", location.LocationTypeKey.ToString());
-            sds.RowData.Add("Latitude", location.Latitude.ToString());
-            sds.RowData.Add("Longitude", location.Longitude.ToString());
-            sds.RowData.Add("Address1", location.Address.Address1);
-            sds.RowData.Add("Address2", location.Address.Address2);
-            sds.RowData.Add("Locality", location.Address.Locality);
-            sds.RowData.Add("Region", location.Address.Region);
-            sds.RowData.Add("PostalCode", location.Address.PostalCode);
-            sds.RowData.Add("CountryCode", location.Address.CountryCode);
-            sds.RowData.Add("Email", location.Email);
-            sds.RowData.Add("Phone", location.Phone);
+            sds.RowData.Add("Key", Location.Key.ToString());
+            sds.RowData.Add("Name", Location.Name);
+            sds.RowData.Add("LocationTypeName", Location.LocationType.Name);
+            sds.RowData.Add("LocationTypeKey", Location.LocationTypeKey.ToString());
+            sds.RowData.Add("Latitude", Location.Latitude.ToString());
+            sds.RowData.Add("Longitude", Location.Longitude.ToString());
+            sds.RowData.Add("Address1", Location.Address.Address1);
+            sds.RowData.Add("Address2", Location.Address.Address2);
+            sds.RowData.Add("Locality", Location.Address.Locality);
+            sds.RowData.Add("Region", Location.Address.Region);
+            sds.RowData.Add("PostalCode", Location.Address.PostalCode);
+            sds.RowData.Add("CountryCode", Location.Address.CountryCode);
+            sds.RowData.Add("Email", Location.Email);
+            sds.RowData.Add("Phone", Location.Phone);
 
             //We will add each custom property to the index, 
             //but in addition, all the custom data will be added in a blob - in case the <IndexUserFields> in ExamineIndex.config hasn't been updated with every custom property
             var allCustomPropData = new StringBuilder();
 
-            foreach (var prop in location.PropertyData)
+            foreach (var prop in Location.PropertyData)
             {
                 if (prop.PropertyAttributes.IsDefaultProp == false)
                 {
@@ -75,10 +76,24 @@
             }
 
             sds.RowData.Add("CustomPropertyData", allCustomPropData.ToString());
-            return sds;
-        } 
 
-        internal StatusMessage RemoveLocation(Guid LocationKey, bool ReIndexIfNecessary = true)
+            //Put all the data into a single field for simple keyword searches.
+            var allData = new StringBuilder();
+
+            foreach (var field in sds.RowData)
+            {
+                allData.AppendFormat("{0} | ", field.Value.ToString());
+            }
+
+            sds.RowData.Add("AllData", allData.ToString());
+
+            //LogHelper.Info<LocationIndexManager>(string.Format("DATA: {0}", sds.RowData.ToExamineXml(IndexNodeId, IndexType)));
+            //LogHelper.Info<LocationIndexManager>(string.Format("IndexLocation for {0} (#{1}) COMPLETED", Location.Name, IndexNodeId));
+
+            return sds;
+        }
+
+        internal StatusMessage RemoveLocation(EditableLocation Location, bool ReIndexIfNecessary = true)
         {
             var uLocateLocationIndexer = this.uLocateLocationIndexer(); //ExamineManager.Instance.IndexProviderCollection[this.IndexerName];
             var uLocateLocationSearcher = this.uLocateLocationSearcher(); //ExamineManager.Instance.SearchProviderCollection[this.SearcherName];
@@ -88,7 +103,7 @@
             //search for the Key in the Index
             var searcher = uLocateLocationSearcher;
             var searchCriteria = searcher.CreateSearchCriteria();
-            var query = searchCriteria.Field("Key", LocationKey.ToString());
+            var query = searchCriteria.Field("Key", Location.Key.ToString());
 
             var searchResults = searcher.Search(query.Compile());
 
@@ -109,7 +124,7 @@
                 if (ReIndexIfNecessary)
                 {
                     this.IndexAllLocations();
-                    statusMsg = this.RemoveLocation(LocationKey, false);
+                    statusMsg = this.RemoveLocation(Location, false);
                 }
                 else
                 {
@@ -139,7 +154,7 @@
                     if (ReIndexIfNecessary)
                     {
                         this.IndexAllLocations();
-                        statusMsg = this.RemoveLocation(LocationKey, false);
+                        statusMsg = this.RemoveLocation(Location, false);
                     }
                     else
                     {
@@ -159,7 +174,7 @@
             return statusMsg;
         }
 
-        internal StatusMessage UpdateLocation(Guid LocationKey, bool ReIndexIfNecessary = true)
+        internal StatusMessage UpdateLocation(EditableLocation Location, bool ReIndexIfNecessary = true)
         {
             var uLocateLocationIndexer = this.uLocateLocationIndexer(); //ExamineManager.Instance.IndexProviderCollection[this.IndexerName];
             var uLocateLocationSearcher = this.uLocateLocationSearcher(); //ExamineManager.Instance.SearchProviderCollection[this.SearcherName];
@@ -169,7 +184,7 @@
             //search for the Key in the Index
             var searcher = uLocateLocationSearcher;
             var searchCriteria = searcher.CreateSearchCriteria();
-            var query = searchCriteria.Field("Key", LocationKey.ToString());
+            var query = searchCriteria.Field("Key", Location.Key.ToString());
 
             var searchResults = searcher.Search(query.Compile());
 
@@ -178,32 +193,24 @@
 
             if (countMatches == 0)
             {
-                //No matches
+                //No matches, must be new
 
-                if (ReIndexIfNecessary)
-                {
-                    this.IndexAllLocations();
-                    statusMsg = this.UpdateLocation(LocationKey, false);
-                }
-                else
-                {
-                    //Add to index
-                    var editableLocation = locationService.GetLocation(LocationKey).ConvertToEditableLocation();
+                //Add to index
+                //var editableLocation = locationService.GetLocation(LocationKey).ConvertToEditableLocation();
 
-                    statusMsg.ObjectName = editableLocation.Name;
+                statusMsg.ObjectName = Location.Name;
 
-                    var examineId = this.GetMaxId(this.IndexTypeName) + 1;
-                    var sds = this.IndexLocation(editableLocation, this.IndexTypeName, examineId);
-                    var examineNode = sds.RowData.ToExamineXml(examineId, this.IndexTypeName);
-                    ExamineManager.Instance.ReIndexNode(
-                        examineNode,
-                        this.IndexTypeName,
-                        this.uLocateLocationIndexer().AsEnumerableOfOne());
+                var examineId = this.GetMaxId(this.IndexTypeName) + 1;
+                var sds = this.IndexLocation(Location, this.IndexTypeName, examineId);
+                var examineNode = sds.RowData.ToExamineXml(examineId, this.IndexTypeName);
+                ExamineManager.Instance.ReIndexNode(
+                    examineNode,
+                    this.IndexTypeName,
+                    this.uLocateLocationIndexer().AsEnumerableOfOne());
 
-                    statusMsg.Success = true;
-                    statusMsg.Code = "AddedToIndex";
-                    statusMsg.Message = "No matching Location found in the index, added.";
-                }
+                statusMsg.Success = true;
+                statusMsg.Code = "AddedToIndex";
+                statusMsg.Message = "No matching Location found in the index, added.";
             }
             else if (countMatches > 1)
             {
@@ -212,7 +219,7 @@
                 if (ReIndexIfNecessary)
                 {
                     this.IndexAllLocations();
-                    statusMsg = this.UpdateLocation(LocationKey, false);
+                    statusMsg = this.UpdateLocation(Location, false);
 
                     //Reindex all to clean up
                     //var childMsg = this.IndexAllLocations();
@@ -238,8 +245,7 @@
             {
                 //Exactly 1 match
                 var indexedLocation = searchedLocations.Select(n => n.IndexedLocation).FirstOrDefault();
-                var editableLocation = indexedLocation.ConvertToEditableLocation();
-
+                
                 statusMsg.ObjectName = indexedLocation.Name;
 
                 var examineId = indexedLocation.IndexNodeId;
@@ -247,7 +253,7 @@
                 {
                     ExamineManager.Instance.DeleteFromIndex(examineId.ToString(), this.uLocateLocationIndexer().AsEnumerableOfOne());
 
-                    var sds = this.IndexLocation(editableLocation, this.IndexTypeName, examineId);
+                    var sds = this.IndexLocation(Location, this.IndexTypeName, examineId);
                     var examineNode = sds.RowData.ToExamineXml(examineId, this.IndexTypeName);
                     ExamineManager.Instance.ReIndexNode(examineNode, this.IndexTypeName, this.uLocateLocationIndexer().AsEnumerableOfOne());
 
@@ -260,7 +266,7 @@
                     if (ReIndexIfNecessary)
                     {
                         this.IndexAllLocations();
-                        statusMsg = this.UpdateLocation(LocationKey, false);
+                        statusMsg = this.UpdateLocation(Location, false);
                     }
                     else
                     {
@@ -318,17 +324,20 @@
 
         internal int GetMaxId(string IndexType)
         {
-            var uLocateLocationSearcher = this.uLocateLocationSearcher(); //ExamineManager.Instance.SearchProviderCollection[this.SearcherName];
+            LogHelper.Info<LocationIndexManager>(string.Format("GetMaxId for {0} STARTED", IndexType));
 
             // Get all existing items in the index of this type
-            var searchResults = uLocateLocationSearcher.Search(
-                uLocateLocationSearcher.CreateSearchCriteria(IndexType).SearchIndexType,
-                true);
+            var searcher = this.uLocateLocationSearcher();
+            var searchCriteria = searcher.CreateSearchCriteria("*");
+            var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
 
-            // Get the largest id
             if (searchResults.TotalItemCount != 0)
             {
-                return searchResults.Max(sr => sr.Id);
+                // Get the largest id
+                var result = searchResults.Max(sr => sr.Id);
+                LogHelper.Info<LocationIndexManager>(string.Format("GetMaxId for {0} = {1}", IndexType, result));
+
+                return result;
             }
             else
             {

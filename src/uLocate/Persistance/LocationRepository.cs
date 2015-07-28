@@ -44,7 +44,7 @@
 
         #region Operations
 
-        public void Insert(EditableLocation Entity)
+        internal void Insert(EditableLocation Entity)
         {
             PersistNewItem(Entity);
         }
@@ -56,7 +56,7 @@
         //    NewItemKey = Entity.Key;
         //}
 
-        public StatusMessage Delete(Guid LocationKey)
+        internal StatusMessage Delete(Guid LocationKey)
         {
             StatusMessage ReturnMsg = new StatusMessage();
 
@@ -77,7 +77,7 @@
             return ReturnMsg;
         }
 
-        public StatusMessage Delete(EditableLocation Entity)
+        internal StatusMessage Delete(EditableLocation Entity)
         {
             StatusMessage ReturnMsg = new StatusMessage();
             this.DeleteLocation(Entity, out ReturnMsg);
@@ -96,7 +96,7 @@
             StatusMsg = ReturnMsg;
         }
 
-        public void Update(EditableLocation Entity)
+        internal void Update(EditableLocation Entity)
         {
             PersistUpdatedItem(Entity);
         }
@@ -119,7 +119,7 @@
         //    this.Update(entity);
         //}
 
-        public StatusMessage UpdateGeoForAllNeeded()
+        internal StatusMessage UpdateGeoForAllNeeded()
         {
             var ReturnMsg = new StatusMessage();
 
@@ -158,8 +158,9 @@
 
         }
 
-        public void UpdateLatLong(EditableLocation Loc)
+        internal void UpdateLatLong(EditableLocation Loc)
         {
+            LogHelper.Info<LocationRepository>(string.Format("UpdateLatLong for {0} STARTED", Loc.Name)); 
             var coord = DoGeocoding.GetCoordinateForAddress(Loc.Address);
             if (coord != null)
             {
@@ -170,22 +171,30 @@
                 this.Update(Loc);
                 this.UpdateDbGeography(Loc);
             }
+            LogHelper.Info<LocationRepository>(string.Format("UpdateLatLong for {0} COMPLETED", Loc.Name)); 
         }
 
-        public void UpdateDbGeography(EditableLocation Loc)
+        internal void UpdateDbGeography(EditableLocation Loc)
         {
-            var sql = new Sql();
-            sql.Append("UPDATE [uLocate_Location]");
-            sql.Append("SET [GeogCoordinate] = geography::Point([Latitude], [Longitude], 4326)");
-            sql.Append(string.Format("WHERE  ([Key] = '{0}')", Loc.Key));
+            LogHelper.Info<LocationRepository>(string.Format("UpdateDbGeography for {0} STARTED", Loc.Name)); 
 
-            Repositories.ThisDb.Execute(sql);
-
-            //Loc.DbGeogNeedsUpdated = false;
-            //this.Update(Loc);
+            if (Loc.Latitude == 0 || Loc.Longitude == 0)
+            {
+                LogHelper.Info<LocationRepository>(string.Format("Missing Lat or Long...")); 
+                this.UpdateLatLong(Loc);
+            }
+            else
+            {
+                var sql = new Sql();
+                sql.Append("UPDATE [uLocate_Location]");
+                sql.Append("SET [GeogCoordinate] = geography::Point([Latitude], [Longitude], 4326)");
+                sql.Append(string.Format("WHERE  ([Key] = '{0}')", Loc.Key));
+                Repositories.ThisDb.Execute(sql);
+                LogHelper.Info<LocationRepository>(string.Format("UpdateDbGeography for {0} COMPLETED", Loc.Name)); 
+            }
         }
 
-        public void UpdateWithNewProps(Guid LocationTypeKey)
+        internal void UpdateWithNewProps(Guid LocationTypeKey)
         {
             var allLocations = this.GetByType(LocationTypeKey);
 
@@ -213,7 +222,7 @@
 
         #region Querying
 
-        public EditableLocation GetByKey(Guid Key)
+        internal EditableLocation GetByKey(Guid Key)
         {
             CurrentCollection.Clear();
             var found = (EditableLocation)Get(Key);
@@ -230,7 +239,7 @@
             }
         }
 
-        public IEnumerable<EditableLocation> GetByKey(Guid[] Keys)
+        internal IEnumerable<EditableLocation> GetByKey(Guid[] Keys)
         {
             CurrentCollection.Clear();
             CurrentCollection.AddRange(GetAll(Keys));
@@ -239,7 +248,7 @@
             return CurrentCollection;
         }
 
-        public IEnumerable<EditableLocation> GetByName(string LocationName)
+        internal IEnumerable<EditableLocation> GetByName(string LocationName)
         {
             CurrentCollection.Clear();
             var sql = new Sql();
@@ -493,9 +502,7 @@
 
             return ReturnList;
         }
-
         
-
         #endregion
 
 

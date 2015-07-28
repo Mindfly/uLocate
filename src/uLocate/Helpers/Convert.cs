@@ -60,6 +60,7 @@
                     location.Key = result.Fields.ContainsKey("Key") ? new Guid(result.Fields["Key"]) : Guid.Empty;
                     location.Name = result.Fields.ContainsKey("Name") ? result.Fields["Name"] : string.Empty;
                     location.LocationTypeKey = result.Fields.ContainsKey("LocationTypeKey") ? new Guid(result.Fields["LocationTypeKey"]) : Guid.Empty;
+                    location.LocationTypeName = result.Fields.ContainsKey("LocationTypeName") ? result.Fields["LocationTypeName"] : string.Empty;
                     location.Latitude = result.Fields.ContainsKey("Latitude") ? System.Convert.ToDouble(result.Fields["Latitude"]) : 0;
                     location.Longitude = result.Fields.ContainsKey("Longitude") ? System.Convert.ToDouble(result.Fields["Longitude"]) : 0;
                     location.Address1 = result.Fields.ContainsKey("Address1") ? result.Fields["Address1"] : string.Empty;

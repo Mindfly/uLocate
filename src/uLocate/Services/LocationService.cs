@@ -25,7 +25,7 @@
     /// </summary>
     public class LocationService
     {
-        private ICacheProvider _requestCache = ApplicationContext.Current.ApplicationCache.RequestCache;
+        //private ICacheProvider _requestCache = ApplicationContext.Current.ApplicationCache.RequestCache;
 
         private LocationTypeService locTypeService = new LocationTypeService();
 
@@ -71,27 +71,22 @@
                     lookupLoc.Name = LocationName;
                     lookupLoc.LocationTypeKey = locTypeKey;
                     Repositories.LocationRepo.Update(lookupLoc);
-                    locationIndexManager.UpdateLocation(lookupLoc.Key);
+                    locationIndexManager.UpdateLocation(lookupLoc);
                     return lookupLoc;
                 }
             }
 
             EditableLocation newLoc = new EditableLocation(LocationName, locTypeKey);
             Repositories.LocationRepo.Insert(newLoc);
-            locationIndexManager.UpdateLocation(newLoc.Key);
+            locationIndexManager.UpdateLocation(newLoc);
             return newLoc;
         }
 
 
         public IndexedLocation UpdateLocation(IndexedLocation UpdatedIndexedLocation)
         {
-            var key = UpdatedIndexedLocation.Key;
-
             var entity = UpdatedIndexedLocation.ConvertToEditableLocation();
-            Repositories.LocationRepo.Update(entity);
-
-            var result = Repositories.LocationRepo.GetByKey(key);
-            ////uLocate.Helpers.Persistence.UpdateLocation();
+            var result = this.UpdateLocation(entity);
 
             return new IndexedLocation(result);
         }
@@ -99,10 +94,11 @@
         public EditableLocation UpdateLocation(EditableLocation UpdatedEditableLocation)
         {
             Repositories.LocationRepo.Update(UpdatedEditableLocation);
+            locationIndexManager.UpdateLocation(UpdatedEditableLocation);
 
-            var Result = Repositories.LocationRepo.GetByKey(UpdatedEditableLocation.Key);
+            var result = this.GetLocation(UpdatedEditableLocation.Key).ConvertToEditableLocation(); 
 
-            return Result;
+            return result;
         }
 
         public StatusMessage UpdateGeographyData(EditableLocation EditableLocationToUpdate)
@@ -196,50 +192,27 @@
 
         public IndexedLocation GetLocation(Guid LocationKey)
         {
-            //TODO: Check if a direct search would be faster than using the Repo or LINQ
-            //var searcher = locationIndexManager.uLocateLocationSearcher;
-            //var searchCriteria = searcher.CreateSearchCriteria("*");
-            //var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
-            
-            var result = this.GetLocations().Where(l => l.Key == LocationKey).FirstOrDefault();
+            //OLD 
             //var result = Repositories.LocationRepo.GetByKey(LocationKey);
 
-            return result;
-        }
-        
-        public IEnumerable<IndexedLocation> GetLocations(Guid LocationTypeKey)
-        {
-            //OLD
-            //var result = (IEnumerable<EditableLocation>)_requestCache.GetCacheItem("all-locations-by-type", () => Repositories.LocationRepo.GetByType(LocationTypeKey));
-            //var filteredLocs = Repositories.LocationRepo.GetByType(locTypeKey);
-            //var result = uLocate.Helpers.Convert.LocationsToJsonLocations(filteredLocs);
+            //search for the Key in the Index
+            var searcher = locationIndexManager.uLocateLocationSearcher();
+            var searchCriteria = searcher.CreateSearchCriteria();
+            var query = searchCriteria.Field("Key", LocationKey.ToString());
+            var searchResults = searcher.Search(query.Compile());
 
-            //TODO: Check if a direct search would be faster than LINQ
-            //var searcher = locationIndexManager.uLocateLocationSearcher;
-            //var searchCriteria = searcher.CreateSearchCriteria("*");
-            //var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
+            var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
 
-            var result = this.GetLocations().Where(l => l.LocationTypeKey == LocationTypeKey);
-
+            var result = searchedLocations.Select(n => n.IndexedLocation).FirstOrDefault();
             return result;
         }
 
-        public IEnumerable<IndexedLocation> GetLocations(string LocationName)
-        {
-            //OLD
-            //var matchingLocations = Repositories.LocationRepo.GetByName(LocName);
-            //var result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(matchingLocations);
-
-            //TODO: Check if a direct search would be faster than using the Repo or LINQ
-            //var searcher = locationIndexManager.uLocateLocationSearcher;
-            //var searchCriteria = searcher.CreateSearchCriteria("*");
-            //var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
-
-            var result = this.GetLocations().Where(l => l.Name == LocationName);
-            
-            return result;
-        }
-
+        /// <summary>
+        /// Gets All Locations
+        /// </summary>
+        /// <returns>
+        /// The <see cref="IEnumerable"/>.
+        /// </returns>
         public IEnumerable<IndexedLocation> GetLocations()
         {
             //OLD
@@ -255,6 +228,46 @@
             var result = searchedLocations.Select(n => n.IndexedLocation);
             return result;
         }
+        
+        public IEnumerable<IndexedLocation> GetLocations(Guid LocationTypeKey)
+        {
+            //OLD
+            //var result = (IEnumerable<EditableLocation>)_requestCache.GetCacheItem("all-locations-by-type", () => Repositories.LocationRepo.GetByType(LocationTypeKey));
+            //var filteredLocs = Repositories.LocationRepo.GetByType(locTypeKey);
+            //var result = uLocate.Helpers.Convert.LocationsToJsonLocations(filteredLocs);
+
+            //Search for LocationTypeKey
+            var searcher = locationIndexManager.uLocateLocationSearcher();
+            var searchCriteria = searcher.CreateSearchCriteria();
+            var query = searchCriteria.Field("LocationTypeKey", LocationTypeKey.ToString());
+            var searchResults = searcher.Search(query.Compile());
+
+            var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
+
+            var result = searchedLocations.Select(n => n.IndexedLocation);
+
+            return result;
+        }
+
+        public IEnumerable<IndexedLocation> GetLocations(string LocationName)
+        {
+            //OLD
+            //var matchingLocations = Repositories.LocationRepo.GetByName(LocName);
+            //var result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(matchingLocations);
+
+            //Search for the LocationName
+            var searcher = locationIndexManager.uLocateLocationSearcher();
+            var searchCriteria = searcher.CreateSearchCriteria();
+            var query = searchCriteria.Field("Name", LocationName);
+            var searchResults = searcher.Search(query.Compile());
+
+            var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
+
+            var result = searchedLocations.Select(n => n.IndexedLocation);
+            
+            return result;
+        }
+
 
         public IEnumerable<IndexedLocation> GetLocationsByPropertyValue(string PropertyAlias, string Value)
         {
@@ -267,7 +280,8 @@
             //var searchCriteria = searcher.CreateSearchCriteria("*");
             //var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
 
-            var result = this.GetLocations().Where(l => l.AllPropertiesDictionary[PropertyAlias] == Value);
+            var searchResults = this.GetLocations();
+            var result = searchResults.Where(l => l.AllPropertiesDictionary[PropertyAlias] == Value);
 
             return result;
         }
@@ -296,30 +310,39 @@
             return result;
         }
 
+
         public IEnumerable<IndexedLocation> GetLocationsByPostalCode(string PostalCode)
         {
             //OLD
             //Repositories.LocationRepo.GetByPostalCode(postalCode)
 
-            //TODO: Check if a direct search would be faster than using the Repo or LINQ
-            //var searcher = locationIndexManager.uLocateLocationSearcher;
-            //var searchCriteria = searcher.CreateSearchCriteria("*");
-            //var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
+            //Search for the PostalCode
+            var searcher = locationIndexManager.uLocateLocationSearcher();
+            var searchCriteria = searcher.CreateSearchCriteria();
+            var query = searchCriteria.Field("PostalCode", PostalCode);
+            var searchResults = searcher.Search(query.Compile());
 
-            var result = this.GetLocations().Where(l => l.PostalCode == PostalCode);
+            var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
+
+            var result = searchedLocations.Select(n => n.IndexedLocation);
 
             return result;
         }
 
         public IEnumerable<IndexedLocation> GetLocationsByCountry(string CountryCode, Guid LocTypeKey)
         {
-            //TODO: Check if a direct search would be faster than using the Repo or LINQ
-            //var searcher = locationIndexManager.uLocateLocationSearcher;
-            //var searchCriteria = searcher.CreateSearchCriteria("*");
-            //var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
+            //Search by Country and LocationTypeKey
+            var searcher = locationIndexManager.uLocateLocationSearcher();
+            var searchCriteria = searcher.CreateSearchCriteria();
+            var query = searchCriteria.Field("CountryCode", CountryCode).And().Field("LocationTypeKey", LocTypeKey.ToString());
+            var searchResults = searcher.Search(query.Compile());
 
-            var locsByCountry = this.GetLocations().Where(l => l.CountryCode == CountryCode);
-            var result = locsByCountry.Where(l => l.LocationTypeKey == LocTypeKey);
+            var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
+
+            var result = searchedLocations.Select(n => n.IndexedLocation);
+
+            //var locsByCountry = this.GetLocations().Where(l => l.CountryCode == CountryCode);
+            //var result = locsByCountry.Where(l => l.LocationTypeKey == LocTypeKey);
 
             return result;
         }
@@ -329,12 +352,100 @@
             //OLD
             //uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetByCountry(CountryCode));
 
-            //TODO: Check if a direct search would be faster than using the Repo or LINQ
-            //var searcher = locationIndexManager.uLocateLocationSearcher;
-            //var searchCriteria = searcher.CreateSearchCriteria("*");
-            //var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
+            //Search by Country
+            var searcher = locationIndexManager.uLocateLocationSearcher();
+            var searchCriteria = searcher.CreateSearchCriteria();
+            var query = searchCriteria.Field("CountryCode", CountryCode);
+            var searchResults = searcher.Search(query.Compile());
 
-            var result = this.GetLocations().Where(l => l.CountryCode == CountryCode);
+            var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
+
+            var result = searchedLocations.Select(n => n.IndexedLocation);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get locations by general keyword search
+        /// </summary>
+        /// <param name="SearchTerm">
+        /// The search term.
+        /// </param>
+        /// <param name="OrderBy">
+        /// Order by field name. If blank, will use the result score.
+        /// </param>
+        /// <param name="SortOrder">
+        /// The sort order - 'ASC' or 'DESC'
+        /// </param>
+        /// <returns>
+        /// An <see cref="IEnumerable"/> of <see cref="IndexedLocation"/>
+        /// </returns>
+        public IEnumerable<IndexedLocation> GetLocationsByKeyword(string SearchTerm, string OrderBy = "", string SortOrder = "ASC")
+        {
+            //var allLocations = this.GetLocations();
+            IEnumerable<IndexedLocation> workingCollection;
+
+            //Search all fields by Keyword
+            var searcher = locationIndexManager.uLocateLocationSearcher();
+            var searchCriteria = searcher.CreateSearchCriteria();
+            //var query = searchCriteria.Field("AllData", SearchTerm);
+            //var searchResults = searcher.Search(query.Compile());
+            var query = string.Format("AllData:'*{0}*'", SearchTerm);
+            var searchResults = searcher.Search(searchCriteria.RawQuery(query));
+            var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
+
+            //// WHERE?
+            //if (SearchTerm != string.Empty)
+            //{
+            //    workingCollection.AddRange(allLocations.Where(n =>
+            //       n.Name.Contains(SearchTerm)
+            //    || n.Address1.Contains(SearchTerm)
+            //    || n.Address2.Contains(SearchTerm)
+            //    || n.Locality.Contains(SearchTerm)
+            //    || n.Region.Contains(SearchTerm)
+            //    || n.PostalCode.Contains(SearchTerm)
+            //    || n.CountryCode.Contains(SearchTerm)));
+            //}
+            //else
+            //{
+            //    workingCollection = allLocations.ToList();
+            //}
+
+            // ORDER?
+            IOrderedEnumerable<IndexedLocation> sortedCollection;
+            if (OrderBy == string.Empty)
+            {
+                //sort by search score
+                var sortedSearch = SortOrder == "ASC" ? searchedLocations.OrderBy(n => n.SearchScore) : searchedLocations.OrderByDescending(n => n.SearchScore);
+
+                workingCollection = sortedSearch.Select(n => n.IndexedLocation);
+            }
+            else
+            {
+                //Sort by field name
+                var allResults = searchedLocations.Select(n => n.IndexedLocation);
+
+                string orderClause = string.Format("{0} {1}", OrderBy, SortOrder);
+                var sortedSearch = (from r in allResults
+                    orderby(orderClause)
+                    select r);
+
+                workingCollection = sortedSearch;
+
+
+                //switch (OrderBy.ToLower())
+                //{
+                //    case "name":
+                //        workingCollection = SortOrder == "ASC" ? workingCollection.OrderBy(n => n.Name).ToList() : workingCollection.OrderByDescending(n => n.Name).ToList();
+                //        break;
+
+                //    case "locationtype":
+                //        workingCollection = SortOrder == "ASC" ? workingCollection.OrderBy(n => n.LocationTypeName).ToList() : workingCollection.OrderByDescending(n => n.LocationTypeName).ToList();
+                //        break;
+                //}
+            }
+
+            var result = workingCollection;
 
             return result;
         }
@@ -461,9 +572,9 @@
 
         private EditableLocation GetEditableLocation(Guid LocationKey)
         {
-            var Result = (EditableLocation)_requestCache.GetCacheItem("location-by-key", () => Repositories.LocationRepo.GetByKey(LocationKey));
+            //var Result = (EditableLocation)_requestCache.GetCacheItem("location-by-key", () => Repositories.LocationRepo.GetByKey(LocationKey));
 
-            //var Result = Repositories.LocationRepo.GetByKey(LocationKey);
+            var Result = Repositories.LocationRepo.GetByKey(LocationKey);
 
             return Result;
         }

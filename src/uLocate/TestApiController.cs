@@ -23,6 +23,14 @@
         private uLocate.Indexer.LocationIndexManager locationIndexManager = new LocationIndexManager();
 
 
+        /// /umbraco/backoffice/uLocate/TestApi/Test
+        [System.Web.Http.AcceptVerbs("GET")]
+        public bool Test()
+        {
+            LogHelper.Info<TestApiController>("Test STARTED/ENDED");
+            return true;
+        }
+
         #region Indexing
         /// /umbraco/backoffice/uLocate/TestApi/RemoveFromIndex?LocationKey=xxx
 
@@ -30,7 +38,8 @@
         public StatusMessage RemoveFromIndex(Guid LocationKey)
         {
             LogHelper.Info<TestApiController>("RemoveFromIndex STARTED/ENDED");
-            return this.locationIndexManager.RemoveLocation(LocationKey);
+            var Location = locationService.GetLocation(LocationKey).ConvertToEditableLocation();
+            return this.locationIndexManager.RemoveLocation(Location);
         }
 
         /// /umbraco/backoffice/uLocate/TestApi/ReIndex
@@ -56,7 +65,7 @@
         [AcceptVerbs("GET")]
         public IEnumerable<IndexedLocation> TestCreateALocation(string LocationName)
         {
-            LogHelper.Info<TestApiController>("TestCreateALocation STARTED");
+            LogHelper.Info<TestApiController>(string.Format("TestCreateALocation STARTED: {0}", LocationName));
             string Msg = "";
 
             //TEST Add location 
@@ -81,7 +90,7 @@
             var result = locationService.GetLocations(LocationName);
             //var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetAll());
 
-            LogHelper.Info<TestApiController>("TestCreateALocation FINISHED");
+            LogHelper.Info<TestApiController>(string.Format("TestCreateALocation COMPLETE: {0} Key={1}", LocationName, newItem.Key));
             return result;
         }
 

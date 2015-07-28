@@ -120,7 +120,7 @@
         #region Querying
 
 
-        //// /umbraco/backoffice/uLocate/LocationApi/GetByKey
+        //// /umbraco/backoffice/uLocate/LocationApi/GetByKey?key=xxx
 
         /// <summary>
         /// Get a location by its Key
@@ -139,7 +139,7 @@
             return result;
         }
 
-        //// /umbraco/backoffice/uLocate/LocationApi/GetAll
+        //// /umbraco/backoffice/uLocate/LocationApi/GetByName?LocName=xxx
 
         /// <summary>
         /// Get all locations with a matching name
@@ -328,6 +328,31 @@
             }
 
             result.Pages = listOfPages;
+            return result;
+        }
+
+        //// /umbraco/backoffice/uLocate/LocationApi/GetAllSearched?searchTerm=test&orderBy=Name&sortOrder=ASC
+
+        /// <summary>
+        /// Get locations by general keyword search
+        ///  /umbraco/backoffice/uLocate/LocationApi/GetAllSearched?searchTerm=test&amp;orderBy=Name&amp;sortOrder=ASC
+        /// </summary>
+        /// <param name="searchTerm">
+        /// The search term.
+        /// </param>
+        /// <param name="orderBy">
+        /// Order by field name. If blank, will use the result score.
+        /// </param>
+        /// <param name="sortOrder">
+        /// The sort order - 'ASC' or 'DESC'
+        /// </param>
+        /// <returns>
+        /// An <see cref="IEnumerable"/> of <see cref="IndexedLocation"/>
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public IEnumerable<IndexedLocation> GetAllSearched(string searchTerm = "", string orderBy = "", string sortOrder = "ASC")
+        {
+            var result = locationService.GetLocationsByKeyword(searchTerm, orderBy, sortOrder);
             return result;
         }
 
