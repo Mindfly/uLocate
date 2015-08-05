@@ -19,6 +19,7 @@
 
     using Umbraco.Core;
     using Umbraco.Core.Cache;
+    using Umbraco.Core.Logging;
 
     using UmbracoExamine;
 
@@ -283,9 +284,31 @@
             //var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
 
             var searchResults = this.GetLocations();
-            var result = searchResults.Where(l => l.AllPropertiesDictionary[PropertyAlias] == Value);
-
-            return result;
+            var errorMsg = string.Format(
+                    "Error occurred in GetLocationsByPropertyValue. PropertyAlias='{0}' Value = '{1}'",
+                    PropertyAlias,
+                    Value);
+            try
+            {
+                var test = searchResults.Select(l => l.AllPropertiesDictionary.Keys);
+                var locsWithProp = searchResults.Where(l => l.AllPropertiesDictionary.ContainsKey(PropertyAlias));
+                
+                if (locsWithProp.Any())
+                {
+                    var result =locsWithProp.Where(l => l.AllPropertiesDictionary[PropertyAlias] == Value);
+                    return result;
+                }
+                else
+                {
+                    LogHelper.Info<LocationService>(errorMsg);
+                    return null;
+                }   
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<LocationService>(errorMsg, ex);
+                return null;
+            }
         }
 
         public IEnumerable<IndexedLocation> GetLocationsByPropertyValue(string PropertyAlias, int Value)
