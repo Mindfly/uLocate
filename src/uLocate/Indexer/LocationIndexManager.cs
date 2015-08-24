@@ -71,7 +71,16 @@
             {
                 if (prop.PropertyAttributes.IsDefaultProp == false)
                 {
-                    sds.RowData.Add(prop.PropertyAlias, prop.Value.ToString());
+                    try
+                    {
+                        sds.RowData.Add(prop.PropertyAlias, prop.Value.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = string.Format("IndexLocation for {0} (#{1}) Custom Property Data Error on '{2}'", Location.Name, IndexNodeId, prop.PropertyAlias);
+                        LogHelper.Error<LocationIndexManager>(msg, ex);
+                    }
+
                     allCustomPropData.AppendFormat("{0}={1}={2}|", prop.Key, prop.PropertyAlias, prop.Value.ToString());
                 }
             }

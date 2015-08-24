@@ -8,6 +8,8 @@
     using uLocate.Models;
     using uLocate.Services;
 
+    using Umbraco.Core.Logging;
+
     public static class Convert
     {
         private static LocationTypeService locationTypeService = new LocationTypeService();
@@ -178,7 +180,16 @@
             {
                 foreach (var prop in CustomProperties)
                 {
-                    returnDict.Add(prop.PropAlias, prop.PropData.ToString());
+                    try
+                    {
+                        returnDict.Add(prop.PropAlias, prop.PropData.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = string.Format("Convert.AllPropertiesToDictionary : Custom Property Data Error on '{0}'", prop.PropAlias);
+                        LogHelper.Error<Dictionary<string, string>>(msg, ex);
+                    }
+                    
                 } 
             }
             else if (ResultFields.ContainsKey("CustomPropertyData"))
