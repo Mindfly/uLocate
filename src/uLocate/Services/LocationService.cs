@@ -561,14 +561,16 @@
             // WHERE?
             if (SearchTerm != string.Empty)
             {
+                var lowerTerm = SearchTerm.ToLower();
+
                 workingCollection.AddRange(allLocations.Where(n =>
-                   n.Name.Contains(SearchTerm)
-                || n.Address1.Contains(SearchTerm)
-                || n.Address2.Contains(SearchTerm)
-                || n.Locality.Contains(SearchTerm)
-                || n.Region.Contains(SearchTerm)
-                || n.PostalCode.Contains(SearchTerm)
-                || n.CountryCode.Contains(SearchTerm)));
+                   n.Name.ToLower().Contains(lowerTerm)
+                || n.Address1.ToLower().Contains(lowerTerm)
+                || n.Address2.ToLower().Contains(lowerTerm)
+                || n.Locality.ToLower().Contains(lowerTerm)
+                || n.Region.ToLower().Contains(lowerTerm)
+                || n.PostalCode.ToLower().Contains(lowerTerm)
+                || n.CountryCode.ToLower().Contains(lowerTerm)));
             }
             else
             {
