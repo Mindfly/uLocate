@@ -17,17 +17,23 @@
          * @description - Export all locations of a specific type to a file on the end user's system.
          */
         fileApiFactory.exportFile = function(locationType, fileFormat, shouldCompress) {
-            if (!fileFormat) {
-                fileFormat = 'csv';
-            }
-            if (!shouldCompress) {
-                shouldCompress = false;
-            }
+            var apiUrl;
             if (locationType) {
-                return '/urlgoeshere/filedownload.axd?format=' + fileFormat + '&type=' + locationType + '&compress=' + shouldCompress;
+                apiUrl = "/umbraco/backoffice/ulocate/ImportExportApi/ExportAllLocations?LocationTypeKey=" + locationType;
             } else {
-                return false;
+                apiUrl = "/umbraco/backoffice/ulocate/ImportExportApi/ExportAllLocations";
             }
+
+            return $http.get(apiUrl).then(function (response) {
+                if (response.data) {
+                    return fileApiFactory.downCaseProperties(response.data);
+                } else {
+                    return false;
+                }
+            }, function (reason) {
+                reason.data.success = false;
+                return fileApiFactory.downCaseProperties(reason.data);
+            });
         };
 
         /**
