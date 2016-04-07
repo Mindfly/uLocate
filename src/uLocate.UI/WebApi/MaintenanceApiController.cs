@@ -3,11 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
+    using System.Web.Http;
+    using Indexer;
     using uLocate.Helpers;
     using uLocate.Models;
     using uLocate.Services;
-
+    using uLocate.WebApi;
+    using Umbraco.Core.Logging;
     using Umbraco.Web.WebApi;
 
     /// <summary>
@@ -17,7 +19,8 @@
     public class MaintenanceApiController : UmbracoAuthorizedApiController
     {
         private LocationTypeService locTypeService = new LocationTypeService();
-        private LocationService locService = new LocationService(); 
+        private LocationService locService = new LocationService();
+        //private uLocate.Indexer.LocationIndexManager locationIndexManager = new LocationIndexManager();
 
         /// /umbraco/backoffice/uLocate/MaintenanceApi/Test
         [System.Web.Http.AcceptVerbs("GET")]
@@ -249,6 +252,29 @@
             }
 
             return ResultMsg;
+        }
+
+        #endregion
+
+        #region Indexing
+        ///// /umbraco/backoffice/uLocate/TestApi/RemoveFromIndex?LocationKey=xxx
+        //[AcceptVerbs("GET")]
+        //public StatusMessage RemoveFromIndex(Guid LocationKey)
+        //{
+        //    LogHelper.Info<PublicApiController>("RemoveFromIndex STARTED/ENDED");
+        //    var Location = locService.GetLocation(LocationKey).ConvertToEditableLocation();
+        //    return this.locationIndexManager.RemoveLocation(Location);
+        //}
+
+        /// /umbraco/backoffice/uLocate/TestApi/ReIndexAll
+        [AcceptVerbs("GET")]
+        public StatusMessage ReIndexAll()
+        {
+            LogHelper.Info<PublicApiController>("ReIndex STARTED");
+            var result = locService.ReindexAllLocations();
+            LogHelper.Info<PublicApiController>("ReIndex ENDED");
+
+            return result;
         }
 
         #endregion

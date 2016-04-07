@@ -608,6 +608,18 @@
 
         #endregion
 
+        #region Indexing
+
+        public StatusMessage ReindexAllLocations()
+        {
+            var result = locationIndexManager.IndexAllLocations();
+
+            return result;
+        }
+
+
+        #endregion
+
         #region Private - Editable Locations
 
         private EditableLocation GetEditableLocation(Guid LocationKey)

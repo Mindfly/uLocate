@@ -7,7 +7,10 @@
             <div class="span5">
                 <div class="btn-toolbar pull-right umb-btn-toolbar">
                     <div class="btn-group">
-                        <a class="btn btn-primary" ng-click="exportFile()"><ulocate-localize key="export">Export</ulocate-localize></a>
+                        <a class="btn btn-primary" ng-show="!isExporting" ng-click="exportFile()" ng-disabled="isExporting">
+                            <ulocate-localize key="export">Export</ulocate-localize>
+                        </a>
+                        <a class="btn btn-disabled" ng-show="isExporting" ng-disabled="true">Exporting File...</a>
                     </div>
                 </div>
             </div>
@@ -22,7 +25,7 @@
                     </label>
 
                     <div class="controls controls-row">
-                        <select id="type" name="type" ng-model="selected.locationType" ng-options="option.name for option in options.locationType" ng-change="locationTypeSelected(selected.locationType)"></select>
+                        <select id="type" name="type" ng-model="select" ng-options="option.name for option in locationTypes" ng-change="updateLocationType(select)"></select>
                     </div>
                 </div>
             </div>

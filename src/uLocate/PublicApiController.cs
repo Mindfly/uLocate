@@ -16,117 +16,109 @@
     /// uLocate test api controller.
     /// </summary>
     [Umbraco.Web.Mvc.PluginController("uLocate")]
-    public class TestApiController : UmbracoAuthorizedApiController
+    public class PublicApiController : UmbracoApiController
     {
         private LocationService locationService = new LocationService();
         private LocationTypeService locationTypeService = new LocationTypeService();
-        private uLocate.Indexer.LocationIndexManager locationIndexManager = new LocationIndexManager();
 
-
-        /// /umbraco/backoffice/uLocate/TestApi/Test
+        /// /umbraco/backoffice/uLocate/PublicApi/Test
         [System.Web.Http.AcceptVerbs("GET")]
         public bool Test()
         {
-            LogHelper.Info<TestApiController>("Test STARTED/ENDED");
+            LogHelper.Info<PublicApiController>("Test STARTED/ENDED");
             return true;
         }
 
         #region Indexing
-        /// /umbraco/backoffice/uLocate/TestApi/RemoveFromIndex?LocationKey=xxx
+
+        /// /umbraco/uLocate/PublicApi/ReIndexAll
 
         [AcceptVerbs("GET")]
-        public StatusMessage RemoveFromIndex(Guid LocationKey)
+        public StatusMessage ReIndexAll()
         {
-            LogHelper.Info<TestApiController>("RemoveFromIndex STARTED/ENDED");
-            var Location = locationService.GetLocation(LocationKey).ConvertToEditableLocation();
-            return this.locationIndexManager.RemoveLocation(Location);
-        }
+            LogHelper.Info<PublicApiController>("ReIndex STARTED");
+            var result = locationService.ReindexAllLocations();
+            LogHelper.Info<PublicApiController>("ReIndex ENDED");
 
-        /// /umbraco/backoffice/uLocate/TestApi/ReIndex
-
-        [AcceptVerbs("GET")]
-        public StatusMessage ReIndex()
-        {
-            LogHelper.Info<TestApiController>("ReIndex STARTED/ENDED");
-            return this.locationIndexManager.IndexAllLocations();
+            return result;
         }
 
         #endregion
 
         #region Locations
 
-        /// <summary>
-        /// Add two default-type locations, with addresses
-        /// /umbraco/backoffice/uLocate/TestApi/TestCreateALocation?LocationName=xxx
-        /// </summary>
-        /// <returns>
-        /// The <see cref="List{T}"/>.
-        /// </returns>
-        [AcceptVerbs("GET")]
-        public IEnumerable<IndexedLocation> TestCreateALocation(string LocationName)
-        {
-            LogHelper.Info<TestApiController>(string.Format("TestCreateALocation STARTED: {0}", LocationName));
-            string Msg = "";
+        ///// <summary>
+        ///// Add two default-type locations, with addresses
+        ///// /umbraco/backoffice/uLocate/PublicApi/TestCreateALocation?LocationName=xxx
+        ///// </summary>
+        ///// <returns>
+        ///// The <see cref="List{T}"/>.
+        ///// </returns>
+        //[AcceptVerbs("GET")]
+        //public IEnumerable<IndexedLocation> TestCreateALocation(string LocationName)
+        //{
+        //    LogHelper.Info<PublicApiController>(string.Format("TestCreateALocation STARTED: {0}", LocationName));
+        //    string Msg = "";
 
-            //TEST Add location 
-            var newItem = locationService.CreateLocation(LocationName);
+        //    //TEST Add location 
+        //    var newItem = locationService.CreateLocation(LocationName);
 
-            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, "114 W. Magnolia St");
-            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Address2, "Suite 300");
-            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Locality, "Bellingham");
-            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Region, "WA");
-            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.PostalCode, "98225");
-            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.CountryCode, "USA");
-            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Phone, "360-647-7470");
-            newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Email, "hello@mindfly.com");
+        //    newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Address1, "114 W. Magnolia St");
+        //    newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Address2, "Suite 300");
+        //    newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Locality, "Bellingham");
+        //    newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Region, "WA");
+        //    newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.PostalCode, "98225");
+        //    newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.CountryCode, "USA");
+        //    newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Phone, "360-647-7470");
+        //    newItem.AddPropertyData(Constants.DefaultLocPropertyAlias.Email, "hello@mindfly.com");
 
-            locationService.UpdateLocation(newItem);
+        //    locationService.UpdateLocation(newItem);
 
-            Msg += string.Format("Location '{0}' added. ", newItem.Name);
+        //    Msg += string.Format("Location '{0}' added. ", newItem.Name);
 
-            LogHelper.Info<TestApiController>(Msg);
+        //    LogHelper.Info<PublicApiController>(Msg);
 
-            //TEST: Return all Locations with that name
-            var result = locationService.GetLocations(LocationName);
-            //var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetAll());
+        //    //TEST: Return all Locations with that name
+        //    var result = locationService.GetLocations(LocationName);
+        //    //var Result = uLocate.Helpers.Convert.EditableLocationsToIndexedLocations(Repositories.LocationRepo.GetAll());
 
-            LogHelper.Info<TestApiController>(string.Format("TestCreateALocation COMPLETE: {0} Key={1}", LocationName, newItem.Key));
-            return result;
-        }
+        //    LogHelper.Info<PublicApiController>(string.Format("TestCreateALocation COMPLETE: {0} Key={1}", LocationName, newItem.Key));
+        //    return result;
+        //}
 
 
-        /// /umbraco/backoffice/uLocate/TestApi/Search?Keyword=xxx
+        ///// /umbraco/backoffice/uLocate/TestApi/Search?Keyword=xxx
 
-        [AcceptVerbs("GET")]
-        public Examine.ISearchResults Search(string Keyword)
-        {
-            var searchParams = new uLocate.Search.SearchParameters();
-            searchParams.SearchTerm = Keyword;
+        //[AcceptVerbs("GET")]
+        //public Examine.ISearchResults Search(string Keyword)
+        //{
+        //    var searchParams = new uLocate.Search.SearchParameters();
+        //    searchParams.SearchTerm = Keyword;
 
-            var locationSearch = new uLocate.Search.ExamineSearch(searchParams);
-            var results = locationSearch.ResultsMultiRelevance();
-            //.Search(queryType, searchTerms, titleProperties, bodyProperties, rootNodes, titleLinkProperties, summaryProperties, contextHighlighting, summaryLength, pageNumber, pageLength, fuzzyness, useWildcards);
-            //IEnumerable<IndexedLocation> 
+        //    var locationSearch = new uLocate.Search.ExamineSearch(searchParams);
+        //    var results = locationSearch.ResultsMultiRelevance();
+        //    //.Search(queryType, searchTerms, titleProperties, bodyProperties, rootNodes, titleLinkProperties, summaryProperties, contextHighlighting, summaryLength, pageNumber, pageLength, fuzzyness, useWildcards);
+        //    //IEnumerable<IndexedLocation> 
 
-            return results;
-        }
+        //    return results;
+        //}
 
-        /// /umbraco/backoffice/uLocate/TestApi/SearchByService?Keyword1=xxx&Keyword2=
+        ///// /umbraco/backoffice/uLocate/TestApi/SearchByService?Keyword1=xxx&Keyword2=
 
-        [AcceptVerbs("GET")]
-        public IEnumerable<IndexedLocation> SearchByService(string Keyword1, string Keyword2)
-        {
-            bool Option = true;
-            if (Keyword2 == "false")
-            {
-                Option = false;
-            }
-            var results = locationService.GetLocationsByPostalCode(Keyword1, Option);
-            //.Search(queryType, searchTerms, titleProperties, bodyProperties, rootNodes, titleLinkProperties, summaryProperties, contextHighlighting, summaryLength, pageNumber, pageLength, fuzzyness, useWildcards);
-            //IEnumerable<IndexedLocation> 
+        //[AcceptVerbs("GET")]
+        //public IEnumerable<IndexedLocation> SearchByService(string Keyword1, string Keyword2)
+        //{
+        //    bool Option = true;
+        //    if (Keyword2 == "false")
+        //    {
+        //        Option = false;
+        //    }
+        //    var results = locationService.GetLocationsByPostalCode(Keyword1, Option);
+        //    //.Search(queryType, searchTerms, titleProperties, bodyProperties, rootNodes, titleLinkProperties, summaryProperties, contextHighlighting, summaryLength, pageNumber, pageLength, fuzzyness, useWildcards);
+        //    //IEnumerable<IndexedLocation> 
 
-            return results;
-        }
+        //    return results;
+        //}
 
         #endregion
 

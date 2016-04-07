@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
+    using Indexer;
     using uLocate.Models;
     using uLocate.Services;
 
@@ -376,6 +376,19 @@
         //    return result;
         //}
 
+        #endregion
+
+        #region Indexing
+
+        ///// /umbraco/backoffice/uLocate/LocationApi/ReindexAll
+        [System.Web.Http.AcceptVerbs("GET")]
+        public StatusMessage ReindexAll()
+        {
+            var result = locationService.ReindexAllLocations();
+
+            return result;
+        }
+        
         #endregion
     }
 }
