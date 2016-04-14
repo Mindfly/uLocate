@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Text;
     using System.Xml.Linq;
-
+    using ClientDependency.Core;
     using Examine;
     using Examine.LuceneEngine;
     using Examine.Providers;
@@ -108,6 +108,8 @@
             var uLocateLocationIndexer = this.uLocateLocationIndexer(); //ExamineManager.Instance.IndexProviderCollection[this.IndexerName];
             var uLocateLocationSearcher = this.uLocateLocationSearcher(); //ExamineManager.Instance.SearchProviderCollection[this.SearcherName];
 
+            LogHelper.Info<LocationIndexManager>("RemoveLocation - Started: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
+
             var statusMsg = new StatusMessage();
 
             //search for the Key in the Index
@@ -120,12 +122,16 @@
             var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
             var countMatches = searchedLocations.Count();
 
+            LogHelper.Info<LocationIndexManager>("RemoveLocation - Indexed locations matching Key '" + Location.Key.ToString() + "' = " + countMatches);
+
             if (countMatches == 0)
             {
                 //No matches
                 statusMsg.Success = true;
                 statusMsg.Code = "NoMatch";
                 statusMsg.Message = "No matching Location found in the index. Nothing to remove.";
+
+                LogHelper.Info<LocationIndexManager>("RemoveLocation - [countMatches == 0]: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
             }
             else if (countMatches > 1)
             {
@@ -154,6 +160,8 @@
                 if (examineId != 0)
                 {
                     ExamineManager.Instance.DeleteFromIndex(examineId.ToString(), this.uLocateLocationIndexer().AsEnumerableOfOne());
+
+                    LogHelper.Info<LocationIndexManager>("RemoveLocation - [countMatches == 1]: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
 
                     statusMsg.Success = true;
                     statusMsg.Code = "MatchFoundAndDeleted";
@@ -189,6 +197,8 @@
             var uLocateLocationIndexer = this.uLocateLocationIndexer(); //ExamineManager.Instance.IndexProviderCollection[this.IndexerName];
             var uLocateLocationSearcher = this.uLocateLocationSearcher(); //ExamineManager.Instance.SearchProviderCollection[this.SearcherName];
 
+            //LogHelper.Info<LocationIndexManager>("UpdateLocation - Started: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
+
             var statusMsg = new StatusMessage();
 
             //search for the Key in the Index
@@ -201,13 +211,12 @@
             var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
             var countMatches = searchedLocations.Count();
 
+            //LogHelper.Info<LocationIndexManager>("UpdateLocation - Indexed locations matching Key '" + Location.Key.ToString() + "' = " + countMatches);
+
             if (countMatches == 0)
             {
                 //No matches, must be new
-
                 //Add to index
-                //var editableLocation = locationService.GetLocation(LocationKey).ConvertToEditableLocation();
-
                 statusMsg.ObjectName = Location.Name;
 
                 var examineId = this.GetMaxId(this.IndexTypeName) + 1;
@@ -217,6 +226,8 @@
                     examineNode,
                     this.IndexTypeName,
                     this.uLocateLocationIndexer().AsEnumerableOfOne());
+
+                //LogHelper.Info<LocationIndexManager>("UpdateLocation - [countMatches == 0]: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
 
                 statusMsg.Success = true;
                 statusMsg.Code = "AddedToIndex";
@@ -230,20 +241,6 @@
                 {
                     this.IndexAllLocations();
                     statusMsg = this.UpdateLocation(Location, false);
-
-                    //Reindex all to clean up
-                    //var childMsg = this.IndexAllLocations();
-                    //statusMsg.Success = childMsg.Success;
-                    //statusMsg.InnerStatuses.Add(childMsg);
-                    //statusMsg.Code = "DuplicateMatches";
-                    //if (childMsg.Success)
-                    //{
-                    //    statusMsg.Message = string.Format("{0} matching Locations were found in the index. All have been re-indexed.", countMatches);
-                    //}
-                    //else
-                    //{
-                    //    statusMsg.Message = string.Format("{0} matching Locations were found in the index. There was a problem re-indexing.", countMatches);
-                    //}
                 }
                 else
                 {
@@ -261,11 +258,11 @@
                 var examineId = indexedLocation.IndexNodeId;
                 if (examineId != 0)
                 {
-                    ExamineManager.Instance.DeleteFromIndex(examineId.ToString(), this.uLocateLocationIndexer().AsEnumerableOfOne());
-
                     var sds = this.IndexLocation(Location, this.IndexTypeName, examineId);
                     var examineNode = sds.RowData.ToExamineXml(examineId, this.IndexTypeName);
                     ExamineManager.Instance.ReIndexNode(examineNode, this.IndexTypeName, this.uLocateLocationIndexer().AsEnumerableOfOne());
+
+                    LogHelper.Info<LocationIndexManager>("UpdateLocation - [countMatches == 1]: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
 
                     statusMsg.Success = true;
                     statusMsg.Code = "MatchFoundAndUpdated";
@@ -353,6 +350,18 @@
             {
                 return 0;
             }
+        }
+
+        internal int IndexedItemsCount(string IndexType)
+        {
+            //LogHelper.Info<LocationIndexManager>(string.Format("IndexedItemsCount for {0} STARTED", IndexType));
+
+            // Get all existing items in the index of this type
+            var searcher = this.uLocateLocationSearcher();
+            var searchCriteria = searcher.CreateSearchCriteria("*");
+            var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
+
+            return searchResults.TotalItemCount;
         }
     }
 }

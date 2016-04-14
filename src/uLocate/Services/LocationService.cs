@@ -97,9 +97,10 @@
         public EditableLocation UpdateLocation(EditableLocation UpdatedEditableLocation)
         {
             Repositories.LocationRepo.Update(UpdatedEditableLocation);
-            locationIndexManager.UpdateLocation(UpdatedEditableLocation);
+            var indexStatus = locationIndexManager.UpdateLocation(UpdatedEditableLocation);
 
-            var result = this.GetLocation(UpdatedEditableLocation.Key).ConvertToEditableLocation(); 
+            var lookupNewLoc = this.GetLocation(UpdatedEditableLocation.Key);
+            var result = lookupNewLoc.ConvertToEditableLocation(); 
 
             return result;
         }
@@ -147,6 +148,14 @@
         
         public StatusMessage DeleteLocation(Guid LocationKey)
         {
+            //Lookup first in Index, so we can remove it from the Index
+            var matchingLocation = Repositories.LocationRepo.GetByKey(LocationKey);
+            if (matchingLocation != null)
+            {
+                locationIndexManager.RemoveLocation(matchingLocation);
+            }
+
+            //Now remove from the DB
             var Result = Repositories.LocationRepo.Delete(LocationKey);
 
             return Result;
