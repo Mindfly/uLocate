@@ -1,6 +1,6 @@
 ﻿(function(controllers, undefined) {
 
-    controllers.LocationsController = function ($scope, $location, $q, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateDataTypeApiService, uLocateInitializationApiService, uLocateMapService, uLocateLocationApiService, uLocateLocationTypeApiService) {
+    controllers.LocationsController = function ($scope, $location, $q, $routeParams, treeService, assetsService, dialogService, navigationService, notificationsService, uLocateBroadcastService, uLocateDataTypeApiService, uLocateInitializationApiService, uLocateMapService, uLocateLocationApiService, uLocateLocationTypeApiService, uLocateManagementApiService) {
 
         /*-------------------------------------------------------------------
          * Initialization Methods
@@ -139,6 +139,7 @@
             $scope.filter = '';
             $scope.form = {};
             $scope.isGeocoding = false;
+            $scope.isReindexing = false;
             $scope.locations = [];
             $scope.locationsLoaded = false;
             $scope.locationTypes = uLocate.Constants.LOCATION_TYPES;
@@ -715,6 +716,31 @@
             });
         };
 
+
+        /**
+         * @ngdoc method
+         * @name reindexExamine
+         * @function
+         * 
+         * @description - Reindex the Examine index.
+         */
+        $scope.reindexExamine = function () {
+
+            $scope.openMenu = false;
+            notificationsService.success("Reindexing Examine locations.");
+            $scope.isReindexing = true;
+
+            uLocateManagementApiService.reindexExamine().then(function (response) {
+                if (response.Success) {
+                    notificationsService.success("Reindexing Examine locations complete.");
+                }
+                else {
+                    notificationsService.error("Attempt to reindex Examine failed.", response.Message);
+                }
+                $scope.isReindexing = false;
+            });
+        };
+
         /**
          * @ngdoc method
          * @name getLocationTypes
@@ -921,6 +947,6 @@
 
     };
 
-    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$location', '$q', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateDataTypeApiService', 'uLocateInitializationApiService', 'uLocateMapService', 'uLocateLocationApiService', 'uLocateLocationTypeApiService', uLocate.Controllers.LocationsController]);
+    angular.module('umbraco').controller('uLocate.Controllers.LocationsController', ['$scope', '$location', '$q', '$routeParams', 'treeService', 'assetsService', 'dialogService', 'navigationService', 'notificationsService', 'uLocateBroadcastService', 'uLocateDataTypeApiService', 'uLocateInitializationApiService', 'uLocateMapService', 'uLocateLocationApiService', 'uLocateLocationTypeApiService', 'uLocateManagementApiService', uLocate.Controllers.LocationsController]);
 
 }(window.uLocate.Controllers = window.uLocate.Controllers || {}));
