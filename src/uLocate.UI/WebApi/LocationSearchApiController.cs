@@ -167,7 +167,6 @@
         }
 
         // /umbraco/api/LocationSearchApi/GetNearestLocations?Lat=40.7762965&Long=-73.950718&Qty=10&LocTypeAlias=Business
-
         /// <summary>
         /// Get the X locations nearest to a Lat/Long point.
         /// </summary>
