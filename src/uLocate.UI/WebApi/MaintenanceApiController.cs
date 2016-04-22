@@ -81,6 +81,22 @@
         }
 
         /// <summary>
+        /// Count locations by Location Type
+        /// /umbraco/backoffice/uLocate/MaintenanceApi/CountLocationsByType
+        /// </summary>
+        /// <param name="LocationTypeKey">
+        /// The location type key.
+        /// </param>
+        /// <returns>
+        /// A <see cref="StatusMessage"/>.
+        /// </returns>
+        [System.Web.Http.AcceptVerbs("GET")]
+        public StatusMessage CountLocationsByType()
+        {
+            return locService.CountLocationsByType();
+        }
+
+        /// <summary>
         /// Gets information about which Locations have missing Lat/Long values (thus might be invalid addresses)
         /// /umbraco/backoffice/uLocate/MaintenanceApi/GetLocsWithMissingCoordinates
         /// </summary>

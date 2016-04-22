@@ -64,17 +64,11 @@ namespace uLocate.IO
                         [FieldQuoted('""', QuoteMode.OptionalForBoth)]
                         public string Email;
 
-
                         [FieldNullValue(typeof(string), ""0"")]
                         public double Longitude;
 
                         [FieldNullValue(typeof(string), ""0"")]
                         public double Latitude;
-                        
-                        //public double? Longitude;
-                  
-                        //public double? Latitude;
-
 
 			");
 
@@ -120,13 +114,6 @@ namespace uLocate.IO
                     {
 
             ");
-
-            
-            //classMethod.Append(string.Format(@"
-            //                case ""{0}"":
-            //                    return this.{0};
-            //                    break;
-            //                    ", "LocationName"));
 
             foreach (var prop in CustomProps)
             {
@@ -184,12 +171,6 @@ namespace uLocate.IO
                     switch (Alias)
                     {
             ");
-
-            //classMethod.Append(string.Format(@"
-                  //          case ""{0}"":
-                  //              this.{0} = Data.ToString();
-                  //              break;
-                  //              ", "LocationName"));
 
             foreach (var prop in CustomProps)
             {
