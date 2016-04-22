@@ -657,6 +657,12 @@
         {
             var result = locationIndexManager.IndexAllLocations();
 
+            var countSM = new StatusMessage();
+            var countIndexed = locationIndexManager.IndexedItemsCount("location");
+            countSM.Message = string.Format("{0} Locations in Index", countIndexed);
+
+            result.InnerStatuses.Add(countSM);
+
             return result;
         }
 
