@@ -1,18 +1,19 @@
-﻿namespace uLocate.IO
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
+
+namespace uLocate.IO
 {
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
 
     using FileHelpers;
     using FileHelpers.Dynamic;
 
     using Mindfly;
 
-    using uLocate.Models;
-    using uLocate.Persistance;
+    using Models;
+    using Persistance;
 
     internal class Export
     {
@@ -38,80 +39,86 @@
 
             return fhEngine.GetFileHeader();
         }
-
-        //TODO: Heather - Fix this!
         internal static StatusMessage ExportAllLocations(Guid? LocationTypeKey)
         {
-            //string FilePath
-
-
-            Guid LocTypeKey;
-            if (LocationTypeKey == null)
+            var guid = LocationTypeKey.HasValue ? LocationTypeKey.Value : Constants.DefaultLocationTypeKey;
+            var name = Repositories.LocationTypeRepo.GetByKey(guid).Name;
+            var fileHelperEngine = new FileHelperEngine<LocationFlat>();
+            var strArray = fileHelperEngine.GetFileHeader().Split(',');
+            var byType = Repositories.LocationRepo.GetByType(guid);
+            var list = new List<LocationFlat>();
+            var locationFlat1 = new LocationFlat()
             {
-                LocTypeKey = Constants.DefaultLocationTypeKey;
-            }
-            else
+                Address1 = "Address1",
+                Address2 = "Address2",
+                CountryCode = "CountryCode",
+                Email = "Email",
+                Latitude = "Latitude",
+                Locality = "Locality",
+                LocationName = "LocationName",
+                Longitude = "Longitude",
+                PhoneNumber = "PhoneNumber",
+                PostalCode = "PostalCode",
+                Region = "Region"
+            };
+            list.Add(locationFlat1);
+            foreach (EditableLocation editableLocation in byType)
             {
-                LocTypeKey = (Guid)LocationTypeKey;
-            }
-
-            string LocationTypeName = Repositories.LocationTypeRepo.GetByKey(LocTypeKey).Name;
-
-            string file = string.Format("~/uLocateExport-{0}.csv", LocationTypeName.MakeCodeSafe());
-
-            StatusMessage Msg = new StatusMessage();
-
-            Msg.ObjectName = file;
-
-            // Dynamic class definition
-            string dynamicClassDef = DynamicLocationFlat.GetDynamicClass(LocTypeKey);
-            Type DynamicLocation = ClassBuilder.ClassFromString(dynamicClassDef);
-
-            // Using http://filehelpers.sourceforge.net/ to write csv 
-            FileHelperEngine fhEngine = new FileHelperEngine(DynamicLocation);
-
-            string dynamicLocationHeaders = fhEngine.GetFileHeader(); 
-            var headers = dynamicLocationHeaders.Split(',');
-            MethodInfo setMethod = DynamicLocation.GetMethod("SetProperty");
-
-            var locationsExport = CreateListOfType(DynamicLocation);
-            //Type listType = typeof(List<>).MakeGenericType(new[] { DynamicLocation });
-            //IList locations = (IList)Activator.CreateInstance(listType);
-
-            var allLocationsOfType = Repositories.LocationRepo.GetByType(LocTypeKey);
-
-            foreach (EditableLocation loc in allLocationsOfType)
-            {
-                dynamic dynLoc = new[] { DynamicLocation };
-
-                foreach (string prop in headers)
+                LocationFlat locationFlat2 = new LocationFlat();
+                foreach (string str in strArray)
                 {
-                    if (prop == "LocationName")
+                    string prop = str;
+                    switch (prop)
                     {
-                        object dataObj = loc.Name;
-                        setMethod.Invoke(dynLoc, new object[] { prop, dataObj });
+                        case "LocationName":
+                            object data1 = (object)editableLocation.Name;
+                            locationFlat2.SetProperty(prop, data1);
+                            break;
+                        case "Longitude":
+                            object data2 = (object)editableLocation.Longitude;
+                            locationFlat2.SetProperty(prop, data2);
+                            break;
+                        case "Latitude":
+                            object data3 = (object)editableLocation.Latitude;
+                            locationFlat2.SetProperty(prop, data3);
+                            break;
+                        default:
+                            LocationPropertyData locationPropertyData = editableLocation.PropertyData.FirstOrDefault(n => n.PropertyAlias == prop);
+                            if (locationPropertyData != null)
+                            {
+                                locationFlat2.SetProperty(prop, locationPropertyData.Value.ValueObject);
+                                break;
+                            }
+                            break;
                     }
-                    else
-                    {
-                        var propData = loc.PropertyData.Where(n => n.PropertyAlias == prop).FirstOrDefault();
-                        setMethod.Invoke(dynLoc, new object[] { prop, propData.Value.ValueObject });
-                    }
-
                 }
-
-                locationsExport.Add(dynLoc);
+                list.Add(locationFlat2);
             }
-
-            fhEngine.WriteFile(file, locationsExport.ToArray());  
-
-            return Msg;
+            string exportDirectoryPath = GetExportDirectoryPath("Export");
+            string str1 = string.Format("uLocateExport-{0}.csv", (object)Extensions.MakeCodeSafe(name, "-"));
+            string str2 = string.Format("/{0}/{1}", (object)"Export", (object)str1);
+            string fileName = string.Format("{0}//{1}", (object)exportDirectoryPath, (object)str1);
+            fileHelperEngine.WriteFile(fileName, (IEnumerable<LocationFlat>)list.ToArray());
+            return new StatusMessage()
+            {
+                ObjectName = str2,
+                Success = true
+            };
         }
 
-        static List<T> CreateListOfType<T>(T obj)
+        private static string GetExportDirectoryPath(string directoryName)
         {
-            return new List<T>();
+            string path = HttpContext.Current.Server.MapPath(string.Format("~/{0}", (object)directoryName));
+            CreateExportDirectory(path);
+            return path;
         }
 
+        private static void CreateExportDirectory(string path)
+        {
+            if (Directory.Exists(path))
+                return;
+            Directory.CreateDirectory(path);
+        }
     }
 }
 

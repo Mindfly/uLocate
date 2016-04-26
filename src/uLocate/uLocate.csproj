@@ -287,7 +287,7 @@
     <Compile Include="Helpers\GoogleMapsGeocodeProvider.cs" />
     <Compile Include="Helpers\GoogleResponseXDocumentExtensions.cs" />
     <Compile Include="IO\Import.cs" />
-    <Compile Include="IO\LocationFlatModel.cs" />
+    <Compile Include="Models\LocationFlatModel.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\CmsDataType.cs" />
     <Compile Include="Models\Country.cs" />
