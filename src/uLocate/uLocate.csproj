@@ -287,7 +287,6 @@
     <Compile Include="Helpers\GoogleMapsGeocodeProvider.cs" />
     <Compile Include="Helpers\GoogleResponseXDocumentExtensions.cs" />
     <Compile Include="IO\Import.cs" />
-    <Compile Include="Models\LocationFlatModel.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\CmsDataType.cs" />
     <Compile Include="Models\Country.cs" />
@@ -355,16 +354,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY "$(TargetDir)$(TargetName).*" "$(SolutionDir)UmbracoTestSite\bin\" /Y
-XCOPY "$(SolutionDir)Dependencies\*.dll" "$(SolutionDir)UmbracoTestSite\bin\" /Y
-XCOPY "$(TargetDir)$(TargetName).*" "$(SolutionDir)..\build\bin\" /Y
-XCOPY "$(SolutionDir)Dependencies\*.dll" "$(SolutionDir)..\build\bin\" /Y
-XCOPY "$(SolutionDir)UmbracoTestSite\Config\ExamineIndex.config" "$(SolutionDir)..\build\Config\" /Y
-XCOPY "$(SolutionDir)UmbracoTestSite\Config\ExamineSettings.config" "$(SolutionDir)..\build\Config\" /Y
-REM XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\SRSM - Umbraco\source code - 2015\src\UmbracoCms\bin\" /Y
-REM XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\SRSM - Umbraco\source code - 2015\src\References\" /Y
-XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\KEND\source code\src\UmbracoCms\bin\" /Y
-XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\KEND - Umbraco\source code\src\KendaTires.Web\Dependencies\" /Y</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
