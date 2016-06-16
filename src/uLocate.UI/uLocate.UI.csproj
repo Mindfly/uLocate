@@ -343,8 +343,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>XCOPY "$(TargetDir)$(TargetName).*" "$(SolutionDir)UmbracoTestSite\bin\" /Y
+XCOPY "$(ProjectDir)App_Plugins" "$(SolutionDir)UmbracoTestSite\App_Plugins\" /Y /S
+XCOPY "$(TargetDir)$(TargetName).*" "$(SolutionDir)..\build\bin\" /Y
+XCOPY "$(ProjectDir)App_Plugins" "$(SolutionDir)..\build\App_Plugins\" /Y /S
+XCOPY "$(TargetDir)$(TargetName).*" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\KEND\source code\src\UmbracoCms\bin" /Y
+XCOPY "$(ProjectDir)App_Plugins" "C:\Users\Heather\NAS Folders\Active Projects\Webs\Mindfly\KEND\source code\src\UmbracoCms\App_Plugins" /Y /S</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
