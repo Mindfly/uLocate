@@ -125,16 +125,17 @@
                 $scope.dialogData.generateLatLng = $scope.shouldHideCoordinatesEditor;
 
                 if ($scope.dialogData.location.locationTypeKey !== uLocate.Constants.DEFAULT_LOCATION_TYPE_KEY) {
-                    if ($scope.dialogData.location.customPropertyData.length > 0) {
-                        _.each($scope.dialogData.location.editors, function(editor) {
-                            _.each($scope.dialogData.location.customPropertyData, function(property) {
-                                if (property.propAlias == editor.propAlias) {
-                                    property.propData = editor.value;
-                                }
-                            });
+                    _.each($scope.dialogData.location.editors, function (editor) {
+
+                        var hasMatch = false;
+                        _.each($scope.dialogData.location.customPropertyData, function (property) {
+                            if (property.propAlias == editor.propAlias) {
+                                property.propData = editor.value;
+                                hasMatch = true;
+                            }
                         });
-                    } else {
-                        _.each($scope.dialogData.location.editors, function(editor) {
+
+                        if (!hasMatch) {
                             var newProperty = new uLocate.Models.LocationProperty({
                                 key: '00000000-0000-0000-0000-000000000000',
                                 propAlias: editor.propAlias,
@@ -144,8 +145,8 @@
                                 newProperty.propData = '';
                             }
                             $scope.dialogData.location.customPropertyData.push(newProperty);
-                        });
-                    }
+                        }
+                    });
                 }
                 $scope.submit($scope.dialogData);
             }
