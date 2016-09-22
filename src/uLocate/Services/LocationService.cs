@@ -100,7 +100,7 @@
             var indexStatus = locationIndexManager.UpdateLocation(UpdatedEditableLocation);
 
             var lookupNewLoc = this.GetLocation(UpdatedEditableLocation.Key);
-            var result = lookupNewLoc.ConvertToEditableLocation(); 
+            var result = lookupNewLoc.ConvertToEditableLocation();
 
             return result;
         }
@@ -145,7 +145,7 @@
 
             return Result;
         }
-        
+
         public StatusMessage DeleteLocation(Guid LocationKey)
         {
             //Lookup first in Index, so we can remove it from the Index
@@ -202,6 +202,40 @@
             return msg;
         }
 
+        public StatusMessage CountLocationsByType()
+        {
+            //TODO: Check if a direct search would be faster
+            //var searcher = locationIndexManager.uLocateLocationSearcher;
+            //var searchCriteria = searcher.CreateSearchCriteria("*");
+            //var searchResults = searcher.Search(searchCriteria.SearchIndexType, true);
+
+            var msg = new StatusMessage();
+            var iTotal = 0;
+            var allLocationTypes = locTypeService.GetLocationTypes();
+
+            foreach (var type in allLocationTypes)
+            {
+                var locTypeName = type.Name;
+                var allLocations = this.GetLocations(type.Key);
+
+                var thisGroupMsg = new StatusMessage();
+                var iGroupCount = 0;
+
+                foreach (var loc in allLocations)
+                {
+                    iGroupCount++;
+                    iTotal++;
+                }
+
+                thisGroupMsg.Message = string.Format("{0} locations of type {1}", iGroupCount, locTypeName);
+
+                msg.InnerStatuses.Add(thisGroupMsg);
+            }
+
+            msg.Message = string.Format("{0} total locations", iTotal);
+            return msg;
+        }
+
         public IndexedLocation GetLocation(Guid LocationKey)
         {
             //OLD 
@@ -240,7 +274,7 @@
             var result = searchedLocations.Select(n => n.IndexedLocation);
             return result;
         }
-        
+
         public IEnumerable<IndexedLocation> GetLocations(Guid LocationTypeKey)
         {
             //OLD
@@ -276,7 +310,7 @@
             var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
 
             var result = searchedLocations.Select(n => n.IndexedLocation);
-            
+
             return result;
         }
 
@@ -301,17 +335,17 @@
             {
                 var test = searchResults.Select(l => l.AllPropertiesDictionary.Keys);
                 var locsWithProp = searchResults.Where(l => l.AllPropertiesDictionary.ContainsKey(PropertyAlias));
-                
+
                 if (locsWithProp.Any())
                 {
-                    var result =locsWithProp.Where(l => l.AllPropertiesDictionary[PropertyAlias] == Value);
+                    var result = locsWithProp.Where(l => l.AllPropertiesDictionary[PropertyAlias] == Value);
                     return result;
                 }
                 else
                 {
                     LogHelper.Info<LocationService>(errorMsg);
                     return null;
-                }   
+                }
             }
             catch (Exception ex)
             {
@@ -373,7 +407,7 @@
             {
                 return result;
             }
-            
+
         }
 
         public IEnumerable<IndexedLocation> GetLocationsByCountry(string CountryCode, Guid LocTypeKey)
@@ -474,8 +508,8 @@
 
                 string orderClause = string.Format("{0} {1}", OrderBy, SortOrder);
                 var sortedSearch = (from r in allResults
-                    orderby(orderClause)
-                    select r);
+                                    orderby (orderClause)
+                                    select r);
 
                 workingCollection = sortedSearch;
 
@@ -512,8 +546,8 @@
 
         public List<LocationPropertyData> GetAllPropertyData()
         {
-           //TODO: Fix this to return IndexPropertyData
-           return Repositories.LocationPropertyDataRepo.GetAll().ToList();
+            //TODO: Fix this to return IndexPropertyData
+            return Repositories.LocationPropertyDataRepo.GetAll().ToList();
         }
 
         public IEnumerable<IndexedLocation> GetByGeoSearch(double Lat, double Long, int Miles)
@@ -622,6 +656,12 @@
         public StatusMessage ReindexAllLocations()
         {
             var result = locationIndexManager.IndexAllLocations();
+
+            var countSM = new StatusMessage();
+            var countIndexed = locationIndexManager.IndexedItemsCount("location");
+            countSM.Message = string.Format("{0} Locations in Index", countIndexed);
+
+            result.InnerStatuses.Add(countSM);
 
             return result;
         }

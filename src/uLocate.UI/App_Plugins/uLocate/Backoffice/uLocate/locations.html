@@ -17,6 +17,9 @@
                             <li class="action sep">
                                 <a ng-click="getLocations(); openMenu = !openMenu;"><i class="icon icon-refresh"></i><span class="menu-label"><localize key="actions_refreshNode">Reload nodes</localize></span></a>
                             </li>
+                            <li class="action">
+                                <a ng-click="reindexExamine(); openMenu = !openMenu;"><i class="icon icon-molecular"></i><span class="menu-label">Reindex</span></a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -27,6 +30,7 @@
 
             <div class="umb-pane">
                 <div class="well" style="background-color: #2e8aea; color: white;" ng-show="isGeocoding">Geocoding the coordinates for the address. This may take a moment. Do not leave or reload page or your location might not save properly.</div>
+                <div class="well" style="background-color: #2e8aea; color: white;" ng-show="isReindexing">Reindexing Examine from the Database. This may take a moment. Do not leave or reload page.</div>
                 <div class="map-wrapper span12">
                     <div class="map-bar top row-fluid">
                         <!-- Loading Notification -->

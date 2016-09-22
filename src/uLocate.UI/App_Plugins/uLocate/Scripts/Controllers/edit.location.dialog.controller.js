@@ -227,7 +227,11 @@
                                 _.each(results, function(editor) {
                                     _.each($scope.dialogData.location.customPropertyData, function(property) {
                                         if (property.propAlias == editor.propAlias) {
-                                            editor.value = property.propData;
+                                            if (editor.view == "checkboxlist") {
+                                                editor.value = property.propData.split(",");
+                                            } else {
+                                                editor.value = property.propData;
+                                            }
                                         }
                                     });
                                 });

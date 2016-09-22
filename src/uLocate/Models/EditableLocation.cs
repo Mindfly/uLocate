@@ -141,7 +141,12 @@
         {
             get
             {
-                return this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Phone).Value.ToString();
+                var locationPropertyData = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Phone);
+                if (locationPropertyData != null)
+                {
+                    return locationPropertyData.Value.ToString();
+                }
+                return "";
             }
 
             set
@@ -157,7 +162,12 @@
         {
             get
             {
-                return this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Email).Value.ToString();
+                var locationPropertyData = this.PropertyData.FirstOrDefault(p => p.PropertyAlias == Constants.DefaultLocPropertyAlias.Email);
+                if (locationPropertyData != null)
+                {
+                    return locationPropertyData.Value.ToString();                    
+                }
+                return "";
             }
 
             set

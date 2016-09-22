@@ -227,9 +227,15 @@
     <Folder Include="App_Data\uLocate\install\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\uLocate\Dialogs\edit.dialog.html" />
+    <Content Include="App_Plugins\uLocate\Dialogs\view.dialog.html" />
     <Content Include="App_Plugins\uLocate\Installer\install.ascx" />
+    <Content Include="App_Plugins\uLocate\Langs\en.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Controllers\create.location.dialog.controller.js" />
+    <Content Include="App_Plugins\uLocate\Scripts\Controllers\edit.dialog.controller.js" />
+    <Content Include="App_Plugins\uLocate\Scripts\Controllers\view.dialog.controller.js" />
     <Content Include="App_Plugins\uLocate\Scripts\Services\initialization.api.service.js" />
+    <Content Include="App_Plugins\uLocate\Scripts\Services\management.api.service.js" />
     <Content Include="App_Plugins\uLocate\uLocateDashboard.html" />
     <None Include="App_Plugins\uLocate\Config\uLocate.config" />
     <None Include="App_Plugins\uLocate\Css\globals\_base.scss" />

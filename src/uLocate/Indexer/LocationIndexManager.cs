@@ -108,7 +108,7 @@
             var uLocateLocationIndexer = this.uLocateLocationIndexer(); //ExamineManager.Instance.IndexProviderCollection[this.IndexerName];
             var uLocateLocationSearcher = this.uLocateLocationSearcher(); //ExamineManager.Instance.SearchProviderCollection[this.SearcherName];
 
-            LogHelper.Info<LocationIndexManager>("RemoveLocation - Started: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
+            //LogHelper.Info<LocationIndexManager>("RemoveLocation - Started: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
 
             var statusMsg = new StatusMessage();
 
@@ -122,7 +122,7 @@
             var searchedLocations = uLocate.Helpers.Convert.ExamineToSearchedLocations(searchResults);
             var countMatches = searchedLocations.Count();
 
-            LogHelper.Info<LocationIndexManager>("RemoveLocation - Indexed locations matching Key '" + Location.Key.ToString() + "' = " + countMatches);
+            //LogHelper.Info<LocationIndexManager>("RemoveLocation - Indexed locations matching Key '" + Location.Key.ToString() + "' = " + countMatches);
 
             if (countMatches == 0)
             {
@@ -131,7 +131,7 @@
                 statusMsg.Code = "NoMatch";
                 statusMsg.Message = "No matching Location found in the index. Nothing to remove.";
 
-                LogHelper.Info<LocationIndexManager>("RemoveLocation - [countMatches == 0]: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
+                //LogHelper.Info<LocationIndexManager>("RemoveLocation - [countMatches == 0]: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
             }
             else if (countMatches > 1)
             {
@@ -161,7 +161,7 @@
                 {
                     ExamineManager.Instance.DeleteFromIndex(examineId.ToString(), this.uLocateLocationIndexer().AsEnumerableOfOne());
 
-                    LogHelper.Info<LocationIndexManager>("RemoveLocation - [countMatches == 1]: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
+                    //LogHelper.Info<LocationIndexManager>("RemoveLocation - [countMatches == 1]: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
 
                     statusMsg.Success = true;
                     statusMsg.Code = "MatchFoundAndDeleted";
@@ -262,7 +262,7 @@
                     var examineNode = sds.RowData.ToExamineXml(examineId, this.IndexTypeName);
                     ExamineManager.Instance.ReIndexNode(examineNode, this.IndexTypeName, this.uLocateLocationIndexer().AsEnumerableOfOne());
 
-                    LogHelper.Info<LocationIndexManager>("UpdateLocation - [countMatches == 1]: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
+                    //LogHelper.Info<LocationIndexManager>("UpdateLocation - [countMatches == 1]: " + IndexedItemsCount(IndexTypeName) + " locations indexed.");
 
                     statusMsg.Success = true;
                     statusMsg.Code = "MatchFoundAndUpdated";
